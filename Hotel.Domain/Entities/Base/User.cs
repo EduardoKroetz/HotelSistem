@@ -16,7 +16,6 @@ public class User : Entity ,IValidation
     Gender = gender;
     DateOfBirth = dateOfBirth;
     Address = address;
-
     Validate();
   }
 
@@ -41,16 +40,16 @@ public class User : Entity ,IValidation
   }
 
   public void ChangeName(Name name)
-  => Name = name;
+  => Name = name; 
 
   public void ChangeEmail(Email email)
-  => Email = email;
+  => Email = email; 
 
   
   public void ChangePhone(Phone phone)
-  => Phone = phone;
+  => Phone = phone; 
 
   public void ChangeAddress(Address address)
-  => Address = address;
+  => Address = address; 
 
 }
