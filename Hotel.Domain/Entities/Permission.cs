@@ -9,13 +9,9 @@ public class Permission : Entity
     Name = name;
     Description = description;
     IsActive = isActive;
-    CreatedAt = DateTime.Now;
-    UpdatedAt = DateTime.Now;
   }
 
   public string Name { get; private set; }
   public string Description { get; private set; }
   public bool IsActive { get; private set; }
-  public DateTime CreatedAt { get; private set; }
-  public DateTime UpdatedAt { get; private set; }
 }

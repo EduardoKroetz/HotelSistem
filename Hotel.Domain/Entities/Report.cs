@@ -9,7 +9,6 @@ public class Report : Entity
   {
     Description = description;
     Status = EStatus.Pending;
-    CreatedAt = DateTime.Now;
     Priority = priority;
     Resolution = resolution;
     EmployeeId = employeeId;
@@ -18,7 +17,6 @@ public class Report : Entity
 
   public string Description { get; private set; }
   public EStatus Status { get; private set; }
-  public DateTime CreatedAt { get; private set; }
   public EPriority Priority { get; private set; }
   public string Resolution { get; private set; }
   public Guid EmployeeId { get; private set; }

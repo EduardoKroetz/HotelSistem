@@ -15,7 +15,6 @@ public class Reservation : Entity
     Capacity = capacity;
     RoomId = roomId;
     Room = room;
-    CreatedAt = DateTime.Now;
     Customers = [];
   }
 
@@ -25,7 +24,6 @@ public class Reservation : Entity
   public DateTime? CheckOut { get; private set; }
   public EReservationStatus Status { get; private set; }
   public int Capacity { get; private set; }
-  public DateTime CreatedAt { get; private set; }
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
   public List<Customer> Customers { get; private set; }
