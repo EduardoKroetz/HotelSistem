@@ -5,14 +5,15 @@ namespace Hotel.Domain.Entities;
 
 public class Report : Entity
 {
-  public Report(string description, EStatus status, EPriority priority, Guid employeeId, string resolution = "")
+  public Report(string description, EPriority priority, Guid employeeId, Employee? employee, string resolution = "")
   {
     Description = description;
-    Status = status;
+    Status = EStatus.Pending;
     CreatedAt = DateTime.Now;
     Priority = priority;
     Resolution = resolution;
     EmployeeId = employeeId;
+    Employee = employee;
   }
 
   public string Description { get; private set; }

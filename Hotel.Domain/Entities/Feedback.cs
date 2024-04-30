@@ -4,7 +4,7 @@ namespace Hotel.Domain.Entities;
 
 public class Feedback : Entity
 {
-  public Feedback(string comment, int rate, int like, int deslikes, DateTime createdAt, DateTime updatedAt, Guid customerId, Customer? customer, Guid reservationId, Reservation? reservation, Guid roomId, Room? room)
+  public Feedback(string comment, int rate, int like, int deslikes, DateTime createdAt, DateTime updatedAt, Guid customerId, Guid roomId ,  Guid reservationId, Customer? customer, Reservation? reservation, Room? room)
   {
     Comment = comment;
     Rate = rate;

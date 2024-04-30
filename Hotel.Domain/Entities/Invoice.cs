@@ -5,14 +5,14 @@ namespace Hotel.Domain.Entities;
 
 public class Invoice : Entity
 {
-  public Invoice(int number, DateTime issueDate, decimal totalAmount, EStatus status, EPaymentMethod paymentMethod, decimal taxInformation)
+  public Invoice(int number, decimal totalAmount, EPaymentMethod paymentMethod, decimal? taxInformation)
   {
     Number = number;
-    IssueDate = issueDate;
+    IssueDate = DateTime.Now;
     TotalAmount = totalAmount;
-    Status = status;
+    Status = EStatus.Pending;
     PaymentMethod = paymentMethod;
-    TaxInformation = taxInformation;
+    TaxInformation = taxInformation ?? 0;
     Customers = [];
   }
 

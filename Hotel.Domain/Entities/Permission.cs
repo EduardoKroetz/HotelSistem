@@ -6,11 +6,11 @@ public class Permission : Entity
 {
   public Permission(string name, string description, bool isActive)
   {
-      Name = name;
-      Description = description;
-      IsActive = isActive;
-      CreatedAt = DateTime.Now;
-      UpdatedAt = DateTime.Now;
+    Name = name;
+    Description = description;
+    IsActive = isActive;
+    CreatedAt = DateTime.Now;
+    UpdatedAt = DateTime.Now;
   }
 
   public string Name { get; private set; }
