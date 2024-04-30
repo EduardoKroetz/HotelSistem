@@ -9,6 +9,8 @@ public class Name : IValueObject
   {
     FirstName = firstName;
     LastName = lastName;
+
+    Validate();
   }
 
   public string FirstName { get; private set; }

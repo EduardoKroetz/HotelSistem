@@ -11,6 +11,8 @@ public class Address : IValueObject
     City = city;
     Street = street;
     Number = number;
+
+    Validate();
   }
 
   public string Country { get; private set; }

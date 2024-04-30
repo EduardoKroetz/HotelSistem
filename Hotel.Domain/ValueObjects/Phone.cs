@@ -6,6 +6,13 @@ namespace Hotel.Domain.ValueObjects;
 
 public class Phone : IValueObject
 {
+  public Phone(string number)
+  {
+    Number = number;
+    
+    Validate();
+  }
+
   public string Number { get; private set; }
   public bool IsValid { get; private set; } = false;
 

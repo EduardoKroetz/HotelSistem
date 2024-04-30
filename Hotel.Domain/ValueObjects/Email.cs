@@ -8,7 +8,9 @@ public class Email : IValueObject
 {
   public Email(string address)
   {
-      Address = address;
+    Address = address;
+
+    Validate();
   }
 
   public string Address { get; private set; }
