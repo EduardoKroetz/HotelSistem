@@ -1,5 +1,4 @@
 using Hotel.Domain.Entities.Base;
-using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 using Hotel.Domain.ValueObjects;
