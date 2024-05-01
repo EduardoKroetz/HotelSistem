@@ -32,33 +32,5 @@ public partial class Reservation : Entity
   public Room Room { get; private set; }
   public List<Customer> Customers { get; private set; }
 
-  public void ChangeCheckOut(DateTime checkOut)
-  {
-    ValidateCheckOut(checkOut);
-    CheckOut = checkOut;
-  }
-
-
-  public void ChangeCheckIn(DateTime checkIn)
-  {
-    ValidateCheckIn(checkIn);
-    CheckIn = checkIn;
-  }
-
-
-
-  public int? CalculeHostedDays()
-  {
-    if (CheckOut != null)
-      return (CheckOut.Value.Date - CheckIn.Date).Days;
-    return null;
-  }
-
-  public decimal CalculeDailyRate()
-  => Room.Price * Capacity;
-
-  
-
-  
 
 }

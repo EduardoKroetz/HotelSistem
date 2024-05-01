@@ -3,7 +3,7 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
-public class Responsability : Entity
+public partial class Responsability : Entity
 {
   public Responsability(string name, string description, EPriority priority)
   {
@@ -15,14 +15,5 @@ public class Responsability : Entity
   public string Name { get; private set; }
   public string Description { get; private set; }
   public EPriority Priority { get; private set; }
-
-  public void ChangeName(string name)
-  => Name = name;
-
-  public void ChangeDescription(string description)
-  => Description = description;
-
-  public void ChangePriority(EPriority priority)
-  => Priority = priority;
 
 }
