@@ -2,7 +2,7 @@ using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.Entities.PaymentContext;
+namespace Hotel.Domain.Entities.PaymentContext.InvoiceEntity;
 
 public class Invoice : Entity
 {
@@ -13,7 +13,7 @@ public class Invoice : Entity
     TotalAmount = totalAmount;
     Status = EStatus.Pending;
     PaymentMethod = paymentMethod;
-    TaxInformation = taxInformation ?? 0;
+    TaxInformation = taxInformation;
     Customers = [];
   }
 
@@ -22,6 +22,6 @@ public class Invoice : Entity
   public decimal TotalAmount { get; private set; }
   public EStatus Status { get; private set; }
   public EPaymentMethod PaymentMethod { get; private set; }
-  public decimal TaxInformation { get; private set; }
+  public decimal? TaxInformation { get; private set; }
   public List<Customer> Customers { get; private set; }
 }

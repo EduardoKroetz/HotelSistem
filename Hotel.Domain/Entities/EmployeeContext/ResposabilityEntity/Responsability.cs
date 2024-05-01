@@ -1,11 +1,11 @@
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.Entities.EmployeeContext;
+namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
-public class EmployeeResponsability : Entity
+public class Responsability : Entity
 {
-  public EmployeeResponsability(string name, string description, EPriority priority)
+  public Responsability(string name, string description, EPriority priority)
   {
     Name = name;
     Description = description;

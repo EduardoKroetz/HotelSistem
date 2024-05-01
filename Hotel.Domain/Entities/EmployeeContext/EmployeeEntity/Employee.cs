@@ -1,15 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.EmployeeContext.Interfaces;
+using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
 
-namespace Hotel.Domain.Entities.EmployeeContext;
+namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 
-public class Employee : User, IResponsabilities
+public class Employee : User, IResponsabilitiesMethods
 {
-  public Employee(Name name, Email email, Phone phone, EmployeeResponsability responsability, string? passwordHash, EGender? gender, DateTime? dateOfBirth, Address? address, decimal? salary) 
-    : base( name, email, phone, passwordHash, gender, dateOfBirth, address)
+  public Employee(Name name, Email email, Phone phone, string password, Responsability responsability, EGender? gender, DateTime? dateOfBirth, Address? address, decimal? salary) 
+    : base( name, email, phone, password, gender, dateOfBirth, address)
   {
     Salary = salary;
     Responsabilities = [];
@@ -17,7 +18,7 @@ public class Employee : User, IResponsabilities
   }
   
   public decimal? Salary { get; private set; }
-  public List<EmployeeResponsability> Responsabilities { get; private set; } 
+  public List<Responsability> Responsabilities { get; private set; } 
 
   public void ChangeSalary(decimal salary)
   {
@@ -26,7 +27,7 @@ public class Employee : User, IResponsabilities
     Salary = salary;
   }
 
-  public void AddResponsability(EmployeeResponsability responsability)
+  public void AddResponsability(Responsability responsability)
   {
     if (!Responsabilities.Contains(responsability))
       Responsabilities.Add(responsability);
@@ -34,7 +35,7 @@ public class Employee : User, IResponsabilities
       throw new ArgumentException("Esta responsabilidade já está atribuida à esse funcionário.");
   }
 
-  public void RemoveResponsability(EmployeeResponsability responsability)
+  public void RemoveResponsability(Responsability responsability)
   {
     if (Responsabilities.Contains(responsability))
       Responsabilities.Remove(responsability);
