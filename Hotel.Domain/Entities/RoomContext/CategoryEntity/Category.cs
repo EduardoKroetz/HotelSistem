@@ -1,6 +1,6 @@
 using Hotel.Domain.Entities.Base;
 
-namespace Hotel.Domain.Entities.RoomContext;
+namespace Hotel.Domain.Entities.RoomContext.CategoryEntity;
 
 public class Category : Entity
 {

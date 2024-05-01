@@ -1,31 +1,31 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.RoomContext.CategoryEntity;
+using Hotel.Domain.Entities.RoomContext.ImageEntity;
+using Hotel.Domain.Entities.RoomContext.ServiceEntity;
+using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.Entities.RoomContext;
+namespace Hotel.Domain.Entities.RoomContext.RoomEntity;
 
-public class Room : Entity
+public partial class Room : Entity
 {
-  public Room(int number, decimal price, bool isActive, bool isReserved, int capacity, string description, Guid roomServicesId, Guid categoryId, Category category)
+  public Room(int number, decimal price, int capacity, string description, Category category)
   {
     Number = number;
     Price = price;
-    IsActive = isActive;
-    IsReserved = isReserved;
     Capacity = capacity;
     Description = description;
-    RoomServicesId = roomServicesId;
-    CategoryId = categoryId;
     Category = category;
+    CategoryId = category.Id;
+    Status = ERoomStatus.OutOfService;
     Services = [];
     Images = [];
   }
 
   public int Number { get; private set; }
   public decimal Price { get; private set; }
-  public bool IsActive { get; private set; }
-  public bool IsReserved { get; private set; }
+  public ERoomStatus Status { get; private set; }
   public int Capacity { get; private set; }
   public string Description { get; private set; }
-  public Guid RoomServicesId { get; private set; }
   public List<Service> Services { get; private set; } 
   public Guid CategoryId { get; private set; }
   public Category? Category { get; private set; }
