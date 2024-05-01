@@ -1,14 +1,15 @@
+using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 using Hotel.Domain.ValueObjects;
 
-namespace Hotel.Domain.Entities.AdminContext;
+namespace Hotel.Domain.Entities.AdminContext.AdminEntity;
 
 public class Admin : User
 {
-  public Admin(Name name, Email email, Phone phone, string? passwordHash, EGender? gender, DateTime? dateOfBirth, Address? address) 
-    : base(name,email,phone,passwordHash,gender,dateOfBirth,address)
+  public Admin(Name name, Email email, Phone phone, string password, EGender? gender, DateTime? dateOfBirth, Address? address) 
+    : base(name,email,phone,password,gender,dateOfBirth,address)
   {
     IsRootAdmin = false;
     Permissions = [];
