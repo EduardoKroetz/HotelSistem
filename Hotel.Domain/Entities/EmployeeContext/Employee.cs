@@ -1,15 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using Hotel.Domain.Entities.Base;
-using Hotel.Domain.Entities.Interfaces;
+using Hotel.Domain.Entities.EmployeeContext.Interfaces;
 using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
 
-namespace Hotel.Domain.Entities;
+namespace Hotel.Domain.Entities.EmployeeContext;
 
 public class Employee : User, IResponsabilities
 {
-  public Employee(Name name, Email email, Phone phone, string passwordHash, EGender gender, DateTime dateOfBirth, Address address,decimal salary,
-    EmployeeResponsability responsability) 
+  public Employee(Name name, Email email, Phone phone, EmployeeResponsability responsability, string? passwordHash, EGender? gender, DateTime? dateOfBirth, Address? address, decimal? salary) 
     : base( name, email, phone, passwordHash, gender, dateOfBirth, address)
   {
     Salary = salary;
@@ -17,7 +16,7 @@ public class Employee : User, IResponsabilities
     AddResponsability(responsability);
   }
   
-  public decimal Salary { get; private set; }
+  public decimal? Salary { get; private set; }
   public List<EmployeeResponsability> Responsabilities { get; private set; } 
 
   public void ChangeSalary(decimal salary)

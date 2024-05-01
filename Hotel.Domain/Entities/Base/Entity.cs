@@ -1,4 +1,4 @@
-using Hotel.Domain.Entities.Interfaces;
+using Hotel.Domain.Entities.Base.Interfaces;
 
 namespace Hotel.Domain.Entities.Base;
 

@@ -1,8 +1,9 @@
 using Hotel.Domain.Entities.Base;
-using Hotel.Domain.Entities.Interfaces;
+using Hotel.Domain.Entities.EmployeeContext;
+using Hotel.Domain.Entities.EmployeeContext.Interfaces;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.Entities;
+namespace Hotel.Domain.Entities.RoomContext;
 
 public class Service : Entity, IResponsabilities
 {

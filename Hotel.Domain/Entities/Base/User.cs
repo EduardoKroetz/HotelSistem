@@ -7,7 +7,7 @@ namespace Hotel.Domain.Entities.Base;
 public class User : Entity ,IValidation
 {
 
-  public User(Name name, Email email, Phone phone, string passwordHash, EGender gender, DateTime dateOfBirth, Address address)
+  public User(Name name, Email email, Phone phone, string? passwordHash, EGender? gender, DateTime? dateOfBirth, Address? address)
   {
     Name = name;
     Email = email;
@@ -22,10 +22,10 @@ public class User : Entity ,IValidation
   public Name Name { get; private set; }
   public Email Email { get; private set; }
   public Phone Phone { get; private set; }
-  public string PasswordHash { get; private set; }
-  public EGender Gender { get; private set; }
-  public DateTime DateOfBirth { get; private set; }
-  public Address Address { get; private set; }
+  public string? PasswordHash { get; private set; }
+  public EGender? Gender { get; private set; }
+  public DateTime? DateOfBirth { get; private set; }
+  public Address? Address { get; private set; }
 
   public bool IsValid { get; private set; } = false;
 
@@ -34,7 +34,7 @@ public class User : Entity ,IValidation
     Name.Validate();
     Email.Validate();
     Phone.Validate();
-    Address.Validate();
+    Address?.Validate();
 
     IsValid = true;
   }

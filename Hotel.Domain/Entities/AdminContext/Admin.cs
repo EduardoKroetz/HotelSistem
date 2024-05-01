@@ -3,11 +3,11 @@ using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 using Hotel.Domain.ValueObjects;
 
-namespace Hotel.Domain.Entities;
+namespace Hotel.Domain.Entities.AdminContext;
 
 public class Admin : User
 {
-  public Admin(Name name, Email email, Phone phone, string passwordHash, EGender gender, DateTime dateOfBirth, Address address) 
+  public Admin(Name name, Email email, Phone phone, string? passwordHash, EGender? gender, DateTime? dateOfBirth, Address? address) 
     : base(name,email,phone,passwordHash,gender,dateOfBirth,address)
   {
     IsRootAdmin = false;
@@ -35,5 +35,4 @@ public class Admin : User
   }
 
 
-  
 }

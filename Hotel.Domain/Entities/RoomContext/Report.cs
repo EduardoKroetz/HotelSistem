@@ -1,7 +1,8 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.EmployeeContext;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.Entities;
+namespace Hotel.Domain.Entities.RoomContext;
 
 public class Report : Entity
 {

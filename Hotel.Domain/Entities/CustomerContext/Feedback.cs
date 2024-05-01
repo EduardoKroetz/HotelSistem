@@ -1,15 +1,15 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.ReservationContext;
+using Hotel.Domain.Entities.RoomContext;
 
-namespace Hotel.Domain.Entities;
+namespace Hotel.Domain.Entities.CustomerContext;
 
 public class Feedback : Entity
 {
-  public Feedback(string comment, int rate, int like, int deslikes, Guid customerId, Guid roomId ,  Guid reservationId, Customer? customer, Reservation? reservation, Room? room)
+  public Feedback(string comment, int rate, Guid customerId, Guid roomId ,  Guid reservationId, Customer? customer, Reservation? reservation, Room? room)
   {
     Comment = comment;
     Rate = rate;
-    Like = like;
-    Deslikes = deslikes;
     CustomerId = customerId;
     Customer = customer;
     ReservationId = reservationId;
@@ -21,7 +21,7 @@ public class Feedback : Entity
 
   public string Comment { get; private set; }
   public int Rate { get; private set; }
-  public int Like { get; private set; }
+  public int Likes { get; private set; }
   public int Deslikes { get; private set; }
   public DateTime UpdatedAt { get; private set; }
   public Guid CustomerId { get; private set; }
@@ -30,4 +30,14 @@ public class Feedback : Entity
   public Reservation? Reservation { get; private set; }
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
+
+  public void AddLike()
+  => Likes++; 
+  public void RemoveLike()
+  => Likes--; 
+  
+  public void AddDeslike()
+  => Deslikes++; 
+  public void RemoveDeslike()
+  => Deslikes--; 
 }

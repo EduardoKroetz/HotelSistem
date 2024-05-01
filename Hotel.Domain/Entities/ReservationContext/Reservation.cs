@@ -1,7 +1,9 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.CustomerContext;
+using Hotel.Domain.Entities.RoomContext;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.Entities;
+namespace Hotel.Domain.Entities.ReservationContext;
 
 public class Reservation : Entity
 {

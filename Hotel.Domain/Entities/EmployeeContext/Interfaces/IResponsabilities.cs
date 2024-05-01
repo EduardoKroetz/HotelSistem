@@ -1,4 +1,4 @@
-namespace Hotel.Domain.Entities.Interfaces;
+namespace Hotel.Domain.Entities.EmployeeContext.Interfaces;
 
 public interface IResponsabilities
 {

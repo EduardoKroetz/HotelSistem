@@ -1,6 +1,6 @@
 using Hotel.Domain.Entities.Base;
 
-namespace Hotel.Domain.Entities;
+namespace Hotel.Domain.Entities.RoomContext;
 
 public class Room : Entity
 {
