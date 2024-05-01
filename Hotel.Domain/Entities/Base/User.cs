@@ -4,18 +4,20 @@ using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Entities.Base;
 
-public class User : Entity ,IValidation
+public class User : Entity
 {
 
-  public User(Name name, Email email, Phone phone, string? passwordHash, EGender? gender, DateTime? dateOfBirth, Address? address)
+  public User(Name name, Email email, Phone phone, string password, EGender? gender, DateTime? dateOfBirth, Address? address)
   {
     Name = name;
     Email = email;
     Phone = phone;
-    PasswordHash = passwordHash;
+    PasswordHash = GeneratePasswordHash(password);
     Gender = gender;
     DateOfBirth = dateOfBirth;
     Address = address;
+    IncompleteProfile = address == null || gender == null || dateOfBirth == null;
+    
     Validate();
   }
 
@@ -26,17 +28,16 @@ public class User : Entity ,IValidation
   public EGender? Gender { get; private set; }
   public DateTime? DateOfBirth { get; private set; }
   public Address? Address { get; private set; }
+  public bool IncompleteProfile { get; private set; }
 
-  public bool IsValid { get; private set; } = false;
-
-  public virtual void Validate()
+  public override void Validate()
   {
     Name.Validate();
     Email.Validate();
     Phone.Validate();
     Address?.Validate();
 
-    IsValid = true;
+    base.Validate();
   }
 
   public void ChangeName(Name name)
@@ -51,5 +52,11 @@ public class User : Entity ,IValidation
 
   public void ChangeAddress(Address address)
   => Address = address; 
+
+  public string GeneratePasswordHash(string Password)
+  {
+    //Implementar
+    return "";
+  }
 
 }
