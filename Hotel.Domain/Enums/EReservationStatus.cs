@@ -2,10 +2,9 @@ namespace Hotel.Domain.Enums;
 
 public enum EReservationStatus
 {
-  Confirmed = 1,
-  Pending = 2,
-  Cancelled = 3,
-  CheckedIn = 4,
-  CheckedOut = 5,
-  NoShow = 6,
+  Pending = 1,
+  Cancelled = 2,
+  CheckedIn = 3,
+  CheckedOut = 4,
+  NoShow = 5,
 }
