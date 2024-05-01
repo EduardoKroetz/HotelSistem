@@ -1,22 +1,27 @@
 using Hotel.Domain.Entities.Base;
-using Hotel.Domain.Entities.ReservationContext;
-using Hotel.Domain.Entities.RoomContext;
+using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
+using Hotel.Domain.Entities.RoomContext.RoomEntity;
+using Hotel.Domain.Entities.Validation;
 
-namespace Hotel.Domain.Entities.CustomerContext;
+namespace Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 
-public class Feedback : Entity
+public partial class Feedback : Entity, IValidation
 {
-  public Feedback(string comment, int rate, Guid customerId, Guid roomId ,  Guid reservationId, Customer? customer, Reservation? reservation, Room? room)
+  public Feedback(string comment, int rate, Guid customerId, Guid roomId ,  Guid reservationId, Customer customer, Reservation reservation, Room room)
   {
     Comment = comment;
     Rate = rate;
     CustomerId = customerId;
-    Customer = customer;
     ReservationId = reservationId;
-    Reservation = reservation;
     RoomId = roomId;
     Room = room;
+    Customer = customer;
+    Reservation = reservation;
     UpdatedAt = DateTime.Now;
+    Likes = 0;
+    Deslikes = 0;
+
+    Validate();
   }
 
   public string Comment { get; private set; }
@@ -30,14 +35,4 @@ public class Feedback : Entity
   public Reservation? Reservation { get; private set; }
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
-
-  public void AddLike()
-  => Likes++; 
-  public void RemoveLike()
-  => Likes--; 
-  
-  public void AddDeslike()
-  => Deslikes++; 
-  public void RemoveDeslike()
-  => Deslikes--; 
 }
