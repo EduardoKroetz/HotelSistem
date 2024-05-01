@@ -8,8 +8,16 @@ public partial class Room
   => Status = status;
 
   public void ChangeNumber(int number)
-  => Number = number;
+  {
+    ValidateNumber(number);
+    Number = number;
+  }
+
 
   public void ChangePrice(decimal price)
-  => Price = price;
+  {
+    ValidatePrice(price);
+    Price = price;
+  }
+
 }
