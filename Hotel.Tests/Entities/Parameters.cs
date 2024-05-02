@@ -1,6 +1,7 @@
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
@@ -22,6 +23,7 @@ public static class TestParameters
   public static readonly Customer Customer = new(Name,Email,Phone,Password,EGender.Masculine,DateTime.Now.AddYears(-18),Address);
   public static readonly Feedback Feedback = new("Muito bom.",10,Customer,Reservation,Room);
   public static readonly Admin Admin = new(Name,Email,Phone,Password,EGender.Masculine,DateTime.Now.AddYears(-18),Address);
+  public static readonly Responsability Responsability = new("Responder serviços","Responder serviços de quarto",EPriority.Medium);
 
   public  const string DescriptionMaxCaracteres = "sagittis vitae et leo duis ut diam quam nulla porttitor massa id neque aliquam vestibulum morbi blandit cursus risus at ultrices mi tempus imperdiet nulla malesuada pellentesque elit eget gravida cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer malesuada nunc vel risus commodo viverra maecenas accumsan lacus vel facilisis volutpat est velit egestas dui id ornare arcu odio ut sem nulla pharetra diam sit amet nisl suscipit adipia";
 }
