@@ -1,4 +1,5 @@
 using Hotel.Domain.Enums;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Entities.Base;
@@ -6,7 +7,7 @@ namespace Hotel.Domain.Entities.Base;
 public class User : Entity
 {
 
-  public User(Name name, Email email, Phone phone, string password, EGender? gender, DateTime? dateOfBirth, Address? address)
+  public User(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null)
   {
     Name = name;
     Email = email;
@@ -28,16 +29,6 @@ public class User : Entity
   public DateTime? DateOfBirth { get; private set; }
   public Address? Address { get; private set; }
   public bool IncompleteProfile { get; private set; }
-
-  public override void Validate()
-  {
-    Name.Validate();
-    Email.Validate();
-    Phone.Validate();
-    Address?.Validate();
-
-    base.Validate();
-  }
 
   public void ChangeName(Name name)
   => Name = name; 
