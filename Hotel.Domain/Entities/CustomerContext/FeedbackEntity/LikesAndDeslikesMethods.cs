@@ -2,14 +2,24 @@ namespace Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 
 public partial class Feedback
 {
-  public void AddLike()
-  => Likes++; 
+  public void AddLike(Customer customer)
+  {
+    Likes++; 
+  }
+  
   public void RemoveLike()
-  => Likes--; 
+  {
+    if (Likes > 0)
+      Likes--; 
+  }
   
   public void AddDeslike()
   => Deslikes++; 
   public void RemoveDeslike()
-  => Deslikes--; 
+   {
+    if (Deslikes > 0)
+      Deslikes--;  
+  }
+
 
 }

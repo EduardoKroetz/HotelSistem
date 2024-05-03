@@ -7,7 +7,7 @@ namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 
 public partial class Employee : User
 {
-  public Employee(Name name, Email email, Phone phone, string password, Responsability responsability, EGender? gender, DateTime? dateOfBirth, Address? address, decimal? salary) 
+  public Employee(Name name, Email email, Phone phone, string password, Responsability responsability, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null, decimal? salary = null) 
     : base( name, email, phone, password, gender, dateOfBirth, address)
   {
     Salary = salary;

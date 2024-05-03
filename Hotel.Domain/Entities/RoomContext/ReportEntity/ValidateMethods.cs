@@ -18,13 +18,16 @@ public partial class Report
   {
     if (string.IsNullOrEmpty(summary))
       throw new ValidationException("Informe o sumário do relatório.");
-    if (summary.Length > 100)
+    if (summary.Length > 50)
       throw new ValidationException("Limite de 100 caracteres do sumário do relatório foi atingido.");
   }
 
   public void ValidateDescription(string description)
   {
     if (string.IsNullOrEmpty(description))
+      throw new ValidationException("Informe a descrição do relatório.");
+
+    if (description.Length > 500)
       throw new ValidationException("Informe a descrição do relatório.");
   }
 

@@ -6,34 +6,35 @@ partial class Reservation
 {
   public override void Validate()
   {
-    Room.Validate();
-
-    if (Capacity > Room.Capacity)
-      throw new ValidationException("Capacidade máxima de hospedades do quarto foi atingida.");
-
-    if (Capacity <= 0)
-      throw new ValidationException("Informe a quantidade de hóspedes.");
-
-    if (CheckOut != null && CheckIn >= CheckOut)
-      throw new ValidationException("A data de check-in deve ser anterior à data de check-out.");
-
+    ValidateCapacity(Capacity);
     ValidateCheckIn(CheckIn);
     ValidateCheckOut(CheckOut);
+
+    if (CheckOut != null && CheckIn.Date >= CheckOut.Value.Date)
+      throw new ValidationException("A data de check-in deve ser anterior à data de check-out.");
 
     base.Validate();
   }
 
+  public void ValidateCapacity(int capacity)
+  {
+    if (capacity > Room.Capacity)
+      throw new ValidationException("Capacidade máxima de hospedades do quarto foi atingida.");
+
+    if (capacity <= 0)
+      throw new ValidationException("Informe a quantidade de hóspedes de vão se hospedar.");
+  }
 
   public void ValidateCheckIn(DateTime checkIn)
   {
-    if (checkIn < DateTime.Now)
+    if (checkIn.Date < DateTime.Now.Date)
       throw new ValidationException("A data de CheckIn não pode ser menor que a data atual.");
   }
 
   public void ValidateCheckOut(DateTime? checkOut)
   {
     if (checkOut != null)
-      if (checkOut < DateTime.Now)
+      if (checkOut.Value.Date < DateTime.Now.Date)
         throw new ValidationException("A data de CheckOut não pode ser menor que a data atual.");
   }
 }

@@ -11,4 +11,8 @@ partial class Reservation
 
   public decimal CalculeDailyRate()
   => Room.Price * Capacity;
+
+  public decimal TotalAmount()
+  => DailyRate * HostedDays ?? 1;
+
 }

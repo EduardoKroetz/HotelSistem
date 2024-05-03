@@ -5,7 +5,7 @@ namespace Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 
 partial class Reservation
 {
-  public void CheckedIn()
+  public void CheckInStatus()
   {
     if (CheckIn.Date != DateTime.Now.Date)
       throw new ValidationException("A data de CheckIn não é a mesma da data de hoje, não é possível fazer CheckIn");
@@ -16,7 +16,7 @@ partial class Reservation
 
 
 
-  public void NoShow()
+  public void NoShowStatus()
   {
     if (CheckIn.Date < DateTime.Now.Date)
       throw new ValidationException("A data de CheckIn não é a mesma da data de hoje.");
@@ -25,7 +25,7 @@ partial class Reservation
     Room.ChangeStatus(ERoomStatus.Reserved);
   }
 
-  public void Cancel()
+  public void CancelStatus()
   {
     if (DateTime.Now > CheckIn)
       throw new ValidationException("A data de CheckIn já foi ultraprassada, não é possível cancelar a reserva.");
@@ -34,10 +34,9 @@ partial class Reservation
     Room.ChangeStatus(ERoomStatus.Available);
   }
   
-  public void Finish()
+  public void CheckOutStatus()
   {
-    if (IsValid)
-      Status = EReservationStatus.CheckedOut;
+    Status = EReservationStatus.CheckedOut;
     Room.ChangeStatus(ERoomStatus.OutOfService);
   }
 }

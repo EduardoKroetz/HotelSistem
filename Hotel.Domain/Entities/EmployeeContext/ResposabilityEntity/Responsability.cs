@@ -10,6 +10,8 @@ public partial class Responsability : Entity
     Name = name;
     Description = description;
     Priority = priority;
+
+    Validate();
   }
 
   public string Name { get; private set; }

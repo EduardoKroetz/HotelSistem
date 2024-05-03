@@ -30,8 +30,8 @@ public partial class Room
   
   public void ValidateDescription(string description)
   {
-    if (description.Length > 2000)
-      throw new ValidationException("Limite de 2000 caracteres da descrição foi atingido.");
+    if (description.Length > 500)
+      throw new ValidationException("Limite de 500 caracteres da descrição foi atingido.");
   }
 
   public void ValidatePrice(decimal price)

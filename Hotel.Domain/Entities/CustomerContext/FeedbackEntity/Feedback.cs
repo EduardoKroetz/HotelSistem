@@ -7,21 +7,22 @@ namespace Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 
 public partial class Feedback : Entity, IValidation
 {
-  public Feedback(string comment, int rate, Guid customerId, Guid roomId ,  Guid reservationId, Customer customer, Reservation reservation, Room room)
+  public Feedback(string comment, int rate, Customer customer, Reservation reservation, Room room)
   {
     Comment = comment;
     Rate = rate;
-    CustomerId = customerId;
-    ReservationId = reservationId;
-    RoomId = roomId;
     Room = room;
+    RoomId = room.Id;
     Customer = customer;
+    CustomerId = customer.Id;
     Reservation = reservation;
+    ReservationId = reservation.Id;
     UpdatedAt = DateTime.Now;
     Likes = 0;
     Deslikes = 0;
 
     Validate();
+    Customer.AddFeedback(this);
   }
 
   public string Comment { get; private set; }
