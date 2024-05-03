@@ -1,24 +1,29 @@
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Entities.PaymentContext.InvoiceEntity;
+using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
+using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
+
 
 namespace Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 
 public partial class Reservation : Entity
 {
-  public Reservation(int capacity, Room room, DateTime checkIn, List<Customer> customers ,DateTime? checkOut = null)
+  public Reservation(Room room, DateTime checkIn, HashSet<Customer> customers ,DateTime? checkOut = null)
   {
     CheckIn = checkIn;
     _checkOut = checkOut;
     Status = EReservationStatus.Pending;
-    Capacity = capacity;
+    Capacity = customers.Count;
     Room = room;
     RoomId = room.Id;
     Customers = customers;
-    HostedDays = CalculeHostedDays();
-    DailyRate = CalculeDailyRate();
+
+    var hostedDays = CalculeHostedDays();
+    HostedDays = hostedDays == 0 ? null : hostedDays;
+    
+    DailyRate = room.Price;
     Invoice = null;
 
     Validate();
@@ -44,15 +49,7 @@ public partial class Reservation : Entity
   public int Capacity { get; private set; }
   public Guid RoomId { get; private set; }
   public Room Room { get; private set; }
-  public List<Customer> Customers { get; private set; } = [];
-  public Invoice? Invoice { get; private set; }
-
-  public Invoice GenerateInvoiceAndCheckOut(EPaymentMethod paymentMethod,decimal taxInformation = 0)
-  {
-    ChangeCheckOut(DateTime.Now);
-    CheckOutStatus();
-    Invoice = new Invoice(paymentMethod,this,Customers,taxInformation);
-    return Invoice;
-  }
-
+  public HashSet<Customer> Customers { get; private set; } = [];
+  public InvoiceRoom? Invoice { get; private set; }
+  public List<Service> Services { get; private set; } = [];
 }
