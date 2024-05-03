@@ -6,7 +6,7 @@ namespace Hotel.Domain.Entities.RoomContext.ServiceEntity;
 
 public partial class Service : Entity
 {
-  public Service(string name, decimal price, bool isActive, EPriority priority, int timeInMinutes, Responsability responsability)
+  public Service(string name, decimal price, bool isActive, EPriority priority, int timeInMinutes)
   {
     Name = name;
     Price = price;
@@ -16,7 +16,6 @@ public partial class Service : Entity
     Responsabilities = [];
 
     Validate();
-    AddResponsability(responsability);
   }
 
   public string Name { get; private set; }
@@ -24,5 +23,5 @@ public partial class Service : Entity
   public bool IsActive { get; private set; }
   public EPriority Priority { get; private set; }
   public int TimeInMinutes { get; private set; }
-  public List<Responsability> Responsabilities { get; private set; } 
+  public HashSet<Responsability> Responsabilities { get; private set; } 
 }

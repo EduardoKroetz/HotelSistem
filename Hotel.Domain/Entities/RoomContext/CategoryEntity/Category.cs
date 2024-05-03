@@ -9,6 +9,8 @@ public partial class Category : Entity
     Name = name;
     Description = description;
     AveragePrice = averagePrice;
+
+    Validate();
   }
 
   public string Name { get; private set; }

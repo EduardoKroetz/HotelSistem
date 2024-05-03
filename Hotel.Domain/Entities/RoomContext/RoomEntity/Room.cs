@@ -19,6 +19,8 @@ public partial class Room : Entity
     Status = ERoomStatus.OutOfService;
     Services = [];
     Images = [];
+
+    Validate();
   }
 
   public int Number { get; private set; }
@@ -26,8 +28,8 @@ public partial class Room : Entity
   public ERoomStatus Status { get; private set; }
   public int Capacity { get; private set; }
   public string Description { get; private set; }
-  public List<Service> Services { get; private set; } 
+  public HashSet<Service> Services { get; private set; } 
   public Guid CategoryId { get; private set; }
   public Category? Category { get; private set; }
-  public List<Image> Images { get; private set; } 
+  public HashSet<Image> Images { get; private set; } 
 }

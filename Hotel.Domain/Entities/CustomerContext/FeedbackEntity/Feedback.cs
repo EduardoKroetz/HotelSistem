@@ -22,7 +22,6 @@ public partial class Feedback : Entity, IValidation
     Deslikes = 0;
 
     Validate();
-    Customer.AddFeedback(this);
   }
 
   public string Comment { get; private set; }

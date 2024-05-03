@@ -1,4 +1,3 @@
-
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.RoomContext.ServiceEntity;

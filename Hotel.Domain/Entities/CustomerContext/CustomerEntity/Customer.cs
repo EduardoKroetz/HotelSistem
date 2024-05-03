@@ -13,5 +13,5 @@ public partial class Customer : User
     Feedbacks = [];
   }
 
-  public List<Feedback> Feedbacks { get; private set; }
+  public HashSet<Feedback> Feedbacks { get; private set; }
 }

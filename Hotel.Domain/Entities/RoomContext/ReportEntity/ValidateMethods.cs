@@ -6,7 +6,6 @@ public partial class Report
 {
   public override void Validate()
   {
-    Employee?.Validate();
     ValidateSummary(Summary);
     ValidateDescription(Description);
 

@@ -1,23 +1,18 @@
+using System.ComponentModel.DataAnnotations;
 using Hotel.Domain.Entities.RoomContext.ImageEntity;
 
 namespace Hotel.Domain.Entities.RoomContext.RoomEntity;
 
 public partial class Room
 {
-  public void AddImage(Image image)
+  public Image CreateImage(string url)
   {
-    image.Validate();
-    if (Images.Contains(image))
-      throw new ArgumentException("Essa imagem já está atribuida à este quarto.");
+    var image = new Image(url,Id);
     Images.Add(image);
+    return image;
   }
 
-  
-  public void RemoveImage(Image image)
-  {
-    if (!Images.Contains(image))
-      throw new ArgumentException("Essa imagem não está atribuida à este quarto.");
-    Images.Remove(image);
-  }
-  
+  public void DeleteImage(Image image)
+  => Images.Remove(image);
+
 }

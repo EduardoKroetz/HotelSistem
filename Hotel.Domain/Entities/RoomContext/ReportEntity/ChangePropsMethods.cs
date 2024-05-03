@@ -20,10 +20,8 @@ public partial class Report
   public void ChangePriority(EPriority priority)
   => Priority = priority;
   public void ChangeEmployee(Employee employee)
-  {
-    employee.Validate();
-    Employee = employee;
-  }
+  => Employee = employee;
+    
   public void ChangeResolution(string resolution)
   => Resolution = resolution;
 

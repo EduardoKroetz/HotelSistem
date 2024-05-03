@@ -1,4 +1,3 @@
-using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.ReservationContext.ReservationEntity;

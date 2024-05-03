@@ -20,4 +20,10 @@ public partial class Room
     Price = price;
   }
 
+  public void ChangeCapacity(int capacity)
+  {
+    ValidateCapacity(capacity);
+    Capacity = capacity;
+  }
+
 }
