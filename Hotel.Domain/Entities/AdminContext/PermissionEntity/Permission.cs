@@ -9,6 +9,8 @@ public partial class Permission : Entity
     Name = name;
     Description = description;
     IsActive = true;
+
+    Validate();
   }
 
   public string Name { get; private set; }

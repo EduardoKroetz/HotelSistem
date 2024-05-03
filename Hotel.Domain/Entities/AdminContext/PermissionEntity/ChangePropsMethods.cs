@@ -3,10 +3,16 @@ namespace Hotel.Domain.Entities.AdminContext.PermissionEntity;
 public partial class Permission 
 {
   public void ChangeName(string name)
-  => Name = name;
+  {
+    ValidateName(name);
+    Name = name;
+  }
 
   public void ChangeDescription(string description)
-  => Description = description;
+  {
+    ValidateDescription(description);
+    Description = description;
+  }
 
   public void Enable()
   => IsActive = true;
