@@ -7,10 +7,10 @@ namespace Hotel.Tests.Entities.CustomerContext;
 public class FeedbackEntityTest
 {
   [TestMethod]
-  public void CreateValidFeedback_MustBeValid()
+  public void ValidFeedback_MustBeValid()
   {
     var feedback = new Feedback("Feedback",5,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
-    Assert.AreEqual(true, feedback.IsValid);
+    Assert.IsTrue(feedback.IsValid);
   }
 
   [TestMethod]
@@ -19,7 +19,7 @@ public class FeedbackEntityTest
   [DataRow("Feedback",-1)]
   [DataRow("Feedback",11)]
   [DataRow(TestParameters.DescriptionMaxCaracteres,5)]
-  public void CreateInvalidFeedback_ExpectedException(string comment, int rate)
+  public void InvalidFeedback_ExpectedException(string comment, int rate)
   {
     new Feedback(comment,rate,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
     Assert.Fail();
@@ -31,7 +31,7 @@ public class FeedbackEntityTest
   [DataRow("Feedback",-1)]
   [DataRow("Feedback",11)]
   [DataRow(TestParameters.DescriptionMaxCaracteres,5)]
-  public void ChangeFeedback_WithInvalidParameters_ExpectedException(string comment, int rate)
+  public void ChangeToInvalidFeedback_ExpectedException(string comment, int rate)
   {
     var feedback = new Feedback(comment,rate,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
     feedback.ChangeComment(comment);
@@ -48,7 +48,7 @@ public class FeedbackEntityTest
   }
 
   [TestMethod]
-  public void RemoveLike_Without_ContainLikes_MustBe0Likes()
+  public void RemoveLike_WithoutLikes_MustBe0Likes()
   {
     var feedback = new Feedback("Feedback",3,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
     feedback.RemoveLike();
@@ -65,7 +65,7 @@ public class FeedbackEntityTest
   }
 
   [TestMethod]
-  public void RemoveDeslike_Without_ContainDeslikes_MustBe0Deslikes()
+  public void RemoveDeslike_WithoutDeslikes_MustBe0Deslikes()
   {
     var feedback = new Feedback("Feedback",3,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
     feedback.RemoveDeslike();

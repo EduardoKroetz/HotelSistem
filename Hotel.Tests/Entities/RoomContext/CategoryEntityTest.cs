@@ -10,7 +10,7 @@ public class CategoryEntityTest
   public void ValidCategory_MustBeValid()
   {
     var category = new Category("Categoria","Categoria",1);
-    Assert.AreEqual(true,category.IsValid);
+    Assert.IsTrue(category.IsValid);
   }
 
   [TestMethod]
@@ -21,7 +21,7 @@ public class CategoryEntityTest
   [DataRow("Categoria","Categoria",-1)]
   public void InvalidCategoryParameters_ExpectedException(string name,string description,int averagePrice)
   {
-    var category = new Category(name,description,averagePrice);
-    Assert.AreEqual(true,category.IsValid);
+    new Category(name,description,averagePrice);
+    Assert.Fail();
   }
 }

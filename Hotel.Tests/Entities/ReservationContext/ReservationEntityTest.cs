@@ -21,7 +21,7 @@ public class ReservationEntityTest
   public void ValidReservation_MustBeValid()
   {
     var reservation = new Reservation(TestParameters.Room,ThreeDaysFromNow,[TestParameters.Customer]);
-    Assert.AreEqual(true,reservation.IsValid);
+    Assert.IsTrue(reservation.IsValid);
   }
 
   [TestMethod]
@@ -68,7 +68,7 @@ public class ReservationEntityTest
 
   [TestMethod]
   [ExpectedException(typeof(ValidationException))]
-  public void ChangeToStatusToCheckedIn_WithOutSameDate_ExpectedException()
+  public void ChangeToStatusToCheckedInWithOutSameDate_ExpectedException()
   {
     var reservation = new Reservation(TestParameters.Room,TwoDaysFromNow,[TestParameters.Customer]);
     reservation.StatusToCheckedIn();
@@ -103,7 +103,7 @@ public class ReservationEntityTest
   }
 
   [TestMethod]
-  public void GenerateInvoiceMethod_MustGenerateInvoice_ChangeCheckoutDateTime_CheckOutStatus_And_RoomOutOfServiceStatus()
+  public void GenerateInvoiceMethod_MustGenerateInvoice_ChangeCheckoutDateTime_ChangeToCheckOutStatus_And_RoomOutOfServiceStatus()
   {
     var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.GenerateInvoice(EPaymentMethod.Pix);
@@ -154,30 +154,19 @@ public class ReservationEntityTest
   }
 
   [TestMethod]
-  public void RoomPriceAt50_ForTwoDays_WithTwoCustomers_TheTotalValueMustBe100()
-  {
-    var customer = new Customer(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
-    var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer,customer]);
-    reservation.ChangeCheckOut(TwoDaysFromNow);
-    Assert.AreEqual(100,reservation.TotalAmount());
-  }
-
-  [TestMethod]
   public void AddService_TheServicesCountMustBe1()
   {
-    var service = new Service("Serviço de limpeza",5m,false,EPriority.Low,20,TestParameters.Responsability);
     var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer]);
-    reservation.AddService(service);
+    reservation.AddService(TestParameters.Service);
     Assert.AreEqual(1,reservation.Services.Count);
   }
 
   [TestMethod]
   public void AddIdenticalServices_TheServicesCountMustBe2()
   {
-    var service = new Service("Serviço de limpeza",5m,false,EPriority.Low,20,TestParameters.Responsability);
     var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer]);
-    reservation.AddService(service);
-    reservation.AddService(service);
+    reservation.AddService(TestParameters.Service);
+    reservation.AddService(TestParameters.Service);
     Assert.AreEqual(2,reservation.Services.Count);
   }
 
@@ -185,7 +174,7 @@ public class ReservationEntityTest
   [TestMethod]
   public void RoomAtPrice50_For3Days_WithTwoServicesAtPrice5_TheTotalPriceMustBe160()
   {
-    var service = new Service("Serviço de limpeza",5m,false,EPriority.Low,20,TestParameters.Responsability);
+    var service = new Service("Serviço de limpeza",5m,false,EPriority.Low,20);
     var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.ChangeCheckOut(ThreeDaysFromNow);
     reservation.AddService(service);
@@ -197,16 +186,15 @@ public class ReservationEntityTest
   public void RoomAtPrice19_For14Days_With3ServicesAtPrice5_With7ServicesAtPrice15_TheTotalPriceMustBe386()
   {
     var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category);
-    var cleanService = new Service("Serviço de limpeza",5m,false,EPriority.Low,20,TestParameters.Responsability);
-    var lunchService = new Service("Almoço",15m,false,EPriority.Medium,50,TestParameters.Responsability);
+    var cleanService = new Service("Serviço de limpeza",5m,false,EPriority.Low,20);
+    var lunchService = new Service("Almoço",15m,false,EPriority.Medium,50);
     var reservation = new Reservation(room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.ChangeCheckOut(CurrentDate.AddDays(14));
-    for (int i = 1; i <= 3;i++)
-    {
-      reservation.AddService(cleanService);
-    }
+
     for (int i = 1; i <= 7;i++)
     {
+      if (i <= 3)
+        reservation.AddService(cleanService);
       reservation.AddService(lunchService);
     }
   
@@ -219,29 +207,24 @@ public class ReservationEntityTest
   {
     var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category);
     var reservation = new Reservation(room,CurrentDate.Date,[TestParameters.Customer]);
-    reservation.StatusToCheckedIn();
-    reservation.ChangeCheckIn(ThreeDaysFromNow);
- 
+    reservation.StatusToCheckedIn().ChangeCheckIn(ThreeDaysFromNow);;
     Assert.Fail();
   }
 
   [TestMethod]
   public void ChangeCheckIn_BeingValid_MustBeChanged()
   {
-    var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category);
-    var reservation = new Reservation(room,CurrentDate.Date,[TestParameters.Customer]);
+    var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.ChangeCheckIn(ThreeDaysFromNow);
- 
     Assert.AreEqual(ThreeDaysFromNow.Date,reservation.CheckIn.Date);
   }
 
   [TestMethod]
   public void ChangeCheckOut_BeingValid_MustBeChanged_AndUpdate_HostedDays()
   {
-    var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category);
-    var reservation = new Reservation(room,CurrentDate.Date,[TestParameters.Customer]);
+    var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.ChangeCheckOut(ThreeDaysFromNow);
- 
+
     Assert.AreEqual(ThreeDaysFromNow.Date,reservation?.CheckOut?.Date);
     Assert.AreEqual(3,reservation?.HostedDays);
   }

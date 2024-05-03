@@ -8,7 +8,7 @@ namespace Hotel.Tests.Entities.AdminContext;
 public class PermissionEntityTest
 {
   [TestMethod]
-  public void CreatePermission_With_ValidParameters_MustBeValid()
+  public void ValidPermission_MustBeValid()
   {
     var permission = new Permission("Permission","Permission");
     Assert.AreEqual(true,permission.IsValid);
@@ -18,7 +18,7 @@ public class PermissionEntityTest
   [DataRow("","")]
   [DataRow("permission",TestParameters.DescriptionMaxCaracteres)]
   [DataRow("",TestParameters.DescriptionMaxCaracteres)]
-  public void CreatePermission_With_InvalidParameters_ExpectedException(string name, string description)
+  public void InvalidPermission_ExpectedException(string name, string description)
   {
     try
     {

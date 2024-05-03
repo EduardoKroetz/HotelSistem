@@ -7,10 +7,10 @@ namespace Hotel.Tests.Entities.RoomContext;
 public class ReportEntityTest
 {
   [TestMethod]
-  public void ValidCategory_MustBeValid()
+  public void ValidReport_MustBeValid()
   {
     var report = new Report("Vazamento no cano da pia","Vazamento no cano da pia do quarto 123",Domain.Enums.EPriority.High,TestParameters.Employee,"Consertar");
-    Assert.AreEqual(true,report.IsValid);
+    Assert.IsTrue(report.IsValid);
   }
 
   [TestMethod]

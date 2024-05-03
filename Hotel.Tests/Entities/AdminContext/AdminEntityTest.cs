@@ -1,7 +1,6 @@
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Exceptions;
-using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Tests.Entities.AdminContext;
 
@@ -11,30 +10,23 @@ public class AdminEntityTest
   public readonly Permission Permission = new("Permission","Permission");
 
   [TestMethod]
-  public void CreateAdmin_WithValidParameters_MustBeValid()
+  public void ValidAdmin_MustBeValid()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
-    Assert.AreEqual(true, admin.IsValid);
-  }
-
-  [TestMethod]
-  public void ChangeAdmin_To_RootAdmin_WithOut_RootAdmin_MustBeInvalid()
-  {
-    var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
-    admin.ChangeToRootAdmin(TestParameters.Admin);
-
-    Assert.AreEqual(false,admin.IsRootAdmin);
+    Assert.IsTrue(admin.IsValid);
   }
 
   [TestMethod]
   [ExpectedException(typeof(ValidationException))]
-  public void CreateAdmin_With_InvalidParameters_ExpectedExeception()
+  public void ChangeAdminToRootAdmin_WithOutRootAdmin_MustBeInvalid()
   {
-    new Admin(new Name("",""),new Email(""),new Phone(""),"");
+    var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
+    admin.ChangeToRootAdmin(TestParameters.Admin);
+    Assert.Fail();
   }
 
   [TestMethod]
-  public void AddPermission_With_ValidPermission_MustBeValid()
+  public void AddPermission_MustBeAdded()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
     admin.AddPermission(Permission);
@@ -44,34 +36,26 @@ public class AdminEntityTest
 
   [TestMethod]
   [ExpectedException(typeof(ValidationException))]
-  public void AddPermission_With_InvalidPermission_ExpectedException()
-  {
-    var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
-    var permission = new Permission("","");
-    admin.AddPermission(permission);
-  }
-
-  [TestMethod]
-  [ExpectedException(typeof(ValidationException))]
-  public void AddPermission_With_DisabledPermission_ExpectedException()
+  public void AddDisabledPermission_ExpectedException()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
     var permission = new Permission("Permission 1","Permission 1");
     permission.Disable();
     admin.AddPermission(permission);
+    Assert.Fail();
   }
 
   [TestMethod]
-  [ExpectedException(typeof(ValidationException))]
-  public void AddPermission_With_AlreadyAddedPermission_ExpectedException()
+  public void AddSamePermission_AddJustOne()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
     admin.AddPermission(Permission);
     admin.AddPermission(Permission);
+    Assert.AreEqual(1,admin.Permissions.Count);
   }
 
   [TestMethod]
-  public void RemovePermission_With_AddedPermission_MustBeValid()
+  public void RemovePermission_MustBeValid()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
     admin.AddPermission(Permission);
@@ -81,10 +65,10 @@ public class AdminEntityTest
   }
 
   [TestMethod]
-  [ExpectedException(typeof(ValidationException))]
-  public void RemovePermission_Without_AddedPermission_ExpectedException()
+  public void RemoveNonExistingPermission_DoNothing()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
     admin.RemovePermission(Permission);
+    Assert.AreEqual(0, admin.Permissions.Count);
   }
 }

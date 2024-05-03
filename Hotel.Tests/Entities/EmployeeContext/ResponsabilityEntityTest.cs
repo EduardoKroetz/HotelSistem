@@ -3,14 +3,14 @@ using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 
 
-namespace Hotel.Tests.Entities.EmplyeeContext;
+namespace Hotel.Tests.Entities.EmployeeContext;
 
 [TestClass]
 public class ResponsabilityEntityTest
 {
 
   [TestMethod]
-  public void CreateValidResponsability_MustBeValid()
+  public void ValidResponsability_MustBeValid()
   {
     var responsability = new Responsability("Limpar os quartos","Limpar",EPriority.Low);
     Assert.AreEqual(true,responsability.IsValid);
@@ -22,7 +22,7 @@ public class ResponsabilityEntityTest
   [DataRow("res","")]
   [DataRow("","res")]
   [DataRow("res",TestParameters.DescriptionMaxCaracteres)]
-  public void CreateInvalidResponsability_ExpectedException(string name,string description)
+  public void InvalidResponsability_ExpectedException(string name,string description)
   {
     new Responsability(name,description,EPriority.Low);
     Assert.Fail();
@@ -32,7 +32,7 @@ public class ResponsabilityEntityTest
   [ExpectedException(typeof(ValidationException))]
   [DataRow("")]
   [DataRow(TestParameters.DescriptionMaxCaracteres)]
-  public void ChangeDescription_WithInvalidValues_ExpectedException(string description)
+  public void ChangeToInvalidResponsabilityDescription_ExpectedException(string description)
   {
     var responsability = new Responsability("Responsability",description,EPriority.Low);
     responsability.ChangeDescription(description);
@@ -41,16 +41,15 @@ public class ResponsabilityEntityTest
   
   [TestMethod]
   [ExpectedException(typeof(ValidationException))]
-  [DataRow("")]
-  public void ChangeName_WithInvalidValues_ExpectedException(string name)
+  public void ChangeToInvalidResponsabilityName_ExpectedException()
   {
-    var responsability = new Responsability(name,"Responsability",EPriority.Low);
-    responsability.ChangeName(name);
+    var responsability = new Responsability("Responsability","Responsability",EPriority.Low);
+    responsability.ChangeName("");
     Assert.Fail();
   }
 
   [TestMethod]
-  public void ChangePriorityTo_Medium_PriorityMustBeMedium()
+  public void ChangePriorityToMedium_PriorityShouldBeMedium()
   {
     var responsability = new Responsability("Responsability","Responsability",EPriority.Low);
     responsability.ChangePriority(EPriority.Medium);
