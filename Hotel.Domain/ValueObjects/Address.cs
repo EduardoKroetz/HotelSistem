@@ -1,9 +1,9 @@
 using Hotel.Domain.Exceptions;
-using Hotel.Domain.ValueObjects.Interfaces;
+using Hotel.Domain.ValueObjects.Base;
 
 namespace Hotel.Domain.ValueObjects;
 
-public class Address : IValueObject
+public class Address : ValueObject
 {
   public Address(string country, string city, string street, int number)
   {
@@ -20,14 +20,13 @@ public class Address : IValueObject
   public string Street { get; private set; }
   public int Number { get; private set; }
 
-  public bool IsValid { get; private set; } = false;
-
-  public void Validate()
+  public override void Validate()
   {
     if (string.IsNullOrEmpty(Country) || string.IsNullOrEmpty(City) || string.IsNullOrEmpty(Street))
-      throw new ValidationException("Preencha todos os campos."); 
+      throw new ValidationException("Informe os os campos de endereço."); 
     if (Number <= 0)
       throw new ValidationException("O número da casa não pode ser menor que 0."); 
-    IsValid = true;
+
+    base.Validate();
   }
 }

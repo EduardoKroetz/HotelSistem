@@ -1,10 +1,10 @@
 using System.Text.RegularExpressions;
 using Hotel.Domain.Exceptions;
-using Hotel.Domain.ValueObjects.Interfaces;
+using Hotel.Domain.ValueObjects.Base;
 
 namespace Hotel.Domain.ValueObjects;
 
-public class Email : IValueObject
+public class Email : ValueObject
 {
   public Email(string address)
   {
@@ -14,13 +14,13 @@ public class Email : IValueObject
   }
 
   public string Address { get; private set; }
-  public bool IsValid { get; private set; } = false;
 
-    public void Validate()
+  public override void Validate()
   {
     var regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").IsMatch(Address);
     if (!regex)
       throw new ValidationException("Informe o email em um formato válido.");
-    IsValid = true;
+
+    base.Validate();
   }
 }
