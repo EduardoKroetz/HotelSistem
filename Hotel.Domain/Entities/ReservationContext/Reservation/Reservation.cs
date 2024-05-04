@@ -51,6 +51,7 @@ public partial class Reservation : Entity, IReservation
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
   public HashSet<Customer> Customers { get; private set; } = [];
+  public Guid? InvoiceId { get; private set; }
   public RoomInvoice? Invoice { get; private set; }
   public List<Service> Services { get; private set; } = [];
 }
