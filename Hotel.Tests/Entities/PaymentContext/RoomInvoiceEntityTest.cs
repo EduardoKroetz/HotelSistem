@@ -32,7 +32,7 @@ public class InvoiceEntityTest
   public void InvoiceWithoutCheckOutStatusReservation_ExpectedException()
   {
     var reservation = new Reservation(TestParameters.Room,DateTime.Now.Date,[TestParameters.Customer]);
-    new InvoiceRoom(EPaymentMethod.Pix,reservation);
+    new RoomInvoice(EPaymentMethod.Pix,reservation);
     Assert.Fail();
   }
 

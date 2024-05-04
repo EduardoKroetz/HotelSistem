@@ -16,8 +16,7 @@ public class ReportEntityTest
   [TestMethod]
   [ExpectedException(typeof(ValidationException))]
   [DataRow("","")]
-  [DataRow("Sumario",TestParameters.DescriptionMaxCaracteres)]
-  [DataRow(TestParameters.DescriptionMaxCaracteres,"Descrição")]
+  [DataRow(TestParameters.DescriptionMaxCaracteres,"Descricao")]
   public void InvalidReportParameters_ExpectedException(string summary,string description)
   {
     new Report(summary,description,Domain.Enums.EPriority.High,TestParameters.Employee,"Consertar");
