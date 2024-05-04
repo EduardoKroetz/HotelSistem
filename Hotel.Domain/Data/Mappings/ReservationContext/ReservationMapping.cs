@@ -30,10 +30,19 @@ public class ReservationMapping : EntityBaseMapping<Reservation>, IEntityTypeCon
 
     builder.Property(x => x.RoomId);
 
+    builder.Property(x => x.InvoiceId)
+      .IsRequired(false);
+
+    builder.HasOne(x => x.Invoice)
+      .WithOne(x => x.Reservation)
+      .OnDelete(DeleteBehavior.SetNull);
+
     builder.HasOne(x => x.Room)
       .WithMany()
       .HasForeignKey(x => x.RoomId)
-      .HasConstraintName("FK_Reservations_Room");
+      .IsRequired()
+      .HasConstraintName("FK_Reservations_Room")
+      .OnDelete(DeleteBehavior.Cascade);
 
     builder.HasMany(x => x.Customers)
       .WithMany()

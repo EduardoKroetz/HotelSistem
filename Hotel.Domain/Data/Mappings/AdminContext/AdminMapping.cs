@@ -27,13 +27,13 @@ public class AdminMapping : UserBaseMapping<Admin> ,IEntityTypeConfiguration<Adm
           .WithMany()
           .HasForeignKey("PermissionId")
           .HasConstraintName("FK_AdminPermission_Permission")
-          .OnDelete(DeleteBehavior.SetNull),
+          .OnDelete(DeleteBehavior.Cascade),
         j => j
           .HasOne<Admin>()
           .WithMany()
           .HasForeignKey("AdminId")
           .HasConstraintName("FK_AdminPermissions_Admin")
-          .OnDelete(DeleteBehavior.SetNull),
+          .OnDelete(DeleteBehavior.Cascade),
         j =>
         {
           j.ToTable("AdminPermissions");

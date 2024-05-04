@@ -26,14 +26,16 @@ public class EmployeeMapping : UserBaseMapping<Employee>, IEntityTypeConfigurati
           .HasOne<Responsability>()
           .WithMany()
           .HasForeignKey("ResponsabilityId")
+          .IsRequired()
           .HasConstraintName("FK_EmployeeResponsabilities_Responsability")
-          .OnDelete(DeleteBehavior.SetNull),
+          .OnDelete(DeleteBehavior.Cascade),
         j => j
           .HasOne<Employee>()
           .WithMany()
           .HasForeignKey("EmployeeId")
+          .IsRequired()
           .HasConstraintName("FK_EmployeeResponsabilities_Employee")
-          .OnDelete(DeleteBehavior.SetNull)
+          .OnDelete(DeleteBehavior.Cascade)
       );
       
   }
