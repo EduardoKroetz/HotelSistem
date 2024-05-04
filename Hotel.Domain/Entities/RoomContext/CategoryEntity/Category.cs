@@ -5,7 +5,7 @@ namespace Hotel.Domain.Entities.RoomContext.CategoryEntity;
 
 public partial class Category : Entity, ICategory
 {
-  private Category(){}
+  internal Category(){}
   public Category(string name, string description, decimal averagePrice)
   {
     Name = name;
@@ -15,7 +15,7 @@ public partial class Category : Entity, ICategory
     Validate();
   }
 
-  public string Name { get; private set; }
-  public string Description { get; private set; }
+  public string Name { get; private set; } = string.Empty;
+  public string Description { get; private set; } = string.Empty;
   public decimal AveragePrice { get; private set; }
 }

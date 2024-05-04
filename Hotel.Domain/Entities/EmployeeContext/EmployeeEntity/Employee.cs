@@ -8,7 +8,7 @@ namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 
 public partial class Employee : User, IEmployee
 {
-  private Employee(){}
+  internal Employee(){}
 
   public Employee(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null, decimal? salary = null) 
     : base( name, email, phone, password, gender, dateOfBirth, address)

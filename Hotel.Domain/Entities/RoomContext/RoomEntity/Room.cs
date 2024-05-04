@@ -9,7 +9,7 @@ namespace Hotel.Domain.Entities.RoomContext.RoomEntity;
 
 public partial class Room : Entity, IRoom
 {
-  private Room(){}
+  internal Room(){}
   public Room(int number, decimal price, int capacity, string description, Category category)
   {
     Number = number;
@@ -29,9 +29,9 @@ public partial class Room : Entity, IRoom
   public decimal Price { get; private set; }
   public ERoomStatus Status { get; private set; }
   public int Capacity { get; private set; }
-  public string Description { get; private set; }
-  public HashSet<Service> Services { get; private set; } 
+  public string Description { get; private set; } = string.Empty;
+  public HashSet<Service> Services { get; private set; } = [];
   public Guid CategoryId { get; private set; }
   public Category? Category { get; private set; }
-  public HashSet<Image> Images { get; private set; } 
+  public HashSet<Image> Images { get; private set; } = [];
 }

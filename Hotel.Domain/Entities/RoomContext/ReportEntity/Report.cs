@@ -7,7 +7,7 @@ namespace Hotel.Domain.Entities.RoomContext.ReportEntity;
 
 public partial class Report : Entity, IReport
 {
-  private Report(){}
+  internal Report(){}
   public Report(string summary,string description, EPriority priority, Employee employee, string resolution = "")
   {
     Summary = summary;
@@ -21,11 +21,11 @@ public partial class Report : Entity, IReport
     Validate();
   }
   
-  public string Summary { get; private set; }
-  public string Description { get; private set; }
+  public string Summary { get; private set; } = string.Empty;
+  public string Description { get; private set; } = string.Empty;
   public EStatus Status { get; private set; }
   public EPriority Priority { get; private set; }
-  public string Resolution { get; private set; }
+  public string Resolution { get; private set; } = string.Empty;
   public Guid EmployeeId { get; private set; }
   public Employee? Employee { get; private set; }
 }

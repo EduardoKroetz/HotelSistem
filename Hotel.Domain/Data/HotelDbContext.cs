@@ -1,3 +1,11 @@
+using System.Reflection;
+using Hotel.Domain.Data.Mappings.AdminContext;
+using Hotel.Domain.Data.Mappings.CustomerContext;
+using Hotel.Domain.Data.Mappings.EmployeeContext;
+using Hotel.Domain.Data.Mappings.PaymentContext;
+using Hotel.Domain.Data.Mappings.ReservationContext;
+using Hotel.Domain.Data.Mappings.ResponsabilityContext;
+using Hotel.Domain.Data.Mappings.RoomContext;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.CustomerContext;
@@ -17,6 +25,10 @@ namespace Hotel.Domain.Data;
 
 public class HotelDbContext : DbContext
 {
+  public HotelDbContext(DbContextOptions<HotelDbContext> options) : base(options)
+  {
+  }
+
   public DbSet<Admin> Admins { get; set; }
   public DbSet<Permission> Permissions { get; set; }
   public DbSet<Customer> Customers { get; set; }
@@ -31,5 +43,22 @@ public class HotelDbContext : DbContext
   public DbSet<Service> Services { get; set; }
   public DbSet<Room> Rooms { get; set; }
 
+  protected override void OnModelCreating(ModelBuilder model)
+  {
+    model.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    model.ApplyConfiguration(new AdminMapping());
+    model.ApplyConfiguration(new PermissionMapping());
+    model.ApplyConfiguration(new CustomerMapping());
+    model.ApplyConfiguration(new FeedbackMapping());
+    model.ApplyConfiguration(new EmployeeMapping());
+    model.ApplyConfiguration(new ResponsabilityMapping());
+    model.ApplyConfiguration(new RoomInvoiceMapping());
+    model.ApplyConfiguration(new ReservationMapping());
+    model.ApplyConfiguration(new CategoryMapping());
+    model.ApplyConfiguration(new ImageMapping());
+    model.ApplyConfiguration(new ReportMapping());
+    model.ApplyConfiguration(new RoomMapping());
+    model.ApplyConfiguration(new ServiceMapping());
+  }
 
 }

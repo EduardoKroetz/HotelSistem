@@ -10,7 +10,7 @@ namespace Hotel.Domain.Entities.CustomerContext;
 
 public partial class Customer : User, ICustomer
 {
-  public Customer(){}
+  internal Customer(){}
   
   public Customer(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null)
     : base(name,email,phone,password,gender,dateOfBirth,address)

@@ -8,7 +8,7 @@ namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
 public partial class Responsability : Entity, IResponsability
 {
-  private Responsability(){}
+  internal Responsability(){}
   public Responsability(string name, string description, EPriority priority)
   {
     Name = name;
@@ -18,8 +18,8 @@ public partial class Responsability : Entity, IResponsability
     Validate();
   }
 
-  public string Name { get; private set; }
-  public string Description { get; private set; }
+  public string Name { get; private set; } = string.Empty;
+  public string Description { get; private set; } = string.Empty;
   public EPriority Priority { get; private set; }
   public HashSet<Employee> Employees { get; private set; } = [];
   public HashSet<Service> Services { get; private set; } = [];

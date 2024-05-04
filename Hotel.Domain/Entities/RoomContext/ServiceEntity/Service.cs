@@ -10,7 +10,7 @@ namespace Hotel.Domain.Entities.RoomContext.ServiceEntity;
 
 public partial class Service : Entity, IService
 {
-  private Service(){}
+  internal Service(){}
   public Service(string name, decimal price, bool isActive, EPriority priority, int timeInMinutes)
   {
     Name = name;
@@ -23,7 +23,7 @@ public partial class Service : Entity, IService
     Validate();
   }
 
-  public string Name { get; private set; }
+  public string Name { get; private set; } = string.Empty;
   public decimal Price { get; private set; }
   public bool IsActive { get; private set; }
   public EPriority Priority { get; private set; }
