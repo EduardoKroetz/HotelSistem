@@ -22,8 +22,8 @@ public partial class Responsability
   {
     if (string.IsNullOrEmpty(description))
       throw new ValidationException("Erro de validação: Informe a descrição da responsabilidade.");
-    if (description.Length > 500)
-      throw new ValidationException("Erro de validação: A descrição não pode ultrapassar 500 caracteres.");
+    if (description.Length > 250)
+      throw new ValidationException("Erro de validação: A descrição não pode ultrapassar 250 caracteres.");
   }
 
 }

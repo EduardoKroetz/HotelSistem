@@ -14,6 +14,6 @@ public interface IReservation
     Guid RoomId { get; }
     Room? Room { get; }
     HashSet<Customer> Customers { get; }
-    InvoiceRoom? Invoice { get; }
+    RoomInvoice? Invoice { get; }
     List<Service> Services { get; }
 }

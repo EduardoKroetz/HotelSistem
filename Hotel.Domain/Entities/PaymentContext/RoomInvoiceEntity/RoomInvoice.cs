@@ -7,9 +7,9 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 
-public partial class InvoiceRoom : Entity, IRoomInvoice
+public partial class RoomInvoice : Entity, IRoomInvoice
 {
-  public InvoiceRoom(EPaymentMethod paymentMethod,Reservation reservation,decimal taxInformation = 0)
+  public RoomInvoice(EPaymentMethod paymentMethod,Reservation reservation,decimal taxInformation = 0)
   {
     TotalAmount = reservation.TotalAmount();
     Number = ""; //Serviço para gerar número

@@ -22,7 +22,7 @@ public partial class Permission
   {
     if (string.IsNullOrEmpty(description))
       throw new ValidationException("Erro de validação: Informe a descrição da permissão");
-    if (description.Length > 500)
-      throw new ValidationException("Erro de validação: Informe a descrição da permissão com no máximo 500 caracteres.");
+    if (description.Length > 250)
+      throw new ValidationException("Erro de validação: Informe a descrição da permissão com no máximo 250 caracteres.");
   }
 }

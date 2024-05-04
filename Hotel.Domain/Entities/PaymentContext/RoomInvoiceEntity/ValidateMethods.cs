@@ -3,7 +3,7 @@ using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 
-public partial class InvoiceRoom
+public partial class RoomInvoice
 {
   public override void Validate()
   {
