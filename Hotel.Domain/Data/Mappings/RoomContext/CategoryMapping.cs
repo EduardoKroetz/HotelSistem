@@ -13,10 +13,14 @@ public class CategoryMapping : EntityBaseMapping<Category>, IEntityTypeConfigura
 
     builder.ToTable("Categories");
 
-    builder.Property(x => x.Name);
+    builder.Property(x => x.Name)
+      .IsRequired();
 
-    builder.Property(x => x.Description);
+    builder.Property(x => x.Description)
+      .IsRequired();
 
-    builder.Property(x => x.AveragePrice);
+    builder.Property(x => x.AveragePrice)
+      .IsRequired()
+      .HasColumnType("DECIMAL(18,2)");
   }
 }

@@ -13,8 +13,10 @@ public class ImageMapping : EntityBaseMapping<Image>, IEntityTypeConfiguration<I
 
     builder.ToTable("Images");
 
-    builder.Property(x => x.Url);
+    builder.Property(x => x.Url)
+      .IsRequired();
 
-    builder.Property(x => x.RoomId);
+    builder.Property(x => x.RoomId)
+      .IsRequired();
   }
 }

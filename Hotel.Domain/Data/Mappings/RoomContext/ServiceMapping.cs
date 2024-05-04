@@ -13,19 +13,25 @@ public class ServiceMapping : EntityBaseMapping<Service>, IEntityTypeConfigurati
 
     builder.ToTable("Services");
 
-    builder.Property(x => x.Name);
+    builder.Property(x => x.Name)
+      .IsRequired();;
 
-    builder.Property(x => x.Price);
+    builder.Property(x => x.Price)
+      .IsRequired()
+      .HasColumnType("DECIMAL(18,2)");;
 
-    builder.Property(x => x.IsActive);
+    builder.Property(x => x.IsActive)
+      .IsRequired();
 
     builder.Property(x => x.Priority)
+      .IsRequired()
       .HasConversion<int>();
 
-    builder.Property(x => x.TimeInMinutes);
+    builder.Property(x => x.TimeInMinutes)
+      .IsRequired();
 
     builder.HasMany(x => x.Responsabilities)
-      .WithMany()
+      .WithMany(x => x.Services)
       .UsingEntity(j => j.ToTable("ServiceResponsabilities"));
   }
 }

@@ -13,19 +13,25 @@ public class ReportMapping : EntityBaseMapping<Report>, IEntityTypeConfiguration
 
     builder.ToTable("Reports");
 
-    builder.Property(x => x.Summary);
+    builder.Property(x => x.Summary)
+      .IsRequired();
 
-    builder.Property(x => x.Description);
+    builder.Property(x => x.Description)
+      .IsRequired();
 
     builder.Property(x => x.Status)
+      .IsRequired()
       .HasConversion<int>();
 
     builder.Property(x => x.Priority)
+      .IsRequired()
       .HasConversion<int>();
 
-    builder.Property(x => x.Resolution);
+    builder.Property(x => x.Resolution)
+      .IsRequired();
 
-    builder.Property(x => x.EmployeeId);
+    builder.Property(x => x.EmployeeId)
+      .IsRequired();
 
     builder.HasOne(x => x.Employee)
       .WithMany()

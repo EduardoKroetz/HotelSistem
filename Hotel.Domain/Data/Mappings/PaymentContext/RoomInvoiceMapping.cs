@@ -45,11 +45,11 @@ public class RoomInvoiceMapping : EntityBaseMapping<RoomInvoice>, IEntityTypeCon
         .OnDelete(DeleteBehavior.SetNull);
 
     builder.HasMany(x => x.Customers)
-        .WithMany()
+        .WithMany(x => x.RoomInvoices)
         .UsingEntity(j => j.ToTable("CustomerRoomInvoices"));
 
     builder.HasMany(x => x.Services)
-        .WithMany()
+        .WithMany(x => x.RoomInvoices)
         .UsingEntity(j => j.ToTable("ServicesRoomInvoices"));
 
   }

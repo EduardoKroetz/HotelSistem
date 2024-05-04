@@ -13,30 +13,36 @@ public class RoomMapping : EntityBaseMapping<Room>, IEntityTypeConfiguration<Roo
 
     builder.ToTable("Rooms");
 
-    builder.Property(x => x.Number);
+    builder.Property(x => x.Number)
+      .IsRequired();
 
-    builder.Property(x => x.Price);
+    builder.Property(x => x.Price)
+        .IsRequired()
+        .HasColumnType("DECIMAL(18,2)");
 
     builder.Property(x => x.Status)
       .HasConversion<int>();
 
-    builder.Property(x => x.Capacity);
+    builder.Property(x => x.Capacity)
+      .IsRequired();
 
-    builder.Property(x => x.Description);
+    builder.Property(x => x.Description)
+      .IsRequired();
 
     builder.Property(x => x.CategoryId);
     builder.HasOne(x => x.Category)
       .WithMany()
       .HasForeignKey(x => x.CategoryId)
       .HasConstraintName("FK_Rooms_Category")
+      .IsRequired()
       .OnDelete(DeleteBehavior.Restrict);
 
     builder.HasMany(x => x.Services)
-      .WithMany()
+      .WithMany(x => x.Rooms)
       .UsingEntity(j => j.ToTable("RoomServices"));
 
     builder.HasMany(x => x.Images)
-      .WithOne()
+      .WithOne(x => x.Room)
       .HasForeignKey(x => x.RoomId)
       .HasConstraintName("RoomImages");
 

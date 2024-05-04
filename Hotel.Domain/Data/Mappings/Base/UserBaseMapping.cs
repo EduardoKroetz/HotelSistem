@@ -9,36 +9,59 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
   public override void BaseMapping(EntityTypeBuilder<T> builder)
   {
     base.BaseMapping(builder);
-  
-    builder.Property(x => x.Name.FirstName)
-      .IsRequired()
-      .HasColumnName("FirstName")
-      .HasColumnType("VARCHAR")
-      .HasMaxLength(20);
 
-    builder.Property(x => x.Name.LastName)
-      .IsRequired()
-      .HasColumnName("LastName")
-      .HasColumnType("VARCHAR")
-      .HasMaxLength(20);
+    builder.OwnsOne(x => x.Address, a =>
+    {
+      a.Property<string>(x => x.Country)
+        .IsRequired(false)
+        .HasColumnName("Country")
+        .HasColumnType("VARCHAR(40)");
 
-    builder.HasIndex(x => x.Email.Address)
-      .IsUnique();
+      a.Property<string>(x => x.City)
+        .IsRequired(false)
+        .HasColumnName("City")
+        .HasColumnType("VARCHAR(40)");
 
-    builder.Property(x => x.Email.Address)
-      .IsRequired()
-      .HasColumnName("Email")
-      .HasColumnType("NVARCHAR")
-      .HasMaxLength(150);
+      a.Property<string>(x => x.Street)
+        .IsRequired(false)
+        .HasColumnName("Street")
+        .HasColumnType("VARCHAR(40)");
 
-    builder.HasIndex(x => x.Phone.Number)
-      .IsUnique();
+      a.Property<int>(x => x.Number)
+        .HasColumnName("Number")
+        .HasColumnType("INT")
+        .HasDefaultValue(0);
+    });
 
-    builder.Property(x => x.Phone.Number)
-      .IsRequired()
-      .HasColumnName("Phone")
-      .HasColumnType("NVARCHAR")
-      .HasMaxLength(90);
+    builder.OwnsOne(x => x.Name, n => 
+    {
+      n.Property<string>(x => x.FirstName)
+        .IsRequired()
+        .HasColumnName("FirstName")
+        .HasColumnType("VARCHAR(40)");
+
+      n.Property<string>(x => x.LastName)
+        .IsRequired()
+        .HasColumnName("LastName")
+        .HasColumnType("VARCHAR(40)");
+    });
+
+
+    builder.OwnsOne(x => x.Email, e =>
+    {
+      e.Property<string>(x => x.Address)
+        .IsRequired()
+        .HasColumnName("Email")
+        .HasColumnType("VARCHAR(120)");
+    });
+
+    builder.OwnsOne(x => x.Phone, p =>
+    {
+      p.Property<string>(x => x.Number)
+        .IsRequired()
+        .HasColumnName("Phone")
+        .HasColumnType("VARCHAR(50)");
+    });
 
     builder.Property(x => x.PasswordHash)
       .IsRequired()
@@ -55,23 +78,6 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
       .IsRequired(false)
       .HasColumnName("DateOfBirth")
       .HasColumnType("Date");
-
-    builder.Property(x => x.Address.Country)
-      .IsRequired(false)
-      .HasColumnName("Country")
-      .HasColumnType("VARCHAR")
-      .HasMaxLength(60);
-
-    builder.Property(x => x.Address.City)
-      .IsRequired(false)
-      .HasColumnName("City")
-      .HasColumnType("VARCHAR")
-      .HasMaxLength(60);
-
-    builder.Property(x => x.Address.Number)
-      .IsRequired(false)
-      .HasColumnName("Number")
-      .HasColumnType("SMALLINT");
   
   }
 }

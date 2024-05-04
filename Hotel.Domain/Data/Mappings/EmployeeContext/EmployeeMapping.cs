@@ -18,7 +18,7 @@ public class EmployeeMapping : UserBaseMapping<Employee>, IEntityTypeConfigurati
       .HasColumnType("DECIMAL(18,2)"); 
 
     builder.HasMany(e => e.Responsabilities)
-      .WithMany()
+      .WithMany(x => x.Employees)
       .UsingEntity<Dictionary<string,object>>
       (
         "EmployeeResponsabilities",

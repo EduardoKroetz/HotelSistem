@@ -12,13 +12,13 @@ public class AdminMapping : UserBaseMapping<Admin> ,IEntityTypeConfiguration<Adm
   {
     builder.ToTable("Admins");
 
+    base.BaseMapping(builder);
+    
     builder.Property(x => x.IsRootAdmin)
-      .IsRequired()
-      .HasColumnName("IsRootAdmin")
-      .HasColumnType("BIT");
+      .IsRequired();
 
     builder.HasMany(x => x.Permissions)
-      .WithMany()
+      .WithMany(x => x.Admins)
       .UsingEntity<Dictionary<string,object>>
       (
         "AdminPermissions",
@@ -33,21 +33,8 @@ public class AdminMapping : UserBaseMapping<Admin> ,IEntityTypeConfiguration<Adm
           .WithMany()
           .HasForeignKey("AdminId")
           .HasConstraintName("FK_AdminPermissions_Admin")
-          .OnDelete(DeleteBehavior.Cascade),
-        j =>
-        {
-          j.ToTable("AdminPermissions");
-
-          j.Property<Guid>("AdminId")
-            .HasColumnType("UNIQUEIDENTIFIER");
-
-          j.Property<Guid>("PermissionId")
-            .HasColumnType("UNIQUEIDENTIFIER");
-
-          j.HasKey("AdminId", "PermissionId");
-        }
+          .OnDelete(DeleteBehavior.Cascade)
       );
 
-    BaseMapping(builder);
   }
 }
