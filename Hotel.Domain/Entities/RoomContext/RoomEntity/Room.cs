@@ -1,4 +1,5 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Entities.RoomContext.ImageEntity;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
@@ -6,7 +7,7 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.RoomContext.RoomEntity;
 
-public partial class Room : Entity
+public partial class Room : Entity, IRoom
 {
   public Room(int number, decimal price, int capacity, string description, Category category)
   {

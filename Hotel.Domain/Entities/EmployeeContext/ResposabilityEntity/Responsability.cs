@@ -1,9 +1,10 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
-public partial class Responsability : Entity
+public partial class Responsability : Entity, IResponsability
 {
   public Responsability(string name, string description, EPriority priority)
   {

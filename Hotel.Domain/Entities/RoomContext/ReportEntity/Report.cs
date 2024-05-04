@@ -1,10 +1,11 @@
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
+using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.RoomContext.ReportEntity;
 
-public partial class Report : Entity
+public partial class Report : Entity, IReport
 {
   public Report(string summary,string description, EPriority priority, Employee employee, string resolution = "")
   {

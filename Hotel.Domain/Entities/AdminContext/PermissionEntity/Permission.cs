@@ -1,8 +1,9 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.Interfaces;
 
 namespace Hotel.Domain.Entities.AdminContext.PermissionEntity;
 
-public partial class Permission : Entity
+public partial class Permission : Entity, IPermission
 {
   public Permission(string name, string description)
   {

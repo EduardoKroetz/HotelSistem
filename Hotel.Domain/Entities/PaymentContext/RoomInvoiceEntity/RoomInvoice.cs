@@ -1,12 +1,13 @@
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.CustomerContext;
+using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 
-public partial class InvoiceRoom : Entity
+public partial class InvoiceRoom : Entity, IRoomInvoice
 {
   public InvoiceRoom(EPaymentMethod paymentMethod,Reservation reservation,decimal taxInformation = 0)
   {

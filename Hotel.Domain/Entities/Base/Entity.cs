@@ -1,9 +1,8 @@
 using Hotel.Domain.Entities.Base.Interfaces;
-using Hotel.Domain.Entities.Validation;
 
 namespace Hotel.Domain.Entities.Base;
 
-public class Entity : IEntity, IValidation
+public class Entity : IEntity
 {
   public Entity()
   {

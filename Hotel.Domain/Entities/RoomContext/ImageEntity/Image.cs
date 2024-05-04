@@ -8,6 +8,8 @@ public class Image : Entity
   {
     Url = url;
     RoomId = roomId;
+
+    Validate();
   }
 
   public string Url { get; private set; }

@@ -1,9 +1,10 @@
+using Hotel.Domain.Entities.Base.Interfaces;
 using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Entities.Base;
 
-public class User : Entity
+public class User : Entity, IUser
 {
 
   public User(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null)

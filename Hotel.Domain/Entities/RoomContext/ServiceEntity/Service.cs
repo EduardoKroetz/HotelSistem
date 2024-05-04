@@ -1,10 +1,11 @@
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.RoomContext.ServiceEntity;
 
-public partial class Service : Entity
+public partial class Service : Entity, IService
 {
   public Service(string name, decimal price, bool isActive, EPriority priority, int timeInMinutes)
   {

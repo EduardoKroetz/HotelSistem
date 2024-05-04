@@ -1,5 +1,6 @@
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.CustomerContext;
+using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
@@ -8,7 +9,7 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 
-public partial class Reservation : Entity
+public partial class Reservation : Entity, IReservation
 {
   public Reservation(Room room, DateTime checkIn, HashSet<Customer> customers ,DateTime? checkOut = null)
   {
@@ -48,7 +49,7 @@ public partial class Reservation : Entity
   public EReservationStatus Status { get; private set; }
   public int Capacity { get; private set; }
   public Guid RoomId { get; private set; }
-  public Room Room { get; private set; }
+  public Room? Room { get; private set; }
   public HashSet<Customer> Customers { get; private set; } = [];
   public InvoiceRoom? Invoice { get; private set; }
   public List<Service> Services { get; private set; } = [];

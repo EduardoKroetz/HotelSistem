@@ -1,8 +1,9 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.Interfaces;
 
 namespace Hotel.Domain.Entities.RoomContext.CategoryEntity;
 
-public partial class Category : Entity
+public partial class Category : Entity, ICategory
 {
   public Category(string name, string description, decimal averagePrice)
   {

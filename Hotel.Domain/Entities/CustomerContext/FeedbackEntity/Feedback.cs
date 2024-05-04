@@ -1,11 +1,11 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
-using Hotel.Domain.Entities.Validation;
 
 namespace Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 
-public partial class Feedback : Entity, IValidation
+public partial class Feedback : Entity, IFeedback
 {
   public Feedback(string comment, int rate, Customer customer, Reservation reservation, Room room)
   {
