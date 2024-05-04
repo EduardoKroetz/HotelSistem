@@ -22,5 +22,6 @@ public class PermissionMapping : EntityBaseMapping<Permission> ,IEntityTypeConfi
     builder.Property(p => p.IsActive)
       .IsRequired()
       .HasColumnType("BIT");
+
   }
 }

@@ -9,6 +9,8 @@ namespace Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 
 public partial class RoomInvoice : Entity, IRoomInvoice
 {
+  internal RoomInvoice(){}
+
   public RoomInvoice(EPaymentMethod paymentMethod,Reservation reservation,decimal taxInformation = 0)
   {
     TotalAmount = reservation.TotalAmount();
@@ -26,14 +28,14 @@ public partial class RoomInvoice : Entity, IRoomInvoice
     //Envio de email
   }
 
-  public string Number { get; private set; }
+  public string Number { get; private set; } = string.Empty;
   public DateTime IssueDate { get; private set; }
   public decimal TotalAmount { get; private set; }
   public EStatus Status { get; private set; }
   public EPaymentMethod PaymentMethod { get; private set; }
   public decimal TaxInformation { get; private set; }
-  public HashSet<Customer> Customers { get; private set; }
+  public HashSet<Customer> Customers { get; private set; } = [];
   public Guid ReservationId { get; private set; }
   public Reservation? Reservation { get; private set; }
-  public List<Service> Services { get; private set; }
+  public List<Service> Services { get; private set; } = [];
 }

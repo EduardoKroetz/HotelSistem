@@ -34,23 +34,17 @@ public class FeedbackMapping : EntityBaseMapping<Feedback> ,IEntityTypeConfigura
       .IsRequired()
       .HasColumnType("DATETIME");
 
-    builder.HasOne(f => f.Customer)
-      .WithMany(c => c.Feedbacks)
-      .HasForeignKey(f => f.CustomerId)
-      .IsRequired()
-      .OnDelete(DeleteBehavior.SetNull);
-
     builder.HasOne(f => f.Reservation)
       .WithMany()
       .HasForeignKey(f => f.ReservationId)
       .IsRequired()
-      .OnDelete(DeleteBehavior.SetNull);
+      .OnDelete(DeleteBehavior.Cascade);
 
     builder.HasOne(f => f.Room)
       .WithMany()
       .HasForeignKey(f => f.RoomId)
       .IsRequired() 
-      .OnDelete(DeleteBehavior.SetNull);
+      .OnDelete(DeleteBehavior.Cascade);
   }
 }
 

@@ -1,9 +1,11 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.RoomContext.RoomEntity;
 
 namespace Hotel.Domain.Entities.RoomContext.ImageEntity;
 
 public class Image : Entity
 {
+  internal Image(){}
   public Image(string url, Guid roomId)
   {
     Url = url;
@@ -12,6 +14,8 @@ public class Image : Entity
     Validate();
   }
 
-  public string Url { get; private set; }
+  public string Url { get; private set; } = string.Empty;
   public Guid RoomId { get; private set; }
+  public Room? Room { get; private set; } 
+
 }
