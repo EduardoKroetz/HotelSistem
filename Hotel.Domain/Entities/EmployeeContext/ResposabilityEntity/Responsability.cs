@@ -1,11 +1,14 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Entities.Interfaces;
+using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
 public partial class Responsability : Entity, IResponsability
 {
+  private Responsability(){}
   public Responsability(string name, string description, EPriority priority)
   {
     Name = name;
@@ -18,5 +21,7 @@ public partial class Responsability : Entity, IResponsability
   public string Name { get; private set; }
   public string Description { get; private set; }
   public EPriority Priority { get; private set; }
+  public HashSet<Employee> Employees { get; private set; } = [];
+  public HashSet<Service> Services { get; private set; } = [];
 
 }

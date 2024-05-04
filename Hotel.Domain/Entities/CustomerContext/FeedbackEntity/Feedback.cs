@@ -7,6 +7,8 @@ namespace Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 
 public partial class Feedback : Entity, IFeedback
 {
+  public Feedback(){}
+  
   public Feedback(string comment, int rate, Customer customer, Reservation reservation, Room room)
   {
     Comment = comment;

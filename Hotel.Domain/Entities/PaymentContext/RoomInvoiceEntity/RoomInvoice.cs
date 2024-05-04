@@ -9,6 +9,8 @@ namespace Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 
 public partial class RoomInvoice : Entity, IRoomInvoice
 {
+  private RoomInvoice(){}
+
   public RoomInvoice(EPaymentMethod paymentMethod,Reservation reservation,decimal taxInformation = 0)
   {
     TotalAmount = reservation.TotalAmount();

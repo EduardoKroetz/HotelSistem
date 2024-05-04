@@ -11,6 +11,8 @@ namespace Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 
 public partial class Reservation : Entity, IReservation
 {
+  private Reservation(){}
+
   public Reservation(Room room, DateTime checkIn, HashSet<Customer> customers ,DateTime? checkOut = null)
   {
     CheckIn = checkIn;

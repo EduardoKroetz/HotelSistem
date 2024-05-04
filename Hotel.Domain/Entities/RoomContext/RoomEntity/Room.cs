@@ -9,6 +9,7 @@ namespace Hotel.Domain.Entities.RoomContext.RoomEntity;
 
 public partial class Room : Entity, IRoom
 {
+  private Room(){}
   public Room(int number, decimal price, int capacity, string description, Category category)
   {
     Number = number;

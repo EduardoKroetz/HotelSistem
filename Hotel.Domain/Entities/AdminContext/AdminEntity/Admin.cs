@@ -9,15 +9,16 @@ namespace Hotel.Domain.Entities.AdminContext.AdminEntity;
 
 public partial class Admin : User, IAdmin
 {
+  private Admin(){}
+
   public Admin(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null)
     : base(name,email,phone,password,gender,dateOfBirth,address)
   {
     IsRootAdmin = false;
-    Permissions = [];
   }
 
   public bool IsRootAdmin { get; private set; }
-  public HashSet<Permission> Permissions { get; private set; } 
+  public HashSet<Permission> Permissions { get; private set; } = [];
 
   public void ChangeToRootAdmin(Admin RootAdmin)
   {

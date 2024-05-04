@@ -7,6 +7,7 @@ namespace Hotel.Domain.Entities.RoomContext.ReportEntity;
 
 public partial class Report : Entity, IReport
 {
+  private Report(){}
   public Report(string summary,string description, EPriority priority, Employee employee, string resolution = "")
   {
     Summary = summary;

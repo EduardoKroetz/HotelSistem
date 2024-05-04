@@ -5,6 +5,7 @@ namespace Hotel.Domain.Entities.RoomContext.CategoryEntity;
 
 public partial class Category : Entity, ICategory
 {
+  private Category(){}
   public Category(string name, string description, decimal averagePrice)
   {
     Name = name;
