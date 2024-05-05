@@ -1,10 +1,12 @@
+using Hotel.Domain.Entities.Base;
+
 namespace Hotel.Domain.Repositories.Interfaces;
 
-public interface IRepository<T>
+public interface IRepository<T> where T : Entity
 {
-  public void Create(T model);
-  public T Get(T model);
-  public T Get(Guid id);
+  public Task CreateAsync(T model);
+  public Task<IEnumerable<T>> GetAsync();
+  public Task<T?> GetByIdAsync(Guid id);
   public void Update(T model);
   public void Delete(T model);
   public void Delete(Guid id);
