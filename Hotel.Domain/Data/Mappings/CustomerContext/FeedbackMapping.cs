@@ -44,7 +44,7 @@ public class FeedbackMapping : EntityBaseMapping<Feedback> ,IEntityTypeConfigura
       .WithMany()
       .HasForeignKey(f => f.RoomId)
       .IsRequired() 
-      .OnDelete(DeleteBehavior.Cascade);
+      .OnDelete(DeleteBehavior.Restrict);
   }
 }
 

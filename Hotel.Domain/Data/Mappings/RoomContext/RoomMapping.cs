@@ -1,5 +1,6 @@
 using Hotel.Domain.Data.Mappings.Base;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
+using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -35,16 +36,27 @@ public class RoomMapping : EntityBaseMapping<Room>, IEntityTypeConfiguration<Roo
       .HasForeignKey(x => x.CategoryId)
       .HasConstraintName("FK_Rooms_Category")
       .IsRequired()
-      .OnDelete(DeleteBehavior.Restrict);
+      .OnDelete(DeleteBehavior.NoAction);
 
-    builder.HasMany(x => x.Services)
-      .WithMany(x => x.Rooms)
-      .UsingEntity(j => j.ToTable("RoomServices"));
+    builder.HasMany(r => r.Services)
+    .WithMany(s => s.Rooms)
+    .UsingEntity<Dictionary<string,object>>(
+      "RoomServices",
+      r => r.HasOne<Service>()
+        .WithMany()
+        .HasForeignKey("ServiceId")
+        .OnDelete(DeleteBehavior.Cascade),
+      s => s.HasOne<Room>()
+        .WithMany()
+        .HasForeignKey("RoomId")
+        .OnDelete(DeleteBehavior.Cascade)
+    );
 
     builder.HasMany(x => x.Images)
       .WithOne(x => x.Room)
       .HasForeignKey(x => x.RoomId)
-      .HasConstraintName("RoomImages");
+      .HasConstraintName("RoomImages")
+      .OnDelete(DeleteBehavior.Cascade);
 
   }
 }

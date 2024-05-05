@@ -17,6 +17,12 @@ public class EmployeeMapping : UserBaseMapping<Employee>, IEntityTypeConfigurati
     builder.Property(e => e.Salary)
       .HasColumnType("DECIMAL(18,2)"); 
 
+    builder.HasMany(x => x.Reports)
+      .WithOne(x => x.Employee)
+      .HasForeignKey(x => x.EmployeeId)
+      .IsRequired()
+      .OnDelete(DeleteBehavior.Cascade);
+
     builder.HasMany(e => e.Responsabilities)
       .WithMany(x => x.Employees)
       .UsingEntity<Dictionary<string,object>>
@@ -26,14 +32,12 @@ public class EmployeeMapping : UserBaseMapping<Employee>, IEntityTypeConfigurati
           .HasOne<Responsability>()
           .WithMany()
           .HasForeignKey("ResponsabilityId")
-          .IsRequired()
           .HasConstraintName("FK_EmployeeResponsabilities_Responsability")
           .OnDelete(DeleteBehavior.Cascade),
         j => j
           .HasOne<Employee>()
           .WithMany()
           .HasForeignKey("EmployeeId")
-          .IsRequired()
           .HasConstraintName("FK_EmployeeResponsabilities_Employee")
           .OnDelete(DeleteBehavior.Cascade)
       );

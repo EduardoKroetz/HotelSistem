@@ -32,12 +32,5 @@ public class ReportMapping : EntityBaseMapping<Report>, IEntityTypeConfiguration
 
     builder.Property(x => x.EmployeeId)
       .IsRequired();
-
-    builder.HasOne(x => x.Employee)
-      .WithMany()
-      .HasForeignKey(x => x.EmployeeId)
-      .IsRequired()
-      .HasConstraintName("FK_Reports_Employee")
-      .OnDelete(DeleteBehavior.Cascade);
   }
 }
