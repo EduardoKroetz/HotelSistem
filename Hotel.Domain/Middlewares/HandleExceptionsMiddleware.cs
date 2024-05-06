@@ -1,6 +1,7 @@
 using System.Net;
 using Hotel.Domain.DTOs;
 using Hotel.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Middlewares;
 
@@ -28,6 +29,20 @@ public class HandleExceptionMiddleware
       context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
       await context.Response.WriteAsJsonAsync(
         new Response<string>(400,e.Message)
+      );
+    }
+    catch(DbUpdateException)
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+      await context.Response.WriteAsJsonAsync(
+        new Response<string>(500,$"Não foi possível atualizar no banco de dados." )
+      );
+    }
+    catch(Exception e)
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+      await context.Response.WriteAsJsonAsync(
+        new Response<string>(500,e.Message)
       );
     }
   }

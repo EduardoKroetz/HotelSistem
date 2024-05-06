@@ -8,17 +8,15 @@ namespace Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 public partial class Feedback : Entity, IFeedback
 {
   internal Feedback(){}
-  
-  public Feedback(string comment, int rate, Customer customer, Reservation reservation, Room room)
+
+
+  public Feedback(string comment, int rate, Guid customerId, Guid reservationId, Guid roomId)
   {
     Comment = comment;
     Rate = rate;
-    Room = room;
-    RoomId = room.Id;
-    Customer = customer;
-    CustomerId = customer.Id;
-    Reservation = reservation;
-    ReservationId = reservation.Id;
+    RoomId = roomId;
+    CustomerId = customerId;
+    ReservationId = reservationId;
     UpdatedAt = DateTime.Now;
     Likes = 0;
     Deslikes = 0;
