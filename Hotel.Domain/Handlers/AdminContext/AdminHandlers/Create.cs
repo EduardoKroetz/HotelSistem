@@ -8,25 +8,26 @@ using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
-public class CreateAdminHandler : IHandler<CreateAdmin, Response<object>>
+public partial class AdminHandler : IHandler
 {
   private readonly IAdminRepository _repository;
-  public CreateAdminHandler(IAdminRepository repository)
+  public AdminHandler(IAdminRepository repository)
   => _repository = repository;
 
-  public async Task<Response<object>> HandleAsync(CreateAdmin dto)
+  public async Task<Response<object>> HandleCreateAsync(CreateAdmin model)
   {
     var admin = new Admin(
-      new Name(dto.FirstName,dto.LastName),
-      new Email(dto.Email),
-      new Phone(dto.Phone),
-      dto.Password,
-      dto.Gender,
-      dto.DateOfBirth,
-      new Address(dto.Country,dto.City,dto.Street,dto.Number ?? 0)
+      new Name(model.FirstName,model.LastName),
+      new Email(model.Email),
+      new Phone(model.Phone),
+      model.Password,
+      model.Gender,
+      model.DateOfBirth,
+      new Address(model.Country,model.City,model.Street,model.Number)
     );
 
-    _repository.Create(admin);
+    await _repository.CreateAsync(admin);
+    await _repository.SaveChangesAsync();
 
     return new Response<object>(200,"Admin criado com sucesso!",new { admin.Id });
   }
