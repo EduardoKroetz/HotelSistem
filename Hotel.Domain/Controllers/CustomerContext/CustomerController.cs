@@ -2,7 +2,7 @@ using Hotel.Domain.DTOs.User;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hotel.Domain.Controllers.AdminContext;
+namespace Hotel.Domain.Controllers.CustomerContext;
 
 public class CustomerController : ControllerBase
 {

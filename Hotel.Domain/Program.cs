@@ -4,6 +4,7 @@ using Hotel.Domain.Extensions;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
+using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -50,4 +51,6 @@ void ConfigureDependencies(WebApplicationBuilder builder)
   builder.Services.AddScoped<PermissionHandler>();
   builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
   builder.Services.AddScoped<CustomerHandler>();
+  builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+  builder.Services.AddScoped<FeedbackHandler>();
 }
