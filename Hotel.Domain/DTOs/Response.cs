@@ -1,6 +1,8 @@
+using Hotel.Domain.DTOs.Interfaces;
+
 namespace Hotel.Domain.DTOs;
 
-public class Response<T> 
+public class Response<T> : IDataTransferObject
 {
   public Response(int status, string message, T data)
   {

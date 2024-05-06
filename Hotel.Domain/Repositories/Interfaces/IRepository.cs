@@ -10,4 +10,5 @@ public interface IRepository<T> where T : Entity
   public void Update(T model);
   public void Delete(T model);
   public void Delete(Guid id);
+  public Task SaveChangesAsync();
 }

@@ -1,3 +1,5 @@
+using System.Net;
+using Hotel.Domain.DTOs;
 using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Middlewares;
@@ -14,9 +16,19 @@ public class HandleExceptionMiddleware
     {
       await _next(context);
     }
-    catch(ValidationException)
+    catch(ValidationException e)
     {
-
+      context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+      await context.Response.WriteAsJsonAsync(
+        new Response<string>(400,e.Message)
+      );
+    }
+    catch(ArgumentException e)
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+      await context.Response.WriteAsJsonAsync(
+        new Response<string>(400,e.Message)
+      );
     }
   }
 

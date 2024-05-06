@@ -45,7 +45,7 @@ public class HotelDbContext : DbContext
 
   protected override void OnModelCreating(ModelBuilder model)
   {
-    model.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
     model.ApplyConfiguration(new AdminMapping());
     model.ApplyConfiguration(new PermissionMapping());
     model.ApplyConfiguration(new CustomerMapping());

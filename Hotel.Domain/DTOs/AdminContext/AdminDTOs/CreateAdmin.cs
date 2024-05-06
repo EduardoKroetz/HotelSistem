@@ -1,8 +1,9 @@
+using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 
-public class CreateAdmin
+public class CreateAdmin : IDataTransferObject
 {
   public CreateAdmin(string firstName, string lastName, string email, string phone, string password, EGender? gender, DateTime? dateOfBirth, string? country, string? city, string? street, int? number)
   {

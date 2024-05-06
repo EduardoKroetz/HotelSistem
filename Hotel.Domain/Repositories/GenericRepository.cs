@@ -22,7 +22,7 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : E
   {
     var model = _context.Set<TEntity>().FirstOrDefault(x => x.Id == id);
     if (model == null)
-      throw new ArgumentException($"Não foi possível encontrar a entidade com o Id {id}");
+      throw new ArgumentException($"Não foi possível deletar o item pois ele não existe.");
     _context.Set<TEntity>().Remove(model);
   }
   
@@ -46,5 +46,7 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : E
   public void Update(TEntity model)
   => _context.Set<TEntity>().Update(model);
   
+  public Task SaveChangesAsync()
+  => _context.SaveChangesAsync();
 
 }

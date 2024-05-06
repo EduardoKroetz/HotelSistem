@@ -12,22 +12,24 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
 
     builder.OwnsOne(x => x.Address, a =>
     {
-      a.Property<string>(x => x.Country)
+      a.Ignore(x => x.IsValid);
+
+      a.Property<string?>(x => x.Country)
         .IsRequired(false)
         .HasColumnName("Country")
         .HasColumnType("VARCHAR(40)");
 
-      a.Property<string>(x => x.City)
+      a.Property<string?>(x => x.City)
         .IsRequired(false)
         .HasColumnName("City")
         .HasColumnType("VARCHAR(40)");
 
-      a.Property<string>(x => x.Street)
+      a.Property<string?>(x => x.Street)
         .IsRequired(false)
         .HasColumnName("Street")
         .HasColumnType("VARCHAR(40)");
 
-      a.Property<int>(x => x.Number)
+      a.Property<int?>(x => x.Number)
         .HasColumnName("Number")
         .HasColumnType("INT")
         .HasDefaultValue(0);
@@ -35,6 +37,8 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
 
     builder.OwnsOne(x => x.Name, n => 
     {
+      n.Ignore(x => x.IsValid);
+
       n.Property<string>(x => x.FirstName)
         .IsRequired()
         .HasColumnName("FirstName")
@@ -49,6 +53,8 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
 
     builder.OwnsOne(x => x.Email, e =>
     {
+      e.Ignore(e => e.IsValid);
+      
       e.Property<string>(x => x.Address)
         .IsRequired()
         .HasColumnName("Email")
@@ -57,6 +63,8 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
 
     builder.OwnsOne(x => x.Phone, p =>
     {
+      p.Ignore(p => p.IsValid);
+
       p.Property<string>(x => x.Number)
         .IsRequired()
         .HasColumnName("Phone")
