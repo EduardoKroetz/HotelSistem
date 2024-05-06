@@ -10,7 +10,7 @@ public partial class AdminHandler : IHandler
   {
     var admin = await _repository.GetByIdAsync(adminId);
     if (admin == null)
-      throw new ArgumentException("Não foi possível localizar o Admin.");
+      throw new ArgumentException("Admin não encontrado.");
     
     return new Response<GetAdmin>(200,"Admin encontrado com sucesso!", admin);
   }

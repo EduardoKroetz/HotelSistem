@@ -17,24 +17,28 @@ public class AdminController : ControllerBase
   public async Task<IActionResult> PostAsync(
     [FromBody]CreateAdmin model
   )
-  {  
-    return Ok(await _handler.HandleCreateAsync(model));
-  }
+  => Ok(await _handler.HandleCreateAsync(model));
+  
 
   [HttpPut("v1/admins/{Id:guid}")]
   public async Task<IActionResult> PutAsync(
     [FromBody]UpdateAdmin model,
     [FromRoute]Guid id
   )
-  {  
-    return Ok(await _handler.HandleUpdateAsync(model,id));
-  }
+  => Ok(await _handler.HandleUpdateAsync(model,id));
+  
 
   [HttpGet("v1/admins/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(
     [FromRoute]Guid id
   )
-  {  
-    return Ok(await _handler.HandleGetByIdAsync(id));
-  }
+  => Ok(await _handler.HandleGetByIdAsync(id));
+  
+
+  [HttpDelete("v1/admins/{Id:guid}")]
+  public async Task<IActionResult> DeleteAsync(
+    [FromRoute]Guid id
+  )
+  => Ok(await _handler.HandleDeleteAsync(id));
+  
 }
