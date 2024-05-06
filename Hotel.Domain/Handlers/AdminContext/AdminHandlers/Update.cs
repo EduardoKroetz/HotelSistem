@@ -1,12 +1,12 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
+using Hotel.Domain.DTOs.User;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
 public partial class AdminHandler
 {
-  public async Task<Response<object>> HandleUpdateAsync(UpdateAdmin model, Guid adminId)
+  public async Task<Response<object>> HandleUpdateAsync(UpdateUser model, Guid adminId)
   {
     var admin = await _repository.GetEntityByIdAsync(adminId);
     if (admin == null)

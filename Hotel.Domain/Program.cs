@@ -2,6 +2,8 @@ using Hotel.Domain.Configuration;
 using Hotel.Domain.Data;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
+using Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
+using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -43,5 +45,9 @@ void ConfigureDependencies(WebApplicationBuilder builder)
     opt.UseSqlServer(Configuration.ConnectionString);
   });
   builder.Services.AddScoped<IAdminRepository ,AdminRepository>();
+  builder.Services.AddScoped<IPermissionRepository ,PermisisionRepository>();
   builder.Services.AddScoped<AdminHandler>();
+  builder.Services.AddScoped<PermissionHandler>();
+  builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+  builder.Services.AddScoped<CustomerHandler>();
 }

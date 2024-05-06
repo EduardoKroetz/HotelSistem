@@ -1,10 +1,9 @@
 using Hotel.Domain.DTOs.Interfaces;
 
-namespace Hotel.Domain.DTOs.AdminContext.AdminDTOs;
-
-public class GetAdmin : IDataTransferObject
+namespace Hotel.Domain.DTOs.User;
+public class GetUser : IDataTransferObject
 {
-  public GetAdmin(Guid id ,string firstName, string lastName, string email, string phone)
+  public GetUser(Guid id ,string firstName, string lastName, string email, string phone)
   {
     Id = id;
     FirstName = firstName;

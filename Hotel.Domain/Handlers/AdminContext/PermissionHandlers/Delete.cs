@@ -1,6 +1,6 @@
 using Hotel.Domain.DTOs;
 
-namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
+namespace Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
 
 public partial class PermissionHandler
 {

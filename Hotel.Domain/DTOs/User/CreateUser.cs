@@ -1,11 +1,11 @@
 using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.DTOs.AdminContext.AdminDTOs;
+namespace Hotel.Domain.DTOs.User;
 
-public class CreateAdmin : IDataTransferObject
+public class CreateUser : IDataTransferObject
 {
-  public CreateAdmin(string firstName, string lastName, string email, string phone, string password, EGender? gender, DateTime? dateOfBirth, string? country, string? city, string? street, int? number)
+  public CreateUser(string firstName, string lastName, string email, string phone, string password, EGender? gender, DateTime? dateOfBirth, string? country, string? city, string? street, int? number)
   {
     FirstName = firstName;
     LastName = lastName;

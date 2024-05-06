@@ -1,6 +1,6 @@
 
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
+using Hotel.Domain.DTOs.User;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces;
@@ -14,7 +14,7 @@ public partial class AdminHandler : IHandler
   public AdminHandler(IAdminRepository repository)
   => _repository = repository;
 
-  public async Task<Response<object>> HandleCreateAsync(CreateAdmin model)
+  public async Task<Response<object>> HandleCreateAsync(CreateUser model)
   {
     var admin = new Admin(
       new Name(model.FirstName,model.LastName),

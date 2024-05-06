@@ -1,11 +1,10 @@
 using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.DTOs.AdminContext.AdminDTOs;
-
-public class UpdateAdmin : IDataTransferObject
+namespace Hotel.Domain.DTOs.User;
+public class UpdateUser : IDataTransferObject
 {
-  public UpdateAdmin(string firstName, string lastName, string email, string phone, EGender? gender, DateTime? dateOfBirth, string? country, string? city, string? street, int? number)
+  public UpdateUser(string firstName, string lastName, string email, string phone, EGender? gender, DateTime? dateOfBirth, string? country, string? city, string? street, int? number)
   {
     FirstName = firstName;
     LastName = lastName;

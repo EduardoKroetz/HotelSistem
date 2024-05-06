@@ -1,4 +1,4 @@
-using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
+using Hotel.Domain.DTOs.User;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,14 +26,14 @@ public class AdminController : ControllerBase
 
   [HttpPost("v1/admins")]
   public async Task<IActionResult> PostAsync(
-    [FromBody]CreateAdmin model
+    [FromBody]CreateUser model
   )
   => Ok(await _handler.HandleCreateAsync(model));
   
 
   [HttpPut("v1/admins/{Id:guid}")]
   public async Task<IActionResult> PutAsync(
-    [FromBody]UpdateAdmin model,
+    [FromBody]UpdateUser model,
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleUpdateAsync(model,id));

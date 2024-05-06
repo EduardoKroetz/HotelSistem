@@ -4,7 +4,7 @@ using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces;
 
-namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
+namespace Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
 
 public partial class PermissionHandler : IHandler
 {

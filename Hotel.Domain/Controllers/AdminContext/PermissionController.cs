@@ -1,5 +1,5 @@
 using Hotel.Domain.DTOs.AdminContext.PermissionDTOs;
-using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
+using Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.AdminContext;
