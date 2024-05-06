@@ -26,7 +26,7 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : E
     _context.Set<TEntity>().Remove(model);
   }
   
-  public async Task<TEntity?> GetByIdAsync(Guid id)
+  public async Task<TEntity?> GetEntityByIdAsync(Guid id)
   {
     return await _context
       .Set<TEntity>()
@@ -34,14 +34,13 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : E
       .FirstOrDefaultAsync(x => x.Id == id);
   }
 
-  public async Task<IEnumerable<TEntity>> GetAsync()
+  public async Task<IEnumerable<TEntity>> GetEntitiesAsync()
   {
     return await _context
       .Set<TEntity>()
       .AsNoTracking()
       .ToListAsync();
   }
-  
 
   public void Update(TEntity model)
   => _context.Set<TEntity>().Update(model);

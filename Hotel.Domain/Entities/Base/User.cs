@@ -38,12 +38,18 @@ public class User : Entity, IUser
   public void ChangeEmail(Email email)
   => Email = email; 
 
-  
   public void ChangePhone(Phone phone)
   => Phone = phone; 
 
   public void ChangeAddress(Address address)
   => Address = address; 
+
+  public void ChangeGender(EGender? gender)
+  => Gender = gender; 
+  public void ChangeDateOfBirth(DateTime? birth)
+  => DateOfBirth = birth; 
+  public void CompleteProfile()
+  => IncompleteProfile = Address == null || Gender == null || DateOfBirth == null;
 
   public string GeneratePasswordHash(string Password)
   {
