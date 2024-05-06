@@ -1,9 +1,8 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.Handlers.Interfaces;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
-public partial class AdminHandler : IHandler
+public partial class AdminHandler
 {
   public async Task<Response<object>> HandleDeleteAsync(Guid adminId)
   {

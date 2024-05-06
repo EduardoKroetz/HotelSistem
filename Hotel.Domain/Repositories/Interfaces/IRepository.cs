@@ -1,6 +1,8 @@
+using Hotel.Domain.Entities.Base;
+
 namespace Hotel.Domain.Repositories.Interfaces;
 
-public interface IRepository<T>
+public interface IRepository<T> where T : Entity
 {
   public Task CreateAsync(T model);
   public Task<IEnumerable<T>> GetEntitiesAsync();

@@ -3,7 +3,6 @@ using Hotel.Domain.Entities.AdminContext.AdminEntity;
 
 namespace Hotel.Domain.Repositories.Interfaces;
 
-public interface IAdminRepository : IRepository<Admin>
+public interface IAdminRepository : IRepository<Admin>, IRepositoryQuery<GetAdmin>
 {
-  public Task<GetAdmin?> GetByIdAsync(Guid id);
 }

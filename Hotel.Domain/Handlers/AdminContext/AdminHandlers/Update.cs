@@ -1,11 +1,10 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
-using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
-public partial class AdminHandler : IHandler
+public partial class AdminHandler
 {
   public async Task<Response<object>> HandleUpdateAsync(UpdateAdmin model, Guid adminId)
   {

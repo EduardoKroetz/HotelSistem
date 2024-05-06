@@ -20,4 +20,12 @@ public class AdminRepository : GenericRepository<Admin> ,IAdminRepository
       .FirstOrDefaultAsync();
   
   }
+  public async Task<IEnumerable<GetAdmin>> GetAsync()
+  {
+    return await _context
+      .Admins
+      .AsNoTracking()
+      .Select(x => new GetAdmin(x.Id, x.Email.Address, x.Name.FirstName,x.Name.LastName, x.Phone.Number))
+      .ToListAsync();
+  }
 }

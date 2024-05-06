@@ -2,7 +2,7 @@ using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hotel.Domain.Controllers;
+namespace Hotel.Domain.Controllers.AdminContext;
 
 public class AdminController : ControllerBase
 {
@@ -12,6 +12,17 @@ public class AdminController : ControllerBase
   {
     _handler = handler;
   }
+
+  [HttpGet("v1/admins")]
+  public async Task<IActionResult> GetAsync()
+  => Ok(await _handler.HandleGetAsync());
+  
+  [HttpGet("v1/admins/{Id:guid}")]
+  public async Task<IActionResult> GetByIdAsync(
+    [FromRoute]Guid id
+  )
+  => Ok(await _handler.HandleGetByIdAsync(id));
+  
 
   [HttpPost("v1/admins")]
   public async Task<IActionResult> PostAsync(
@@ -28,11 +39,6 @@ public class AdminController : ControllerBase
   => Ok(await _handler.HandleUpdateAsync(model,id));
   
 
-  [HttpGet("v1/admins/{Id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute]Guid id
-  )
-  => Ok(await _handler.HandleGetByIdAsync(id));
   
 
   [HttpDelete("v1/admins/{Id:guid}")]
