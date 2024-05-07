@@ -9,7 +9,7 @@ public class RoomEntityTest
   [TestMethod]
   public void ValidRoom_MustBeValid()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     Assert.IsTrue(room.IsValid);
   }
 
@@ -22,14 +22,14 @@ public class RoomEntityTest
   [DataRow(1,1,1,TestParameters.DescriptionMaxCaracteres)] //Descrição errada, limite atingido.
   public void InvalidRoom_ExpectedException(int number,int price,int capacity,string description)
   {
-    new Room(number,price,capacity,description,TestParameters.Category);
+    new Room(number,price,capacity,description,TestParameters.Category.Id);
     Assert.Fail();
   }
 
   [TestMethod]
   public void ChangeRoomNumber_MustBeChanged()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.ChangeNumber(1);
     Assert.AreEqual(1,room.Number);
   }
@@ -37,7 +37,7 @@ public class RoomEntityTest
   [TestMethod]
   public void ChangeRoomPrice_MustBeChanged()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.ChangePrice(1);
     Assert.AreEqual(1,room.Price);
   }
@@ -45,7 +45,7 @@ public class RoomEntityTest
   [TestMethod]
   public void ChangeRoomCapacity_MustBeChanged()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.ChangeCapacity(1);
     Assert.AreEqual(1,room.Capacity);
   }
@@ -53,7 +53,7 @@ public class RoomEntityTest
   [TestMethod]
   public void ChangeRoomStatus_MustBeChanged()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.ChangeStatus(Domain.Enums.ERoomStatus.Occupied);
     Assert.AreEqual(Domain.Enums.ERoomStatus.Occupied,room.Status);
   }
@@ -61,7 +61,7 @@ public class RoomEntityTest
   [TestMethod]
   public void AddServiceToRoom_MustBeAdded()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.AddService(TestParameters.Service);
     Assert.AreEqual(1, room.Services.Count);
   }
@@ -69,7 +69,7 @@ public class RoomEntityTest
   [TestMethod]
   public void AddSameServiceToRoom_DontAdded()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.AddService(TestParameters.Service);
     room.AddService(TestParameters.Service);
     Assert.AreEqual(1, room.Services.Count);
@@ -78,7 +78,7 @@ public class RoomEntityTest
   [TestMethod]
   public void RemoveServiceToRoom_MustBeRemoved()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.AddService(TestParameters.Service);
     room.RemoveService(TestParameters.Service);
     Assert.AreEqual(0, room.Services.Count);
@@ -87,7 +87,7 @@ public class RoomEntityTest
   [TestMethod]
   public void RemoveInexistentServiceFromRoom_DoNothing()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.RemoveService(TestParameters.Service);
     Assert.AreEqual(0, room.Services.Count);
   }
@@ -95,7 +95,7 @@ public class RoomEntityTest
   [TestMethod]
   public void CreateImageToRoom_MustBeAdded()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.CreateImage("url");
     Assert.AreEqual(1, room.Images.Count);
   }
@@ -103,7 +103,7 @@ public class RoomEntityTest
   [TestMethod]
   public void DeleteImageFromRoom_MustBeRemoved()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     var img = room.CreateImage("url");
     room.DeleteImage(img);
     Assert.AreEqual(0, room.Images.Count);
@@ -112,7 +112,7 @@ public class RoomEntityTest
   [TestMethod]
   public void RemoveInexistentImageFromRoom_DoNothing()
   {
-    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category);
+    var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.DeleteImage(TestParameters.Image);
     Assert.AreEqual(0, room.Images.Count);
   }

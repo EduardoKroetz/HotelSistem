@@ -21,10 +21,10 @@ public static class TestParameters
   public static readonly Address Address = new("Brazil","Gotham","Batman street",999);
   public static readonly string Password = "batmanpassword123";
   public static readonly Category Category = new("Quarto básico","Quarto básico para hospedagem diária.",45m);
-  public static readonly Room Room = new(22,50m,3,"Um quarto para hospedagem.",Category);
+  public static readonly Room Room = new(22,50m,3,"Um quarto para hospedagem.",Category.Id);
   public static readonly Customer Customer = new(Name,Email,Phone,Password,EGender.Masculine,DateTime.Now.AddYears(-18),Address);
   public static readonly Reservation Reservation = new(Room,DateTime.Now.AddDays(3), [Customer]);
-  public static readonly Feedback Feedback = new("Muito bom.",10,Customer,Reservation,Room);
+  public static readonly Feedback Feedback = new("Muito bom.",10,Customer.Id,Reservation.Id,Room.Id);
   public static readonly Admin Admin = new(Name,Email,Phone,Password,EGender.Masculine,DateTime.Now.AddYears(-18),Address);
   public static readonly Responsability Responsability = new("Responder serviços","Responder serviços de quarto",EPriority.Medium);
   public static readonly Employee Employee = new(Name,Email,Phone,Password,EGender.Masculine,DateTime.Now.AddYears(-18),Address,1500m);

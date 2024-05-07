@@ -60,7 +60,7 @@ public class ReservationEntityTest
   [ExpectedException(typeof(ValidationException))]
   public void OvertakingTheRoomCapacity_ExpectedException()
   {
-    var room = new Room(22,50m,1,"Um quarto para hospedagem.",TestParameters.Category);
+    var room = new Room(22,50m,1,"Um quarto para hospedagem.",TestParameters.Category.Id);
     var customer = new Customer(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
     new Reservation(room,OneDayFromNow,[TestParameters.Customer,customer]);
     Assert.Fail();
@@ -81,7 +81,7 @@ public class ReservationEntityTest
     var reservation = new Reservation(TestParameters.Room,CurrentDate,[TestParameters.Customer]);
     reservation.StatusToCheckedIn();
     Assert.AreEqual(EReservationStatus.CheckedIn, reservation.Status);
-    Assert.AreEqual(ERoomStatus.Occupied, reservation.Room.Status);
+    Assert.AreEqual(ERoomStatus.Occupied, reservation?.Room?.Status);
   }
 
   [TestMethod]
@@ -90,7 +90,7 @@ public class ReservationEntityTest
     var reservation = new Reservation(TestParameters.Room,TwoDaysFromNow,[TestParameters.Customer]);
     reservation.StatusToCancelled();
     Assert.AreEqual(EReservationStatus.Cancelled, reservation.Status);
-    Assert.AreEqual(ERoomStatus.Available, reservation.Room.Status);
+    Assert.AreEqual(ERoomStatus.Available, reservation?.Room?.Status);
   }
 
   [TestMethod]
@@ -99,7 +99,7 @@ public class ReservationEntityTest
     var reservation = new Reservation(TestParameters.Room,TwoDaysFromNow,[TestParameters.Customer]);
     reservation.StatusToNoShow();
     Assert.AreEqual(EReservationStatus.NoShow, reservation.Status);
-    Assert.AreEqual(ERoomStatus.Reserved, reservation.Room.Status);
+    Assert.AreEqual(ERoomStatus.Reserved, reservation?.Room?.Status);
   }
 
   [TestMethod]
@@ -109,7 +109,7 @@ public class ReservationEntityTest
     reservation.GenerateInvoice(EPaymentMethod.Pix);
     Assert.AreNotEqual(null, reservation.Invoice);
     Assert.AreEqual(EReservationStatus.CheckedOut, reservation.Status);
-    Assert.AreEqual(ERoomStatus.OutOfService, reservation.Room.Status);
+    Assert.AreEqual(ERoomStatus.OutOfService, reservation?.Room?.Status);
     Assert.AreEqual(CurrentDate.DayOfYear, reservation?.CheckOut?.DayOfYear);
   }
 
@@ -185,7 +185,7 @@ public class ReservationEntityTest
   [TestMethod]
   public void RoomAtPrice19_For14Days_With3ServicesAtPrice5_With7ServicesAtPrice15_TheTotalPriceMustBe386()
   {
-    var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category);
+    var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category.Id);
     var cleanService = new Service("Serviço de limpeza",5m,false,EPriority.Low,20);
     var lunchService = new Service("Almoço",15m,false,EPriority.Medium,50);
     var reservation = new Reservation(room,CurrentDate.Date,[TestParameters.Customer]);
@@ -205,7 +205,7 @@ public class ReservationEntityTest
   [ExpectedException(typeof(ValidationException))]
   public void ChangeCheckIn_WithInvalidStatus_ExpectedException()
   {
-    var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category);
+    var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category.Id);
     var reservation = new Reservation(room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.StatusToCheckedIn().ChangeCheckIn(ThreeDaysFromNow);;
     Assert.Fail();

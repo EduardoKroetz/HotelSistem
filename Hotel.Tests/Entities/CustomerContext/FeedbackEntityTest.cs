@@ -9,7 +9,7 @@ public class FeedbackEntityTest
   [TestMethod]
   public void ValidFeedback_MustBeValid()
   {
-    var feedback = new Feedback("Feedback",5,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
+    var feedback = new Feedback("Feedback",5,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
     Assert.IsTrue(feedback.IsValid);
   }
 
@@ -21,7 +21,7 @@ public class FeedbackEntityTest
   [DataRow(TestParameters.DescriptionMaxCaracteres,5)]
   public void InvalidFeedback_ExpectedException(string comment, int rate)
   {
-    new Feedback(comment,rate,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
+    new Feedback(comment,rate,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
     Assert.Fail();
   }
 
@@ -33,7 +33,7 @@ public class FeedbackEntityTest
   [DataRow(TestParameters.DescriptionMaxCaracteres,5)]
   public void ChangeToInvalidFeedback_ExpectedException(string comment, int rate)
   {
-    var feedback = new Feedback(comment,rate,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
+    var feedback = new Feedback(comment,rate,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
     feedback.ChangeComment(comment);
     feedback.ChangeRate(rate);
     Assert.Fail();
@@ -42,7 +42,7 @@ public class FeedbackEntityTest
   [TestMethod]
   public void AddLike_MustBeAdded()
   {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
+    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
     feedback.AddLike();
     Assert.AreEqual(1,feedback.Likes);
   }
@@ -50,7 +50,7 @@ public class FeedbackEntityTest
   [TestMethod]
   public void RemoveLike_WithoutLikes_MustBe0Likes()
   {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
+    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
     feedback.RemoveLike();
     Assert.AreEqual(0,feedback.Likes);
   }
@@ -59,7 +59,7 @@ public class FeedbackEntityTest
   [TestMethod]
   public void AddDeslike_MustBeAdded()
   {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
+    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
     feedback.AddDeslike();
     Assert.AreEqual(1,feedback.Deslikes);
   }
@@ -67,7 +67,7 @@ public class FeedbackEntityTest
   [TestMethod]
   public void RemoveDeslike_WithoutDeslikes_MustBe0Deslikes()
   {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
+    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
     feedback.RemoveDeslike();
     Assert.AreEqual(0,feedback.Likes);
   }

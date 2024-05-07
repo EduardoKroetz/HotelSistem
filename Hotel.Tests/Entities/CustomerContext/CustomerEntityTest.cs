@@ -17,8 +17,7 @@ public class CustomerEntityTest
   public void AddFeedback_MustBeAdded()
   {
     var customer = new Customer(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
-    var feedback = new Feedback("Feedback example",10, customer,TestParameters.Reservation,TestParameters.Room);
-    customer.AddFeedback(feedback);
+    customer.AddFeedback(TestParameters.Feedback);
     Assert.AreEqual(1,customer.Feedbacks.Count);
   }
 
@@ -26,9 +25,8 @@ public class CustomerEntityTest
   public void AddSameFeedback_AddJustOne()
   {
     var customer = new Customer(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
-    var feedback = new Feedback("Feedback example",10, customer,TestParameters.Reservation,TestParameters.Room);
-    customer.AddFeedback(feedback);
-    customer.AddFeedback(feedback);
+    customer.AddFeedback(TestParameters.Feedback);
+    customer.AddFeedback(TestParameters.Feedback);
     Assert.AreEqual(1, customer.Feedbacks.Count);
   }
 
@@ -36,9 +34,8 @@ public class CustomerEntityTest
   public void RemoveFeedback_MustBeRemoved()
   {
     var customer = new Customer(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
-    var feedback = new Feedback("Feedback example",10, customer,TestParameters.Reservation,TestParameters.Room);
-    customer.AddFeedback(feedback);
-    customer.RemoveFeedback(feedback);
+    customer.AddFeedback(TestParameters.Feedback);
+    customer.RemoveFeedback(TestParameters.Feedback);
     Assert.AreEqual(0,customer.Feedbacks.Count);
   }
 
@@ -46,8 +43,7 @@ public class CustomerEntityTest
   public void RemoveNonExistingFeedback_DoNothing()
   {
     var customer = new Customer(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
-    var feedback = new Feedback("Feedback example",10, TestParameters.Customer,TestParameters.Reservation,TestParameters.Room);
-    customer.RemoveFeedback(feedback);
+    customer.RemoveFeedback(TestParameters.Feedback);
     Assert.AreEqual(0, customer.Feedbacks.Count);
   }
 

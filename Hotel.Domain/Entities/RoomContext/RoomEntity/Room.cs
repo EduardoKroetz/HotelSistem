@@ -10,14 +10,13 @@ namespace Hotel.Domain.Entities.RoomContext.RoomEntity;
 public partial class Room : Entity, IRoom
 {
   internal Room(){}
-  public Room(int number, decimal price, int capacity, string description, Category category)
+  public Room(int number, decimal price, int capacity, string description, Guid categoryId)
   {
     Number = number;
     Price = price;
     Capacity = capacity;
     Description = description;
-    Category = category;
-    CategoryId = category.Id;
+    CategoryId = categoryId;
     Status = ERoomStatus.OutOfService;
     Services = [];
     Images = [];
