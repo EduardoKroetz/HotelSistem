@@ -13,7 +13,7 @@ public partial class Reservation : Entity, IReservation
 {
   internal Reservation(){}
 
-  public Reservation(Room room, DateTime checkIn, HashSet<Customer> customers ,DateTime? checkOut = null)
+  public Reservation(Room room, DateTime checkIn, ICollection<Customer> customers ,DateTime? checkOut = null)
   {
     CheckIn = checkIn;
     _checkOut = checkOut;
@@ -52,8 +52,8 @@ public partial class Reservation : Entity, IReservation
   public int Capacity { get; private set; }
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
-  public HashSet<Customer> Customers { get; private set; } = [];
+  public ICollection<Customer> Customers { get; private set; } = [];
   public Guid? InvoiceId { get; private set; }
   public RoomInvoice? Invoice { get; private set; }
-  public List<Service> Services { get; private set; } = [];
+  public ICollection<Service> Services { get; private set; } = [];
 }

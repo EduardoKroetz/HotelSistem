@@ -34,8 +34,8 @@ public partial class RoomInvoice : Entity, IRoomInvoice
   public EStatus Status { get; private set; }
   public EPaymentMethod PaymentMethod { get; private set; }
   public decimal TaxInformation { get; private set; }
-  public HashSet<Customer> Customers { get; private set; } = [];
+  public ICollection<Customer> Customers { get; private set; } = [];
   public Guid ReservationId { get; private set; }
   public Reservation? Reservation { get; private set; }
-  public List<Service> Services { get; private set; } = [];
+  public ICollection<Service> Services { get; private set; } = [];
 }

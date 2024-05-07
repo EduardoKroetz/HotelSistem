@@ -14,8 +14,8 @@ public interface IRoomInvoice : IEntity
     EStatus Status { get; }
     EPaymentMethod PaymentMethod { get; }
     decimal TaxInformation { get; }
-    HashSet<Customer> Customers { get; }
+    ICollection<Customer> Customers { get; }
     Guid ReservationId { get; }
     Reservation? Reservation { get; }
-    List<Service> Services { get; }
+    ICollection<Service> Services { get; }
 }
