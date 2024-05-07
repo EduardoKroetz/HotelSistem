@@ -1,3 +1,4 @@
+using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
@@ -8,6 +9,7 @@ public partial class Responsability
   { 
     ValidateName(Name);
     ValidateDescription(Description);
+    ValidatePriority(Priority);
 
     base.Validate();
   }
@@ -16,6 +18,12 @@ public partial class Responsability
   {
     if (string.IsNullOrEmpty(name))
       throw new ValidationException("Erro de validação: Informe o nome da responsabilidade.");
+  }
+
+  public void ValidatePriority(EPriority priority)
+  {
+    if ((int)priority > 5)
+      throw new ValidationException("Erro de validação: Prioridade inválida.");
   }
 
   public void ValidateDescription(string description)

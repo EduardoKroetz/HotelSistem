@@ -18,6 +18,10 @@ public partial class Responsability
   }
 
   public void ChangePriority(EPriority priority)
-  => Priority = priority;
+  {
+    ValidatePriority(priority);
+    Priority = priority;
+  }
+  
 
 }

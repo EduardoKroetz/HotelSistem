@@ -11,7 +11,7 @@ partial class Reservation
       throw new ValidationException("Erro de validação: A data de CheckIn não é a mesma da data de hoje, não é possível fazer CheckIn");
 
     Status = EReservationStatus.CheckedIn;
-    Room.ChangeStatus(ERoomStatus.Occupied);
+    Room?.ChangeStatus(ERoomStatus.Occupied);
     return this;
   }
 
@@ -23,7 +23,7 @@ partial class Reservation
       throw new ValidationException("Erro de validação: A data de CheckIn não é a mesma da data de hoje.");
 
     Status = EReservationStatus.NoShow;
-    Room.ChangeStatus(ERoomStatus.Reserved);
+    Room?.ChangeStatus(ERoomStatus.Reserved);
     return this;
   }
 
@@ -33,14 +33,14 @@ partial class Reservation
       throw new ValidationException("Erro de validação: A data de CheckIn já foi ultraprassada, não é possível cancelar a reserva.");
 
     Status = EReservationStatus.Cancelled;
-    Room.ChangeStatus(ERoomStatus.Available);
+    Room?.ChangeStatus(ERoomStatus.Available);
     return this;
   }
   
   private Reservation StatusToCheckedOut()
   {
     Status = EReservationStatus.CheckedOut;
-    Room.ChangeStatus(ERoomStatus.OutOfService);
+    Room?.ChangeStatus(ERoomStatus.OutOfService);
     return this;
   }
 }

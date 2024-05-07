@@ -8,7 +8,7 @@ namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
 public partial class Responsability : Entity, IResponsability
 {
-  internal Responsability(){}
+  internal Responsability() {}
   public Responsability(string name, string description, EPriority priority)
   {
     Name = name;

@@ -16,7 +16,7 @@ public class UserRepository<T> : GenericRepository<T>, IUserRepository<T> where 
       .Set<T>()
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetUser(x.Id, x.Email.Address, x.Name.FirstName,x.Name.LastName, x.Phone.Number))
+      .Select(x => new GetUser(x.Id, x.Name.FirstName,x.Name.LastName, x.Email.Address, x.Phone.Number))
       .FirstOrDefaultAsync();
     
 
@@ -26,7 +26,7 @@ public class UserRepository<T> : GenericRepository<T>, IUserRepository<T> where 
     return await _context
       .Set<T>()
       .AsNoTracking()
-      .Select(x => new GetUser(x.Id, x.Email.Address, x.Name.FirstName,x.Name.LastName, x.Phone.Number))
+      .Select(x => new GetUser(x.Id, x.Name.FirstName,x.Name.LastName, x.Email.Address, x.Phone.Number))
       .ToListAsync();
   }
 }
