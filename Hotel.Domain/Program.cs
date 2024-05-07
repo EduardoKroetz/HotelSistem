@@ -8,6 +8,8 @@ using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 using Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
 using Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
 using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
+using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
+using Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -63,4 +65,8 @@ void ConfigureDependencies(WebApplicationBuilder builder)
   builder.Services.AddScoped<IRoomInvoiceRepository, RoomInvoiceRepository>();
   builder.Services.AddScoped<RoomInvoiceHandler>();
   builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+  builder.Services.AddScoped<ReservationHandler>();
+  builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+  builder.Services.AddScoped<RoomHandler>();
+
 }

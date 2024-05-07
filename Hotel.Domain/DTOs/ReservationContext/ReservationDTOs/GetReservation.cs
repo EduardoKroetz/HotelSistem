@@ -29,7 +29,7 @@ public class GetReservation : IDataTransferObject
   public EReservationStatus Status { get; set; }
   public int Capacity { get; set; }
   public Guid RoomId { get; set; }
-  public ICollection<Customer> Customers { get; set; } = [];
+  public ICollection<Customer> Customers { get; set; }
   public Guid? InvoiceId { get; set; }
-  public ICollection<Service> Services { get; set; } = [];
+  public ICollection<Service> Services { get; set; }
 }
