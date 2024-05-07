@@ -1,5 +1,4 @@
 using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
-using Hotel.Domain.DTOs.User;
 using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,4 @@
 using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
-using Hotel.Domain.DTOs.User;
-using Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
 using Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
 using Microsoft.AspNetCore.Mvc;
 
