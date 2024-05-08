@@ -10,6 +10,7 @@ using Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
 using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 using Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
+using Hotel.Domain.Handlers.RoomContext.ReportHandlers;
 using Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.Repositories.Interfaces;
@@ -71,5 +72,7 @@ void ConfigureDependencies(WebApplicationBuilder builder)
   builder.Services.AddScoped<RoomHandler>();
   builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
   builder.Services.AddScoped<CategoryHandler>();
+  builder.Services.AddScoped<IReportRepository, ReportRepository>();
+  builder.Services.AddScoped<ReportHandler>();
 
 }
