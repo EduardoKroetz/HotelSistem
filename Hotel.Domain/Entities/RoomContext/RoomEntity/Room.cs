@@ -29,8 +29,8 @@ public partial class Room : Entity, IRoom
   public ERoomStatus Status { get; private set; }
   public int Capacity { get; private set; }
   public string Description { get; private set; } = string.Empty;
-  public HashSet<Service> Services { get; private set; } = [];
+  public ICollection<Service> Services { get; private set; } = [];
   public Guid CategoryId { get; private set; }
   public Category? Category { get; private set; }
-  public HashSet<Image> Images { get; private set; } = [];
+  public ICollection<Image> Images { get; private set; } = [];
 }

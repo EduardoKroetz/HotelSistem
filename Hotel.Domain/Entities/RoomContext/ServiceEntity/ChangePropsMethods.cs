@@ -23,7 +23,11 @@ public partial class Service
   => IsActive = false;
 
   public void ChangePriority(EPriority priority)
-  => Priority = priority;
+  {
+    ValidatePriority((int)priority);
+    Priority = priority;
+  }
+
 
   public void ChangeTime(int timeInMinutes)
   {

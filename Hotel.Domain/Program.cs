@@ -12,6 +12,7 @@ using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 using Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
 using Hotel.Domain.Handlers.RoomContext.ReportHandlers;
 using Hotel.Domain.Handlers.RoomContext.RoomHandlers;
+using Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -74,5 +75,7 @@ void ConfigureDependencies(WebApplicationBuilder builder)
   builder.Services.AddScoped<CategoryHandler>();
   builder.Services.AddScoped<IReportRepository, ReportRepository>();
   builder.Services.AddScoped<ReportHandler>();
+  builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+  builder.Services.AddScoped<ServiceHandler>();
 
 }

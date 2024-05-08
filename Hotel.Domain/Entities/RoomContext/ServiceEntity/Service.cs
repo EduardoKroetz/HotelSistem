@@ -11,11 +11,11 @@ namespace Hotel.Domain.Entities.RoomContext.ServiceEntity;
 public partial class Service : Entity, IService
 {
   internal Service(){}
-  public Service(string name, decimal price, bool isActive, EPriority priority, int timeInMinutes)
+  public Service(string name, decimal price, EPriority priority, int timeInMinutes)
   {
     Name = name;
     Price = price;
-    IsActive = isActive;
+    IsActive = true;
     Priority = priority;
     TimeInMinutes = timeInMinutes;
     Responsabilities = [];
@@ -28,9 +28,9 @@ public partial class Service : Entity, IService
   public bool IsActive { get; private set; }
   public EPriority Priority { get; private set; }
   public int TimeInMinutes { get; private set; }
-  public HashSet<Responsability> Responsabilities { get; private set; } = [];
-  public HashSet<Reservation> Reservations { get; private set; }  = [];
-  public HashSet<RoomInvoice> RoomInvoices { get; private set; } = [];
-  public HashSet<Room> Rooms { get; private set; } = [];
+  public ICollection<Responsability> Responsabilities { get; private set; } = [];
+  public ICollection<Reservation> Reservations { get; private set; }  = [];
+  public ICollection<RoomInvoice> RoomInvoices { get; private set; } = [];
+  public ICollection<Room> Rooms { get; private set; } = [];
 
 }

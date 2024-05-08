@@ -12,5 +12,5 @@ public interface IService : IEntity
   bool IsActive { get; }
   EPriority Priority { get; }
   int TimeInMinutes { get; }
-  HashSet<Responsability> Responsabilities { get; }
+  ICollection<Responsability> Responsabilities { get; }
 }

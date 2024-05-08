@@ -12,8 +12,8 @@ public interface IRoom
     ERoomStatus Status { get; }
     int Capacity { get; }
     string Description { get; }
-    HashSet<Service> Services { get; }
+    ICollection<Service> Services { get; }
     Guid CategoryId { get; }
     Category? Category { get; }
-    HashSet<Image> Images { get; }
+    ICollection<Image> Images { get; }
 }

@@ -31,7 +31,7 @@ public partial class Report
 
   public void ValidatePriority(int priority) 
   {
-    if (priority > 5 && priority < 1)
+    if (priority > 5 || priority < 1)
       throw new ValidationException("Erro de validação: Prioridade inválida.");
 
   }

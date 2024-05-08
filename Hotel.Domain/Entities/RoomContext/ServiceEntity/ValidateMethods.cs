@@ -9,6 +9,7 @@ public partial class Service
     ValidateName(Name);
     ValidatePrice(Price);
     ValidateTimeInMinutes(TimeInMinutes);
+    ValidatePriority((int)Priority);
 
     base.Validate();
   }
@@ -31,6 +32,12 @@ public partial class Service
     if (string.IsNullOrEmpty(name))
       throw new ValidationException("Erro de validação: O nome do serviço é obrigatório.");
   }
-  
+
+  public void ValidatePriority(int priority) 
+  {
+    if (priority > 5 || priority < 1)
+      throw new ValidationException("Erro de validação: Prioridade inválida.");
+
+  }
 
 }
