@@ -30,7 +30,6 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : E
   {
     return await _context
       .Set<TEntity>()
-      .AsNoTracking()
       .FirstOrDefaultAsync(x => x.Id == id);
   }
 

@@ -12,6 +12,7 @@ public partial class FeedbackHandler
       throw new ArgumentException("Feedback não encontrado.");
 
     feedback.ChangeComment(model.Comment);
+    feedback.ChangeRate(model.Rate);
 
     _repository.Update(feedback);
     await _repository.SaveChangesAsync();

@@ -13,7 +13,6 @@ public class CustomerRepository :  UserRepository<Customer> ,ICustomerRepository
   {
     return await _context
       .Customers
-      .AsNoTracking()
       .Where(x => CustomersIds.Contains(x.Id))
       .ToListAsync();
   }

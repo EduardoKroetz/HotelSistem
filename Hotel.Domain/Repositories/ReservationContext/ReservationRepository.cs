@@ -1,5 +1,6 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+using Hotel.Domain.DTOs.User;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,20 @@ public class ReservationRepository :  GenericRepository<Reservation> ,IReservati
       .Where(x => x.Id == id)
       .Include(x => x.Customers)
       .Include(x => x.Services)
-      .Select(x => new GetReservation(x.Id,x.DailyRate,x.HostedDays,x.CheckIn,x.CheckOut,x.Status,x.Capacity,x.RoomId,x.Customers,x.InvoiceId,x.Services))
+      .Select(x => new GetReservation(x.Id,
+        x.DailyRate,
+        x.HostedDays,
+        x.CheckIn,
+        x.CheckOut,
+        x.Status,
+        x.Capacity,
+        x.RoomId,
+        new List<GetUser>(
+          x.Customers.Select(
+            c => new GetUser(c.Id,c.Name.FirstName,c.Name.LastName,c.Email.Address,c.Phone.Number)
+        )),
+        x.InvoiceId,
+        x.Services))
       .FirstOrDefaultAsync();
     
   }

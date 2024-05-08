@@ -19,7 +19,16 @@ public class RoomRepository :  GenericRepository<Room> ,IRoomRepository
       .Include(x => x.Services)
       .Include(x => x.Category)
       .Include(x => x.Images)
-      .Select(x => new GetRoom(x.Id,x.Number,x.Price,x.Status,x.Capacity,x.Description,x.Services,x.Category,x.Images))
+      .Select(x => new GetRoom(
+        x.Id,
+        x.Number,
+        x.Price,
+        x.Status,
+        x.Capacity,
+        x.Description,
+        x.Services,
+        new GetCategory(x.CategoryId, x.Category!.Name ,x.Category!.Description,x.Category!.AveragePrice) ,
+        x.Images))
       .FirstOrDefaultAsync();
   
   }

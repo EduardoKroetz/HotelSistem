@@ -25,7 +25,7 @@ public partial class ReservationHandler : IHandler
   {
     var room = await _roomRepository.GetEntityByIdAsync(model.RoomId);
     if (room == null)
-      throw new ArgumentException("Quarto não encontrado.");
+      throw new ArgumentException("Hospedagem não encontrada.");
 
     //Buscar todos os Customers através dos IDs passados
     var customers = new List<Customer>(
