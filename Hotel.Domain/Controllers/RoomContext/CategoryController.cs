@@ -1,42 +1,42 @@
 using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
-using Hotel.Domain.Handlers.RoomContext.RoomHandlers;
+using Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.RoomContext;
 
-public class RoomController : ControllerBase
+public class CategoryController : ControllerBase
 {
-  private readonly RoomHandler _handler;
+  private readonly CategoryHandler _handler;
 
-  public RoomController(RoomHandler handler)
+  public CategoryController(CategoryHandler handler)
   => _handler = handler;
 
 
-  [HttpGet("v1/rooms")]
+  [HttpGet("v1/categories")]
   public async Task<IActionResult> GetAsync()
   => Ok(await _handler.HandleGetAsync());
   
-  [HttpGet("v1/rooms/{Id:guid}")]
+  [HttpGet("v1/categories/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleGetByIdAsync(id));
   
-  [HttpPut("v1/rooms/{Id:guid}")]
+  [HttpPut("v1/categories/{Id:guid}")]
   public async Task<IActionResult> PutAsync(
-    [FromBody]EditorRoom model,
+    [FromBody]EditorCategory model,
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleUpdateAsync(model,id));
 
-  [HttpPost("v1/rooms")]
+  [HttpPost("v1/categories")]
   public async Task<IActionResult> PostAsync(
-    [FromBody]EditorRoom model
+    [FromBody]EditorCategory model
   )
   => Ok(await _handler.HandleCreateAsync(model));
   
   
-  [HttpDelete("v1/rooms/{Id:guid}")]
+  [HttpDelete("v1/categories/{Id:guid}")]
   public async Task<IActionResult> DeleteAsync(
     [FromRoute]Guid id
   )
