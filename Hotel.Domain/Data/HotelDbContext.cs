@@ -1,4 +1,3 @@
-using System.Reflection;
 using Hotel.Domain.Data.Mappings.AdminContext;
 using Hotel.Domain.Data.Mappings.CustomerContext;
 using Hotel.Domain.Data.Mappings.EmployeeContext;

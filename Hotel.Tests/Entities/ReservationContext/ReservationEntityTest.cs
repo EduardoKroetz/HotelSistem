@@ -174,7 +174,7 @@ public class ReservationEntityTest
   [TestMethod]
   public void RoomAtPrice50_For3Days_WithTwoServicesAtPrice5_TheTotalPriceMustBe160()
   {
-    var service = new Service("Serviço de limpeza",5m,false,EPriority.Low,20);
+    var service = new Service("Serviço de limpeza",5m,EPriority.Low,20);
     var reservation = new Reservation(TestParameters.Room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.ChangeCheckOut(ThreeDaysFromNow);
     reservation.AddService(service);
@@ -186,8 +186,8 @@ public class ReservationEntityTest
   public void RoomAtPrice19_For14Days_With3ServicesAtPrice5_With7ServicesAtPrice15_TheTotalPriceMustBe386()
   {
     var room = new Room(23,19m,7,"Um quarto para hospedagem.",TestParameters.Category.Id);
-    var cleanService = new Service("Serviço de limpeza",5m,false,EPriority.Low,20);
-    var lunchService = new Service("Almoço",15m,false,EPriority.Medium,50);
+    var cleanService = new Service("Serviço de limpeza",5m,EPriority.Low,20);
+    var lunchService = new Service("Almoço",15m,EPriority.Medium,50);
     var reservation = new Reservation(room,CurrentDate.Date,[TestParameters.Customer]);
     reservation.ChangeCheckOut(CurrentDate.AddDays(14));
 

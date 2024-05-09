@@ -67,12 +67,13 @@ public class RoomEntityTest
   }
 
   [TestMethod]
+  [ExpectedException(typeof(ValidationException))]
   public void AddSameServiceToRoom_DontAdded()
   {
     var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.AddService(TestParameters.Service);
     room.AddService(TestParameters.Service);
-    Assert.AreEqual(1, room.Services.Count);
+    Assert.Fail();
   }
 
   [TestMethod]
@@ -85,7 +86,8 @@ public class RoomEntityTest
   }
 
   [TestMethod]
-  public void RemoveInexistentServiceFromRoom_DoNothing()
+  [ExpectedException(typeof(ValidationException))]
+  public void RemoveNonExistServiceFromRoom_DoNothing()
   {
     var room = new Room(931,15m,5,"Quarto com alta performance de execução.",TestParameters.Category.Id);
     room.RemoveService(TestParameters.Service);
