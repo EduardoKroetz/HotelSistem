@@ -54,7 +54,7 @@ void ConfigureDependencies(WebApplicationBuilder builder)
     opt.UseSqlServer(Configuration.ConnectionString);
   });
   builder.Services.AddScoped<IAdminRepository ,AdminRepository>();
-  builder.Services.AddScoped<IPermissionRepository ,PermisisionRepository>();
+  builder.Services.AddScoped<IPermissionRepository ,PermissionRepository>();
   builder.Services.AddScoped<AdminHandler>();
   builder.Services.AddScoped<PermissionHandler>();
   builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();

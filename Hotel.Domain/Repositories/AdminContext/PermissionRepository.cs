@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Repositories;
 
-public class PermisisionRepository : GenericRepository<Permission> ,IPermissionRepository
+public class PermissionRepository : GenericRepository<Permission> ,IPermissionRepository
 {
-  public PermisisionRepository(HotelDbContext context) : base(context) {}
+  public PermissionRepository(HotelDbContext context) : base(context) {}
 
    public async Task<GetPermission?> GetByIdAsync(Guid id)
   {
