@@ -19,7 +19,6 @@ public class Entity : IEntity
     IsValid = true;
   }
 
-  public void ChangeId(Guid id)
-  => Id = id;
-
+  public void ChangeCreatedAt(DateTime createdAt)
+  => CreatedAt = createdAt;
 }
