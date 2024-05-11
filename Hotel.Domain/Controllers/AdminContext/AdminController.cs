@@ -1,3 +1,4 @@
+using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.DTOs.User;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +15,9 @@ public class AdminController : ControllerBase
   }
 
   [HttpGet("v1/admins")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
+  public async Task<IActionResult> GetAsync(
+    [FromBody]AdminQuery queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("v1/admins/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(
