@@ -3,7 +3,6 @@ using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.ValueObjects;
 
-
 namespace Hotel.Tests.Repositories.AdminContext;
 
 [TestClass]
@@ -11,11 +10,13 @@ public class AdminRepositoryTest : GenericRepositoryTest<Admin,AdminRepository>
 {
   private static ConfigMockConnection _mockConnection = null!;
   private static AdminRepository _adminRepository = null!;
-  private static Admin _adminToBeCreated = new(new Name("Vinicius", "Pedro"), new Email("joaopedro@gmail.com"), new Phone("+55 (55) 33112-3456"), "1254", EGender.Masculine, DateTime.Now.AddYears(-20), new Address("Brazil", "São Paulo", "Avenida Paulista", 999));
-  private static readonly List<Admin> _admins = [];
-  public AdminRepositoryTest() : base(_adminRepository,_admins,_adminToBeCreated) {}
+  private static readonly Admin _adminToBeCreated = new(new Name("Vinicius", "Santos"), new Email("viniciuos@gmail.com"), new Phone("+55 (55) 33112-3456"), "1234", EGender.Masculine, DateTime.Now.AddYears(-20), new Address("Brazil", "São Paulo", "Avenida Paulista", 999));
 
-  //Inicia antes do construtor
+  private static readonly List<Admin> _admins = [];
+
+
+  public AdminRepositoryTest() : base(_adminRepository,_admins,_adminToBeCreated) { }
+
   [ClassInitialize]
   public static async Task Setup(TestContext context)
   {
@@ -42,20 +43,19 @@ public class AdminRepositoryTest : GenericRepositoryTest<Admin,AdminRepository>
         new Admin(new Name("Ana", "Santos"), new Email("anasantos@example.com"), new Phone("+55 (31) 98765-4321"), "ana456", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Belo Horizonte", "Avenida Afonso Pena", 456)),
         new Admin(new Name("Rafael", "Silveira"), new Email("rafaelsilveira@example.com"), new Phone("+55 (19) 98765-4321"), "rafa789", EGender.Masculine, DateTime.Now.AddYears(-32), new Address("Brazil", "Campinas", "Rua Barão de Jaguara", 789))
       ]
-    ); ;
-    
+    );
+
     _mockConnection.Context.Admins.AddRange(_admins);
     await _mockConnection.Context.SaveChangesAsync();
   }
 
   [TestCleanup]
   public void CleanupTest()
-=> _admins.Clear();
+  => _admins.Clear();
 
 
- 
   //Testes
-  
+
   [TestMethod]
   public async Task GetByIdAsync_ValidId_ReturnsAdmin()
   {
@@ -65,13 +65,13 @@ public class AdminRepositoryTest : GenericRepositoryTest<Admin,AdminRepository>
     Assert.AreEqual("João", admin.FirstName);
   }
 
-  //Testes
   [TestMethod]
-  public async Task GetAsync_ReturnAdmins()
+  public async Task GetAsync_ReturnsPermissions()
   {
     var admins = await _adminRepository.GetAsync();
 
     Assert.IsNotNull(admins);
     Assert.IsTrue(admins.Any());
   }
+
 }

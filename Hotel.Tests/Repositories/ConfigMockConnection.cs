@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Hotel.Tests.Repositories;
 public class ConfigMockConnection 
 {
-   
-  private SqliteConnection _connection;
+  
+  public SqliteConnection _connection;
   public HotelDbContext Context { get; private set; }
 
   public ConfigMockConnection()
@@ -24,12 +24,8 @@ public class ConfigMockConnection
 
   public async Task Initialize()
   => await Context.Database.EnsureCreatedAsync();
-
-  public void Dispose() {
-      Context?.Dispose();
-      _connection?.Dispose();
-  }
-    
-
+  
+  public void Dispose()
+  => _connection.Dispose();
 }
 

@@ -1,8 +1,6 @@
 ﻿using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Repositories;
 
-
-
 namespace Hotel.Tests.Repositories.AdminContext;
 
 [TestClass]
@@ -14,7 +12,6 @@ public class PermissionRepositoryTest : GenericRepositoryTest<Permission, Permis
   private static readonly List<Permission> _permissions = [];
   public PermissionRepositoryTest() : base(_permissionRepository, _permissions, _permissionToBeCreated) { }
 
-  //Inicia antes do construtor
   [ClassInitialize]
   public static async Task Setup(TestContext context)
   {
@@ -29,6 +26,7 @@ public class PermissionRepositoryTest : GenericRepositoryTest<Permission, Permis
   public static void Cleanup()
   => _mockConnection.Dispose();
 
+
   [TestInitialize]
   public async Task SetupTest()
   {
@@ -41,7 +39,6 @@ public class PermissionRepositoryTest : GenericRepositoryTest<Permission, Permis
         new Permission("Deletar funcionário","Deletar funcionário"),
       ]
     );
-    ;
 
     _mockConnection.Context.Permissions.AddRange(_permissions);
     await _mockConnection.Context.SaveChangesAsync();
@@ -50,7 +47,6 @@ public class PermissionRepositoryTest : GenericRepositoryTest<Permission, Permis
   [TestCleanup]
   public void CleanupTest()
   => _permissions.Clear();
-
 
 
   //Testes
