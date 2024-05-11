@@ -20,9 +20,7 @@ public class AdminRepositoryTest : GenericRepositoryTest<Admin,AdminRepository>
   [ClassInitialize]
   public static async Task Setup(TestContext context)
   {
-    var mockConnection = new ConfigMockConnection();
-    await mockConnection.Initialize();
-    _mockConnection = mockConnection;
+    _mockConnection = await InitializeMockConnection();
 
     _adminRepository = new AdminRepository(_mockConnection.Context);
   }

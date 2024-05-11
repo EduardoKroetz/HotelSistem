@@ -15,9 +15,7 @@ public class PermissionRepositoryTest : GenericRepositoryTest<Permission, Permis
   [ClassInitialize]
   public static async Task Setup(TestContext context)
   {
-    var mockConnection = new ConfigMockConnection();
-    await mockConnection.Initialize();
-    _mockConnection = mockConnection;
+    _mockConnection = await InitializeMockConnection();
 
     _permissionRepository = new PermissionRepository(_mockConnection.Context);
   }

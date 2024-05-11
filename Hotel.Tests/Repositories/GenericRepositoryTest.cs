@@ -19,6 +19,12 @@ public class GenericRepositoryTest<T,TRepository>
     _entityToBeCreated = entityToBeCreated;
   }
 
+  public async static Task<ConfigMockConnection> InitializeMockConnection()
+  {
+    var mockConnection = new ConfigMockConnection();
+    await mockConnection.Initialize();
+    return mockConnection;
+  }
 
   [TestMethod]
   public async Task CreateAsync_MustCreate()
