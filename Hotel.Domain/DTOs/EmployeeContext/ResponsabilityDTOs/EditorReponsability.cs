@@ -1,8 +1,9 @@
+using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 
-public class EditorResponsability
+public class EditorResponsability : IDataTransferObject
 {
   public EditorResponsability(string name, string description, EPriority priority)
   {

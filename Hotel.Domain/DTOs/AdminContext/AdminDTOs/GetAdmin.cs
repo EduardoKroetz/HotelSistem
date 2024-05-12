@@ -1,24 +1,11 @@
-﻿namespace Hotel.Domain.DTOs.AdminContext.AdminDTOs;
+﻿using Hotel.Domain.DTOs.Base.User;
 
-public class GetAdmin
+namespace Hotel.Domain.DTOs.AdminContext.AdminDTOs;
+
+public class GetAdmin : GetUser
 {
-  public GetAdmin(Guid id, string firstName, string lastName, string emailAddress, string phoneNumber, bool isRootAdmin, DateTime createdAt)
-  {
-    Id = id;
-    FirstName = firstName;
-    LastName = lastName;
-    Email = emailAddress;
-    Phone = phoneNumber;
-    IsRootAdmin = isRootAdmin;
-    CreatedAt = createdAt;
-  }
-  public Guid Id { get; set; }
-  public string FirstName { get; set; }
-  public string LastName { get; set; }
-  public string Email { get; set; }
-  public string Phone { get; set; }
+  public GetAdmin(Guid id, string firstName, string lastName, string emailAddress, string phoneNumber, bool isRootAdmin, DateTime createdAt) : base(id,firstName,lastName,emailAddress,phoneNumber,createdAt)
+  => IsRootAdmin = isRootAdmin;
   public bool IsRootAdmin { get; set; }
-  public DateTime CreatedAt { get; set; }
-
 
 }

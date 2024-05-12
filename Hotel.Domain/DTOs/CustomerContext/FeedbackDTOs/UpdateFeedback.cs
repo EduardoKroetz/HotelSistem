@@ -1,6 +1,8 @@
+using Hotel.Domain.DTOs.Interfaces;
+
 namespace Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 
-public class UpdateFeedback
+public class UpdateFeedback : IDataTransferObject
 {
   public UpdateFeedback(string comment, int rate)
   {

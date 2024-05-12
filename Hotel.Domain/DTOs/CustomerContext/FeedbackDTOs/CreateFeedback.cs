@@ -1,6 +1,8 @@
+using Hotel.Domain.DTOs.Interfaces;
+
 namespace Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 
-public class CreateFeedback
+public class CreateFeedback : IDataTransferObject
 {
   public CreateFeedback(string comment, int rate, Guid customerId, Guid reservationId, Guid roomId)
   {

@@ -1,6 +1,8 @@
+using Hotel.Domain.DTOs.Interfaces;
+
 namespace Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 
-public class GetFeedback
+public class GetFeedback : IDataTransferObject
 {
   public GetFeedback(Guid id,string comment, int rate,int likes , int deslikes ,Guid customerId, Guid reservationId, Guid roomId)
   {

@@ -1,6 +1,5 @@
 using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.DTOs.Interfaces;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.RoomContext.ServiceDTOs;

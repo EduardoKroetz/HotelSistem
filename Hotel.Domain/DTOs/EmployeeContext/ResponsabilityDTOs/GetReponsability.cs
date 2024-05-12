@@ -1,8 +1,9 @@
+using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 
-public class GetReponsability
+public class GetReponsability : IDataTransferObject
 {
   public GetReponsability(Guid id,string name, string description, EPriority priority)
   {
