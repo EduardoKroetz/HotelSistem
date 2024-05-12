@@ -1,5 +1,5 @@
 using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.User;
+using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Base.Interfaces;
@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Repositories;
 
-public class UserRepository<T> : GenericRepository<T>, IUserRepository<T> where T : User
+public abstract class UserRepository<T> : GenericRepository<T>, IUserRepository<T> where T : User
 {
   public UserRepository(HotelDbContext context) : base(context) {}
 
@@ -17,21 +17,13 @@ public class UserRepository<T> : GenericRepository<T>, IUserRepository<T> where 
       .Set<T>()
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetUser(x.Id, x.Name.FirstName,x.Name.LastName, x.Email.Address, x.Phone.Number))
+      .Select(x => new GetUser(x.Id, x.Name.FirstName,x.Name.LastName, x.Email.Address, x.Phone.Number,x.CreatedAt))
       .FirstOrDefaultAsync();
     
 
   }
-  public async Task<IEnumerable<GetUser>> GetAsync()
-  {
-    return await _context
-      .Set<T>()
-      .AsNoTracking()
-      .Select(x => new GetUser(x.Id, x.Name.FirstName,x.Name.LastName, x.Email.Address, x.Phone.Number))
-      .ToListAsync();
-  }
 
-  public virtual async Task<List<T>> Query(UserQuery queryParameters)
+  public virtual IQueryable<T> GetAsync(UserQueryParameters queryParameters)
   {
     var query = _context.Set<T>().AsQueryable();
 
@@ -50,14 +42,9 @@ public class UserRepository<T> : GenericRepository<T>, IUserRepository<T> where 
     if (queryParameters.DateOfBirth.HasValue)
       query = query.Where(x => x.DateOfBirth != null && x.DateOfBirth.Value.Date == queryParameters.DateOfBirth.Value.Date);
 
-    if (queryParameters.CreatedAt.HasValue && queryParameters.CreatedAtOperator != null)
-      query = query.FilterCreatedAtOperator(queryParameters.CreatedAtOperator, queryParameters.CreatedAt.Value);
+    query = query.BaseQuery(queryParameters);
 
-    if (queryParameters.CreatedAtOperator != null)
-      query = query.FilterOrderByCreatedAtOperator(queryParameters.CreatedAtOperator);
-
-    var result = await query.ToListAsync();
-
-    return result;
+    return query;
   }
+
 }
