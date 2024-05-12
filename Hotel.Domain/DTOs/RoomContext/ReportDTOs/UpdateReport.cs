@@ -13,10 +13,10 @@ public class UpdateReport : IDataTransferObject
     Resolution = resolution;
   }
 
-  public string Summary { get; private set; } = string.Empty;
-  public string Description { get; private set; } = string.Empty;
+  public string Summary { get; private set; }
+  public string Description { get; private set; }
   public EPriority Priority { get; private set; }
-  public string Resolution { get; private set; } = string.Empty;
+  public string Resolution { get; private set; }
 
 }
 

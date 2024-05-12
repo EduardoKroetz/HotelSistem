@@ -12,8 +12,8 @@ public class CreateReservation : IDataTransferObject
     Customers = customers;
   }
 
-  public DateTime CheckIn { get; set; }
-  public DateTime? CheckOut { get; set; }
-  public Guid RoomId { get; set; }
-  public List<Guid> Customers { get; set; }
+  public DateTime CheckIn { get; private set; }
+  public DateTime? CheckOut { get; private set; }
+  public Guid RoomId { get; private set; }
+  public List<Guid> Customers { get; private set; }
 }

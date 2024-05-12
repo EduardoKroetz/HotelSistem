@@ -13,9 +13,9 @@ public class EditorService : IDataTransferObject
     TimeInMinutes = timeInMinutes;
   }
 
-  public string Name { get; set; }
-  public decimal Price { get; set; }
-  public EPriority Priority { get; set; }
-  public int TimeInMinutes { get; set; }
+  public string Name { get; private set; }
+  public decimal Price { get; private set; }
+  public EPriority Priority { get; private set; }
+  public int TimeInMinutes { get; private set; }
 } 
   

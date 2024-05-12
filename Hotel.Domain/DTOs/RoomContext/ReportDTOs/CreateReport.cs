@@ -14,11 +14,10 @@ public class CreateReport : IDataTransferObject
     EmployeeId = employeeId;
   }
 
-  public string Summary { get; set; }
-  public string Description { get; set; }
-  public EPriority Priority { get; set; }
-  public string Resolution { get; set; }
-  public Guid EmployeeId { get; set; 
-}
+  public string Summary { get; private set; }
+  public string Description { get; private set; }
+  public EPriority Priority { get; private set; }
+  public string Resolution { get; private set; }
+  public Guid EmployeeId { get; private set; }
 }
 

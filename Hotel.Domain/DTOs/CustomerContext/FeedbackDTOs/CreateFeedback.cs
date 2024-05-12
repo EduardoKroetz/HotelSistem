@@ -13,10 +13,10 @@ public class CreateFeedback : IDataTransferObject
     ReservationId = reservationId;
   }
 
-  public string Comment { get; set; }
-  public int Rate { get; set; }
-  public Guid CustomerId { get; set; }
-  public Guid ReservationId { get; set; }
-  public Guid RoomId { get; set; }
+  public string Comment { get; private set; }
+  public int Rate { get; private set; }
+  public Guid CustomerId { get; private set; }
+  public Guid ReservationId { get; private set; }
+  public Guid RoomId { get; private set; }
 }
 

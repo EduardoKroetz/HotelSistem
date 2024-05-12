@@ -23,8 +23,8 @@ public class Response<T> : IDataTransferObject
     Errors.Add(error);
   }
 
-  public int Status { get; set; }
-  public string Message { get; set; } = "";
-  public T? Data { get; set; }
-  public List<string> Errors { get; set; } = [];
+  public int Status { get; private set; }
+  public string Message { get; private set; } = "";
+  public T? Data { get; private set; }
+  public List<string> Errors { get; private set; } = [];
 }

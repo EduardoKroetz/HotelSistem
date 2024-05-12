@@ -15,13 +15,13 @@ public class GetFeedback : IDataTransferObject
     CustomerId = customerId;
     ReservationId = reservationId;
   }
-  public Guid Id { get; set; }
-  public string Comment { get; set; }
-  public int Rate { get; set; }
-  public int Likes { get; set; }
-  public int Deslikes { get; set; }
-  public Guid CustomerId { get; set; }
-  public Guid ReservationId { get; set; }
-  public Guid RoomId { get; set; }
+  public Guid Id { get; private set; }
+  public string Comment { get; private set; }
+  public int Rate { get; private set; }
+  public int Likes { get; private set; }
+  public int Deslikes { get; private set; }
+  public Guid CustomerId { get; private set; }
+  public Guid ReservationId { get; private set; }
+  public Guid RoomId { get; private set; }
 }
 

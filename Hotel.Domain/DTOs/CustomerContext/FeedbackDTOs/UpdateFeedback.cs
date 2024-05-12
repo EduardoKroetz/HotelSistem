@@ -10,7 +10,7 @@ public class UpdateFeedback : IDataTransferObject
     Rate = rate;
   }
 
-  public string Comment { get; set; }
-  public int Rate { get; set; }
+  public string Comment { get; private set; }
+  public int Rate { get; private set; }
 }
 

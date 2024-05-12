@@ -16,12 +16,12 @@ public class GetReport : IDataTransferObject
     Status = status;
   }
 
-  public Guid Id { get; set; }
-  public string Summary { get; set; }
-  public EStatus Status { get; set; }
-  public string Description { get; set; }
-  public EPriority Priority { get; set; }
-  public string Resolution { get; set; }
-  public Guid EmployeeId { get; set; }
+  public Guid Id { get; private set; }
+  public string Summary { get; private set; }
+  public EStatus Status { get; private set; }
+  public string Description { get; private set; }
+  public EPriority Priority { get; private set; }
+  public string Resolution { get; private set; }
+  public Guid EmployeeId { get; private set; }
 }
 

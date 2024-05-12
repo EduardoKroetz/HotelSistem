@@ -17,14 +17,14 @@ public class GetReservationCollection : IDataTransferObject
     RoomId = roomId;
     InvoiceId = invoiceId;
   }
-  public Guid Id { get; set; }
-  public decimal DailyRate { get; set; }
-  public int? HostedDays { get; set; }
-  public DateTime CheckIn { get; set; }
-  public DateTime? CheckOut { get;set; }
-  public EReservationStatus Status { get; set; }
-  public int Capacity { get; set; }
-  public Guid RoomId { get; set; }
-  public Guid? InvoiceId { get; set; }
+  public Guid Id { get; private set; }
+  public decimal DailyRate { get; private set; }
+  public int? HostedDays { get; private set; }
+  public DateTime CheckIn { get; private set; }
+  public DateTime? CheckOut { get;private set; }
+  public EReservationStatus Status { get; private set; }
+  public int Capacity { get; private set; }
+  public Guid RoomId { get; private set; }
+  public Guid? InvoiceId { get; private set; }
 
 }
