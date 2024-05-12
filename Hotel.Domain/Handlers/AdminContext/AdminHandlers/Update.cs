@@ -1,5 +1,5 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.User;
+using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;

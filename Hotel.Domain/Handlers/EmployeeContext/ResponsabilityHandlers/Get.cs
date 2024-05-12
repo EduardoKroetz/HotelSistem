@@ -5,9 +5,9 @@ namespace Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
 
 public partial class ResponsabilityHandler
 {
-  public async Task<Response<IEnumerable<GetReponsability>>> HandleGetAsync()
+  public async Task<Response<IEnumerable<GetReponsability>>> HandleGetAsync(ResponsabilityQueryParameters queryParameters)
   {
-    var reponsabilities = await _repository.GetAsync();
+    var reponsabilities = await _repository.GetAsync(queryParameters);
     return new Response<IEnumerable<GetReponsability>>(200,"", reponsabilities);
   }
 } 

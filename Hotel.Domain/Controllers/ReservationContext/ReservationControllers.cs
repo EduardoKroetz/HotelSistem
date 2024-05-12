@@ -1,8 +1,8 @@
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hotel.Domain.Controllers.CustomerContext;
+namespace Hotel.Domain.Controllers.ReservationContext;
 
 public class ReservationController : ControllerBase
 {
@@ -13,27 +13,28 @@ public class ReservationController : ControllerBase
 
 
   [HttpGet("v1/reservations")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
-  
+  public async Task<IActionResult> GetAsync(
+  [FromBody] ReservationQueryParameters queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
+
   [HttpGet("v1/reservations/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(
-    [FromRoute]Guid id
+    [FromRoute] Guid id
   )
   => Ok(await _handler.HandleGetByIdAsync(id));
-  
+
 
   [HttpPost("v1/reservations")]
   public async Task<IActionResult> PostAsync(
-    [FromBody]CreateReservation model
+    [FromBody] CreateReservation model
   )
   => Ok(await _handler.HandleCreateAsync(model));
-  
-  
+
+
   [HttpDelete("v1/reservations/{Id:guid}")]
   public async Task<IActionResult> DeleteAsync(
-    [FromRoute]Guid id
+    [FromRoute] Guid id
   )
   => Ok(await _handler.HandleDeleteAsync(id));
-  
+
 }

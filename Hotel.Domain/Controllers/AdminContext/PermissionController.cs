@@ -1,4 +1,5 @@
 using Hotel.Domain.DTOs.AdminContext.PermissionDTOs;
+using Hotel.Domain.DTOs.Base;
 using Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,8 +15,8 @@ public class PermissionController : ControllerBase
   }
 
   [HttpGet("v1/permissions")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
+  public async Task<IActionResult> GetAsync([FromBody]PermissionQueryParameters queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("v1/permissions/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(

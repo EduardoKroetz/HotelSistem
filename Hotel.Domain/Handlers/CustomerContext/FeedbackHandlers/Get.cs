@@ -5,9 +5,9 @@ namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 
 public partial class FeedbackHandler
 {
-  public async Task<Response<IEnumerable<GetFeedback>>> HandleGetAsync()
+  public async Task<Response<IEnumerable<GetFeedback>>> HandleGetAsync(FeedbackQueryParameters queryParameters)
   {
-    var feedbacks = await _repository.GetAsync();
+    var feedbacks = await _repository.GetAsync(queryParameters);
     return new Response<IEnumerable<GetFeedback>>(200,"", feedbacks);
   }
 }

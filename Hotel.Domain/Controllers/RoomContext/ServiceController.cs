@@ -1,3 +1,4 @@
+using Hotel.Domain.DTOs.Base;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +14,9 @@ public class ServiceController : ControllerBase
 
 
   [HttpGet("v1/services")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
+  public async Task<IActionResult> GetAsync(
+  [FromBody] ServiceQueryParameters queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("v1/services/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(

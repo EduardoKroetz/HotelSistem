@@ -1,8 +1,8 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.User;
+using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Handlers.Interfaces;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;

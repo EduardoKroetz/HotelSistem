@@ -1,4 +1,4 @@
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+using Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 using Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,8 +13,9 @@ public class RoomController : ControllerBase
 
 
   [HttpGet("v1/rooms")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
+  public async Task<IActionResult> GetAsync(
+  [FromBody] RoomQueryParameters queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("v1/rooms/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(

@@ -2,7 +2,8 @@ using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Handlers.Interfaces;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.PaymentContext;
+using Hotel.Domain.Repositories.Interfaces.ReservationContext;
 
 
 namespace Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;

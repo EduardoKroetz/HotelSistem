@@ -2,7 +2,8 @@ using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
 using Hotel.Domain.Handlers.Interfaces;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
+using Hotel.Domain.Repositories.Interfaces.RoomContext;
 
 namespace Hotel.Domain.Handlers.RoomContext.ReportHandlers;
 

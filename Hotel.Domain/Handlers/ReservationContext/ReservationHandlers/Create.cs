@@ -1,10 +1,12 @@
 using System.Collections.ObjectModel;
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Handlers.Interfaces;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.CustomerContext;
+using Hotel.Domain.Repositories.Interfaces.ReservationContext;
+using Hotel.Domain.Repositories.Interfaces.RoomContext;
 
 namespace Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 

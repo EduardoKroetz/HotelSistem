@@ -5,9 +5,9 @@ namespace Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 
 public partial class ServiceHandler
 {
-  public async Task<Response<IEnumerable<GetServiceCollection>>> HandleGetAsync()
+  public async Task<Response<IEnumerable<GetServiceCollection>>> HandleGetAsync(ServiceQueryParameters queryParameters)
   {
-    var services = await _repository.GetAsync();
+    var services = await _repository.GetAsync(queryParameters);
     return new Response<IEnumerable<GetServiceCollection>>(200,"", services);
   }
 }

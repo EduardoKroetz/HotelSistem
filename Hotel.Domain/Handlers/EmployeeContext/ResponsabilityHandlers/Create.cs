@@ -2,7 +2,7 @@ using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Handlers.Interfaces;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 
 namespace Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
 

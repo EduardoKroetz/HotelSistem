@@ -1,4 +1,4 @@
-using Hotel.Domain.DTOs.User;
+using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,8 +14,9 @@ public class CustomerController : ControllerBase
   }
 
   [HttpGet("v1/customers")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
+  public async Task<IActionResult> GetAsync(
+    [FromBody]UserQueryParameters queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("v1/customers/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(

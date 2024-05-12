@@ -2,7 +2,7 @@ using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.AdminContext.PermissionDTOs;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Handlers.Interfaces;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.AdminContext;
 
 namespace Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
 

@@ -1,3 +1,4 @@
+using Hotel.Domain.DTOs.Base;
 using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +15,9 @@ public class FeedbackController : ControllerBase
   }
 
   [HttpGet("v1/feedbacks")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
+  public async Task<IActionResult> GetAsync(
+  [FromBody] FeedbackQueryParameters queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("v1/feedbacks/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(

@@ -1,5 +1,5 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.User;
+using Hotel.Domain.DTOs.Base.User;
 
 namespace Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 

@@ -1,5 +1,5 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 namespace Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 

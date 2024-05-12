@@ -1,11 +1,8 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
-using Hotel.Domain.DTOs.User;
-using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 using Hotel.Domain.Handlers.Interfaces;
-using Hotel.Domain.Repositories.Interfaces;
-using Hotel.Domain.ValueObjects;
+using Hotel.Domain.Repositories.Interfaces.CustomerContext;
 
 namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 

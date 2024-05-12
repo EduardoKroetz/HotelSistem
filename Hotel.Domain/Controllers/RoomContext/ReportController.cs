@@ -13,8 +13,9 @@ public class ReportController : ControllerBase
 
 
   [HttpGet("v1/reports")]
-  public async Task<IActionResult> GetAsync()
-  => Ok(await _handler.HandleGetAsync());
+  public async Task<IActionResult> GetAsync(
+  [FromBody] ReportQueryParameters queryParameters)
+  => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("v1/reports/{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(
