@@ -1,6 +1,8 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+using Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
+using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,13 +34,40 @@ public class RoomRepository :  GenericRepository<Room> ,IRoomRepository
       .FirstOrDefaultAsync();
   
   }
-  public async Task<IEnumerable<GetRoomCollection>> GetAsync()
-  {
-    return await _context
-      .Rooms
-      .AsNoTracking()
-      .Select(x => new GetRoomCollection(x.Id,x.Number,x.Price,x.Status,x.Capacity,x.Description,x.CategoryId))
-      .ToListAsync();
-  }
 
+
+  public async Task<IEnumerable<GetRoomCollection>> GetAsync(RoomQueryParameters queryParameters)
+  {
+    var query = _context.Rooms.AsQueryable();
+
+    if (queryParameters.Number.HasValue)
+      query = query.FilterByOperator(queryParameters.NumberOperator, x => x.Number, queryParameters.Number);
+
+    if (queryParameters.Price.HasValue)
+      query = query.FilterByOperator(queryParameters.PriceOperator, x => x.Price, queryParameters.Price);
+
+    if (queryParameters.Status.HasValue)
+      query = query.Where(x => x.Status == queryParameters.Status);
+
+    if (queryParameters.Capacity.HasValue)
+      query = query.FilterByOperator(queryParameters.CapacityOperator, x => x.Capacity, queryParameters.Capacity);
+
+    if (queryParameters.ServiceId.HasValue)
+      query = query.Where(x => x.Services.Any(x => x.Id == queryParameters.ServiceId));
+
+    if (queryParameters.CategoryId.HasValue)
+      query = query.Where(x => x.CategoryId == queryParameters.CategoryId);
+
+    query = query.BaseQuery(queryParameters);
+
+    return await query.Select(x => new GetRoomCollection(
+        x.Id,
+        x.Number,
+        x.Price,
+        x.Status,
+        x.Capacity,
+        x.Description,
+        x.CategoryId
+    )).ToListAsync();
+  }
 }

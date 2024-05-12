@@ -1,6 +1,7 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
+using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,16 +17,37 @@ public class ReportRepository :  GenericRepository<Report> ,IReportRepository
       .Reports
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetReport(x.Id,x.Summary, x.Description, x.Priority,x.Resolution,x.EmployeeId))
+      .Select(x => new GetReport(x.Id,x.Summary, x.Description, x.Priority,x.Resolution,x.EmployeeId,x.Status))
       .FirstOrDefaultAsync();
     
   }
-  public async Task<IEnumerable<GetReport>> GetAsync()
+
+  public async Task<IEnumerable<GetReport>> GetAsync(ReportQueryParameters queryParameters)
   {
-    return await _context
-      .Reports
-      .AsNoTracking()
-      .Select(x => new GetReport(x.Id,x.Summary, x.Description, x.Priority,x.Resolution,x.EmployeeId))
-      .ToListAsync();
+    var query = _context.Reports.AsQueryable();
+
+    if (queryParameters.Summary != null)
+      query = query.Where(x => x.Summary.Contains(queryParameters.Summary));
+
+    if (queryParameters.Status != null)
+      query = query.Where(x => x.Status == queryParameters.Status);
+
+    if (queryParameters.Priority != null)
+      query = query.Where(x => x.Priority == queryParameters.Priority);
+
+    if (queryParameters.EmployeeId.HasValue)
+      query = query.Where(x => x.EmployeeId == queryParameters.EmployeeId);
+
+    query = query.BaseQuery(queryParameters);
+
+    return await query.Select(x => new GetReport(
+        x.Id,
+        x.Summary,
+        x.Description,
+        x.Priority,
+        x.Resolution,
+        x.EmployeeId,
+        x.Status
+    )).ToListAsync();
   }
 }

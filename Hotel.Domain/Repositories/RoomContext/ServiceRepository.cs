@@ -2,6 +2,7 @@ using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
+using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,19 +34,47 @@ public class ServiceRepository :  GenericRepository<Service> ,IServiceRepository
       .FirstOrDefaultAsync();
   
   }
-  public async Task<IEnumerable<GetServiceCollection>> GetAsync()
+
+  public async Task<IEnumerable<GetServiceCollection>> GetAsync(ServiceQueryParameters queryParameters)
   {
-    return await _context
-      .Services
-      .AsNoTracking()
-      .Select(x => new GetServiceCollection(       
+    var query = _context.Services.AsQueryable();
+
+    if (queryParameters.Name != null)
+      query = query.Where(x => x.Name.Contains(queryParameters.Name));
+
+    if (queryParameters.Price.HasValue)
+      query = query.FilterByOperator(queryParameters.PriceOperator, x => x.Price, queryParameters.Price);
+
+    if (queryParameters.Priority.HasValue)
+      query = query.Where(x => x.Priority == queryParameters.Priority);
+
+    if (queryParameters.IsActive.HasValue)
+      query = query.Where(x => x.IsActive == queryParameters.IsActive);
+
+    if (queryParameters.TimeInMinutes.HasValue)
+      query = query.FilterByOperator(queryParameters.TimeInMinutesOperator, x => x.TimeInMinutes, queryParameters.TimeInMinutes);
+
+    if (queryParameters.ResponsabilityId.HasValue)
+      query = query.Where(x => x.Responsabilities.Any(y => y.Id == queryParameters.ResponsabilityId));
+
+    if (queryParameters.ReservationId.HasValue)
+      query = query.Where(x => x.Reservations.Any(y => y.Id == queryParameters.ReservationId));
+
+    if (queryParameters.RoomInvoiceId.HasValue)
+      query = query.Where(x => x.RoomInvoices.Any(y => y.Id == queryParameters.RoomInvoiceId));
+
+    if (queryParameters.RoomId.HasValue)
+      query = query.Where(x => x.Rooms.Any(y => y.Id == queryParameters.RoomId));
+
+    query = query.BaseQuery(queryParameters);
+
+    return await query.Select(x => new GetServiceCollection(
         x.Id,
         x.Name,
         x.Price,
         x.Priority,
         x.IsActive,
         x.TimeInMinutes
-      ))
-      .ToListAsync();
+    )).ToListAsync();
   }
 }
