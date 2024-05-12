@@ -1,14 +1,15 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Base;
+using Hotel.Domain.Repositories.Interfaces.CustomerContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.CustomerContext;
 
-public class CustomerRepository :  UserRepository<Customer> ,ICustomerRepository
+public class CustomerRepository : UserRepository<Customer>, ICustomerRepository
 {
-  public CustomerRepository(HotelDbContext context) : base(context) {}
+  public CustomerRepository(HotelDbContext context) : base(context) { }
 
   public async Task<IEnumerable<Customer>> GetCustomersByListId(List<Guid> CustomersIds)
   {
@@ -22,7 +23,7 @@ public class CustomerRepository :  UserRepository<Customer> ,ICustomerRepository
   {
     var query = base.GetAsync(queryParameters);
 
-    return await query.Select(x => new GetUser( 
+    return await query.Select(x => new GetUser(
       x.Id,
       x.Name.FirstName,
       x.Name.LastName,

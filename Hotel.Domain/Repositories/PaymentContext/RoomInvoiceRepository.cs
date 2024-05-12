@@ -2,14 +2,14 @@ using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.PaymentContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.PaymentContext;
 
-public class RoomInvoiceRepository : GenericRepository<RoomInvoice> ,IRoomInvoiceRepository
+public class RoomInvoiceRepository : GenericRepository<RoomInvoice>, IRoomInvoiceRepository
 {
-  public RoomInvoiceRepository(HotelDbContext context) : base(context) {}
+  public RoomInvoiceRepository(HotelDbContext context) : base(context) { }
 
 
   public async Task<GetRoomInvoice?> GetByIdAsync(Guid id)
@@ -18,9 +18,9 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice> ,IRoomInvoic
       .RoomInvoices
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetRoomInvoice(x.Number,x.PaymentMethod,x.ReservationId,x.IssueDate,x.TotalAmount,x.Status,x.TaxInformation))
+      .Select(x => new GetRoomInvoice(x.Number, x.PaymentMethod, x.ReservationId, x.IssueDate, x.TotalAmount, x.Status, x.TaxInformation))
       .FirstOrDefaultAsync();
-    
+
   }
 
   public async Task<IEnumerable<GetRoomInvoice>> GetAsync(RoomInvoiceQueryParameters queryParameters)
@@ -31,7 +31,7 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice> ,IRoomInvoic
       query = query.Where(x => x.Number.Contains(queryParameters.Number));
 
     if (queryParameters.IssueDate.HasValue)
-      query = query.FilterByOperator(queryParameters.IssueDateOperator,x => x.IssueDate,queryParameters.IssueDate);
+      query = query.FilterByOperator(queryParameters.IssueDateOperator, x => x.IssueDate, queryParameters.IssueDate);
 
     if (queryParameters.TotalAmount.HasValue)
       query = query.FilterByOperator(queryParameters.TotalAmountOperator, x => x.TotalAmount, queryParameters.TotalAmount);

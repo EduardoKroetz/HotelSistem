@@ -3,7 +3,6 @@ using Hotel.Domain.Data.Mappings.CustomerContext;
 using Hotel.Domain.Data.Mappings.EmployeeContext;
 using Hotel.Domain.Data.Mappings.PaymentContext;
 using Hotel.Domain.Data.Mappings.ReservationContext;
-using Hotel.Domain.Data.Mappings.ResponsabilityContext;
 using Hotel.Domain.Data.Mappings.RoomContext;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;

@@ -1,10 +1,10 @@
 using Hotel.Domain.DTOs.Interfaces;
 
-namespace Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 public class CreateReservation : IDataTransferObject
 {
-  public CreateReservation(DateTime checkIn,DateTime? checkOut,  Guid roomId, List<Guid> customers)
+  public CreateReservation(DateTime checkIn, DateTime? checkOut, Guid roomId, List<Guid> customers)
   {
     CheckIn = checkIn;
     CheckOut = checkOut;

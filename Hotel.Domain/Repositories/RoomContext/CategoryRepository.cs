@@ -1,16 +1,15 @@
 using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 using Hotel.Domain.DTOs.RoomContext.CategoryDTOs;
 using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.RoomContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.RoomContext;
 
-public class CategoryRepository : GenericRepository<Category> ,ICategoryRepository
+public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
 {
-  public CategoryRepository(HotelDbContext context) : base(context) {}
+  public CategoryRepository(HotelDbContext context) : base(context) { }
 
   public async Task<GetCategory?> GetByIdAsync(Guid id)
   {
@@ -18,9 +17,9 @@ public class CategoryRepository : GenericRepository<Category> ,ICategoryReposito
       .Categories
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetCategory(x.Id,x.Name,x.Description,x.AveragePrice))
+      .Select(x => new GetCategory(x.Id, x.Name, x.Description, x.AveragePrice))
       .FirstOrDefaultAsync();
-    
+
   }
 
   public async Task<IEnumerable<GetCategory>> GetAsync(CategoryQueryParameters queryParameters)

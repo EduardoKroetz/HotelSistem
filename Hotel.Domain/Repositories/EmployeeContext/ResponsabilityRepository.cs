@@ -2,14 +2,14 @@ using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.EmployeeContext;
 
-public class ResponsabilityRepository : GenericRepository<Responsability> ,IResponsabilityRepository
+public class ResponsabilityRepository : GenericRepository<Responsability>, IResponsabilityRepository
 {
-  public ResponsabilityRepository(HotelDbContext context) : base(context) {}
+  public ResponsabilityRepository(HotelDbContext context) : base(context) { }
 
   public async Task<GetReponsability?> GetByIdAsync(Guid id)
   {
@@ -17,9 +17,9 @@ public class ResponsabilityRepository : GenericRepository<Responsability> ,IResp
       .Responsabilities
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetReponsability(x.Id,x.Name,x.Description,x.Priority))
+      .Select(x => new GetReponsability(x.Id, x.Name, x.Description, x.Priority))
       .FirstOrDefaultAsync();
-    
+
   }
   public async Task<IEnumerable<GetReponsability>> GetAsync(ResponsabilityQueryParameters queryParameters)
   {

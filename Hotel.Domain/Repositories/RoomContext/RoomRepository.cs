@@ -1,16 +1,16 @@
 using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+using Hotel.Domain.DTOs.RoomContext.CategoryDTOs;
 using Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.RoomContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.RoomContext;
 
-public class RoomRepository :  GenericRepository<Room> ,IRoomRepository
+public class RoomRepository : GenericRepository<Room>, IRoomRepository
 {
-  public RoomRepository(HotelDbContext context) : base(context) {}
+  public RoomRepository(HotelDbContext context) : base(context) { }
 
   public async Task<GetRoom?> GetByIdAsync(Guid id)
   {
@@ -29,10 +29,10 @@ public class RoomRepository :  GenericRepository<Room> ,IRoomRepository
         x.Capacity,
         x.Description,
         x.Services,
-        new GetCategory(x.CategoryId, x.Category!.Name ,x.Category!.Description,x.Category!.AveragePrice) ,
+        new GetCategory(x.CategoryId, x.Category!.Name, x.Category!.Description, x.Category!.AveragePrice),
         x.Images))
       .FirstOrDefaultAsync();
-  
+
   }
 
 

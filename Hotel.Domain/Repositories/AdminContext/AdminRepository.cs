@@ -2,14 +2,15 @@ using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Base;
+using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.AdminContext;
 
-public class AdminRepository : UserRepository<Admin> ,IAdminRepository
+public class AdminRepository : UserRepository<Admin>, IAdminRepository
 {
-  public AdminRepository(HotelDbContext context) : base(context) {}
+  public AdminRepository(HotelDbContext context) : base(context) { }
 
   public async Task<IEnumerable<GetAdmin>> GetAsync(AdminQueryParameters queryParameters)
   {
@@ -22,7 +23,7 @@ public class AdminRepository : UserRepository<Admin> ,IAdminRepository
       query = query.Where(x => x.Permissions.Any(y => y.Id == queryParameters.PermissionId));
 
     query = query.BaseQuery(queryParameters);
-    
+
     return await query.Select(x => new GetAdmin
     (
       x.Id,

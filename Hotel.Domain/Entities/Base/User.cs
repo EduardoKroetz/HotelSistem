@@ -23,9 +23,9 @@ public class User : Entity, IUser
     Validate();
   }
 
-  public Name Name { get; private set; } 
-  public Email Email { get; private set; }
-  public Phone Phone { get; private set; }
+  public Name Name { get; private set; } = null!;
+  public Email Email { get; private set; } = null!;
+  public Phone Phone { get; private set; } = null!;
   public string? PasswordHash { get; private set; } 
   public EGender? Gender { get; private set; } 
   public DateTime? DateOfBirth { get; private set; }

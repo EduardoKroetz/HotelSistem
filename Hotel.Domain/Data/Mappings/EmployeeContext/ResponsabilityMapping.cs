@@ -3,7 +3,7 @@ using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Hotel.Domain.Data.Mappings.ResponsabilityContext;
+namespace Hotel.Domain.Data.Mappings.EmployeeContext;
 public class ResponsabilityMapping : EntityBaseMapping<Responsability>, IEntityTypeConfiguration<Responsability>
 {
   public void Configure(EntityTypeBuilder<Responsability> builder)

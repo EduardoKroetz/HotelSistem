@@ -8,7 +8,7 @@
 /appsettings.Development.json
 /Properties
 /Data/Migrations
-
+/HotelSystemRoutes.txt
 # dotenv files
 .env
 

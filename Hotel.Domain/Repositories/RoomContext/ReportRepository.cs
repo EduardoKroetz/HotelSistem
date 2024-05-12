@@ -2,24 +2,24 @@ using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.RoomContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.RoomContext;
 
-public class ReportRepository :  GenericRepository<Report> ,IReportRepository
+public class ReportRepository : GenericRepository<Report>, IReportRepository
 {
-  public ReportRepository(HotelDbContext context) : base(context) {}
- 
+  public ReportRepository(HotelDbContext context) : base(context) { }
+
   public async Task<GetReport?> GetByIdAsync(Guid id)
   {
     return await _context
       .Reports
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetReport(x.Id,x.Summary, x.Description, x.Priority,x.Resolution,x.EmployeeId,x.Status))
+      .Select(x => new GetReport(x.Id, x.Summary, x.Description, x.Priority, x.Resolution, x.EmployeeId, x.Status))
       .FirstOrDefaultAsync();
-    
+
   }
 
   public async Task<IEnumerable<GetReport>> GetAsync(ReportQueryParameters queryParameters)

@@ -1,7 +1,7 @@
 using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+namespace Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 
 public class GetRoomCollection : IDataTransferObject
 {
@@ -24,5 +24,5 @@ public class GetRoomCollection : IDataTransferObject
   public string Description { get; private set; }
   public Guid CategoryId { get; private set; }
 
-} 
-  
+}
+

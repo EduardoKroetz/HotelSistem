@@ -1,4 +1,4 @@
-using Hotel.Domain.Entities.EmployeeContext.Interfaces;
+using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity.Interfaces;
 using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
 namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;

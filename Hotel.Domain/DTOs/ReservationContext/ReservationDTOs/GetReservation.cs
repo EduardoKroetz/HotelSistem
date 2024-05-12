@@ -4,11 +4,11 @@ using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 public class GetReservation : IDataTransferObject
 {
-  public GetReservation(Guid id,decimal dailyRate, int? hostedDays, DateTime checkIn, DateTime? checkOut, EReservationStatus status, int capacity, Guid roomId, ICollection<GetUser> customers, Guid? invoiceId, ICollection<Service> services)
+  public GetReservation(Guid id, decimal dailyRate, int? hostedDays, DateTime checkIn, DateTime? checkOut, EReservationStatus status, int capacity, Guid roomId, ICollection<GetUser> customers, Guid? invoiceId, ICollection<Service> services)
   {
     Id = id;
     DailyRate = dailyRate;
@@ -26,7 +26,7 @@ public class GetReservation : IDataTransferObject
   public decimal DailyRate { get; private set; }
   public int? HostedDays { get; private set; }
   public DateTime CheckIn { get; private set; }
-  public DateTime? CheckOut { get;private set; }
+  public DateTime? CheckOut { get; private set; }
   public EReservationStatus Status { get; private set; }
   public int Capacity { get; private set; }
   public Guid RoomId { get; private set; }

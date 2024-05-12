@@ -32,7 +32,7 @@ public class RoomMapping : EntityBaseMapping<Room>, IEntityTypeConfiguration<Roo
 
     builder.Property(x => x.CategoryId);
     builder.HasOne(x => x.Category)
-      .WithMany()
+      .WithMany(x => x.Rooms)
       .HasForeignKey(x => x.CategoryId)
       .HasConstraintName("FK_Rooms_Category")
       .IsRequired()

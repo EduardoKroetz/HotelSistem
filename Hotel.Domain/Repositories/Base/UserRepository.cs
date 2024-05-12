@@ -5,11 +5,11 @@ using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Base.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.Base;
 
 public abstract class UserRepository<T> : GenericRepository<T>, IUserRepository<T> where T : User
 {
-  public UserRepository(HotelDbContext context) : base(context) {}
+  public UserRepository(HotelDbContext context) : base(context) { }
 
   public async Task<GetUser?> GetByIdAsync(Guid id)
   {
@@ -17,9 +17,9 @@ public abstract class UserRepository<T> : GenericRepository<T>, IUserRepository<
       .Set<T>()
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetUser(x.Id, x.Name.FirstName,x.Name.LastName, x.Email.Address, x.Phone.Number,x.CreatedAt))
+      .Select(x => new GetUser(x.Id, x.Name.FirstName, x.Name.LastName, x.Email.Address, x.Phone.Number, x.CreatedAt))
       .FirstOrDefaultAsync();
-    
+
 
   }
 

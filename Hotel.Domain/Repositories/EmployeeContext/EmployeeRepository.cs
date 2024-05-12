@@ -2,14 +2,15 @@ using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Base;
+using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.EmployeeContext;
 
-public class EmployeeRepository : UserRepository<Employee> ,IEmployeeRepository
+public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
 {
-  public EmployeeRepository(HotelDbContext context) : base(context) {}
+  public EmployeeRepository(HotelDbContext context) : base(context) { }
 
   public new async Task<GetEmployee?> GetByIdAsync(Guid id)
   {
@@ -35,7 +36,7 @@ public class EmployeeRepository : UserRepository<Employee> ,IEmployeeRepository
     var query = base.GetAsync(queryParameters);
 
     if (queryParameters.Salary.HasValue)
-      query = query.FilterByOperator(queryParameters.SalaryOperator,x => x.Salary,queryParameters.Salary);
+      query = query.FilterByOperator(queryParameters.SalaryOperator, x => x.Salary, queryParameters.Salary);
 
     query = query.BaseQuery(queryParameters);
 

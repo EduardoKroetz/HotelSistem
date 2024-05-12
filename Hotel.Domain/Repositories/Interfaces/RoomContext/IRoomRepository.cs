@@ -1,9 +1,8 @@
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 using Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
 
-namespace Hotel.Domain.Repositories.Interfaces;
+namespace Hotel.Domain.Repositories.Interfaces.RoomContext;
 
-public interface IRoomRepository : IRepository<Room>, IRepositoryQuery<GetRoom,GetRoomCollection,RoomQueryParameters>
+public interface IRoomRepository : IRepository<Room>, IRepositoryQuery<GetRoom, GetRoomCollection, RoomQueryParameters>
 {
 }

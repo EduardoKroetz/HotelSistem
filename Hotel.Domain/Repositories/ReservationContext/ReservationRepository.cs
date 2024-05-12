@@ -1,17 +1,16 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.Base.User;
-using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.ReservationContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.ReservationContext;
 
-public class ReservationRepository :  GenericRepository<Reservation> ,IReservationRepository
+public class ReservationRepository : GenericRepository<Reservation>, IReservationRepository
 {
-  public ReservationRepository(HotelDbContext context) : base(context){}
+  public ReservationRepository(HotelDbContext context) : base(context) { }
   public async Task<GetReservation?> GetByIdAsync(Guid id)
   {
     return await _context
@@ -30,12 +29,12 @@ public class ReservationRepository :  GenericRepository<Reservation> ,IReservati
         x.RoomId,
         new List<GetUser>(
           x.Customers.Select(
-            c => new GetUser(c.Id,c.Name.FirstName,c.Name.LastName,c.Email.Address,c.Phone.Number,c.CreatedAt)
+            c => new GetUser(c.Id, c.Name.FirstName, c.Name.LastName, c.Email.Address, c.Phone.Number, c.CreatedAt)
         )),
         x.InvoiceId,
         x.Services))
       .FirstOrDefaultAsync();
-    
+
   }
 
   public async Task<IEnumerable<GetReservationCollection>> GetAsync(ReservationQueryParameters queryParameters)

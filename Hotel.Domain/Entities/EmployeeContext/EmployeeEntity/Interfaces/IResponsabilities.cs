@@ -1,6 +1,6 @@
 using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 
-namespace Hotel.Domain.Entities.EmployeeContext.Interfaces;
+namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity.Interfaces;
 
 public interface IResponsabilitiesMethods
 {

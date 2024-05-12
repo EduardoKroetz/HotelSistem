@@ -1,4 +1,4 @@
-using Hotel.Domain.Entities.Validation;
+using Hotel.Domain.Entities.Base.Interfaces;
 
 namespace Hotel.Domain.ValueObjects.Interfaces;
 

@@ -1,5 +1,6 @@
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Entities.Interfaces;
+using Hotel.Domain.Entities.RoomContext.RoomEntity;
 
 namespace Hotel.Domain.Entities.RoomContext.CategoryEntity;
 
@@ -18,4 +19,5 @@ public partial class Category : Entity, ICategory
   public string Name { get; private set; } = string.Empty;
   public string Description { get; private set; } = string.Empty;
   public decimal AveragePrice { get; private set; }
+  public ICollection<Room> Rooms { get; private set; } = [];
 }

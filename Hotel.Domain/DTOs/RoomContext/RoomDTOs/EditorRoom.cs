@@ -1,6 +1,6 @@
 using Hotel.Domain.DTOs.Interfaces;
 
-namespace Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+namespace Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 
 public class EditorRoom : IDataTransferObject
 {
@@ -18,5 +18,5 @@ public class EditorRoom : IDataTransferObject
   public int Capacity { get; private set; }
   public string Description { get; private set; }
   public Guid CategoryId { get; private set; }
-} 
-  
+}
+

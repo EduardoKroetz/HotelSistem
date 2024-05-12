@@ -1,6 +1,6 @@
 using Hotel.Domain.DTOs.Interfaces;
 
-namespace Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
+namespace Hotel.Domain.DTOs.RoomContext.CategoryDTOs;
 
 public class EditorCategory : IDataTransferObject
 {
@@ -11,8 +11,8 @@ public class EditorCategory : IDataTransferObject
     AveragePrice = averagePrice;
   }
 
-  public string Name { get; private set; } 
-  public string Description { get; private set; } 
+  public string Name { get; private set; }
+  public string Description { get; private set; }
   public decimal AveragePrice { get; private set; }
-} 
-  
+}
+

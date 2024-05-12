@@ -3,9 +3,9 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 
-public class ResponsabilityQueryParamaters : QueryParameters
+public class ResponsabilityQueryParameters : QueryParameters
 {
-  public ResponsabilityQueryParamaters(int? skip, int? take, string? name, DateTime? createdAt, string? createdAtOperator) : base(skip,take,createdAt,createdAtOperator)
+  public ResponsabilityQueryParameters(int? skip, int? take, string? name, DateTime? createdAt, string? createdAtOperator) : base(skip,take,createdAt,createdAtOperator)
   => Name = name;
 
   public string? Name { get; private set; }

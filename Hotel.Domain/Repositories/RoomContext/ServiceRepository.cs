@@ -3,14 +3,14 @@ using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.RoomContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.RoomContext;
 
-public class ServiceRepository :  GenericRepository<Service> ,IServiceRepository
+public class ServiceRepository : GenericRepository<Service>, IServiceRepository
 {
-  public ServiceRepository(HotelDbContext context) : base(context) {}
+  public ServiceRepository(HotelDbContext context) : base(context) { }
 
   public async Task<GetService?> GetByIdAsync(Guid id)
   {
@@ -28,11 +28,11 @@ public class ServiceRepository :  GenericRepository<Service> ,IServiceRepository
         x.TimeInMinutes,
         new List<GetReponsability>(
           x.Responsabilities.Select(
-            r => new GetReponsability(r.Id, r.Name, r.Description,r.Priority)
+            r => new GetReponsability(r.Id, r.Name, r.Description, r.Priority)
         ))
       ))
       .FirstOrDefaultAsync();
-  
+
   }
 
   public async Task<IEnumerable<GetServiceCollection>> GetAsync(ServiceQueryParameters queryParameters)

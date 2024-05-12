@@ -2,14 +2,14 @@ using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 using Hotel.Domain.Extensions;
-using Hotel.Domain.Repositories.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.CustomerContext;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Domain.Repositories;
+namespace Hotel.Domain.Repositories.CustomerContext;
 
-public class FeedbackRepository : GenericRepository<Feedback> ,IFeedbackRepository
+public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackRepository
 {
-  public FeedbackRepository(HotelDbContext context) : base(context) {}
+  public FeedbackRepository(HotelDbContext context) : base(context) { }
 
   public async Task<GetFeedback?> GetByIdAsync(Guid id)
   {
@@ -17,9 +17,9 @@ public class FeedbackRepository : GenericRepository<Feedback> ,IFeedbackReposito
       .Feedbacks
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetFeedback(x.Id,x.Comment,x.Rate,x.Likes,x.Deslikes,x.CustomerId,x.ReservationId,x.RoomId))
+      .Select(x => new GetFeedback(x.Id, x.Comment, x.Rate, x.Likes, x.Deslikes, x.CustomerId, x.ReservationId, x.RoomId))
       .FirstOrDefaultAsync();
-    
+
 
   }
 
@@ -31,10 +31,10 @@ public class FeedbackRepository : GenericRepository<Feedback> ,IFeedbackReposito
       query = query.Where(x => x.Comment.Contains(queryParameters.Comment));
 
     if (queryParameters.Rate.HasValue)
-      query = query.FilterByOperator(queryParameters.RateOperator,x => x.Rate,queryParameters.Rate);
-      
+      query = query.FilterByOperator(queryParameters.RateOperator, x => x.Rate, queryParameters.Rate);
+
     if (queryParameters.Likes.HasValue)
-      query = query.FilterByOperator(queryParameters.LikesOperator,x => x.Likes,queryParameters.Likes);
+      query = query.FilterByOperator(queryParameters.LikesOperator, x => x.Likes, queryParameters.Likes);
 
     if (queryParameters.Deslikes.HasValue)
       query = query.FilterByOperator(queryParameters.DeslikesOperator, x => x.Deslikes, queryParameters.Deslikes);
