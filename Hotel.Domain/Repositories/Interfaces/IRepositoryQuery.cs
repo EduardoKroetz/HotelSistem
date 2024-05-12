@@ -1,15 +1,20 @@
+using Hotel.Domain.DTOs.Interfaces;
+
 namespace Hotel.Domain.Repositories.Interfaces;
 
-public interface IRepositoryQuery<TQuery,TEnumerableQuery>
-  where TQuery : class
-  where TEnumerableQuery : class
+public interface IRepositoryQuery<TQuery,TGetQueryResponse,TQueryParameters>
+  where TQuery : IDataTransferObject
+  where TGetQueryResponse : IDataTransferObject
 {
   public Task<TQuery?> GetByIdAsync(Guid id);
-  public Task<IEnumerable<TEnumerableQuery>> GetAsync();
+  public Task<IEnumerable<TGetQueryResponse>> GetAsync(TQueryParameters queryParameters);
 }
-public interface IRepositoryQuery<TQuery>
-  where TQuery : class
+
+public interface IRepositoryQuery<TQuery, TQueryParameters>
+  where TQuery : IDataTransferObject
+  where TQueryParameters : IDataTransferObject
 {
   public Task<TQuery?> GetByIdAsync(Guid id);
-  public Task<IEnumerable<TQuery>> GetAsync();
+  public Task<IEnumerable<TQuery>> GetAsync(TQueryParameters queryParameters);
 }
+

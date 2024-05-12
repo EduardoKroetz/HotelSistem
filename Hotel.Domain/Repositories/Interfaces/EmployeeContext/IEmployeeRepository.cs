@@ -1,8 +1,8 @@
-using Hotel.Domain.DTOs.User;
+using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 
 namespace Hotel.Domain.Repositories.Interfaces;
 
-public interface IEmployeeRepository : IRepository<Employee>, IRepositoryQuery<GetUser>
+public interface IEmployeeRepository : IRepository<Employee>, IRepositoryQuery<GetEmployee,EmployeeQueryParameters>
 {
 }

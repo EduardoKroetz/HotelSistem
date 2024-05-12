@@ -54,7 +54,7 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice> ,IRoomInvoic
     if (queryParameters.TaxInformation.HasValue)
       query = query.FilterByOperator(queryParameters.TaxInformationOperator, x => x.TaxInformation, queryParameters.TaxInformation);
 
-    query.BaseQuery(queryParameters);
+    query = query.BaseQuery(queryParameters);
 
     return await query.Select(x => new GetRoomInvoice(
       x.Number,
