@@ -29,6 +29,9 @@ public class AdminRepository : UserRepository<Admin>, IAdminRepository
       x.Email.Address,
       x.Phone.Number,
       x.IsRootAdmin,
+      x.Gender,
+      x.DateOfBirth,
+      x.Address,
       x.CreatedAt
     )).ToListAsync();
   }

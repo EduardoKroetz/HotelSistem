@@ -17,7 +17,7 @@ public abstract class UserRepository<T> : GenericRepository<T>, IUserRepository<
       .Set<T>()
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetUser(x.Id, x.Name.FirstName, x.Name.LastName, x.Email.Address, x.Phone.Number, x.CreatedAt))
+      .Select(c => new GetUser(c.Id, c.Name.FirstName, c.Name.LastName, c.Email.Address, c.Phone.Number, c.Gender, c.DateOfBirth, c.Address, c.CreatedAt))
       .FirstOrDefaultAsync();
 
 

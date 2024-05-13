@@ -29,7 +29,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
         x.RoomId,
         new List<GetUser>(
           x.Customers.Select(
-            c => new GetUser(c.Id, c.Name.FirstName, c.Name.LastName, c.Email.Address, c.Phone.Number, c.CreatedAt)
+            c => new GetUser(c.Id, c.Name.FirstName, c.Name.LastName, c.Email.Address, c.Phone.Number, c.Gender,c.DateOfBirth, c.Address,c.CreatedAt)
         )),
         x.InvoiceId,
         x.Services))

@@ -29,6 +29,9 @@ public class CustomerRepository : UserRepository<Customer>, ICustomerRepository
       x.Name.LastName,
       x.Email.Address,
       x.Phone.Number,
+      x.Gender,
+      x.DateOfBirth,
+      x.Address,
       x.CreatedAt
     )).ToListAsync();
   }

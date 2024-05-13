@@ -25,6 +25,9 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
         x.Name.LastName,
         x.Email.Address,
         x.Phone.Number,
+        x.Gender,
+        x.DateOfBirth,
+        x.Address,
         x.CreatedAt,
         x.Salary ?? 0
       ))
@@ -47,6 +50,9 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
         x.Name.LastName,
         x.Email.Address,
         x.Phone.Number,
+        x.Gender,
+        x.DateOfBirth,
+        x.Address,
         x.CreatedAt,
         x.Salary ?? 0
     )).ToListAsync();
