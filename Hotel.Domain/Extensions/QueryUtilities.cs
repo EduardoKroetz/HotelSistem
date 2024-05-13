@@ -10,41 +10,33 @@ public static class QueryUtility
   {
     if (filterOperator == null)
       return query;
-   
+
     if (value == null)
     {
       switch (filterOperator.ToLower())
       {
         case "asc": //Ascending
-        return query.OrderBy(
-          Expression.Lambda<Func<T, object>>(
-            propertySelector.Body,
-            propertySelector.Parameters[0])
-        );
+        return query.OrderBy(propertySelector);
         case "desc": //Descending
-        return query.OrderByDescending(
-          Expression.Lambda<Func<T, object>>(
-            propertySelector.Body,
-            propertySelector.Parameters[0])
-        );
+        return query.OrderByDescending(propertySelector);
       }
     }else
     {
       switch (filterOperator.ToLower())
       {
-        case "gt": // Greater than
-        return query.Where(
-          Expression.Lambda<Func<T, bool>>(
-            Expression.GreaterThan(
-              propertySelector.Body,
-              Expression.Constant(value)),
-            propertySelector.Parameters)
-          );
+        case "gt": // Greater than    
+          return query.Where(
+            Expression.Lambda<Func<T, bool>>(
+              Expression.GreaterThan(
+                  Expression.Property(propertySelector.Body,"Value"),
+                  Expression.Constant(value)),
+              propertySelector.Parameters)
+           );
         case "lt": // Less than
         return query.Where(
           Expression.Lambda<Func<T, bool>>(
             Expression.LessThan(
-              propertySelector.Body,
+              Expression.Property(propertySelector.Body, "Value"),
               Expression.Constant(value)),
             propertySelector.Parameters)
         );
@@ -52,7 +44,7 @@ public static class QueryUtility
         return query.Where(
           Expression.Lambda<Func<T, bool>>(
             Expression.Equal(
-              propertySelector.Body,
+              Expression.Property(propertySelector.Body,"Value"),
               Expression.Constant(value)),
             propertySelector.Parameters)
         );
