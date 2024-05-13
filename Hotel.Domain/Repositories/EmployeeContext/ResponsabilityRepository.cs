@@ -28,7 +28,7 @@ public class ResponsabilityRepository : GenericRepository<Responsability>, IResp
     if (queryParameters.Name != null)
       query = query.Where(x => x.Name.Contains(queryParameters.Name));
 
-    if (queryParameters.Priority != null)
+    if (queryParameters.Priority.HasValue)
       query = query.Where(x => x.Priority == queryParameters.Priority);
 
     if (queryParameters.EmployeeId.HasValue)

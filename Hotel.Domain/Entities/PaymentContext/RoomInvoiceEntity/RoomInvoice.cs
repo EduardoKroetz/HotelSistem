@@ -21,6 +21,7 @@ public partial class RoomInvoice : Entity, IRoomInvoice
     TaxInformation = taxInformation;
     Customers = reservation.Customers;
     Reservation = reservation;
+    ReservationId = reservation.Id;
     Services = reservation.Services;
 
     Validate();

@@ -1,7 +1,7 @@
 ﻿
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Enums;
-using Hotel.Domain.Repositories;
+using Hotel.Domain.Repositories.AdminContext;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Tests.Repositories;

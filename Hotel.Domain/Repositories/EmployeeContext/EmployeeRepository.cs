@@ -36,7 +36,7 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
     var query = base.GetAsync(queryParameters);
 
     if (queryParameters.Salary.HasValue)
-      query = query.FilterByOperator(queryParameters.SalaryOperator, x => x.Salary, queryParameters.Salary);
+      query = query.FilterByOperator(queryParameters.SalaryOperator, x => x.Salary , queryParameters.Salary);
 
     query = query.BaseQuery(queryParameters);
 

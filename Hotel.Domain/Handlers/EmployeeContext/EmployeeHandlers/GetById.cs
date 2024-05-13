@@ -1,16 +1,16 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.Base.User;
+using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 
 namespace Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
 
 public partial class EmployeeHandler 
 {
-  public async Task<Response<GetUser>> HandleGetByIdAsync(Guid id)
+  public async Task<Response<GetEmployee>> HandleGetByIdAsync(Guid id)
   {
-    var permission = await _repository.GetByIdAsync(id);
-    if (permission == null)
+    var employee = await _repository.GetByIdAsync(id);
+    if (employee == null)
       throw new ArgumentException("Funcionário não encontrado.");
     
-    return new Response<GetUser>(200,"Funcionário encontrado.", permission);
+    return new Response<GetEmployee>(200,"Funcionário encontrado.", employee);
   }
 }

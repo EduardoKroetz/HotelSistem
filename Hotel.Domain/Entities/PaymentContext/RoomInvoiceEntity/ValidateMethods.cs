@@ -8,7 +8,7 @@ public partial class RoomInvoice
   public override void Validate()
   {
     if (Reservation?.Status != EReservationStatus.CheckedOut)
-      throw new ValidationException("Erro de validação: A Reserva não finalizada.");
+      throw new ValidationException("Erro de validação: Reserva não finalizada.");
 
     ValidateTaxInformation(TaxInformation);
     ValidatePaymentMethod(PaymentMethod);

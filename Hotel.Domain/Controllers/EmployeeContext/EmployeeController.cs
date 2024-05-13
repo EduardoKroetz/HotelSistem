@@ -1,4 +1,3 @@
-using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
 using Microsoft.AspNetCore.Mvc;
@@ -28,14 +27,14 @@ public class EmployeeController : ControllerBase
 
   [HttpPost("v1/employees")]
   public async Task<IActionResult> PostAsync(
-    [FromBody] CreateUser model
+    [FromBody] CreateEmployee model
   )
   => Ok(await _handler.HandleCreateAsync(model));
 
 
   [HttpPut("v1/employees/{Id:guid}")]
   public async Task<IActionResult> PutAsync(
-    [FromBody] UpdateUser model,
+    [FromBody] UpdateEmployee model,
     [FromRoute] Guid id
   )
   => Ok(await _handler.HandleUpdateAsync(model, id));

@@ -1,7 +1,6 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
-using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Base;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +20,6 @@ public class AdminRepository : UserRepository<Admin>, IAdminRepository
 
     if (queryParameters.PermissionId != null)
       query = query.Where(x => x.Permissions.Any(y => y.Id == queryParameters.PermissionId));
-
-    query = query.BaseQuery(queryParameters);
 
     return await query.Select(x => new GetAdmin
     (

@@ -4,7 +4,7 @@ namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 
 public partial class Employee
 {
-  public void ChangeSalary(decimal salary)
+  public void ChangeSalary(decimal? salary)
   {
     if (salary < 0)
       throw new  ValidationException("Erro de validação: O sálario do funcionário não pode ser menor ou igual a zero.");

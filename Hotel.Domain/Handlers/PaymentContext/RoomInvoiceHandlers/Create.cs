@@ -1,6 +1,5 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
-using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.PaymentContext;
 using Hotel.Domain.Repositories.Interfaces.ReservationContext;
@@ -24,7 +23,8 @@ public partial class RoomInvoiceHandler : IHandler
     var reservation = await _reservationRepository.GetEntityByIdAsync(model.ReservationId);
     if (reservation == null)
       throw new ArgumentException("Reserva não encontrada.");
-    var roomInvoice = new RoomInvoice(model.PaymentMethod,reservation,model.TaxInformation);
+
+    var roomInvoice = reservation.GenerateInvoice(model.PaymentMethod, model.TaxInformation);
 
     await _repository.CreateAsync(roomInvoice);
     await _repository.SaveChangesAsync();

@@ -1,5 +1,5 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.Base.User;
+using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
@@ -13,7 +13,7 @@ public partial class EmployeeHandler : IHandler
   public EmployeeHandler(IEmployeeRepository repository)
   => _repository = repository;
 
-  public async Task<Response<object>> HandleCreateAsync(CreateUser model)
+  public async Task<Response<object>> HandleCreateAsync(CreateEmployee model)
   {
     var employee = new Employee(
       new Name(model.FirstName,model.LastName),
@@ -22,7 +22,8 @@ public partial class EmployeeHandler : IHandler
       model.Password,
       model.Gender,
       model.DateOfBirth,
-      new Address(model.Country,model.City,model.Street,model.Number)
+      new Address(model.Country,model.City,model.Street,model.Number),
+      model.Salary
     );
 
     await _repository.CreateAsync(employee);
