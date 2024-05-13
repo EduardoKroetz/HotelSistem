@@ -7,7 +7,7 @@ namespace Hotel.Tests.Repositories;
 public class ConfigMockConnection 
 {
   
-  public SqliteConnection _connection;
+  public SqliteConnection _connection { get; private set; }
   public HotelDbContext Context { get; private set; }
 
   public ConfigMockConnection()

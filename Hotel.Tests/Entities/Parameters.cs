@@ -1,4 +1,5 @@
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
+using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
@@ -19,6 +20,7 @@ public static class TestParameters
   public static readonly Email Email = new("batman@gmail.com");
   public static readonly Phone Phone = new("+55 (55) 99255-3344");
   public static readonly Address Address = new("Brazil","Gotham","Batman street",999);
+  public static readonly Permission Permission = new("Criar administrador","Criar administrador no sistema");
   public static readonly string Password = "batmanpassword123";
   public static readonly Category Category = new("Quarto básico","Quarto básico para hospedagem diária.",45m);
   public static readonly Room Room = new(22,50m,3,"Um quarto para hospedagem.",Category.Id);
