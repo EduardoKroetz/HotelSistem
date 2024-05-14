@@ -60,7 +60,7 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new AdminQueryParameters(0, 1, _defaultAdmin.Name.FirstName, null, null, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 1, _defaultAdmin.Name.FirstName, null, null,null, null, null, null, null, null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
     var admin = admins.ToList()[0];
@@ -77,9 +77,10 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereNameJoao_ReturnsAdminsJoao()
   {
-    var parameters = new AdminQueryParameters(0, 1, _defaultAdmin.Name.FirstName, null, null, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 1, _defaultAdmin.Name.FirstName, null, null, null,null, null, null, null, null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -90,9 +91,10 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereEmailFilter_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, _defaultAdmin.Email.Address, null, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, _defaultAdmin.Email.Address, null,null, null, null, null, null, null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -103,9 +105,10 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WherePhoneFilter_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null,null, _defaultAdmin.Phone.Number, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 100, null,null, _defaultAdmin.Phone.Number, null, null, null, null, null, null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -116,9 +119,10 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereGenderFilter_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, _defaultAdmin.Gender, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, _defaultAdmin.Gender, null, null, null, null, null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -127,24 +131,26 @@ public class AdminRepositoryTest : BaseRepositoryTest
   }
 
   [TestMethod]
-  public async Task GetAsync_WhereDateOfBirthFilter_ReturnsAdmins()
+  public async Task GetAsync_WhereDateOfBirthGratherThan2000_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, _defaultAdmin.DateOfBirth, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, DateTime.Now.AddYears(-24), "gt", null, null, null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
-      Assert.AreEqual(_defaultAdmin.DateOfBirth, admin.DateOfBirth);
+      Assert.IsTrue(DateTime.Now.AddYears(-24) < admin.DateOfBirth);
     }
   }
 
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtFilter_WhereGratherThanOperator_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt", null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt", null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -155,9 +161,10 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtFilter_WhereLessThanOperator_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, DateTime.Now.AddDays(1), "lt", null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(1), "lt", null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -168,9 +175,10 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtFilter_WhereEqualsOperator_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, _defaultAdmin.CreatedAt, "eq", null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, _defaultAdmin.CreatedAt, "eq", null, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -181,9 +189,10 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereIsRootAdminEqualsFalse_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null, false, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null, null, false, null);
     var admins = await _adminRepository.GetAsync(parameters);
 
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -195,10 +204,12 @@ public class AdminRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WherePermissionId_ReturnsAdmins()
   {
     _defaultAdmin.AddPermission(TestParameters.Permission);
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null, null, TestParameters.Permission.Id);
+    await mockConnection.Context.SaveChangesAsync();
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null,null, null, TestParameters.Permission.Id);
     var admins = await _adminRepository.GetAsync(parameters);
 
   
+    Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
@@ -209,6 +220,42 @@ public class AdminRepositoryTest : BaseRepositoryTest
         .AnyAsync(x => x.Id == TestParameters.Permission.Id);
 
       Assert.IsTrue(hasPermission);
+    }
+  }
+
+  [TestMethod]
+  public async Task GetAsync_WhereEmailIncludesExample_And_PhoneIncludes55_And_IsRootAdminEqualsFalse_And_GenderEqualsMasculine_ReturnsAdmins()
+  {
+    var parameters = new AdminQueryParameters(0, 100, null,"example", "55", EGender.Masculine, null, null,null, null, false, null);
+    var admins = await _adminRepository.GetAsync(parameters);
+  
+    Assert.IsTrue(admins.Any());
+
+    foreach (var admin in admins)
+    {
+      Assert.IsNotNull(admin);
+      Assert.IsTrue(admin.Email.Contains("example"));
+      Assert.IsTrue(admin.Phone.Contains("55"));
+      Assert.AreEqual(EGender.Masculine,admin.Gender);
+      Assert.AreEqual(false, admin.IsRootAdmin);
+    }
+  }
+
+  [TestMethod]
+  public async Task GetAsync_WhereNameIncludesR_And_DateOfBirthLessThan31Years_And_CreatedAtLessThanTomorrow_ReturnsAdmins()
+  {
+    var parameters = new AdminQueryParameters(0, 100, "R", null, null, null, DateTime.Now.AddYears(-31), "lt", DateTime.Now.AddDays(1), "lt", null, null);
+    
+    var admins = await _adminRepository.GetAsync(parameters);
+
+    Assert.IsTrue(admins.Any());
+
+    foreach (var admin in admins)
+    {
+      Assert.IsNotNull(admin);
+      Assert.IsTrue(admin.FirstName.Contains('R'));
+      Assert.IsTrue(DateTime.Now.AddYears(-31) > admin.DateOfBirth);
+      Assert.IsTrue(DateTime.Now.AddDays(1) > admin.CreatedAt);
     }
   }
 }
