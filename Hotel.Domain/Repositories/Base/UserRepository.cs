@@ -40,7 +40,7 @@ public abstract class UserRepository<T> : GenericRepository<T>, IUserRepository<
       query = query.Where(x => x.Gender == queryParameters.Gender);
 
     if (queryParameters.DateOfBirth.HasValue)
-      query = query.Where(x => x.DateOfBirth != null && x.DateOfBirth.Value.Date == queryParameters.DateOfBirth.Value.Date);
+      query = query.FilterByOperator(queryParameters.DateOfBirthOperator,x => x.DateOfBirth,queryParameters.DateOfBirth);
 
     query = query.BaseQuery(queryParameters);
 

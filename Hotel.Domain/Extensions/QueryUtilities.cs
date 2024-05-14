@@ -1,5 +1,6 @@
 ﻿using Hotel.Domain.DTOs.Base;
 using Hotel.Domain.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Hotel.Domain.Extensions;
@@ -60,6 +61,7 @@ public static class QueryUtility
   {
     query = query.FilterByOperator(queryParameters.CreatedAtOperator,x => x.CreatedAt,queryParameters.CreatedAt);
     query = query.Skip(queryParameters.Skip ?? 0).Take(queryParameters.Take ?? 1);
+    query = query.AsNoTracking();
 
     return query;
   }
