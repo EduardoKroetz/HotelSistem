@@ -42,7 +42,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     var query = _context.Reservations.AsQueryable();
 
     if (queryParameters.HostedDays.HasValue)
-      query = query.Where(x => x.HostedDays == queryParameters.HostedDays);
+      query = query.FilterByOperator(queryParameters.HostedDaysOperator,x => x.HostedDays,queryParameters.HostedDays);
 
     if (queryParameters.DailyRate.HasValue)
       query = query.FilterByOperator(queryParameters.DailyRateOperator, x => x.DailyRate, queryParameters.DailyRate);

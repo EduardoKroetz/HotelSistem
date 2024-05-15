@@ -1,6 +1,5 @@
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.Interfaces;
-using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 

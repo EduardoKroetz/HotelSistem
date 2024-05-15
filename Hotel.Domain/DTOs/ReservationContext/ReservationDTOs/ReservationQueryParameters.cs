@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 public class ReservationQueryParameters : QueryParameters
 {
-  public ReservationQueryParameters(int? skip, int? take, DateTime? createdAt, string? createdAtOperator, int? hostedDays, decimal? dailyRate, DateTime? checkIn, string? checkInOperator, DateTime? checkOut, EReservationStatus? status, int? capacity, Guid? roomId, Guid? customerId, Guid? invoiceId, Guid? serviceId, string? checkOutOperator, string? capacityOperator, string? hostedDaysOperator, string? dailyRateOperator) : base(skip, take, createdAt, createdAtOperator)
+  public ReservationQueryParameters(int? skip, int? take, int? hostedDays, string? hostedDaysOperator, decimal? dailyRate, string? dailyRateOperator, DateTime? checkIn, string? checkInOperator, DateTime? checkOut, string? checkOutOperator, EReservationStatus? status, int? capacity, string? capacityOperator, Guid? roomId, Guid? customerId, Guid? invoiceId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator) : base(skip, take, createdAt, createdAtOperator)
   {
     HostedDays = hostedDays;
     HostedDaysOperator = hostedDaysOperator;
