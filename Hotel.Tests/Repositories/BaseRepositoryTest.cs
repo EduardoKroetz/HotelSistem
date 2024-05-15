@@ -61,7 +61,6 @@ abstract public class BaseRepositoryTest
     MockConnection.Context.Employees.RemoveRange(await MockConnection.Context.Employees.ToListAsync());
     MockConnection.Context.RoomInvoices.RemoveRange(await MockConnection.Context.RoomInvoices.ToListAsync());
     MockConnection.Context.Reservations.RemoveRange(await MockConnection.Context.Reservations.ToListAsync());
-    MockConnection.Context.RoomInvoices.RemoveRange(await MockConnection.Context.RoomInvoices.ToListAsync());
     MockConnection.Context.Customers.RemoveRange(await MockConnection.Context.Customers.ToListAsync());
     MockConnection.Context.Services.RemoveRange(await MockConnection.Context.Services.ToListAsync());
     MockConnection.Context.Responsabilities.RemoveRange(await MockConnection.Context.Responsabilities.ToListAsync());
@@ -170,26 +169,26 @@ abstract public class BaseRepositoryTest
   {
     var responsabilities = new List<Responsability>()
     {
-      new Responsability("Secretária","Secretária",EPriority.Medium),
-      new Responsability("Atender a chamadas de serviço","Atender a chamadas de serviço",EPriority.High),
-      new Responsability("Assistência geral", "Assistência geral", EPriority.Medium),
-      new Responsability("Cozinheiro","Cozinheiro",EPriority.High),
-      new Responsability("Organizar arquivos", "Organizar arquivos", EPriority.Trivial),
-      new Responsability("Atualizar registros", "Atualizar registros", EPriority.Low),
-      new Responsability("Gerenciar crises", "Gerenciar crises", EPriority.Critical),
-      new Responsability("Redigir documentos", "Redigir documentos", EPriority.Low),
-      new Responsability("Planejar eventos", "Planejar eventos", EPriority.Trivial),
-      new Responsability("Supervisionar equipe", "Supervisionar equipe", EPriority.Critical),
-      new Responsability("Desenvolver estratégias de marketing", "Desenvolver estratégias de marketing", EPriority.High),
-      new Responsability("Analisar dados financeiros", "Analisar dados financeiros", EPriority.Medium),
-      new Responsability("Manter relacionamento com clientes", "Manter relacionamento com clientes", EPriority.Low),
-      new Responsability("Treinar novos funcionários", "Treinar novos funcionários", EPriority.Critical),
-      new Responsability("Gerenciar inventário", "Gerenciar inventário", EPriority.Low),
-      new Responsability("Planejar a logística de entrega", "Planejar a logística de entrega", EPriority.Medium),
-      new Responsability("Implementar políticas de segurança", "Implementar políticas de segurança", EPriority.Critical),
-      new Responsability("Apoiar a equipe de TI", "Apoiar a equipe de TI", EPriority.Trivial),
-      new Responsability("Preparar relatórios mensais", "Preparar relatórios mensais", EPriority.High),
-      new Responsability("Organizar reuniões de equipe", "Organizar reuniões de equipe", EPriority.Medium)
+      new("Secretária","Secretária",EPriority.Medium),
+      new("Atender a chamadas de serviço","Atender a chamadas de serviço",EPriority.High),
+      new("Assistência geral", "Assistência geral", EPriority.Medium),
+      new("Cozinheiro","Cozinheiro",EPriority.High),
+      new("Organizar arquivos", "Organizar arquivos", EPriority.Trivial),
+      new("Atualizar registros", "Atualizar registros", EPriority.Low),
+      new("Gerenciar crises", "Gerenciar crises", EPriority.Critical),
+      new("Redigir documentos", "Redigir documentos", EPriority.Low),
+      new("Planejar eventos", "Planejar eventos", EPriority.Trivial),
+      new("Supervisionar equipe", "Supervisionar equipe", EPriority.Critical),
+      new("Desenvolver estratégias de marketing", "Desenvolver estratégias de marketing", EPriority.High),
+      new("Analisar dados financeiros", "Analisar dados financeiros", EPriority.Medium),
+      new("Manter relacionamento com clientes", "Manter relacionamento com clientes", EPriority.Low),
+      new("Treinar novos funcionários", "Treinar novos funcionários", EPriority.Critical),
+      new("Gerenciar inventário", "Gerenciar inventário", EPriority.Low),
+      new("Planejar a logística de entrega", "Planejar a logística de entrega", EPriority.Medium),
+      new("Implementar políticas de segurança", "Implementar políticas de segurança", EPriority.Critical),
+      new("Apoiar a equipe de TI", "Apoiar a equipe de TI", EPriority.Trivial),
+      new("Preparar relatórios mensais", "Preparar relatórios mensais", EPriority.High),
+      new("Organizar reuniões de equipe", "Organizar reuniões de equipe", EPriority.Medium)
     };
     
     await MockConnection.Context.Responsabilities.AddRangeAsync(responsabilities);
@@ -220,7 +219,7 @@ abstract public class BaseRepositoryTest
     var categories = new List<Category>()
     {
       new("Quartos de luxo","Quartos de luxo com vista para a praia",120),
-      new("Quartos médios", "Quartos de médio para uma hospedagem temporária", 120)
+      new("Quartos médios", "Quartos de médio para uma hospedagem temporária", 40)
     };
 
     await MockConnection.Context.Categories.AddRangeAsync(categories);

@@ -35,7 +35,8 @@ public class CategoryRepository : GenericRepository<Category>, ICategoryReposito
     if (queryParameters.RoomId.HasValue)
       query = query.Where(x => x.Rooms.Any(x => x.Id == queryParameters.RoomId));
 
-    query = query.BaseQuery(queryParameters);
+    query = query.Skip(queryParameters.Skip ?? 0).Take(queryParameters.Take ?? 1);
+    query = query.AsNoTracking();
 
     return await query.Select(x => new GetCategory(
         x.Id,
