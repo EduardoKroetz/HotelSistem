@@ -1,7 +1,5 @@
 ﻿using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
-using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 using Hotel.Domain.Repositories.CustomerContext;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace Hotel.Tests.Repositories.CustomerContext;
@@ -9,87 +7,60 @@ namespace Hotel.Tests.Repositories.CustomerContext;
 [TestClass]
 public class FeedbackRepositoryTest : BaseRepositoryTest
 {
-  private List<Feedback> _feedbacks { get; set; } = [];
-  private Feedback _defaultFeedback { get; set; } = null!;
-  private FeedbackRepository _feedbackRepository { get; set; } = null!;
+  private static FeedbackRepository FeedbackRepository { get; set; } = null!;
 
-  [TestInitialize]
-  public async Task StartupTest()
+  [ClassInitialize]
+  public static async Task Startup(TestContext? context)
   {
-    await Startup(null);
-    _feedbackRepository = new FeedbackRepository(mockConnection.Context);
-
-    _defaultFeedback = new Feedback("O quarto 321 estava organizado, mas o serviço de quarto era péssimo.", 6, _customer.Id, _reservations[0].Id, _rooms[0].Id);
-
-    _feedbacks.AddRange(
-    [
-      _defaultFeedback,
-      new Feedback("Horrível", 1, _customer.Id, _reservations[0].Id, _rooms[0].Id),
-      new Feedback("Legal", 7, _customer.Id, _reservations[0].Id, _rooms[0].Id),
-      new Feedback("O serviço era bom, mas o ambiente era ruim", 1, _customer.Id, _reservations[0].Id, _rooms[0].Id),
-      new Feedback("Melhor hotel que já me hospedei", 10, _customer.Id, _reservations[0].Id, _rooms[0].Id),
-      new Feedback("Dá pro gasto", 6, _customer.Id, _reservations[0].Id, _rooms[0].Id)
-    ]);
-
-    for (int i = 0; i < 6; i++)
-    {
-      _defaultFeedback.AddLike();
-      _defaultFeedback.AddDeslike();
-    }
-
-    await mockConnection.Context.Feedbacks.AddRangeAsync(_feedbacks);
-    await mockConnection.Context.SaveChangesAsync();
+    await Startup();
+    FeedbackRepository = new FeedbackRepository(MockConnection.Context);
   }
 
-  [TestCleanup]
-  public async Task CleanupTest()
-  {
-    mockConnection.Context.Feedbacks.RemoveRange(_feedbacks);
-    await mockConnection.Context.SaveChangesAsync();
-    _feedbacks.Clear();
-  }
+  [ClassCleanup]
+  public static async Task Dispose()
+  => await Cleanup();
 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var feedback = await _feedbackRepository.GetByIdAsync(_defaultFeedback.Id);
+    var feedback = await FeedbackRepository.GetByIdAsync(Feedbacks[0].Id);
 
     Assert.IsNotNull(feedback);
-    Assert.AreEqual(_defaultFeedback.Id, feedback.Id);
-    Assert.AreEqual(_defaultFeedback.Comment, feedback.Comment);
-    Assert.AreEqual(_defaultFeedback.Rate, feedback.Rate);
-    Assert.AreEqual(_defaultFeedback.Likes, feedback.Likes);
-    Assert.AreEqual(_defaultFeedback.Deslikes, feedback.Deslikes);
-    Assert.AreEqual(_defaultFeedback.CustomerId, feedback.CustomerId);
-    Assert.AreEqual(_defaultFeedback.ReservationId, feedback.ReservationId);
-    Assert.AreEqual(_defaultFeedback.RoomId, feedback.RoomId);
+    Assert.AreEqual(Feedbacks[0].Id, feedback.Id);
+    Assert.AreEqual(Feedbacks[0].Comment, feedback.Comment);
+    Assert.AreEqual(Feedbacks[0].Rate, feedback.Rate);
+    Assert.AreEqual(Feedbacks[0].Likes, feedback.Likes);
+    Assert.AreEqual(Feedbacks[0].Deslikes, feedback.Deslikes);
+    Assert.AreEqual(Feedbacks[0].CustomerId, feedback.CustomerId);
+    Assert.AreEqual(Feedbacks[0].ReservationId, feedback.ReservationId);
+    Assert.AreEqual(Feedbacks[0].RoomId, feedback.RoomId);
 
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new FeedbackQueryParameters(0, 100, null, null, _defaultFeedback.Comment, null, null, null, null,null,null,null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var parameters = new FeedbackQueryParameters(0, 100, null, null, Feedbacks[0].Comment, null, null, null, null,null,null,null, null, null, null, null);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     var feedback = feedbacks.ToList()[0];
 
     Assert.IsNotNull(feedback);
-    Assert.AreEqual(_defaultFeedback.Id, feedback.Id);
-    Assert.AreEqual(_defaultFeedback.Comment, feedback.Comment);
-    Assert.AreEqual(_defaultFeedback.Rate, feedback.Rate);
-    Assert.AreEqual(_defaultFeedback.Likes, feedback.Likes);
-    Assert.AreEqual(_defaultFeedback.Deslikes, feedback.Deslikes);
-    Assert.AreEqual(_defaultFeedback.CustomerId, feedback.CustomerId);
-    Assert.AreEqual(_defaultFeedback.ReservationId, feedback.ReservationId);
-    Assert.AreEqual(_defaultFeedback.RoomId, feedback.RoomId);
+    Assert.AreEqual(Feedbacks[0].Id, feedback.Id);
+    Assert.AreEqual(Feedbacks[0].Comment, feedback.Comment);
+    Assert.AreEqual(Feedbacks[0].Rate, feedback.Rate);
+    Assert.AreEqual(Feedbacks[0].Likes, feedback.Likes);
+    Assert.AreEqual(Feedbacks[0].Deslikes, feedback.Deslikes);
+    Assert.AreEqual(Feedbacks[0].CustomerId, feedback.CustomerId);
+    Assert.AreEqual(Feedbacks[0].ReservationId, feedback.ReservationId);
+    Assert.AreEqual(Feedbacks[0].RoomId, feedback.RoomId);
   }
 
   [TestMethod]
   public async Task GetAsync_WhereCommentIncludesServico_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, "serviço", null, null, null, null, null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -103,7 +74,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereRateGratherThan5_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, 5, "gt", null, null, null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -117,7 +88,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereRateLessThan5_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, 5, "lt", null, null, null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -131,7 +102,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereRateEquals6_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, 6, "eq", null, null, null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -146,7 +117,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   {
 
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null,null,null, 5, "gt", null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -160,7 +131,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereLikesLessThan5_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, 5, "lt", null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -174,7 +145,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereLikesEquals6_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, 6, "eq", null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -189,7 +160,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   {
 
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, 5, "gt", null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -203,7 +174,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereDeslikesLessThan5_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null,  null, null, 5, "lt", null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -217,7 +188,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereDeslikesEquals6_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null,  null, null, 6, "eq", null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -232,7 +203,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   {
 
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null,null ,DateTime.Now.AddDays(-1) , "gt", null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -246,7 +217,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereUpdatedAtLessThanToday_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, DateTime.Now, "lt", null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -259,14 +230,14 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereUpdatedAtEquals_ReturnsFeedbacks()
   {
-    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, _defaultFeedback.UpdatedAt, "eq", null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, Feedbacks[0].UpdatedAt, "eq", null, null, null);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
     {
       Assert.IsNotNull(feedback);
-      Assert.AreEqual(_defaultFeedback.UpdatedAt, feedback.UpdatedAt);
+      Assert.AreEqual(Feedbacks[0].UpdatedAt, feedback.UpdatedAt);
     }
   }
 
@@ -274,7 +245,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereCreatedAtLessThanToday_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -288,7 +259,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   public async Task GetAsync_WhereCreayedAtLessThanToday_ReturnsFeedbacks()
   {
     var parameters = new FeedbackQueryParameters(0, 100, DateTime.Now, "lt", null, null, null, null, null, null, null, null,null, null, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
@@ -301,30 +272,30 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCustomerId_ReturnsFeedbacks()
   {
-    var parameters = new FeedbackQueryParameters(0, 100, null,null, null, null, null, null, null, null, null, null, null, _customer.Id, null, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var parameters = new FeedbackQueryParameters(0, 100, null,null, null, null, null, null, null, null, null, null, null, Customers[0].Id, null, null);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
     {
       Assert.IsNotNull(feedback);
-      Assert.AreEqual(_customer.Id, feedback.CustomerId);
+      Assert.AreEqual(Customers[0].Id, feedback.CustomerId);
     }
   }
 
   [TestMethod]
   public async Task GetAsync_WhereReservationId_ReturnsFeedbacks()
   {
-    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, _reservations[0].Id, null);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, Reservations[0].Id, null);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
     {
       Assert.IsNotNull(feedback);
-      Assert.AreEqual(_reservations[0].Id, feedback.ReservationId);
+      Assert.AreEqual(Reservations[0].Id, feedback.ReservationId);
     }
   }
 
@@ -332,15 +303,15 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereRoomId_ReturnsFeedbacks()
   {
-    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, null, _rooms[0].Id);
-    var feedbacks = await _feedbackRepository.GetAsync(parameters);
+    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, null, Rooms[0].Id);
+    var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
     {
       Assert.IsNotNull(feedback);
-      Assert.AreEqual(_rooms[0].Id, feedback.RoomId);
+      Assert.AreEqual(Rooms[0].Id, feedback.RoomId);
     }
   }
 
