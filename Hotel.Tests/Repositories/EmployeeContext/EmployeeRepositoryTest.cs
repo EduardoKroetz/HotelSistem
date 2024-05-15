@@ -1,12 +1,10 @@
-﻿using Hotel.Domain.DTOs.Base.User;
-using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
-using Hotel.Domain.Entities.CustomerContext;
+﻿using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.EmployeeContext;
 using Hotel.Domain.ValueObjects;
 
-namespace Hotel.Tests.Repositories.CustomerContext;
+namespace Hotel.Tests.Repositories.EmployeeContext;
 
 [TestClass]
 public class EmployeeRepositoryTest : BaseRepositoryTest

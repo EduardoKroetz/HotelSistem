@@ -1,12 +1,6 @@
 ﻿using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
-using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
-using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
-using Hotel.Domain.Entities.RoomContext.CategoryEntity;
-using Hotel.Domain.Entities.RoomContext.RoomEntity;
-using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.CustomerContext;
-using Hotel.Tests.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -25,21 +19,16 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
     await Startup(null);
     _feedbackRepository = new FeedbackRepository(mockConnection.Context);
 
-    var categories = await mockConnection.Context.Categories.ToListAsync();
-    var rooms = await mockConnection.Context.Rooms.ToListAsync();
-    var reservations = await mockConnection.Context.Reservations.ToListAsync();
-    var customers = await mockConnection.Context.Customers.ToListAsync();
-
-    _defaultFeedback = new Feedback("O quarto 321 estava organizado, mas o serviço de quarto era péssimo.", 6, _customer.Id, _reservation.Id, _room.Id);
+    _defaultFeedback = new Feedback("O quarto 321 estava organizado, mas o serviço de quarto era péssimo.", 6, _customer.Id, _reservations[0].Id, _rooms[0].Id);
 
     _feedbacks.AddRange(
     [
       _defaultFeedback,
-      new Feedback("Horrível", 1, _customer.Id, _reservation.Id, _room.Id),
-      new Feedback("Legal", 7, _customer.Id, _reservation.Id, _room.Id),
-      new Feedback("O serviço era bom, mas o ambiente era ruim", 1, _customer.Id, _reservation.Id, _room.Id),
-      new Feedback("Melhor hotel que já me hospedei", 10, _customer.Id, _reservation.Id, _room.Id),
-      new Feedback("Dá pro gasto", 6, _customer.Id, _reservation.Id, _room.Id)
+      new Feedback("Horrível", 1, _customer.Id, _reservations[0].Id, _rooms[0].Id),
+      new Feedback("Legal", 7, _customer.Id, _reservations[0].Id, _rooms[0].Id),
+      new Feedback("O serviço era bom, mas o ambiente era ruim", 1, _customer.Id, _reservations[0].Id, _rooms[0].Id),
+      new Feedback("Melhor hotel que já me hospedei", 10, _customer.Id, _reservations[0].Id, _rooms[0].Id),
+      new Feedback("Dá pro gasto", 6, _customer.Id, _reservations[0].Id, _rooms[0].Id)
     ]);
 
     for (int i = 0; i < 6; i++)
@@ -327,7 +316,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereReservationId_ReturnsFeedbacks()
   {
-    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, _reservation.Id, null);
+    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, _reservations[0].Id, null);
     var feedbacks = await _feedbackRepository.GetAsync(parameters);
 
 
@@ -335,7 +324,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
     foreach (var feedback in feedbacks)
     {
       Assert.IsNotNull(feedback);
-      Assert.AreEqual(_reservation.Id, feedback.ReservationId);
+      Assert.AreEqual(_reservations[0].Id, feedback.ReservationId);
     }
   }
 
@@ -343,7 +332,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereRoomId_ReturnsFeedbacks()
   {
-    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, null, _room.Id);
+    var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, null, null, _rooms[0].Id);
     var feedbacks = await _feedbackRepository.GetAsync(parameters);
 
 
@@ -351,7 +340,7 @@ public class FeedbackRepositoryTest : BaseRepositoryTest
     foreach (var feedback in feedbacks)
     {
       Assert.IsNotNull(feedback);
-      Assert.AreEqual(_room.Id, feedback.RoomId);
+      Assert.AreEqual(_rooms[0].Id, feedback.RoomId);
     }
   }
 
