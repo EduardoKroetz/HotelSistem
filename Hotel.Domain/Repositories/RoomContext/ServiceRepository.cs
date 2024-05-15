@@ -28,7 +28,7 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         x.TimeInMinutes,
         new List<GetReponsability>(
           x.Responsabilities.Select(
-            r => new GetReponsability(r.Id, r.Name, r.Description, r.Priority)
+            r => new GetReponsability(r.Id, r.Name, r.Description, r.Priority, r.CreatedAt)
         ))
       ))
       .FirstOrDefaultAsync();

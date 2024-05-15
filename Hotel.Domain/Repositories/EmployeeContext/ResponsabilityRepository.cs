@@ -17,7 +17,7 @@ public class ResponsabilityRepository : GenericRepository<Responsability>, IResp
       .Responsabilities
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetReponsability(x.Id, x.Name, x.Description, x.Priority))
+      .Select(x => new GetReponsability(x.Id, x.Name, x.Description, x.Priority, x.CreatedAt))
       .FirstOrDefaultAsync();
 
   }
@@ -44,7 +44,8 @@ public class ResponsabilityRepository : GenericRepository<Responsability>, IResp
       x.Id,
       x.Name,
       x.Description,
-      x.Priority
+      x.Priority,
+      x.CreatedAt
     )).ToListAsync();
 
   }

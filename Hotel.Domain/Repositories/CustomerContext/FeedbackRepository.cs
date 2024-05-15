@@ -17,7 +17,7 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
       .Feedbacks
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetFeedback(x.Id, x.Comment, x.Rate, x.Likes, x.Deslikes, x.CustomerId, x.ReservationId, x.RoomId))
+      .Select(x => new GetFeedback(x.Id, x.Comment, x.Rate, x.Likes, x.Deslikes, x.CustomerId, x.ReservationId, x.RoomId,x.UpdatedAt,x.CreatedAt))
       .FirstOrDefaultAsync();
 
 
@@ -62,7 +62,9 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
       x.Deslikes,
       x.CustomerId,
       x.ReservationId,
-      x.RoomId
+      x.RoomId, 
+      x.UpdatedAt, 
+      x.CreatedAt
     )).ToListAsync();
   }
 }

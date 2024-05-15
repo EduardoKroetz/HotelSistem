@@ -1,12 +1,11 @@
-using Hotel.Domain.DTOs.Interfaces;
+using Hotel.Domain.DTOs.Base;
 
 namespace Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 
-public class GetFeedback : IDataTransferObject
+public class GetFeedback : GetDataTransferObject
 {
-  public GetFeedback(Guid id,string comment, int rate,int likes , int deslikes ,Guid customerId, Guid reservationId, Guid roomId)
+  public GetFeedback(Guid id,string comment, int rate,int likes , int deslikes ,Guid customerId, Guid reservationId, Guid roomId,DateTime updatedAt, DateTime createdAt) : base(id,createdAt)
   {
-    Id = id;
     Comment = comment;
     Rate = rate;
     RoomId = roomId;
@@ -14,8 +13,8 @@ public class GetFeedback : IDataTransferObject
     Deslikes = deslikes;
     CustomerId = customerId;
     ReservationId = reservationId;
+    UpdatedAt = updatedAt;
   }
-  public Guid Id { get; private set; }
   public string Comment { get; private set; }
   public int Rate { get; private set; }
   public int Likes { get; private set; }
@@ -23,5 +22,6 @@ public class GetFeedback : IDataTransferObject
   public Guid CustomerId { get; private set; }
   public Guid ReservationId { get; private set; }
   public Guid RoomId { get; private set; }
+  public DateTime? UpdatedAt { get; private set; }
 }
 

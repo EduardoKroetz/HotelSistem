@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 
 public class ResponsabilityQueryParameters : QueryParameters
 {
-  public ResponsabilityQueryParameters(int? skip, int? take, string? name, DateTime? createdAt, string? createdAtOperator, EPriority? priority, Guid? employeeId, Guid? serviceId) : base(skip,take,createdAt,createdAtOperator)
+  public ResponsabilityQueryParameters(int? skip, int? take, string? name,  EPriority? priority, Guid? employeeId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator) : base(skip,take,createdAt,createdAtOperator)
   {
     Name = name;
     Priority = priority;

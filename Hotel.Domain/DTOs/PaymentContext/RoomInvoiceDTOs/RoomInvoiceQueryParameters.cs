@@ -1,12 +1,14 @@
-﻿using Hotel.Domain.DTOs.Base;
+﻿using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 
-public class RoomInvoiceQueryParameters : QueryParameters
+public class RoomInvoiceQueryParameters : IDataTransferObject
 {
-  public RoomInvoiceQueryParameters(int? skip, int? take, DateTime? createdAt, string? createdAtOperator,string? number, DateTime? issueDate, string? issueDateOperator, decimal? totalAmount, string? totalAmountOperator, EStatus? status, EPaymentMethod? paymentMethod, Guid? customerId, Guid? reservationId, Guid? serviceId, decimal? taxInformation, string? taxInformationOperator) : base(skip, take, createdAt, createdAtOperator)
+  public RoomInvoiceQueryParameters(int? skip, int? take,string? number, EPaymentMethod? paymentMethod, decimal? totalAmount, string? totalAmountOperator, EStatus? status, Guid? customerId, Guid? reservationId, Guid? serviceId, decimal? taxInformation, string? taxInformationOperator, DateTime? issueDate, string? issueDateOperator) 
   {
+    Skip = skip;
+    Take = take;  
     Number = number;
     IssueDate = issueDate;
     TotalAmount = totalAmount;
@@ -20,7 +22,8 @@ public class RoomInvoiceQueryParameters : QueryParameters
     TotalAmountOperator = totalAmountOperator;
     TaxInformationOperator = taxInformationOperator;
   }
-
+  public int? Skip { get; private set; }
+  public int? Take { get; private set; }
   public string? Number { get; private set; }
   public DateTime? IssueDate { get; private set; }
   public string? IssueDateOperator { get; private set; }

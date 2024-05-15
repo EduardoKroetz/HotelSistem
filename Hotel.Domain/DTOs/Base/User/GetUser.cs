@@ -5,9 +5,6 @@ using Hotel.Domain.ValueObjects;
 namespace Hotel.Domain.DTOs.Base.User;
 public class GetUser : IDataTransferObject
 {
-  private string emailAddress;
-  private string phoneNumber;
-
   public GetUser(Guid id, string firstName, string lastName, string email, string phone, EGender? gender, DateTime? dateOfBirth, Address? address, DateTime createdAt)
   {
     Id = id;

@@ -4,7 +4,6 @@ using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Hotel.Domain.Repositories.AdminContext;
 
@@ -18,7 +17,7 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
       .Permissions
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetPermission(x.Id, x.Name, x.Description, x.IsActive))
+      .Select(x => new GetPermission(x.Id, x.Name, x.Description, x.IsActive,x.CreatedAt))
       .FirstOrDefaultAsync();
 
   }
@@ -43,7 +42,8 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
       x.Id,
       x.Name,
       x.Description,
-      x.IsActive
+      x.IsActive,
+      x.CreatedAt
     )).ToListAsync();
   }
 }

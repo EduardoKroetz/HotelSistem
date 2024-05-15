@@ -43,7 +43,7 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice>, IRoomInvoic
       query = query.Where(x => x.PaymentMethod == queryParameters.PaymentMethod);
 
     if (queryParameters.CustomerId.HasValue)
-      query = query.Where(x => x.Customers.Any(x => x.Id == queryParameters.CustomerId));
+      query = query.Where(x => x.Customers.Any(y => y.Id == queryParameters.CustomerId));
 
     if (queryParameters.ReservationId.HasValue)
       query = query.Where(x => x.ReservationId == queryParameters.ReservationId);
@@ -54,7 +54,8 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice>, IRoomInvoic
     if (queryParameters.TaxInformation.HasValue)
       query = query.FilterByOperator(queryParameters.TaxInformationOperator, x => x.TaxInformation, queryParameters.TaxInformation);
 
-    query = query.BaseQuery(queryParameters);
+    query = query.Skip(queryParameters.Skip ?? 0).Take(queryParameters.Take ?? 1);
+    query = query.AsNoTracking();
 
     return await query.Select(x => new GetRoomInvoice(
       x.Id,
