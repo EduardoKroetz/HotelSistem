@@ -30,7 +30,8 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
         x.Description,
         x.Services,
         new GetCategory(x.CategoryId, x.Category!.Name, x.Category!.Description, x.Category!.AveragePrice),
-        x.Images))
+        x.Images,
+        x.CreatedAt))
       .FirstOrDefaultAsync();
 
   }
@@ -67,7 +68,8 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
         x.Status,
         x.Capacity,
         x.Description,
-        x.CategoryId
+        x.CategoryId,
+        x.CreatedAt
     )).ToListAsync();
   }
 }

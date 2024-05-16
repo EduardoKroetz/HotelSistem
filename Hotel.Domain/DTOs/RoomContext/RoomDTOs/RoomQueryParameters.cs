@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 
 public class RoomQueryParameters : QueryParameters
 {
-  public RoomQueryParameters(int? skip, int? take, DateTime? createdAt, string? createdAtOperator, int? number, string? numberOperator, decimal? price, string? priceOperator, ERoomStatus? status, int? capacity, string? capacityOperator, Guid? serviceId, Guid? categoryId) : base(skip, take, createdAt, createdAtOperator)
+  public RoomQueryParameters(int? skip, int? take, int? number, string? numberOperator, decimal? price, string? priceOperator, ERoomStatus? status, int? capacity, string? capacityOperator, Guid? serviceId, Guid? categoryId, DateTime? createdAt, string? createdAtOperator) : base(skip, take, createdAt, createdAtOperator)
   {
     Number = number;
     NumberOperator = numberOperator;

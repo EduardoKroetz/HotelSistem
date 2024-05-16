@@ -46,9 +46,10 @@ public class BaseRepositoryTest
     await CreateReports();
 
     await CreateCategories();
+    await CreateServices();
+
     await CreateRooms();
 
-    await CreateServices();
 
     await CreateReservations();
     await CreateRoomInvoices();
@@ -230,8 +231,12 @@ public class BaseRepositoryTest
   {
     var categories = new List<Category>()
     {
-      new("Quartos de luxo","Quartos de luxo com vista para a praia",120),
-      new("Quartos médios", "Quartos de médio para uma hospedagem temporária", 40)
+      new("Quartos médios", "Quartos de médio para uma hospedagem temporária", 40),
+      new("Quartos de luxo", "Quartos espaçosos e luxuosos com comodidades premium.", 120),
+      new("Quartos padrão", "Quartos confortáveis e bem equipados para uma estadia agradável.", 100),
+      new("Suítes executivas", "Suítes espaçosas com áreas de estar separadas e serviços exclusivos.", 200),
+      new("Quartos familiares", "Quartos amplos e confortáveis para acomodar toda a família.", 130),
+      new("Suítes presidenciais", "Suítes de alto padrão com vistas deslumbrantes e serviços personalizados.", 300)
     };
 
     await MockConnection.Context.Categories.AddRangeAsync(categories);
@@ -307,10 +312,41 @@ public class BaseRepositoryTest
 
   public static async Task CreateRooms()
   {
-    await MockConnection.Context.Rooms.AddRangeAsync([
-      new(22, 50m, 3, "Um quarto para hospedagem.", Categories[0].Id),
-      new(21, 40m, 4, "Um quarto com vista para a praia.", Categories[1].Id),
-    ]);
+    var rooms = new List<Room>()
+    {
+      new(4, 50m, 3, "Um quarto para hospedagem.", Categories[1].Id),
+      new(3, 110m, 4, "Um quarto com vista para a praia.", Categories[0].Id),
+      new(9, 50m, 3, "Quarto Standard", Categories[1].Id),
+      new(11, 90m, 2, "Suíte Deluxe", Categories[0].Id),
+      new(13, 110m, 2, "Suíte Executiva", Categories[2].Id),
+      new(29, 70m, 4, "Quarto Familiar", Categories[3].Id),
+      new(14, 150m, 2, "Suíte Presidencial", Categories[4].Id),
+      new(12, 80m, 2, "Quarto Standard", Categories[1].Id),
+      new(21, 120m, 3, "Suíte Familiar", Categories[3].Id),
+      new(25, 200m, 2, "Suíte Real", Categories[2].Id),
+      new(19, 100m, 2, "Quarto Deluxe", Categories[0].Id),
+      new(31, 180m, 2, "Suíte Presidencial", Categories[4].Id)
+    };
+
+    new Reservation(rooms[0], DateTime.Now.AddDays(1), [Customers[0]]); //Trocar status do quarto para reservado
+
+    rooms[0].AddService(Services[0]);
+    rooms[0].AddService(Services[2]);
+    rooms[1].AddService(Services[4]);
+    rooms[3].AddService(Services[1]);
+    rooms[4].AddService(Services[3]);
+    rooms[4].AddService(Services[0]);
+    rooms[6].AddService(Services[2]);
+    rooms[8].AddService(Services[4]);
+    rooms[10].AddService(Services[1]);
+    rooms[11].AddService(Services[3]);
+    rooms[11].AddService(Services[0]);
+    rooms[1].AddService(Services[2]);
+    rooms[5].AddService(Services[3]);
+    rooms[7].AddService(Services[1]);
+    rooms[9].AddService(Services[0]);
+
+    await MockConnection.Context.Rooms.AddRangeAsync(rooms);
     await MockConnection.Context.SaveChangesAsync();
 
     Rooms = await MockConnection.Context.Rooms.ToListAsync();
