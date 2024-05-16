@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 
 public class GetReport : IDataTransferObject 
 {
-  public GetReport(Guid id ,string summary, string description, EPriority priority, string resolution, Guid employeeId, EStatus status)
+  public GetReport(Guid id ,string summary, string description, EPriority priority, string resolution, Guid employeeId, EStatus status, DateTime createdAt)
   {
     Id = id;
     Summary = summary;
@@ -14,6 +14,7 @@ public class GetReport : IDataTransferObject
     Resolution = resolution;
     EmployeeId = employeeId;
     Status = status;
+    CreatedAt = createdAt;
   }
 
   public Guid Id { get; private set; }
@@ -23,5 +24,6 @@ public class GetReport : IDataTransferObject
   public EPriority Priority { get; private set; }
   public string Resolution { get; private set; }
   public Guid EmployeeId { get; private set; }
+  public DateTime CreatedAt { get; private set; }
 }
 

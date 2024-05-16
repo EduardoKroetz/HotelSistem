@@ -6,17 +6,16 @@ using Microsoft.EntityFrameworkCore;
 namespace Hotel.Tests.Repositories;
 public class ConfigMockConnection 
 {
-  
-  public SqliteConnection _connection { get; private set; }
+  public SqliteConnection Connection { get; private set; }
   public HotelDbContext Context { get; private set; }
 
   public ConfigMockConnection()
   {
-    _connection = new SqliteConnection("DataSource=:memory:");
-    _connection.Open();
+    Connection = new SqliteConnection("DataSource=:memory:");
+    Connection.Open();
 
     var options = new DbContextOptionsBuilder<HotelDbContext>()
-        .UseSqlite(_connection)
+        .UseSqlite(Connection)
         .Options;
 
     Context = new HotelDbContext(options);
@@ -26,6 +25,6 @@ public class ConfigMockConnection
   => await Context.Database.EnsureCreatedAsync();
   
   public void Dispose()
-  => _connection.Dispose();
+  => Connection.Dispose();
 }
 

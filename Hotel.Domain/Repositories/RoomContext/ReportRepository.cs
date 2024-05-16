@@ -17,7 +17,7 @@ public class ReportRepository : GenericRepository<Report>, IReportRepository
       .Reports
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetReport(x.Id, x.Summary, x.Description, x.Priority, x.Resolution, x.EmployeeId, x.Status))
+      .Select(x => new GetReport(x.Id, x.Summary, x.Description, x.Priority, x.Resolution, x.EmployeeId, x.Status, x.CreatedAt))
       .FirstOrDefaultAsync();
 
   }
@@ -47,7 +47,8 @@ public class ReportRepository : GenericRepository<Report>, IReportRepository
         x.Priority,
         x.Resolution,
         x.EmployeeId,
-        x.Status
+        x.Status,
+        x.CreatedAt
     )).ToListAsync();
   }
 }

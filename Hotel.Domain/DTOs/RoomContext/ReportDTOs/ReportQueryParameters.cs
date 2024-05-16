@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 
 public class ReportQueryParameters : QueryParameters
 {
-  public ReportQueryParameters(int? skip, int? take, DateTime? createdAt, string? createdAtOperator, string? summary, EStatus? status, EPriority? priority, Guid? employeeId) : base(skip, take, createdAt, createdAtOperator)
+  public ReportQueryParameters(int? skip, int? take, string? summary, EStatus? status, EPriority? priority, Guid? employeeId, DateTime? createdAt, string? createdAtOperator) : base(skip, take, createdAt, createdAtOperator)
   {
     Summary = summary;
     Status = status;
