@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 
 public class GetServiceCollection : IDataTransferObject
 {
-  public GetServiceCollection(Guid id,string name, decimal price, EPriority priority, bool isActive, int timeInMinutes)
+  public GetServiceCollection(Guid id,string name, decimal price, EPriority priority, bool isActive, int timeInMinutes, DateTime createdAt)
   {
     Id = id;
     Name = name;
@@ -13,6 +13,7 @@ public class GetServiceCollection : IDataTransferObject
     Priority = priority;
     TimeInMinutes = timeInMinutes;
     IsActive = isActive;
+    CreatedAt = createdAt;
   }
 
   public Guid Id { get; private set; }
@@ -21,5 +22,6 @@ public class GetServiceCollection : IDataTransferObject
   public EPriority Priority { get; private set; }
   public int TimeInMinutes { get; private set; }
   public bool IsActive { get; private set; }
-} 
-  
+  public DateTime CreatedAt { get; private set; }
+}
+

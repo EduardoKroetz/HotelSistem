@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 
 public class ServiceQueryParameters : QueryParameters
 {
-  public ServiceQueryParameters(int? skip, int? take, DateTime? createdAt, string? createdAtOperator, string? name, decimal? price, string? priceOperator, EPriority? priority, bool? isActive, int? timeInMinutes, string? timeInMinutesOperator, Guid? responsabilityId, Guid? reservationId, Guid? roomInvoiceId, Guid? roomId) : base(skip, take, createdAt, createdAtOperator)
+  public ServiceQueryParameters(int? skip, int? take, string? name, decimal? price, string? priceOperator, EPriority? priority, bool? isActive, int? timeInMinutes, string? timeInMinutesOperator, Guid? responsabilityId, Guid? reservationId, Guid? roomInvoiceId, Guid? roomId, DateTime? createdAt, string? createdAtOperator) : base(skip, take, createdAt, createdAtOperator)
   {
     Name = name;
     Price = price;

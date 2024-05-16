@@ -29,7 +29,8 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         new List<GetReponsability>(
           x.Responsabilities.Select(
             r => new GetReponsability(r.Id, r.Name, r.Description, r.Priority, r.CreatedAt)
-        ))
+        )),
+        x.CreatedAt
       ))
       .FirstOrDefaultAsync();
 
@@ -74,7 +75,8 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         x.Price,
         x.Priority,
         x.IsActive,
-        x.TimeInMinutes
+        x.TimeInMinutes,
+        x.CreatedAt
     )).ToListAsync();
   }
 }
