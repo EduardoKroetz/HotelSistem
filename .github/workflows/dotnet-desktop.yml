@@ -35,9 +35,16 @@ jobs:
     - name: Execute unit tests
       run: dotnet test
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild HotelSistem.sln  /t:Restore /p:Configuration=${{ matrix.configuration }}
+
+    - name: Install NuGet packages
+      run: |
+        dotnet add package Microsoft.AspNetCore.OpenApi --version 8.0.204
+        dotnet add package Microsoft.EntityFrameworkCore --version 8.0.204
+        dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.204
+        dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.204
+        dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 8.0.204
+        dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 8.0.204
+
  
     - name: Build the application
       run: dotnet build HotelSistem.sln --configuration ${{ matrix.configuration }}
