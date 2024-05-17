@@ -11,7 +11,7 @@ public class RoomRepositoryTest
 {
   private static RoomRepository RoomRepository { get; set; }
 
-  public RoomRepositoryTest()
+  static RoomRepositoryTest()
   => RoomRepository = new RoomRepository(BaseRepositoryTest.MockConnection.Context);
 
   [TestMethod]
