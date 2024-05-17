@@ -36,14 +36,17 @@ jobs:
       run: dotnet test
 
 
-    - name: Install NuGet packages
+    - name: Install NuGet packages for Hotel.Domain
       run: |
-        cd \Hotel.Domain
+        cd Hotel.Domain
         dotnet add package Microsoft.AspNetCore.OpenApi --version 8.0
         dotnet add package Microsoft.EntityFrameworkCore --version 8.0
         dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0
         dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0
-        cd ..\Hotel.Tests
+
+    - name: Install NuGet packages for Hotel.Tests
+      run: |
+        cd Hotel.Tests
         dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 8.0
         dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 8.0
 
