@@ -53,10 +53,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
-      Assert.AreEqual(BaseRepositoryTest.Admins[0].Name.FirstName, admin.FirstName);
-    }
+     Assert.AreEqual(BaseRepositoryTest.Admins[0].Name.FirstName, admin.FirstName);
+
   }
 
   [TestMethod]
@@ -67,10 +65,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.AreEqual(BaseRepositoryTest.Admins[0].Email.Address, admin.Email);
-    }
+    
   }
 
   [TestMethod]
@@ -81,10 +77,7 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.AreEqual(BaseRepositoryTest.Admins[0].Phone.Number, admin.Phone);
-    }
   }
 
   [TestMethod]
@@ -95,10 +88,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.AreEqual(BaseRepositoryTest.Admins[0].Gender, admin.Gender);
-    }
+    
   }
 
   [TestMethod]
@@ -109,10 +100,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.IsTrue(DateTime.Now.AddYears(-24) < admin.DateOfBirth);
-    }
+    
   }
 
   [TestMethod]
@@ -123,10 +112,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.IsTrue(DateTime.Now.AddDays(-1) < admin.CreatedAt);
-    }
+ 
   }
 
   [TestMethod]
@@ -137,10 +124,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.IsTrue(DateTime.Now.AddDays(1) > admin.CreatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -151,10 +136,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.AreEqual(BaseRepositoryTest.Admins[0].CreatedAt,admin.CreatedAt);
-    }
+   
   }
 
   [TestMethod]
@@ -165,10 +148,8 @@ public class AdminRepositoryTest
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
       Assert.AreEqual(false, admin.IsRootAdmin);
-    }
+
   }
 
   [TestMethod]
@@ -182,9 +163,7 @@ public class AdminRepositoryTest
   
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
-
+    { 
       var hasPermission = await BaseRepositoryTest.MockConnection.Context.Admins
         .Where(x => x.Id == admin.Id)
         .SelectMany(x => x.Permissions)
@@ -203,8 +182,7 @@ public class AdminRepositoryTest
     Assert.IsTrue(admins.Any());
 
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
+    { 
       Assert.IsTrue(admin.Email.Contains("example"));
       Assert.IsTrue(admin.Phone.Contains("55"));
       Assert.AreEqual(EGender.Masculine,admin.Gender);
@@ -222,8 +200,7 @@ public class AdminRepositoryTest
     Assert.IsTrue(admins.Any());
 
     foreach (var admin in admins)
-    {
-      Assert.IsNotNull(admin);
+    { 
       Assert.IsTrue(admin.FirstName.Contains('R'));
       Assert.IsTrue(DateTime.Now.AddYears(-31) > admin.DateOfBirth);
       Assert.IsTrue(DateTime.Now.AddDays(1) > admin.CreatedAt);

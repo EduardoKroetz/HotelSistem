@@ -141,8 +141,10 @@ public class RoomInvoiceRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCustomerId_ReturnsRoomInvoices()
   {
-    
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, BaseRepositoryTest.Customers[0].Id, null, null, null, null, null, null);
+    var customerWithInvoice = await BaseRepositoryTest.MockConnection.Context.Customers
+      .FirstOrDefaultAsync(x => x.RoomInvoices.Count > 0);
+
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, customerWithInvoice?.Id, null, null, null, null, null, null);
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(roomInvoices.Any());
@@ -151,7 +153,7 @@ public class RoomInvoiceRepositoryTest
       var hasCustomer = await BaseRepositoryTest.MockConnection.Context.RoomInvoices
         .Where(x => x.Id == roomInvoice.Id)
         .SelectMany(x => x.Customers)
-        .AnyAsync(x => x.Id == BaseRepositoryTest.Customers[0].Id);
+        .AnyAsync(x => x.Id == customerWithInvoice!.Id);
 
       Assert.IsTrue(hasCustomer);
     }
@@ -173,8 +175,9 @@ public class RoomInvoiceRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereServiceId_ReturnsRoomInvoices()
   {
-    
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, BaseRepositoryTest.Services[0].Id, null, null, null, null);
+    var serviceWithRoomInvoices = await BaseRepositoryTest.MockConnection.Context.Services.FirstOrDefaultAsync(x => x.RoomInvoices.Count > 0);
+
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, serviceWithRoomInvoices!.Id, null, null, null, null);
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(roomInvoices.Any());
@@ -183,7 +186,7 @@ public class RoomInvoiceRepositoryTest
       var hasService = await BaseRepositoryTest.MockConnection.Context.RoomInvoices
         .Where(x => x.Id == roomInvoice.Id)
         .SelectMany(x => x.Services)
-        .AnyAsync(x => x.Id == BaseRepositoryTest.Services[0].Id);
+        .AnyAsync(x => x.Id == serviceWithRoomInvoices!.Id);
 
       Assert.IsTrue(hasService);
     }

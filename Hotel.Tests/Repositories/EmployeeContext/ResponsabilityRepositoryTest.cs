@@ -50,10 +50,8 @@ public class ResponsabilityRepositoryTest
 
     Assert.IsTrue(responsibilities.Any());
     foreach (var responsibility in responsibilities)
-    {
-      Assert.IsNotNull(responsibility);
       Assert.IsTrue(responsibility.Name.Contains("Planejar"));
-    }
+    
   }
 
   [TestMethod]
@@ -64,10 +62,8 @@ public class ResponsabilityRepositoryTest
 
     Assert.IsTrue(responsibilities.Any());
     foreach (var responsibility in responsibilities)
-    {
-      Assert.IsNotNull(responsibility);
       Assert.AreEqual(EPriority.Low,responsibility.Priority);
-    }
+    
   }
 
   [TestMethod]
@@ -123,10 +119,8 @@ public class ResponsabilityRepositoryTest
 
     Assert.IsTrue(responsibilities.Any());
     foreach (var responsibility in responsibilities)
-    {
-      Assert.IsNotNull(responsibility);
       Assert.IsTrue(DateTime.Now.AddDays(-1) < responsibility.CreatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -137,10 +131,8 @@ public class ResponsabilityRepositoryTest
 
     Assert.IsTrue(responsibilities.Any());
     foreach (var responsibility in responsibilities)
-    {
-      Assert.IsNotNull(responsibility);
       Assert.IsTrue(DateTime.Now > responsibility.CreatedAt);
-    }
+    
   }
 
   [TestMethod]

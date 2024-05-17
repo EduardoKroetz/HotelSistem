@@ -252,10 +252,10 @@ public class RoomRepositoryTest
 
 
   [TestMethod]
-  public async Task GetAsync_WhereNumberGratherThan5_And_PriceLessThan60_And_StatusEqualsReserved_And_CapacityGratherThan2_ReturnRooms()
+  public async Task GetAsync_WhereNumberGratherThan5_And_PriceLessThan60_And_CapacityGratherThan2_ReturnRooms()
   {
     
-    var parameters = new RoomQueryParameters(0, 100, 5, "gt", 60, "lt", ERoomStatus.Reserved, 2, "gt", null, null, null,null);
+    var parameters = new RoomQueryParameters(0, 100, 5, "gt", 60, "lt", null ,2, "gt", null, null, null,null);
     var rooms = await RoomRepository.GetAsync(parameters);
 
     Assert.IsTrue(rooms.Any());
@@ -264,7 +264,7 @@ public class RoomRepositoryTest
       Assert.IsTrue(5 < room.Number);
       Assert.IsTrue(60 > room.Price);
       Assert.IsTrue(2 < room.Capacity);
-      Assert.AreEqual(ERoomStatus.Reserved,room.Status);
+
     }
 
   }

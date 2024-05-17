@@ -50,10 +50,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.IsTrue(customer.FirstName.Contains("João"));
-    }
+
   }
 
   [TestMethod]
@@ -64,10 +62,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.IsTrue(customer.Email.Contains(".com"));
-    }
+   
   }
 
   [TestMethod]
@@ -78,10 +74,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.IsTrue(customer.Phone.Contains("55"));
-    }
+    
   }
 
   [TestMethod]
@@ -92,10 +86,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.AreEqual(EGender.Masculine, customer.Gender);
-    }
+    
   }
 
   [TestMethod]
@@ -106,10 +98,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.IsTrue(DateTime.Now.AddYears(-24) < customer.DateOfBirth);
-    }
+    
   }
 
   [TestMethod]
@@ -120,10 +110,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.IsTrue(DateTime.Now.AddDays(-1) < customer.CreatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -134,10 +122,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.IsTrue(DateTime.Now.AddDays(1) > customer.CreatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -148,10 +134,8 @@ public class CustomerRepositoryTest
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
       Assert.AreEqual(BaseRepositoryTest.Customers[0].CreatedAt, customer.CreatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -163,8 +147,7 @@ public class CustomerRepositoryTest
     Assert.IsTrue(customers.Any());
 
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
+    { 
       Assert.IsTrue(customer.Email.Contains("example"));
       Assert.IsTrue(customer.Phone.Contains("55"));
       Assert.AreEqual(EGender.Masculine, customer.Gender);
@@ -181,8 +164,7 @@ public class CustomerRepositoryTest
     Assert.IsTrue(customers.Any());
 
     foreach (var customer in customers)
-    {
-      Assert.IsNotNull(customer);
+    { 
       Assert.IsTrue(customer.FirstName.Contains('R'));
       Assert.IsTrue(DateTime.Now.AddYears(-31) > customer.DateOfBirth);
       Assert.IsTrue(DateTime.Now.AddDays(1) > customer.CreatedAt);
