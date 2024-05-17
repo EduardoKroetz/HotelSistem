@@ -57,10 +57,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(feedback.Comment.Contains("serviço"));
-    }
+    
   }
 
   [TestMethod]
@@ -71,10 +69,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(5 < feedback.Rate);
-    }
+    
   }
 
   [TestMethod]
@@ -85,10 +81,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(5 > feedback.Rate);
-    }
+    
   }
 
   [TestMethod]
@@ -99,10 +93,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.AreEqual(6,feedback.Rate);
-    }
+    
   }
 
   [TestMethod]
@@ -114,10 +106,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(5 < feedback.Likes);
-    }
+    
   }
 
   [TestMethod]
@@ -128,10 +118,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(5 > feedback.Likes);
-    }
+    
   }
 
   [TestMethod]
@@ -142,10 +130,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.AreEqual(6, feedback.Likes);
-    }
+    
   }
 
   [TestMethod]
@@ -157,10 +143,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(5 < feedback.Deslikes);
-    }
+    
   }
 
   [TestMethod]
@@ -171,10 +155,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(5 > feedback.Deslikes);
-    }
+    
   }
 
   [TestMethod]
@@ -185,10 +167,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.AreEqual(6, feedback.Deslikes);
-    }
+    
   }
 
   [TestMethod]
@@ -200,10 +180,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(DateTime.Now.AddDays(-1) < feedback.UpdatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -214,10 +192,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(DateTime.Now > feedback.UpdatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -228,10 +204,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].UpdatedAt, feedback.UpdatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -242,10 +216,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(DateTime.Now.AddDays(1) > feedback.CreatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -256,10 +228,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.IsTrue(DateTime.Now > feedback.CreatedAt);
-    }
+    
   }
 
   [TestMethod]
@@ -271,10 +241,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.AreEqual(BaseRepositoryTest.Customers[0].Id, feedback.CustomerId);
-    }
+    
   }
 
   [TestMethod]
@@ -285,10 +253,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.AreEqual(BaseRepositoryTest.Reservations[0].Id, feedback.ReservationId);
-    }
+    
   }
 
 
@@ -300,12 +266,8 @@ public class FeedbackRepositoryTest
 
     Assert.IsTrue(feedbacks.Any());
     foreach (var feedback in feedbacks)
-    {
-      Assert.IsNotNull(feedback);
       Assert.AreEqual(BaseRepositoryTest.Rooms[0].Id, feedback.RoomId);
-    }
+    
   }
-
-
 
 }

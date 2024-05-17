@@ -51,10 +51,7 @@ public class PermissionRepositoryTest
 
     Assert.IsTrue(permissions.Any());
     foreach (var permission in permissions)
-    {
-      Assert.IsNotNull(permission);
       Assert.IsTrue(permission.Name.Contains("Buscar"));
-    }
   }
 
   [TestMethod]
@@ -65,10 +62,7 @@ public class PermissionRepositoryTest
 
     Assert.IsTrue(permissions.Any());
     foreach (var permission in permissions)
-    {
-      Assert.IsNotNull(permission);
       Assert.IsTrue(DateTime.Now.AddYears(-24) < permission.CreatedAt);
-    }
   }
 
   [TestMethod]
@@ -79,10 +73,7 @@ public class PermissionRepositoryTest
 
     Assert.IsTrue(permissions.Any());
     foreach (var permission in permissions)
-    {
-      Assert.IsNotNull(permission);
       Assert.IsTrue(DateTime.Now.AddYears(1) > permission.CreatedAt);
-    }
   }
 
   [TestMethod]
@@ -93,10 +84,7 @@ public class PermissionRepositoryTest
 
     Assert.IsTrue(permissions.Any());
     foreach (var permission in permissions)
-    {
-      Assert.IsNotNull(permission);
       Assert.AreEqual(BaseRepositoryTest.Permissions[0].CreatedAt, permission.CreatedAt);
-    }
   }
 
 
@@ -112,10 +100,7 @@ public class PermissionRepositoryTest
 
     Assert.IsTrue(permissions.Any());
     foreach (var permission in permissions)
-    {
-      Assert.IsNotNull(permission);
       Assert.IsFalse(permission.IsActive);
-    }
   }
 
   [TestMethod]
@@ -133,9 +118,7 @@ public class PermissionRepositoryTest
 
     Assert.IsTrue(permissions.Any());
     foreach (var permission in permissions)
-    {
-      Assert.IsNotNull(permission);
-
+    { 
       var hasPermission = await BaseRepositoryTest.MockConnection.Context.Permissions
         .Where(x => x.Id == permission.Id)
         .SelectMany(x => x.Admins)
@@ -154,8 +137,7 @@ public class PermissionRepositoryTest
     Assert.IsTrue(permissions.Any());
 
     foreach (var permission in permissions)
-    {
-      Assert.IsNotNull(permission);
+    { 
       Assert.IsTrue(permission.Name.Contains("admin"));
       Assert.IsTrue(permission.IsActive);
     }

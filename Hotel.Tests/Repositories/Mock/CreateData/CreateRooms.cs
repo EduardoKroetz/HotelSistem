@@ -25,31 +25,30 @@ public class CreateRooms
       new(31, 180m, 2, "Suíte Presidencial", BaseRepositoryTest.Categories[4].Id)
     };
 
-    new Reservation(rooms[0], DateTime.Now.AddDays(1), [BaseRepositoryTest.Customers[0]]); //Trocar status do quarto para reservado
-    new Reservation(rooms[2], DateTime.Now.AddDays(1), [BaseRepositoryTest.Customers[2]]); //Trocar status do quarto para reservado
-    new Reservation(rooms[8], DateTime.Now.AddDays(1), [BaseRepositoryTest.Customers[1]]); //Trocar status do quarto para reservado
-    new Reservation(rooms[10], DateTime.Now.AddDays(1), [BaseRepositoryTest.Customers[4]]); //Trocar status do quarto para reservado
-    new Reservation(rooms[6], DateTime.Now.AddDays(1), [BaseRepositoryTest.Customers[3]]); //Trocar status do quarto para reservado
-
-    rooms[0].AddService(BaseRepositoryTest.Services[0]);
-    rooms[0].AddService(BaseRepositoryTest.Services[2]);
-    rooms[1].AddService(BaseRepositoryTest.Services[4]);
-    rooms[3].AddService(BaseRepositoryTest.Services[1]);
-    rooms[4].AddService(BaseRepositoryTest.Services[3]);
-    rooms[4].AddService(BaseRepositoryTest.Services[0]);
-    rooms[6].AddService(BaseRepositoryTest.Services[2]);
-    rooms[8].AddService(BaseRepositoryTest.Services[4]);
-    rooms[10].AddService(BaseRepositoryTest.Services[1]);
-    rooms[11].AddService(BaseRepositoryTest.Services[3]);
-    rooms[11].AddService(BaseRepositoryTest.Services[0]);
-    rooms[1].AddService(BaseRepositoryTest.Services[2]);
-    rooms[5].AddService(BaseRepositoryTest.Services[3]);
-    rooms[7].AddService(BaseRepositoryTest.Services[1]);
-    rooms[9].AddService(BaseRepositoryTest.Services[0]);
+    new Reservation(rooms[0], DateTime.Now.AddDays(1), [BaseRepositoryTest.Customers[0]]);
 
     await BaseRepositoryTest.MockConnection.Context.Rooms.AddRangeAsync(rooms);
     await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
 
+    BaseRepositoryTest.Rooms = await BaseRepositoryTest.MockConnection.Context.Rooms.ToListAsync();
+
+    BaseRepositoryTest.Rooms[0].AddService(BaseRepositoryTest.Services[0]);
+    BaseRepositoryTest.Rooms[0].AddService(BaseRepositoryTest.Services[2]);
+    BaseRepositoryTest.Rooms[1].AddService(BaseRepositoryTest.Services[4]);
+    BaseRepositoryTest.Rooms[3].AddService(BaseRepositoryTest.Services[1]);
+    BaseRepositoryTest.Rooms[4].AddService(BaseRepositoryTest.Services[3]);
+    BaseRepositoryTest.Rooms[4].AddService(BaseRepositoryTest.Services[0]);
+    BaseRepositoryTest.Rooms[6].AddService(BaseRepositoryTest.Services[2]);
+    BaseRepositoryTest.Rooms[8].AddService(BaseRepositoryTest.Services[4]);
+    BaseRepositoryTest.Rooms[10].AddService(BaseRepositoryTest.Services[1]);
+    BaseRepositoryTest.Rooms[11].AddService(BaseRepositoryTest.Services[3]);
+    BaseRepositoryTest.Rooms[11].AddService(BaseRepositoryTest.Services[0]);
+    BaseRepositoryTest.Rooms[1].AddService(BaseRepositoryTest.Services[2]);
+    BaseRepositoryTest.Rooms[5].AddService(BaseRepositoryTest.Services[3]);
+    BaseRepositoryTest.Rooms[7].AddService(BaseRepositoryTest.Services[1]);
+    BaseRepositoryTest.Rooms[9].AddService(BaseRepositoryTest.Services[0]);
+
+    await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
     BaseRepositoryTest.Rooms = await BaseRepositoryTest.MockConnection.Context.Rooms.ToListAsync();
   }
 }
