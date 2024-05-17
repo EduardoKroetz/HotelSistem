@@ -39,13 +39,13 @@ jobs:
     - name: Install NuGet packages
       run: |
         cd \Hotel.Domain
-        dotnet add package Microsoft.AspNetCore.OpenApi --version 8.0.204
-        dotnet add package Microsoft.EntityFrameworkCore --version 8.0.204
-        dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.204
-        dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.204
+        dotnet add package Microsoft.AspNetCore.OpenApi --version 8.0
+        dotnet add package Microsoft.EntityFrameworkCore --version 8.0
+        dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0
+        dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0
         cd ..\Hotel.Tests
-        dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 8.0.204
-        dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 8.0.204
+        dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 8.0
+        dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 8.0
 
  
     - name: Build the application
