@@ -1,52 +1,45 @@
 ﻿using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.CustomerContext;
+using Hotel.Tests.Repositories.Mock;
 
 namespace Hotel.Tests.Repositories.CustomerContext;
 
 [TestClass]
-public class CustomerRepositoryTest : BaseRepositoryTest
+public class CustomerRepositoryTest
 {
-  private static CustomerRepository CustomerRepository { get; set; } = null!;
+  private static CustomerRepository CustomerRepository { get; set; }
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup();
-    CustomerRepository = new CustomerRepository(MockConnection.Context);
-  }
-
-  [ClassCleanup]
-  public static async Task Dispose()
-=> await Cleanup();
+  static CustomerRepositoryTest()
+  => CustomerRepository = new CustomerRepository(BaseRepositoryTest.MockConnection.Context);
 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var customer = await CustomerRepository.GetByIdAsync(Customers[0].Id);
+    var customer = await CustomerRepository.GetByIdAsync(BaseRepositoryTest.Customers[0].Id);
 
     Assert.IsNotNull(customer);
-    Assert.AreEqual(Customers[0].Name.FirstName, customer.FirstName);
-    Assert.AreEqual(Customers[0].Name.LastName, customer.LastName);
-    Assert.AreEqual(Customers[0].Email.Address, customer.Email);
-    Assert.AreEqual(Customers[0].Phone.Number, customer.Phone);
-    Assert.AreEqual(Customers[0].Id, customer.Id);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Name.FirstName, customer.FirstName);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Name.LastName, customer.LastName);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Email.Address, customer.Email);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Phone.Number, customer.Phone);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Id, customer.Id);
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new UserQueryParameters(0, 1, Customers[0].Name.FirstName, null, null, null, null, null, null, null);
+    var parameters = new UserQueryParameters(0, 1, BaseRepositoryTest.Customers[0].Name.FirstName, null, null, null, null, null, null, null);
     var customers = await CustomerRepository.GetAsync(parameters);
 
     var customer = customers.ToList()[0];
 
     Assert.IsNotNull(customer);
-    Assert.AreEqual(Customers[0].Name.FirstName, customer.FirstName);
-    Assert.AreEqual(Customers[0].Name.LastName, customer.LastName);
-    Assert.AreEqual(Customers[0].Email.Address, customer.Email);
-    Assert.AreEqual(Customers[0].Phone.Number, customer.Phone);
-    Assert.AreEqual(Customers[0].Id, customer.Id);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Name.FirstName, customer.FirstName);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Name.LastName, customer.LastName);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Email.Address, customer.Email);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Phone.Number, customer.Phone);
+    Assert.AreEqual(BaseRepositoryTest.Customers[0].Id, customer.Id);
   }
 
   [TestMethod]
@@ -150,14 +143,14 @@ public class CustomerRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtEquals_ReturnsCustomers()
   {
-    var parameters = new UserQueryParameters(0, 100, null, null, null, null, null, null, Customers[0].CreatedAt, "eq");
+    var parameters = new UserQueryParameters(0, 100, null, null, null, null, null, null, BaseRepositoryTest.Customers[0].CreatedAt, "eq");
     var customers = await CustomerRepository.GetAsync(parameters);
 
     Assert.IsTrue(customers.Any());
     foreach (var customer in customers)
     {
       Assert.IsNotNull(customer);
-      Assert.AreEqual(Customers[0].CreatedAt, customer.CreatedAt);
+      Assert.AreEqual(BaseRepositoryTest.Customers[0].CreatedAt, customer.CreatedAt);
     }
   }
 

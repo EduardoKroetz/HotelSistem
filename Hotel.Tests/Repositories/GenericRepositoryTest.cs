@@ -3,6 +3,7 @@ using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.AdminContext;
 using Hotel.Domain.ValueObjects;
+using Hotel.Tests.Repositories.Mock;
 
 namespace Hotel.Tests.Repositories;
 

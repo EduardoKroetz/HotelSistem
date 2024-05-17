@@ -2,109 +2,102 @@
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.AdminContext;
 using Hotel.Tests.Entities;
+using Hotel.Tests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Tests.Repositories.AdminContext;
 
 [TestClass]
-public class AdminRepositoryTest : BaseRepositoryTest
+public class AdminRepositoryTest
 {
-  private static AdminRepository AdminRepository { get; set; } = null!;
+  private static AdminRepository AdminRepository { get; set; }
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup();
-    AdminRepository = new AdminRepository(MockConnection.Context);
-  }
-
-  [ClassCleanup]
-  public static async Task Dispose()
-  => await Cleanup();
+  static AdminRepositoryTest()
+  => AdminRepository = new AdminRepository(BaseRepositoryTest.MockConnection.Context);
 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var admin = await AdminRepository.GetByIdAsync(Admins[0].Id);
+    var admin = await AdminRepository.GetByIdAsync(BaseRepositoryTest.Admins[0].Id);
 
     Assert.IsNotNull(admin);
-    Assert.AreEqual(Admins[0].Name.FirstName, admin.FirstName);
-    Assert.AreEqual(Admins[0].Name.LastName,admin.LastName);
-    Assert.AreEqual(Admins[0].Email.Address,admin.Email);
-    Assert.AreEqual(Admins[0].Phone.Number,admin.Phone);
-    Assert.AreEqual(Admins[0].Id, admin.Id);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Name.FirstName, admin.FirstName);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Name.LastName,admin.LastName);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Email.Address,admin.Email);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Phone.Number,admin.Phone);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Id, admin.Id);
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new AdminQueryParameters(0, 1, Admins[0].Name.FirstName, null, null,null, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 1, BaseRepositoryTest.Admins[0].Name.FirstName, null, null,null, null, null, null, null, null, null);
     var admins = await AdminRepository.GetAsync(parameters);
 
     var admin = admins.ToList()[0];
 
     Assert.IsNotNull(admin);
-    Assert.AreEqual(Admins[0].Name.FirstName, admin.FirstName);
-    Assert.AreEqual(Admins[0].Name.LastName, admin.LastName);
-    Assert.AreEqual(Admins[0].Email.Address, admin.Email);
-    Assert.AreEqual(Admins[0].Phone.Number, admin.Phone);
-    Assert.AreEqual(Admins[0].Id, admin.Id);
-    Assert.AreEqual(Admins[0].IsRootAdmin, admin.IsRootAdmin);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Name.FirstName, admin.FirstName);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Name.LastName, admin.LastName);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Email.Address, admin.Email);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Phone.Number, admin.Phone);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].Id, admin.Id);
+    Assert.AreEqual(BaseRepositoryTest.Admins[0].IsRootAdmin, admin.IsRootAdmin);
   }
 
   [TestMethod]
   public async Task GetAsync_WhereNameJoao_ReturnsAdminsJoao()
   {
-    var parameters = new AdminQueryParameters(0, 1, Admins[0].Name.FirstName, null, null, null,null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 1, BaseRepositoryTest.Admins[0].Name.FirstName, null, null, null,null, null, null, null, null, null);
     var admins = await AdminRepository.GetAsync(parameters);
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
-      Assert.AreEqual(Admins[0].Name.FirstName, admin.FirstName);
+      Assert.AreEqual(BaseRepositoryTest.Admins[0].Name.FirstName, admin.FirstName);
     }
   }
 
   [TestMethod]
   public async Task GetAsync_WhereEmailFilter_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, Admins[0].Email.Address, null,null, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, BaseRepositoryTest.Admins[0].Email.Address, null,null, null, null, null, null, null, null);
     var admins = await AdminRepository.GetAsync(parameters);
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
-      Assert.AreEqual(Admins[0].Email.Address, admin.Email);
+      Assert.AreEqual(BaseRepositoryTest.Admins[0].Email.Address, admin.Email);
     }
   }
 
   [TestMethod]
   public async Task GetAsync_WherePhoneFilter_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null,null, Admins[0].Phone.Number, null, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 100, null,null, BaseRepositoryTest.Admins[0].Phone.Number, null, null, null, null, null, null, null);
     var admins = await AdminRepository.GetAsync(parameters);
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
-      Assert.AreEqual(Admins[0].Phone.Number, admin.Phone);
+      Assert.AreEqual(BaseRepositoryTest.Admins[0].Phone.Number, admin.Phone);
     }
   }
 
   [TestMethod]
   public async Task GetAsync_WhereGenderFilter_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, Admins[0].Gender, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, BaseRepositoryTest.Admins[0].Gender, null, null, null, null, null, null);
     var admins = await AdminRepository.GetAsync(parameters);
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
-      Assert.AreEqual(Admins[0].Gender, admin.Gender);
+      Assert.AreEqual(BaseRepositoryTest.Admins[0].Gender, admin.Gender);
     }
   }
 
@@ -153,14 +146,14 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtFilter_WhereEqualsOperator_ReturnsAdmins()
   {
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, Admins[0].CreatedAt, "eq", null, null);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, BaseRepositoryTest.Admins[0].CreatedAt, "eq", null, null);
     var admins = await AdminRepository.GetAsync(parameters);
 
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
     {
       Assert.IsNotNull(admin);
-      Assert.AreEqual(Admins[0].CreatedAt,admin.CreatedAt);
+      Assert.AreEqual(BaseRepositoryTest.Admins[0].CreatedAt,admin.CreatedAt);
     }
   }
 
@@ -181,8 +174,8 @@ public class AdminRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WherePermissionId_ReturnsAdmins()
   {
-    Admins[0].AddPermission(TestParameters.Permission);
-    await MockConnection.Context.SaveChangesAsync();
+    BaseRepositoryTest.Admins[0].AddPermission(TestParameters.Permission);
+    await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
     var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null,null, null, TestParameters.Permission.Id);
     var admins = await AdminRepository.GetAsync(parameters);
 
@@ -192,7 +185,7 @@ public class AdminRepositoryTest : BaseRepositoryTest
     {
       Assert.IsNotNull(admin);
 
-      var hasPermission = await MockConnection.Context.Admins
+      var hasPermission = await BaseRepositoryTest.MockConnection.Context.Admins
         .Where(x => x.Id == admin.Id)
         .SelectMany(x => x.Permissions)
         .AnyAsync(x => x.Id == TestParameters.Permission.Id);

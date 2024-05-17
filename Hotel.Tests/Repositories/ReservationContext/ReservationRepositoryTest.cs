@@ -1,60 +1,53 @@
 ﻿using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Repositories.ReservationContext;
+using Hotel.Tests.Repositories.Mock;
 
 
 namespace Hotel.Tests.Repositories.ReservationContext;
 
 [TestClass]
-public class ReservationRepositoryTest : BaseRepositoryTest
+public class ReservationRepositoryTest
 {
-  private static ReservationRepository ReservationRepository { get; set; } = null!;
+  private static ReservationRepository ReservationRepository { get; set; }
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup();
-    ReservationRepository = new ReservationRepository(MockConnection.Context);
-  }
-
-  [ClassCleanup]
-  public static async Task Dispose()
-  => await Cleanup();
+  static ReservationRepositoryTest()
+  => ReservationRepository = new ReservationRepository(BaseRepositoryTest.MockConnection.Context);
 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var reservation = await ReservationRepository.GetByIdAsync(Reservations[0].Id);
+    var reservation = await ReservationRepository.GetByIdAsync(BaseRepositoryTest.Reservations[0].Id);
 
     Assert.IsNotNull(reservation);
-    Assert.AreEqual(Reservations[0].Id, reservation.Id);
-    Assert.AreEqual(Reservations[0].DailyRate, reservation.DailyRate);
-    Assert.AreEqual(Reservations[0].HostedDays, reservation.HostedDays);
-    Assert.AreEqual(Reservations[0].CheckIn, reservation.CheckIn);
-    Assert.AreEqual(Reservations[0].CheckOut, reservation.CheckOut);
-    Assert.AreEqual(Reservations[0].Status, reservation.Status);
-    Assert.AreEqual(Reservations[0].Capacity, reservation.Capacity);
-    Assert.AreEqual(Reservations[0].RoomId, reservation.RoomId);
-    Assert.AreEqual(Reservations[0].InvoiceId, reservation.InvoiceId);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].Id, reservation.Id);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].DailyRate, reservation.DailyRate);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].HostedDays, reservation.HostedDays);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].CheckIn, reservation.CheckIn);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].CheckOut, reservation.CheckOut);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].Status, reservation.Status);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].Capacity, reservation.Capacity);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].RoomId, reservation.RoomId);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].InvoiceId, reservation.InvoiceId);
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new ReservationQueryParameters(0, 100, Reservations[0].HostedDays,"eq", Reservations[0].DailyRate, "eq", Reservations[0].CheckIn, "eq", Reservations[0].CheckOut, "eq", Reservations[0].Status, Reservations[0].Capacity,"eq", Reservations[0].RoomId, null, Reservations[0].InvoiceId, null, null, null);
+    var parameters = new ReservationQueryParameters(0, 100, BaseRepositoryTest.Reservations[0].HostedDays,"eq", BaseRepositoryTest.Reservations[0].DailyRate, "eq", BaseRepositoryTest.Reservations[0].CheckIn, "eq", BaseRepositoryTest.Reservations[0].CheckOut, "eq", BaseRepositoryTest.Reservations[0].Status, BaseRepositoryTest.Reservations[0].Capacity,"eq", BaseRepositoryTest.Reservations[0].RoomId, null, BaseRepositoryTest.Reservations[0].InvoiceId, null, null, null);
     var reservations = await ReservationRepository.GetAsync(parameters);
 
     var reservation = reservations.ToList()[0];
 
     Assert.IsNotNull(reservation);
-    Assert.AreEqual(Reservations[0].Id, reservation.Id);
-    Assert.AreEqual(Reservations[0].DailyRate, reservation.DailyRate);
-    Assert.AreEqual(Reservations[0].HostedDays, reservation.HostedDays);
-    Assert.AreEqual(Reservations[0].CheckIn, reservation.CheckIn);
-    Assert.AreEqual(Reservations[0].CheckOut, reservation.CheckOut);
-    Assert.AreEqual(Reservations[0].Status, reservation.Status);
-    Assert.AreEqual(Reservations[0].Capacity, reservation.Capacity);
-    Assert.AreEqual(Reservations[0].RoomId, reservation.RoomId);
-    Assert.AreEqual(Reservations[0].InvoiceId, reservation.InvoiceId);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].Id, reservation.Id);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].DailyRate, reservation.DailyRate);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].HostedDays, reservation.HostedDays);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].CheckIn, reservation.CheckIn);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].CheckOut, reservation.CheckOut);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].Status, reservation.Status);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].Capacity, reservation.Capacity);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].RoomId, reservation.RoomId);
+    Assert.AreEqual(BaseRepositoryTest.Reservations[0].InvoiceId, reservation.InvoiceId);
   }
 
   [TestMethod]
@@ -96,41 +89,41 @@ public class ReservationRepositoryTest : BaseRepositoryTest
   }
 
   [TestMethod]
-  public async Task GetAsync_WhereDailyRateGratherThan25_ReturnsReservations()
+  public async Task GetAsync_WhereDailyRateGratherThan70_ReturnsReservations()
   {
-    var parameters = new ReservationQueryParameters(0, 100, null, null, 25, "gt", null, null, null, null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ReservationQueryParameters(0, 100, null, null, 70, "gt", null, null, null, null, null, null, null, null, null, null, null, null, null);
     var reservations = await ReservationRepository.GetAsync(parameters);
 
     Assert.IsTrue(reservations.Any());
 
     foreach (var reservation in reservations)
-      Assert.IsTrue(25 < reservation.DailyRate);
+      Assert.IsTrue(70 < reservation.DailyRate);
 
   }
 
   [TestMethod]
-  public async Task GetAsync_WhereDailyRateLessThan60_ReturnsReservations()
+  public async Task GetAsync_WhereDailyRateLessThan120_ReturnsReservations()
   {
-    var parameters = new ReservationQueryParameters(0, 100, null, null, 60, "lt", null, null, null, null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ReservationQueryParameters(0, 100, null, null, 120, "lt", null, null, null, null, null, null, null, null, null, null, null, null, null);
     var reservations = await ReservationRepository.GetAsync(parameters);
 
     Assert.IsTrue(reservations.Any());
 
     foreach (var reservation in reservations)
-      Assert.IsTrue(60 > reservation.DailyRate);
+      Assert.IsTrue(120 > reservation.DailyRate);
 
   }
 
   [TestMethod]
-  public async Task GetAsync_WhereDailyRateEquals40_ReturnsReservations()
+  public async Task GetAsync_WhereDailyRateEquals50_ReturnsReservations()
   {
-    var parameters = new ReservationQueryParameters(0, 100, null, null, 40, "eq", null, null, null, null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ReservationQueryParameters(0, 100, null, null, 50, "eq", null, null, null, null, null, null, null, null, null, null, null, null, null);
     var reservations = await ReservationRepository.GetAsync(parameters);
 
     Assert.IsTrue(reservations.Any());
 
     foreach (var reservation in reservations)
-      Assert.AreEqual(40, reservation.DailyRate);
+      Assert.AreEqual(50, reservation.DailyRate);
   }
 
   [TestMethod]
@@ -162,13 +155,13 @@ public class ReservationRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCheckInEqualsNow_ReturnsReservations()
   {
-    var parameters = new ReservationQueryParameters(0, 100, null, null, null, null, Reservations[0].CheckIn, "eq", null, null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ReservationQueryParameters(0, 100, null, null, null, null, BaseRepositoryTest.Reservations[0].CheckIn, "eq", null, null, null, null, null, null, null, null, null, null, null);
     var reservations = await ReservationRepository.GetAsync(parameters);
 
     Assert.IsTrue(reservations.Any());
 
     foreach (var reservation in reservations)
-      Assert.AreEqual(Reservations[0].CheckIn, reservation.CheckIn);
+      Assert.AreEqual(BaseRepositoryTest.Reservations[0].CheckIn, reservation.CheckIn);
   }
 
   [TestMethod]
@@ -200,13 +193,13 @@ public class ReservationRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCheckOutEquals_ReturnsReservations()
   {
-    var parameters = new ReservationQueryParameters(0, 100, null, null, null, null,  null, null, Reservations[0].CheckOut, "eq", null, null, null, null, null, null, null, null, null);
+    var parameters = new ReservationQueryParameters(0, 100, null, null, null, null,  null, null, BaseRepositoryTest.Reservations[0].CheckOut, "eq", null, null, null, null, null, null, null, null, null);
     var reservations = await ReservationRepository.GetAsync(parameters);
 
     Assert.IsTrue(reservations.Any());
 
     foreach (var reservation in reservations)
-      Assert.AreEqual(Reservations[0].CheckOut, reservation.CheckOut);
+      Assert.AreEqual(BaseRepositoryTest.Reservations[0].CheckOut, reservation.CheckOut);
   }
  
 

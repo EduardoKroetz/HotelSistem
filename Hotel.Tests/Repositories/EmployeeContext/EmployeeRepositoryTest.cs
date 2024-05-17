@@ -1,54 +1,48 @@
 ﻿using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.EmployeeContext;
+using Hotel.Tests.Repositories.Mock;
 
 namespace Hotel.Tests.Repositories.EmployeeContext;
 
 [TestClass]
-public class EmployeeRepositoryTest : BaseRepositoryTest
+public class EmployeeRepositoryTest
 {
-  private static EmployeeRepository EmployeeRepository { get; set; } = null!;
+  private static EmployeeRepository EmployeeRepository { get; set; }
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup();
-    EmployeeRepository = new EmployeeRepository(MockConnection.Context);
-  }
-
-  [ClassCleanup]
-  public static async Task Dispose()
-  => await Cleanup();
+  static EmployeeRepositoryTest()
+  => EmployeeRepository = new EmployeeRepository(BaseRepositoryTest.MockConnection.Context);
+  
 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var employee = await EmployeeRepository.GetByIdAsync(Employees[0].Id);
+    var employee = await EmployeeRepository.GetByIdAsync(BaseRepositoryTest.Employees[0].Id);
 
     Assert.IsNotNull(employee);
-    Assert.AreEqual(Employees[0].Id, employee.Id);
-    Assert.AreEqual(Employees[0].Name.FirstName, employee.FirstName);
-    Assert.AreEqual(Employees[0].Name.LastName, employee.LastName);
-    Assert.AreEqual(Employees[0].Email.Address, employee.Email);
-    Assert.AreEqual(Employees[0].Phone.Number, employee.Phone);
-    Assert.AreEqual(Employees[0].Salary, employee.Salary);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Id, employee.Id);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Name.FirstName, employee.FirstName);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Name.LastName, employee.LastName);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Email.Address, employee.Email);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Phone.Number, employee.Phone);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Salary, employee.Salary);
 
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new EmployeeQueryParameters(0, 100, Employees[0].Name.FirstName, null, null, null, null, null, null, null, null, null);
+    var parameters = new EmployeeQueryParameters(0, 100, BaseRepositoryTest.Employees[0].Name.FirstName, null, null, null, null, null, null, null, null, null);
     var employees = await EmployeeRepository.GetAsync(parameters);
 
     var employee = employees.ToList()[0];
 
     Assert.IsNotNull(employee);
-    Assert.AreEqual(Employees[0].Name.FirstName, employee.FirstName);
-    Assert.AreEqual(Employees[0].Name.LastName, employee.LastName);
-    Assert.AreEqual(Employees[0].Email.Address, employee.Email);
-    Assert.AreEqual(Employees[0].Phone.Number, employee.Phone);
-    Assert.AreEqual(Employees[0].Id, employee.Id);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Name.FirstName, employee.FirstName);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Name.LastName, employee.LastName);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Email.Address, employee.Email);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Phone.Number, employee.Phone);
+    Assert.AreEqual(BaseRepositoryTest.Employees[0].Id, employee.Id);
   }
 
   [TestMethod]
@@ -138,12 +132,12 @@ public class EmployeeRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtEquals_ReturnsEmployees()
   {
-    var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, Employees[0].CreatedAt, "eq", null, null);
+    var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, BaseRepositoryTest.Employees[0].CreatedAt, "eq", null, null);
     var employees = await EmployeeRepository.GetAsync(parameters);
 
     Assert.IsTrue(employees.Any());
     foreach (var employee in employees)
-      Assert.AreEqual(Employees[0].CreatedAt, employee.CreatedAt);
+      Assert.AreEqual(BaseRepositoryTest.Employees[0].CreatedAt, employee.CreatedAt);
     
   }
 

@@ -10,8 +10,6 @@ using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
-using Hotel.Domain.Enums;
-using Hotel.Domain.ValueObjects;
 using Hotel.Tests.Repositories.Mock.CreateData;
 using Microsoft.EntityFrameworkCore;
 

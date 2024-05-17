@@ -1,83 +1,75 @@
-﻿using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
+﻿
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
-using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.RoomContext;
+using Hotel.Tests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Tests.Repositories.RoomContext;
 
 [TestClass]
-public class ServiceRepositoryTest : BaseRepositoryTest
+public class ServiceRepositoryTest
 {
-  private static ServiceRepository ServiceRepository { get; set; } = null!;
+  private static ServiceRepository ServiceRepository { get; set; }
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup();
-    ServiceRepository = new ServiceRepository(MockConnection.Context);
-  }
-
-  [ClassCleanup]
-  public static async Task Dispose()
-  => await Cleanup();
-
+  static ServiceRepositoryTest()
+  => ServiceRepository = new ServiceRepository(BaseRepositoryTest.MockConnection.Context);
+ 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var service = await ServiceRepository.GetByIdAsync(Services[0].Id);
+    var service = await ServiceRepository.GetByIdAsync(BaseRepositoryTest.Services[0].Id);
 
     Assert.IsNotNull(service);
-    Assert.AreEqual(Services[0].Id, service.Id);
-    Assert.AreEqual(Services[0].Name, service.Name);
-    Assert.AreEqual(Services[0].Price, service.Price);
-    Assert.AreEqual(Services[0].Priority, service.Priority);
-    Assert.AreEqual(Services[0].IsActive, service.IsActive);
-    Assert.AreEqual(Services[0].TimeInMinutes, service.TimeInMinutes);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Id, service.Id);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Name, service.Name);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Price, service.Price);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Priority, service.Priority);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].IsActive, service.IsActive);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].TimeInMinutes, service.TimeInMinutes);
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new ServiceQueryParameters(0, 100, Services[0].Name, Services[0].Price, null, null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ServiceQueryParameters(0, 100, BaseRepositoryTest.Services[0].Name, BaseRepositoryTest.Services[0].Price, null, null, null, null, null, null, null, null, null, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     var service = services.ToList()[0];
 
     Assert.IsNotNull(service);
-    Assert.AreEqual(Services[0].Id, service.Id);
-    Assert.AreEqual(Services[0].Name, service.Name);
-    Assert.AreEqual(Services[0].Price, service.Price);
-    Assert.AreEqual(Services[0].Priority, service.Priority);
-    Assert.AreEqual(Services[0].IsActive, service.IsActive);
-    Assert.AreEqual(Services[0].TimeInMinutes, service.TimeInMinutes);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Id, service.Id);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Name, service.Name);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Price, service.Price);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].Priority, service.Priority);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].IsActive, service.IsActive);
+    Assert.AreEqual(BaseRepositoryTest.Services[0].TimeInMinutes, service.TimeInMinutes);
   }
 
 
   [TestMethod]
   public async Task GetAsync_WhereNameEquals_ReturnServices()
   {
-    var parameters = new ServiceQueryParameters(0, 100, Services[0].Name, null, null, null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ServiceQueryParameters(0, 100, BaseRepositoryTest.Services[0].Name, null, null, null, null, null, null, null, null, null, null, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
 
     foreach (var service in services)
-      Assert.AreEqual(Services[0].Name, service.Name);
+      Assert.AreEqual(BaseRepositoryTest.Services[0].Name, service.Name);
     ;
   }
 
   [TestMethod]
-  public async Task GetAsync_WherePriceGratherThan70_ReturnServices()
+  public async Task GetAsync_WherePriceGratherThan50_ReturnServices()
   {
-    var parameters = new ServiceQueryParameters(0, 100, null, 70m, "gt", null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ServiceQueryParameters(0, 100, null, 50m, "gt", null, null, null, null, null, null, null, null, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
 
     foreach (var service in services)
-      Assert.IsTrue(70 < service.Price);
+      Assert.IsTrue(50 < service.Price);
   }
 
   [TestMethod]
@@ -183,17 +175,18 @@ public class ServiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereResponsabilityId_ReturnServices()
   {
-    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, Responsabilities[0].Id, null, null, null, null, null);
+    
+    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, BaseRepositoryTest.Responsabilities[0].Id, null, null, null, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
 
     foreach (var service in services)
     {
-      var hasResponsability = await MockConnection.Context.Services
+      var hasResponsability = await BaseRepositoryTest.MockConnection.Context.Services
         .Where(x => x.Id == service.Id)
         .SelectMany(x => x.Responsabilities)
-        .AnyAsync(x => x.Id == Responsabilities[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Responsabilities[0].Id);
 
       Assert.IsTrue(hasResponsability);
     }
@@ -202,17 +195,18 @@ public class ServiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereReservationId_ReturnServices()
   {
-    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, Reservations[0].Id, null, null, null, null);
+    
+    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, BaseRepositoryTest.Reservations[0].Id, null, null, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
 
     foreach (var service in services)
     {
-      var hasReservation = await MockConnection.Context.Services
+      var hasReservation = await BaseRepositoryTest.MockConnection.Context.Services
         .Where(x => x.Id == service.Id)
         .SelectMany(x => x.Reservations)
-        .AnyAsync(x => x.Id == Reservations[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Reservations[0].Id);
 
       Assert.IsTrue(hasReservation);
     }
@@ -221,17 +215,18 @@ public class ServiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereRoomInvoiceId_ReturnServices()
   {
-    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, RoomInvoices[0].Id, null, null, null);
+    
+    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.RoomInvoices[0].Id, null, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
 
     foreach (var service in services)
     {
-      var hasRoomInvoice = await MockConnection.Context.Services
+      var hasRoomInvoice = await BaseRepositoryTest.MockConnection.Context.Services
         .Where(x => x.Id == service.Id)
         .SelectMany(x => x.RoomInvoices)
-        .AnyAsync(x => x.Id == RoomInvoices[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.RoomInvoices[0].Id);
 
       Assert.IsTrue(hasRoomInvoice);
     }
@@ -240,17 +235,18 @@ public class ServiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereRoomId_ReturnServices()
   {
-    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, Rooms[0].Id, null, null);
+    
+    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.Rooms[0].Id, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
 
     foreach (var service in services)
     {
-      var hasRoom = await MockConnection.Context.Services
+      var hasRoom = await BaseRepositoryTest.MockConnection.Context.Services
         .Where(x => x.Id == service.Id)
         .SelectMany(x => x.Rooms)
-        .AnyAsync(x => x.Id == Rooms[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Rooms[0].Id);
 
       Assert.IsTrue(hasRoom);
     }
@@ -283,14 +279,11 @@ public class ServiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtEquals_ReturnServices()
   {
-    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, Services[0].CreatedAt, "eq");
+    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.Services[0].CreatedAt, "eq");
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
     foreach (var service in services)
-      Assert.AreEqual(Employees[0].CreatedAt.Date, service.CreatedAt.Date);
+      Assert.AreEqual(BaseRepositoryTest.Employees[0].CreatedAt.Date, service.CreatedAt.Date);
   }
-
-
-
 }

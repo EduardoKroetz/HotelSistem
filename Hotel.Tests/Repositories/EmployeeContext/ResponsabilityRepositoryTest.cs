@@ -1,52 +1,45 @@
 ﻿using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.EmployeeContext;
+using Hotel.Tests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Tests.Repositories.EmployeeContext;
 
 [TestClass]
-public class ResponsabilityRepositoryTest : BaseRepositoryTest
+public class ResponsabilityRepositoryTest 
 {
-  private static ResponsabilityRepository ResponsabilityRepository { get; set; } = null!;
+  private static ResponsabilityRepository ResponsabilityRepository { get; set; } 
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup(null);
-    ResponsabilityRepository = new ResponsabilityRepository(MockConnection.Context);
-  }
-
-  [ClassCleanup]
-  public static async Task Dispose()
-  => await Cleanup();
-
+  static ResponsabilityRepositoryTest()
+  => ResponsabilityRepository = new ResponsabilityRepository(BaseRepositoryTest.MockConnection.Context);
+  
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var responsibility = await ResponsabilityRepository.GetByIdAsync(Responsabilities[0].Id);
+    var responsibility = await ResponsabilityRepository.GetByIdAsync(BaseRepositoryTest.Responsabilities[0].Id);
 
     Assert.IsNotNull(responsibility);
-    Assert.AreEqual(Responsabilities[0].Id, responsibility.Id);
-    Assert.AreEqual(Responsabilities[0].Name, responsibility.Name);
-    Assert.AreEqual(Responsabilities[0].Priority, responsibility.Priority);
-    Assert.AreEqual(Responsabilities[0].Description, responsibility.Description);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Id, responsibility.Id);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Name, responsibility.Name);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Priority, responsibility.Priority);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Description, responsibility.Description);
 
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new ResponsabilityQueryParameters(0, 100, "Limpeza de quarto", null, null, null, null, null);
+    var parameters = new ResponsabilityQueryParameters(0, 100, BaseRepositoryTest.Responsabilities[0].Name, null, null, null, null, null);
     var responsibilities = await ResponsabilityRepository.GetAsync(parameters);
 
     var responsibility = responsibilities.ToList()[0];
 
     Assert.IsNotNull(responsibility);
-    Assert.AreEqual(Responsabilities[0].Id, responsibility.Id);
-    Assert.AreEqual(Responsabilities[0].Name, responsibility.Name);
-    Assert.AreEqual(Responsabilities[0].Priority, responsibility.Priority);
-    Assert.AreEqual(Responsabilities[0].Description, responsibility.Description);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Id, responsibility.Id);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Name, responsibility.Name);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Priority, responsibility.Priority);
+    Assert.AreEqual(BaseRepositoryTest.Responsabilities[0].Description, responsibility.Description);
   }
 
   [TestMethod]
@@ -80,20 +73,20 @@ public class ResponsabilityRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereEmployeeId_ReturnsEmployees()
   {
-    var res = await ResponsabilityRepository.GetEntityByIdAsync(Responsabilities[0].Id);
-    res?.Employees.Add(Employees[0]);
-    await MockConnection.Context.SaveChangesAsync();
+    var res = await ResponsabilityRepository.GetEntityByIdAsync(BaseRepositoryTest.Responsabilities[0].Id);
+    res?.Employees.Add(BaseRepositoryTest.Employees[0]);
+    await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
 
-    var parameters = new ResponsabilityQueryParameters(0, 100, null, null, Employees[0].Id , null, null, null);
+    var parameters = new ResponsabilityQueryParameters(0, 100, null, null, BaseRepositoryTest.Employees[0].Id , null, null, null);
     var responsibilities = await ResponsabilityRepository.GetAsync(parameters);
 
     Assert.IsTrue(responsibilities.Any());
     foreach (var responsibility in responsibilities)
     {
-      var hasEmployee = await MockConnection.Context.Responsabilities
+      var hasEmployee = await BaseRepositoryTest.MockConnection.Context.Responsabilities
         .Where(x => x.Id == responsibility.Id)
         .SelectMany(x => x.Employees)
-        .AnyAsync(x => x.Id == Employees[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Employees[0].Id);
 
       Assert.IsTrue(hasEmployee);
     }
@@ -102,20 +95,20 @@ public class ResponsabilityRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereServiceId_ReturnsEmployees()
   {
-    var res = await ResponsabilityRepository.GetEntityByIdAsync(Responsabilities[0].Id);
-    res?.Services.Add(Services[0]);
-    await MockConnection.Context.SaveChangesAsync();
+    var res = await ResponsabilityRepository.GetEntityByIdAsync(BaseRepositoryTest.Responsabilities[0].Id);
+    res?.Services.Add(BaseRepositoryTest.Services[0]);
+    await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
 
-    var parameters = new ResponsabilityQueryParameters(0, 100, null, null, null, Services[0].Id, null, null);
+    var parameters = new ResponsabilityQueryParameters(0, 100, null, null, null,BaseRepositoryTest.Services[0].Id, null, null);
     var responsibilities = await ResponsabilityRepository.GetAsync(parameters);
 
     Assert.IsTrue(responsibilities.Any());
     foreach (var responsibility in responsibilities)
     {
-      var hasService = await MockConnection.Context.Responsabilities
+      var hasService = await BaseRepositoryTest.MockConnection.Context.Responsabilities
         .Where(x => x.Id == responsibility.Id)
         .SelectMany(x => x.Services)
-        .AnyAsync(x => x.Id == Services[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Services[0].Id);
 
       Assert.IsTrue(hasService);
     }

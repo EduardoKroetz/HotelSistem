@@ -1,55 +1,48 @@
 ﻿using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.RoomContext;
+using Hotel.Tests.Repositories.Mock;
 
 namespace Hotel.Tests.Repositories.RoomContext;
 
 [TestClass]
-public class ReportRepositoryTest : BaseRepositoryTest
+public class ReportRepositoryTest
 {
-  private static ReportRepository ReportRepository { get; set; } = null!;
+  private static ReportRepository ReportRepository { get; set; }
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup();
-    ReportRepository = new ReportRepository(MockConnection.Context);
-  }
-  
-  [ClassCleanup]
-  public static async Task Dispose()
-  => await Cleanup();
-
+  static ReportRepositoryTest()
+  => ReportRepository = new ReportRepository(BaseRepositoryTest.MockConnection.Context);
+ 
 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var reports = await ReportRepository.GetByIdAsync(Reports[0].Id);
+    var reports = await ReportRepository.GetByIdAsync(BaseRepositoryTest.Reports[0].Id);
 
     Assert.IsNotNull(reports);
-    Assert.AreEqual(Reports[0].Id, reports.Id);
-    Assert.AreEqual(Reports[0].Summary, reports.Summary);
-    Assert.AreEqual(Reports[0].Description, reports.Description);
-    Assert.AreEqual(Reports[0].Priority, reports.Priority);
-    Assert.AreEqual(Reports[0].Resolution, reports.Resolution);
-    Assert.AreEqual(Reports[0].EmployeeId, reports.EmployeeId);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Id, reports.Id);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Summary, reports.Summary);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Description, reports.Description);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Priority, reports.Priority);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Resolution, reports.Resolution);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].EmployeeId, reports.EmployeeId);
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new ReportQueryParameters(0, 100, Reports[0].Summary,Reports[0].Status, null,null,null,null);
+    var parameters = new ReportQueryParameters(0, 100, BaseRepositoryTest.Reports[0].Summary,BaseRepositoryTest.Reports[0].Status, null,null,null,null);
     var reports = await ReportRepository.GetAsync(parameters);
 
-    var report = Reports.ToList()[0];
+    var report = BaseRepositoryTest.Reports.ToList()[0];
 
     Assert.IsNotNull(reports);
-    Assert.AreEqual(Reports[0].Id, report.Id);
-    Assert.AreEqual(Reports[0].Summary, report.Summary);
-    Assert.AreEqual(Reports[0].Description, report.Description);
-    Assert.AreEqual(Reports[0].Priority, report.Priority);
-    Assert.AreEqual(Reports[0].Resolution, report.Resolution);
-    Assert.AreEqual(Reports[0].EmployeeId, report.EmployeeId);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Id, report.Id);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Summary, report.Summary);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Description, report.Description);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Priority, report.Priority);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].Resolution, report.Resolution);
+    Assert.AreEqual(BaseRepositoryTest.Reports[0].EmployeeId, report.EmployeeId);
   }
 
   [TestMethod]
@@ -79,13 +72,13 @@ public class ReportRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereEmployeeId_ReturnReports()
   {
-    var parameters = new ReportQueryParameters(0, 100, null, null, null, Employees[0].Id, null, null);
+    var parameters = new ReportQueryParameters(0, 100, null, null, null, BaseRepositoryTest.Employees[0].Id, null, null);
     var reports = await ReportRepository.GetAsync(parameters);
 
     Assert.IsTrue(reports.Any());
 
     foreach (var report in reports)
-      Assert.AreEqual(Employees[0].Id, report.EmployeeId);
+      Assert.AreEqual(BaseRepositoryTest.Employees[0].Id, report.EmployeeId);
   }
 
   [TestMethod]
@@ -115,12 +108,12 @@ public class ReportRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCreatedAtEquals_ReturnReports()
   {
-    var parameters = new ReportQueryParameters(0, 100, null, null, null, null, Reports[0].CreatedAt, "eq");
+    var parameters = new ReportQueryParameters(0, 100, null, null, null, null, BaseRepositoryTest.Reports[0].CreatedAt, "eq");
     var reports = await ReportRepository.GetAsync(parameters);
 
     Assert.IsTrue(reports.Any());
     foreach (var report in reports)
-      Assert.AreEqual(Employees[0].CreatedAt.Date, report.CreatedAt.Date);
+      Assert.AreEqual(BaseRepositoryTest.Employees[0].CreatedAt.Date, report.CreatedAt.Date);
   }
 
   [TestMethod]

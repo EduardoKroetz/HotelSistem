@@ -1,60 +1,55 @@
 ﻿using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.PaymentContext;
+using Hotel.Tests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Tests.Repositories.PaymentContext;
 
 [TestClass]
-public class RoomInvoiceRepositoryTest : BaseRepositoryTest
+public class RoomInvoiceRepositoryTest 
 {
-  private static RoomInvoiceRepository RoomInvoiceRepository { get; set; } = null!;
+  private static RoomInvoiceRepository RoomInvoiceRepository { get; set; }
 
-  [ClassInitialize]
-  public static async Task Startup(TestContext? context)
-  {
-    await Startup();
-    RoomInvoiceRepository = new RoomInvoiceRepository(MockConnection.Context);
-  }
+    static RoomInvoiceRepositoryTest()
+    => RoomInvoiceRepository = new RoomInvoiceRepository(BaseRepositoryTest.MockConnection.Context);
+  
 
-  [ClassCleanup]
-  public static async Task Dispose()
-  => await Cleanup();
 
   [TestMethod]
   public async Task GetByIdAsync_ReturnsWithCorrectParameters()
   {
-    var roomInvoice = await RoomInvoiceRepository.GetByIdAsync(RoomInvoices[0].Id);
+    var roomInvoice = await RoomInvoiceRepository.GetByIdAsync(BaseRepositoryTest.RoomInvoices[0].Id);
 
     Assert.IsNotNull(roomInvoice);
-    Assert.AreEqual(RoomInvoices[0].Id, roomInvoice.Id);
-    Assert.AreEqual(RoomInvoices[0].PaymentMethod, roomInvoice.PaymentMethod);
-    Assert.AreEqual(RoomInvoices[0].TaxInformation, roomInvoice.TaxInformation);
-    Assert.AreEqual(RoomInvoices[0].ReservationId, roomInvoice.ReservationId);
-    Assert.AreEqual(RoomInvoices[0].Number, roomInvoice.Number);
-    Assert.AreEqual(RoomInvoices[0].IssueDate, roomInvoice.IssueDate);
-    Assert.AreEqual(RoomInvoices[0].TotalAmount, roomInvoice.TotalAmount);
-    Assert.AreEqual(RoomInvoices[0].Status, roomInvoice.Status);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].Id, roomInvoice.Id);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].PaymentMethod, roomInvoice.PaymentMethod);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].TaxInformation, roomInvoice.TaxInformation);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].ReservationId, roomInvoice.ReservationId);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].Number, roomInvoice.Number);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].IssueDate, roomInvoice.IssueDate);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].TotalAmount, roomInvoice.TotalAmount);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].Status, roomInvoice.Status);
 
   }
 
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, RoomInvoices[0].PaymentMethod, RoomInvoices[0].TotalAmount, "eq", null, null, null, null, null, null, null, null);
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, BaseRepositoryTest.RoomInvoices[0].PaymentMethod, BaseRepositoryTest.RoomInvoices[0].TotalAmount, "eq", null, null, null, null, null, null, null, null);
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     var roomInvoice = roomInvoices.ToList()[0];
 
     Assert.IsNotNull(roomInvoice);
-    Assert.AreEqual(RoomInvoices[0].Id, roomInvoice.Id);
-    Assert.AreEqual(RoomInvoices[0].PaymentMethod, roomInvoice.PaymentMethod);
-    Assert.AreEqual(RoomInvoices[0].TaxInformation, roomInvoice.TaxInformation);
-    Assert.AreEqual(RoomInvoices[0].ReservationId, roomInvoice.ReservationId);
-    Assert.AreEqual(RoomInvoices[0].Number, roomInvoice.Number);
-    Assert.AreEqual(RoomInvoices[0].IssueDate, roomInvoice.IssueDate);
-    Assert.AreEqual(RoomInvoices[0].TotalAmount, roomInvoice.TotalAmount);
-    Assert.AreEqual(RoomInvoices[0].Status, roomInvoice.Status);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].Id, roomInvoice.Id);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].PaymentMethod, roomInvoice.PaymentMethod);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].TaxInformation, roomInvoice.TaxInformation);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].ReservationId, roomInvoice.ReservationId);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].Number, roomInvoice.Number);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].IssueDate, roomInvoice.IssueDate);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].TotalAmount, roomInvoice.TotalAmount);
+    Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].Status, roomInvoice.Status);
   }
 
   [TestMethod]
@@ -106,15 +101,15 @@ public class RoomInvoiceRepositoryTest : BaseRepositoryTest
   }
 
   [TestMethod]
-  public async Task GetAsync_WhereTotalAmountEquals30_ReturnsRoomInvoices()
+  public async Task GetAsync_WhereTotalAmountEquals_ReturnsRoomInvoices()
   {
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, 30m, "eq", null, null, null, null, null, null, null, null);
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, BaseRepositoryTest.RoomInvoices[3].TotalAmount, "eq", null, null, null, null, null, null, null, null);
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(roomInvoices.Any());
 
     foreach (var roomInvoice in roomInvoices)
-      Assert.AreEqual(30,roomInvoice.TotalAmount);
+      Assert.AreEqual(BaseRepositoryTest.RoomInvoices[3].TotalAmount, roomInvoice.TotalAmount);
 
   }
 
@@ -146,16 +141,17 @@ public class RoomInvoiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereCustomerId_ReturnsRoomInvoices()
   {
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, Customers[0].Id, null, null, null, null, null, null);
+    
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, BaseRepositoryTest.Customers[0].Id, null, null, null, null, null, null);
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(roomInvoices.Any());
     foreach (var roomInvoice in roomInvoices)
     {
-      var hasCustomer = await MockConnection.Context.RoomInvoices
+      var hasCustomer = await BaseRepositoryTest.MockConnection.Context.RoomInvoices
         .Where(x => x.Id == roomInvoice.Id)
         .SelectMany(x => x.Customers)
-        .AnyAsync(x => x.Id == Customers[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Customers[0].Id);
 
       Assert.IsTrue(hasCustomer);
     }
@@ -164,29 +160,30 @@ public class RoomInvoiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereReservationId_ReturnsRoomInvoices()
   {
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, Reservations[1].Id, null, null, null, null, null);
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, BaseRepositoryTest.Reservations[1].Id, null, null, null, null, null);
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(roomInvoices.Any());
 
     foreach (var roomInvoice in roomInvoices)
-      Assert.AreEqual(Reservations[1].Id,roomInvoice.ReservationId);
+      Assert.AreEqual(BaseRepositoryTest.Reservations[1].Id,roomInvoice.ReservationId);
     
   }
 
   [TestMethod]
   public async Task GetAsync_WhereServiceId_ReturnsRoomInvoices()
   {
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, Services[0].Id, null, null, null, null);
+    
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, BaseRepositoryTest.Services[0].Id, null, null, null, null);
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(roomInvoices.Any());
     foreach (var roomInvoice in roomInvoices)
     {
-      var hasService = await MockConnection.Context.RoomInvoices
+      var hasService = await BaseRepositoryTest.MockConnection.Context.RoomInvoices
         .Where(x => x.Id == roomInvoice.Id)
         .SelectMany(x => x.Services)
-        .AnyAsync(x => x.Id == Services[0].Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Services[0].Id);
 
       Assert.IsTrue(hasService);
     }
@@ -261,12 +258,12 @@ public class RoomInvoiceRepositoryTest : BaseRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereIssueDateEquals_ReturnsRoomInvoices()
   {
-    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, RoomInvoices[0].IssueDate, "eq");
+    var parameters = new RoomInvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.RoomInvoices[0].IssueDate, "eq");
     var roomInvoices = await RoomInvoiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(roomInvoices.Any());
     foreach (var roomInvoice in roomInvoices)
-      Assert.AreEqual(RoomInvoices[0].IssueDate, roomInvoice.IssueDate);
+      Assert.AreEqual(BaseRepositoryTest.RoomInvoices[0].IssueDate, roomInvoice.IssueDate);
   }
 
   [TestMethod]
