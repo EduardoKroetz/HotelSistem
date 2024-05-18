@@ -3,19 +3,25 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      dotnet: 6.0
+      dotnet: 8.0
     commands:
-      - echo Installing dependencies...
+      - echo Installing .NET Core
+      - dotnet --version
+  pre_build:
+    commands:
+      - echo Restoring dependencies
       - dotnet restore
   build:
     commands:
-      - echo Build started on `date`
-      - dotnet build --configuration Release
+      - echo Building the solution in Debug and Release configurations
+      - dotnet build HotelSistem.sln --configuration Debug
+      - dotnet build HotelSistem.sln --configuration Release
   post_build:
     commands:
-      - echo Build completed on `date`
-      - dotnet test --configuration Release
+      - echo Running unit tests
+      - dotnet test
 
 artifacts:
   files:
     - '**/*'
+    - 'appspec.yml'

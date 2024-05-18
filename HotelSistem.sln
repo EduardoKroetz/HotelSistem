@@ -9,15 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Tests", "Hotel.Tests\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{3CC7FE64-D99E-4A3E-BEF7-0B7E3F5DA4C3}"
 	ProjectSection(SolutionItems) = preProject
-		appspec.yml = appspec.yml
-		Hotel.Domain\buildspec.yml = Hotel.Domain\buildspec.yml
-		HotelSistem.service = HotelSistem.service
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{6C55B137-568E-409B-8053-0B7B34DCA34D}"
-	ProjectSection(SolutionItems) = preProject
 		after_install.sh = after_install.sh
+		appspec.yml = appspec.yml
 		before_install.sh = before_install.sh
+		Hotel.Domain\buildspec - Cópia.yml = Hotel.Domain\buildspec - Cópia.yml
+		HotelSistem.service = HotelSistem.service
 		start_server.sh = start_server.sh
 		validate_service.sh = validate_service.sh
 	EndProjectSection
