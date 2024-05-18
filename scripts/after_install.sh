@@ -3,7 +3,7 @@
 mkdir -p /var/www/hotelsistem
 
 # Copy the service file to the systemd directory
-cp /var/www/hotelsistem/scripts/hotelsistem.service /etc/systemd/system/hotelsistem.service
+cp /var/www/hotelsistem/hotelsistem.service /etc/systemd/system/hotelsistem.service
 
 # Reload systemd to recognize the new service
 systemctl daemon-reload
