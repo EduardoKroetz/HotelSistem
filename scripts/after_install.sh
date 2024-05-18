@@ -1,6 +1,6 @@
 #!/bin/bash
 # Create the directory for the application if it doesn't exist
-mkdir -p /var/www/hotelsistem
+mkdir -p /var/www/api
 
 # Copy the service file to the systemd directory
 cp /var/www/hotelsistem/scripts/hotelsistem.service /etc/systemd/system/hotelsistem.service
