@@ -3,17 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Domain", "Hotel.Domain\Hotel.Domain.csproj", "{9B29199D-87D1-4948-B889-F4AF9D47EA58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Domain", "Hotel.Domain\Hotel.Domain.csproj", "{9B29199D-87D1-4948-B889-F4AF9D47EA58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Tests", "Hotel.Tests\Hotel.Tests.csproj", "{B2588852-31D5-4E62-9DDB-2A71E10C3335}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Tests", "Hotel.Tests\Hotel.Tests.csproj", "{B2588852-31D5-4E62-9DDB-2A71E10C3335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9B29199D-87D1-4948-B889-F4AF9D47EA58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -24,5 +21,11 @@ Global
 		{B2588852-31D5-4E62-9DDB-2A71E10C3335}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2588852-31D5-4E62-9DDB-2A71E10C3335}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2588852-31D5-4E62-9DDB-2A71E10C3335}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7220612-7D82-44FE-A508-4F5C955873B5}
 	EndGlobalSection
 EndGlobal

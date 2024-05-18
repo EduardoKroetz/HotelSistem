@@ -37,22 +37,6 @@ jobs:
     # Execute all unit tests in the solution
     - name: Execute unit tests
       run: dotnet test
-
-
-    - name: Install NuGet packages for Hotel.Domain
-      run: |
-        cd Hotel.Domain
-        dotnet add package Microsoft.AspNetCore.OpenApi --version 8.0
-        dotnet add package Microsoft.EntityFrameworkCore --version 8.0
-        dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0
-        dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0
-
-    - name: Install NuGet packages for Hotel.Tests
-      run: |
-        cd Hotel.Tests
-        dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 8.0
-        dotnet add package Microsoft.EntityFrameworkCore.Sqlite --version 8.0
-
  
     - name: Build the application
       run: dotnet build HotelSistem.sln --configuration ${{ matrix.configuration }}
