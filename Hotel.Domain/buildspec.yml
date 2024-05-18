@@ -20,7 +20,9 @@ phases:
     commands:
       - echo Running unit tests
       - dotnet test
+      - cp -r deploy/
 
 artifacts:
   files:
     - '**/*'
+    - 'appspec.yml'

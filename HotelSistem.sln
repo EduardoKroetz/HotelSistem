@@ -7,6 +7,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Domain", "Hotel.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Tests", "Hotel.Tests\Hotel.Tests.csproj", "{B2588852-31D5-4E62-9DDB-2A71E10C3335}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{3CC7FE64-D99E-4A3E-BEF7-0B7E3F5DA4C3}"
+	ProjectSection(SolutionItems) = preProject
+		appspec.yml = appspec.yml
+		Hotel.Domain\buildspec.yml = Hotel.Domain\buildspec.yml
+		HotelSistem.service = HotelSistem.service
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{47AF1C2B-F7EF-44F0-B2BE-CD381562AD8F}"
+	ProjectSection(SolutionItems) = preProject
+		after_install.sh = after_install.sh
+		before_install.sh = before_install.sh
+		start_server.sh = start_server.sh
+		validate_service.sh = validate_service.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +39,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{47AF1C2B-F7EF-44F0-B2BE-CD381562AD8F} = {3CC7FE64-D99E-4A3E-BEF7-0B7E3F5DA4C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F7220612-7D82-44FE-A508-4F5C955873B5}
