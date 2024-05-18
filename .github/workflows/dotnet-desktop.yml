@@ -40,3 +40,8 @@ jobs:
  
     - name: Build the application
       run: dotnet build HotelSistem.sln --configuration ${{ matrix.configuration }}
+
+    - name: Publish the application
+      run: |
+        cd Hotel.Domain 
+        dotnet publish -c Release -o api

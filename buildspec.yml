@@ -20,7 +20,8 @@ phases:
     commands:
       - echo Running unit tests
       - dotnet test
-      - dotnet publish -c Release
+      - cd Hotel.Domain
+      - dotnet publish -c Release -o api
 
 artifacts:
   files:
