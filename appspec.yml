@@ -11,18 +11,18 @@ files:
     destination: /var/www/hotelsistem/HotelSistem.service
 hooks:
   BeforeInstall:
-    - location: /var/www/hotelsistem/scripts/before_install.sh
+    - location: scripts/before_install.sh
       timeout: 300
       runas: root
   AfterInstall:
-    - location: /var/www/hotelsistem/scripts/after_install.sh
+    - location: scripts/after_install.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: /var/www/hotelsistem/scripts/start_server.sh
+    - location: scripts/start_server.sh
       timeout: 300
       runas: root
   ValidateService:
-    - location: /var/www/hotelsistem/scripts/validate_service.sh
+    - location: scripts/validate_service.sh
       timeout: 300
       runas: root
