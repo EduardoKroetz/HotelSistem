@@ -3,8 +3,8 @@ Description=Hotel Sistem API
 After=network.target
 
 [Service]
-WorkingDirectory=/var/www/hotelsistem/Hotel.Domain
-ExecStart=/usr/bin/dotnet /var/www/hotelsistem/Hotel.Domain/Hotel.Domain.dll
+WorkingDirectory=/var/www/hotelsistem/Hotel.Domain/api/
+ExecStart=/usr/bin/dotnet /var/www/hotelsistem/Hotel.Domain/api/Hotel.Domain.dll
 Restart=always
 RestartSec=10
 KillSignal=SIGINT

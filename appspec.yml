@@ -1,6 +1,8 @@
 version: 0.0
 os: linux
 files:
+  - source: HotelSistem/Hotel.Domain/api
+    destination: /var/www/api
   - source: /
     destination: /var/www/hotelsistem
 hooks:
