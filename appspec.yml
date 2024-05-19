@@ -7,7 +7,7 @@ files:
     destination: /var/www/hotelsistem/scripts
   - source: buildspec.yml
     destination: /var/www/hotelsistem/buildspec.yml
-  - source: HotelSistem.service
+  - source: scripts/hotelsistem.service
     destination: /var/www/hotelsistem/HotelSistem.service
 hooks:
   BeforeInstall:
