@@ -8,7 +8,7 @@ files:
   - source: buildspec.yml
     destination: /var/www/hotelsistem/buildspec.yml
   - source: scripts/hotelsistem.service
-    destination: /var/www/hotelsistem/HotelSistem.service
+    destination: /var/www/hotelsistem/hotelsistem.service
 hooks:
   BeforeInstall:
     - location: scripts/before_install.sh
