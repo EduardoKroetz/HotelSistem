@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: HotelSistem/Hotel.Domain/api
+  - source: Hotel.Domain/api
     destination: /var/www/api
   - source: scripts/
     destination: /var/www/hotelsistem/scripts
