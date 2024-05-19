@@ -3,7 +3,7 @@ Description=Hotel Sistem API
 After=network.target
 
 [Service]
-WorkingDirectory=/var/www/hotelsistem/Hotel.Domain/api/
+WorkingDirectory=/var/www/api/
 ExecStart=/usr/bin/dotnet /var/www/api/Hotel.Domain.dll
 Restart=always
 RestartSec=10
