@@ -32,6 +32,8 @@ var builder = WebApplication.CreateBuilder(args);
 LoadConfiguration(builder);
 ConfigureDependencies(builder);
 
+builder.WebHost.UseUrls("http://0.0.0.0:80");
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
