@@ -39,14 +39,24 @@ public class AdminController : ControllerBase
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleUpdateAsync(model,id));
-  
-
-  
+ 
 
   [HttpDelete("v1/admins/{Id:guid}")]
   public async Task<IActionResult> DeleteAsync(
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleDeleteAsync(id));
-  
+
+
+  [HttpPost("v1/admins/{adminId:guid}/permissions/{permissionId:guid}")]
+  public async Task<IActionResult> AddPermission(
+    [FromRoute] Guid adminId,
+    [FromRoute] Guid permissionId)
+  => Ok(await _handler.HandleAddPermission(adminId, permissionId));
+
+  [HttpDelete("v1/admins/{adminId:guid}/permissions/{permissionId:guid}")]
+  public async Task<IActionResult> RemovePermission(
+    [FromRoute] Guid adminId,
+    [FromRoute] Guid permissionId)
+  => Ok(await _handler.HandleRemovePermission(adminId, permissionId));
 }

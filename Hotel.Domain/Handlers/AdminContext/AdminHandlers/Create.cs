@@ -11,8 +11,12 @@ namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 public partial class AdminHandler : IHandler
 {
   private readonly IAdminRepository _repository;
-  public AdminHandler(IAdminRepository repository)
-  => _repository = repository;
+  private readonly IPermissionRepository _permissionRepository; 
+  public AdminHandler(IAdminRepository repository, IPermissionRepository permissionRepository)
+  {
+    _repository = repository;
+    _permissionRepository = permissionRepository;
+  }
 
   public async Task<Response<object>> HandleCreateAsync(CreateUser model)
   {

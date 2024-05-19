@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Handlers\AdminContext\AdminHandlers\Permissions\Get.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="buildspec.yml" />
   </ItemGroup>
 

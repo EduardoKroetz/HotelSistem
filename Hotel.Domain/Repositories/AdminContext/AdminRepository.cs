@@ -1,6 +1,7 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
+using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Repositories.Base;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,14 @@ public class AdminRepository : UserRepository<Admin>, IAdminRepository
       x.Address,
       x.CreatedAt
     )).ToListAsync();
+  }
+
+  public async Task<Admin?> GetAdminIncludePermissions(Guid adminId)
+  {
+    return await _context.Admins
+      .Where(x => x.Id == adminId)
+      .Include(x => x.Permissions)
+      .FirstOrDefaultAsync();
   }
 
 }
