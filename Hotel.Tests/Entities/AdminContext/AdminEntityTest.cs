@@ -46,7 +46,8 @@ public class AdminEntityTest
   }
 
   [TestMethod]
-  public void AddSamePermission_AddJustOne()
+  [ExpectedException(typeof(ValidationException))]
+  public void AddSamePermission_ExpectedException()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
     admin.AddPermission(Permission);
@@ -65,7 +66,8 @@ public class AdminEntityTest
   }
 
   [TestMethod]
-  public void RemoveNonExistingPermission_DoNothing()
+  [ExpectedException(typeof(ValidationException))]
+  public void RemoveNonExistingPermission_ExpectedException()
   {
     var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
     admin.RemovePermission(Permission);

@@ -32,11 +32,31 @@ public class PermissionEntityTest
   }
 
   [TestMethod]
-  public void EnablePermission_MustBeEnable()
+  [ExpectedException(typeof(InvalidOperationException))]
+  public void EnablePermission_WithPermissionAlreadyEnabled_ExpectedException()
   {
     var permission = new Permission("Permission","Permission");
     permission.Enable();
-    Assert.AreEqual(true,permission.IsActive);
+    Assert.Fail();
+  }
+
+  [TestMethod]
+  public void EnablePermission_WithPermissionDisabled_MustBeEnable()
+  {
+    var permission = new Permission("Permission", "Permission");
+    permission.Disable();
+    permission.Enable();
+    Assert.IsTrue(permission.IsActive);
+  }
+
+  [TestMethod]
+  [ExpectedException(typeof(InvalidOperationException))]
+  public void EnablePermission_WithPermissionAlreadyDisabled_ExpectedException()
+  {
+    var permission = new Permission("Permission", "Permission");
+    permission.Disable();
+    permission.Disable();
+    Assert.Fail();
   }
 
   [TestMethod]
@@ -44,6 +64,6 @@ public class PermissionEntityTest
   {
     var permission = new Permission("Permission","Permission");
     permission.Disable();
-    Assert.AreEqual(false,permission.IsActive);
+    Assert.IsFalse(permission.IsActive);
   }
 }
