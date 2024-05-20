@@ -9,7 +9,7 @@ partial class AdminHandler
     //Buscar admin
     var admin = await _repository.GetAdminIncludePermissions(adminId);
     if (admin == null)
-      throw new ArgumentException("Admin não encontrado.");
+      throw new ArgumentException("Administrador não encontrado.");
 
     //Buscar permissão
     var permission = await _permissionRepository.GetEntityByIdAsync(permissionId);

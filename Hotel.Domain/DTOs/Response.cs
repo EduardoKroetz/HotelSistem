@@ -11,16 +11,16 @@ public class Response<T> : IDataTransferObject
     Data = data;
   }
 
+  public Response(int status, string message)
+  {
+    Status = status;
+    Message = message;
+  }
+
   public Response(int status, List<string> errors)
   {
     Status = status;
     Errors = errors;
-  }
-
-  public Response(int status,  string error)
-  {
-    Status = status;
-    Errors.Add(error);
   }
 
   public int Status { get; private set; }

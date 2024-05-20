@@ -33,6 +33,6 @@ public partial class AdminHandler : IHandler
     await _repository.CreateAsync(admin);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Admin criado com sucesso!",new { admin.Id });
+    return new Response<object>(200,"Administrador criado.",new { admin.Id });
   }
 }
