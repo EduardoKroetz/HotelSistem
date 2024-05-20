@@ -31,7 +31,14 @@ public class HandleExceptionMiddleware
         new Response<string>(400,e.Message)
       );
     }
-    catch(DbUpdateException)
+    catch (InvalidOperationException e)
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+      await context.Response.WriteAsJsonAsync(
+        new Response<string>(400, e.Message)
+      );
+    }
+    catch (DbUpdateException)
     {
       context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
       await context.Response.WriteAsJsonAsync(

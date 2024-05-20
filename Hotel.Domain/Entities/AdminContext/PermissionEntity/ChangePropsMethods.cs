@@ -15,8 +15,17 @@ public partial class Permission
   }
 
   public void Enable()
-  => IsActive = true;
+  {
+    if (IsActive)
+      throw new InvalidOperationException("Essa permissão já está habilitada.");
+    IsActive = true;
+  }
 
   public void Disable()
-  => IsActive = false;
+  {
+    if (!IsActive)
+      throw new InvalidOperationException("Essa permissão já está desabilitada.");
+    IsActive = false;
+  }
+
 }

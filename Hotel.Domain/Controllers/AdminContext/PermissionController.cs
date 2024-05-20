@@ -48,4 +48,18 @@ public class PermissionController : ControllerBase
   )
   => Ok(await _handler.HandleDeleteAsync(id));
   
+
+  [HttpPost("v1/permissions/disable/{id:guid}")]
+  public async Task<IActionResult> DisableAsync(
+    [FromRoute] Guid id
+  )
+  => Ok(await _handler.HandleDisableAsync(id));
+
+
+  [HttpPost("v1/permissions/enable/{id:guid}")]
+  public async Task<IActionResult> EnableAsync(
+    [FromRoute] Guid id
+  )
+  => Ok(await _handler.HandleEnableAsync(id));
+
 }
