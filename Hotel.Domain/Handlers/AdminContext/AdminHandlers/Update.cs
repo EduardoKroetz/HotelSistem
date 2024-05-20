@@ -10,7 +10,7 @@ public partial class AdminHandler
   {
     var admin = await _repository.GetEntityByIdAsync(adminId);
     if (admin == null)
-      throw new ArgumentException("Não foi possível atualizar pois o Admin não existe.");
+      throw new ArgumentException("Não foi possível atualizar pois o Administrador não existe.");
     
     admin.ChangeName(new Name(model.FirstName,model.LastName));
     admin.ChangeEmail(new Email(model.Email));
@@ -22,6 +22,6 @@ public partial class AdminHandler
     _repository.Update(admin);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Admin atualizado com sucesso!",new { admin.Id });
+    return new Response<object>(200,"Administrador atualizado.");
   }
 }

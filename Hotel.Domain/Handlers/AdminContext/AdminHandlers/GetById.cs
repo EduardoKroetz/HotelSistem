@@ -9,8 +9,8 @@ public partial class AdminHandler
   {
     var admin = await _repository.GetByIdAsync(adminId);
     if (admin == null)
-      throw new ArgumentException("Admin não encontrado.");
+      throw new ArgumentException("Administrador não encontrado.");
     
-    return new Response<GetUser>(200,"Admin encontrado com sucesso!", admin);
+    return new Response<GetUser>(200,"Administrador encontrado.", admin);
   }
 }

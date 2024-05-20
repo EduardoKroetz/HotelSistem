@@ -54,9 +54,17 @@ public class AdminController : ControllerBase
     [FromRoute] Guid permissionId)
   => Ok(await _handler.HandleAddPermission(adminId, permissionId));
 
+
   [HttpDelete("v1/admins/{adminId:guid}/permissions/{permissionId:guid}")]
   public async Task<IActionResult> RemovePermission(
     [FromRoute] Guid adminId,
     [FromRoute] Guid permissionId)
   => Ok(await _handler.HandleRemovePermission(adminId, permissionId));
+
+
+  [HttpPost("v1/admins/{adminId:guid}/to-root-admin/{toRootAdminId:guid}")]
+  public async Task<IActionResult> ChangeToRootAdmin(
+    [FromRoute] Guid adminId,
+    [FromRoute] Guid toRootAdminId)
+  => Ok(await _handler.HandleChangeToRootAdminAsync(adminId,toRootAdminId));
 }

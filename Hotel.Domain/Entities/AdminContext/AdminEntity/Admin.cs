@@ -19,10 +19,12 @@ public partial class Admin : User, IAdmin
 
   public void ChangeToRootAdmin(Admin RootAdmin)
   {
+    if (IsRootAdmin)
+      throw new InvalidOperationException("Esse administrador já é um administrador raiz.");
     if (RootAdmin.IsRootAdmin)
       IsRootAdmin = true;
     else
-      throw new ValidationException("Erro de validação: Não é possível atribuir o status de administrador root a este usuário sem antes possuir um administrador root.");
+      throw new ValidationException("Erro de validação: Esse administrador não é um administrador raiz. Informe um administrador raiz para mudar o status.");
   }
 
 
