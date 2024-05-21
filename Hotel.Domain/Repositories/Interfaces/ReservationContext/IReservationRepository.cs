@@ -5,4 +5,5 @@ namespace Hotel.Domain.Repositories.Interfaces.ReservationContext;
 
 public interface IReservationRepository : IRepository<Reservation>, IRepositoryQuery<GetReservation, GetReservationCollection, ReservationQueryParameters>
 {
+  public Task<Reservation?> GetReservationIncludeServices(Guid id);
 }

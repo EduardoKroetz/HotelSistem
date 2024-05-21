@@ -43,4 +43,19 @@ public class ReservationController : ControllerBase
     [FromBody] UpdateCheckOut updateCheckOut
   )
   => Ok(await _handler.HandleUpdateCheckOutAsync(id, updateCheckOut.CheckOut));
+
+  [HttpPost("v1/reservations/{Id:guid}/services/{serviceId:guid}")]
+  public async Task<IActionResult> AddServiceAsync(
+    [FromRoute] Guid id,
+    [FromRoute] Guid serviceId
+  )
+  => Ok(await _handler.HandleAddServiceAsync(id, serviceId));
+
+  //Somente administradores
+  [HttpDelete("v1/reservations/{Id:guid}/services/{serviceid:guid}")]
+  public async Task<IActionResult> RemoveServiceAsync(
+    [FromRoute] Guid id,
+    [FromRoute] Guid serviceId
+  )
+  => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
 }
