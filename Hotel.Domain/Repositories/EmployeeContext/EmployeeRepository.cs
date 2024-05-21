@@ -57,4 +57,12 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
         x.Salary ?? 0
     )).ToListAsync();
   }
+
+  public async Task<Employee?> GetEmployeeIncludeResponsabilities(Guid id)
+  {
+    return await _context.Employees
+      .Where(x => x.Id == id)
+      .Include(x => x.Responsabilities)
+      .FirstOrDefaultAsync();
+  }
 }

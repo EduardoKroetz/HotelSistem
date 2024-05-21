@@ -10,8 +10,12 @@ namespace Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
 public partial class EmployeeHandler : IHandler
 {
   private readonly IEmployeeRepository  _repository;
-  public EmployeeHandler(IEmployeeRepository repository)
-  => _repository = repository;
+  private readonly IResponsabilityRepository _responsabilityRepository;
+  public EmployeeHandler(IEmployeeRepository repository, IResponsabilityRepository responsabilityRepository)
+  {
+    _repository = repository;
+    _responsabilityRepository = responsabilityRepository;
+  }
 
   public async Task<Response<object>> HandleCreateAsync(CreateEmployee model)
   {
