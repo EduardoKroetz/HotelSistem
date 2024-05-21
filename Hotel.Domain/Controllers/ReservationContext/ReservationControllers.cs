@@ -37,4 +37,10 @@ public class ReservationController : ControllerBase
   )
   => Ok(await _handler.HandleDeleteAsync(id));
 
+  [HttpPatch("v1/reservations/{Id:guid}/checkout")]
+  public async Task<IActionResult> UpdateCheckoutAsync(
+    [FromRoute] Guid id,
+    [FromBody] UpdateCheckOut updateCheckOut
+  )
+  => Ok(await _handler.HandleUpdateCheckOutAsync(id, updateCheckOut.CheckOut));
 }
