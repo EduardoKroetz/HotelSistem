@@ -8,10 +8,8 @@ partial class Reservation
   {
     ValidateCapacity(Capacity);
     ValidateCheckIn(CheckIn);
-    ValidateCheckOut(CheckOut);
 
-    if (CheckOut != null && CheckIn.Date > CheckOut.Value.Date)
-      throw new ValidationException("Erro de validação: A data de check-in deve ser anterior à data de check-out.");
+    ValidateCheckInAndCheckOut(CheckIn, CheckOut);
 
     base.Validate();
   }
@@ -31,10 +29,9 @@ partial class Reservation
       throw new ValidationException("Erro de validação: A data de CheckIn não pode ser menor que a data atual.");
   }
 
-  public void ValidateCheckOut(DateTime? checkOut)
+  public void ValidateCheckInAndCheckOut(DateTime checkIn, DateTime? checkOut)
   {
-    if (checkOut != null)
-      if (checkOut.Value.Date < DateTime.Now.Date)
-        throw new ValidationException("Erro de validação: A data de CheckOut não pode ser menor que a data atual.");
+    if (checkOut != null && checkIn.Date > checkOut.Value.Date)
+      throw new ValidationException("Erro de validação: A data de check-out deve ser maior que a data de check-in.");
   }
 }

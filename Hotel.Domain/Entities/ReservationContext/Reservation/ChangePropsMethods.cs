@@ -8,7 +8,7 @@ partial class Reservation
   
   public Reservation ChangeCheckOut(DateTime checkOut)
   {
-    ValidateCheckOut(checkOut);
+    ValidateCheckInAndCheckOut(CheckIn,checkOut);
     CheckOut = checkOut;
     HostedDays = CalculeHostedDays();
     return this;
@@ -16,9 +16,10 @@ partial class Reservation
 
   public Reservation ChangeCheckIn(DateTime checkIn)
   {
-    if (Status != EReservationStatus.Pending && Status != EReservationStatus.NoShow)
+    if (Status == EReservationStatus.Cancelled || Status == EReservationStatus.CheckedIn || Status == EReservationStatus.CheckedOut)
       throw new ValidationException($"Erro de validação: Não é possível alterar o CheckIn com o status da reserva {Status}.");
     ValidateCheckIn(checkIn);
+    ValidateCheckInAndCheckOut(checkIn, CheckOut);
     CheckIn = checkIn;
     return this;
   }

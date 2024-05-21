@@ -58,4 +58,11 @@ public class ReservationController : ControllerBase
     [FromRoute] Guid serviceId
   )
   => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
+
+  [HttpPatch("v1/reservations/{Id:guid}/checkin")]
+  public async Task<IActionResult> UpdateCheckInAsync(
+    [FromRoute] Guid id,
+    [FromBody] UpdateCheckIn updateCheckIn
+  )
+  => Ok(await _handler.HandleUpdateCheckInAsync(id, updateCheckIn.CheckIn));
 }
