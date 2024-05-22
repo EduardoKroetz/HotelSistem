@@ -18,9 +18,8 @@ public partial class Service : IResponsabilitiesMethods
   public void RemoveResponsability(Responsability responsability)
   {
     if (!Responsabilities.Remove(responsability))
-      throw new ValidationException("Erro de validação: Responsabilidade não está atribuida.");
+      throw new ValidationException("Erro de validação: Essa responsabilidade não está atribuida.");
   }
   
-
 
 }

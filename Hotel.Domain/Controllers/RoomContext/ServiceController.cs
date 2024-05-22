@@ -43,5 +43,18 @@ public class ServiceController : ControllerBase
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleDeleteAsync(id));
-  
+
+  [HttpPost("v1/services/{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  public async Task<IActionResult> AddResponsabilityAsync(
+    [FromRoute] Guid id,
+    [FromRoute] Guid responsabilityId
+  )
+  => Ok(await _handler.HandleAssignResponsabilityAsync(id,responsabilityId));
+
+  [HttpDelete("v1/services/{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  public async Task<IActionResult> RemoveResponsabilityAsync(
+  [FromRoute] Guid id,
+  [FromRoute] Guid responsabilityId
+  )
+  => Ok(await _handler.HandleUnasignResponsabilityAsync(id, responsabilityId));
 }

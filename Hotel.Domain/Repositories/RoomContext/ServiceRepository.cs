@@ -79,4 +79,12 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         x.CreatedAt
     )).ToListAsync();
   }
+
+  public async Task<Service?> GetServiceIncludeResponsabilities(Guid serviceId)
+  {
+    return await _context.Services
+      .Where(x => x.Id == serviceId)
+      .Include(x => x.Responsabilities)
+      .FirstOrDefaultAsync();
+  }
 }

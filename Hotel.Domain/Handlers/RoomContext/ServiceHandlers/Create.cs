@@ -2,6 +2,7 @@ using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Handlers.Interfaces;
+using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 using Hotel.Domain.Repositories.Interfaces.RoomContext;
 
 namespace Hotel.Domain.Handlers.RoomContext.ServiceHandler;
@@ -9,8 +10,13 @@ namespace Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 public partial class ServiceHandler : IHandler
 {
   private readonly IServiceRepository  _repository;
-  public ServiceHandler(IServiceRepository repository)
-  => _repository = repository;
+  private readonly IResponsabilityRepository _responsabilityRepository;
+  public ServiceHandler(IServiceRepository repository, IResponsabilityRepository responsabilityRepository)
+  {
+    _repository = repository;
+    _responsabilityRepository = responsabilityRepository;
+  }
+
 
   public async Task<Response<object>> HandleCreateAsync(EditorService model)
   {
