@@ -1,5 +1,6 @@
 using Hotel.Domain.Entities.Base.Interfaces;
 using Hotel.Domain.Enums;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Entities.Base;
@@ -45,7 +46,11 @@ public class User : Entity, IUser
   => Address = address; 
 
   public void ChangeGender(EGender? gender)
-  => Gender = gender; 
+  {
+    ValidateGender(gender);
+    Gender = gender;
+  }
+
   public void ChangeDateOfBirth(DateTime? birth)
   => DateOfBirth = birth; 
   public void CompleteProfile()
@@ -55,6 +60,20 @@ public class User : Entity, IUser
   {
     //Implementar
     return "";
+  }
+
+  public override void Validate()
+  {
+    ValidateGender(Gender);
+
+    base.Validate();
+  }
+
+  public void ValidateGender(EGender? gender)
+  {
+    //Verifica se é nulo e se é 1 ou 2 - Masculino/Feminino
+    if (gender != null && ( (int)gender > 2 || (int)gender < 1) )
+      throw new ValidationException("Erro de validação: Gênero inválido.");
   }
 
 }

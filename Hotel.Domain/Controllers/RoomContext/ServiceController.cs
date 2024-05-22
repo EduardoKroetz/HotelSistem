@@ -1,4 +1,3 @@
-using Hotel.Domain.DTOs.Base;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 using Microsoft.AspNetCore.Mvc;
