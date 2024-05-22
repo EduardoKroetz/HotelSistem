@@ -9,8 +9,13 @@ namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 public partial class RoomHandler : IHandler
 {
   private readonly IRoomRepository  _repository;
-  public RoomHandler(IRoomRepository repository)
-  => _repository = repository;
+  private readonly IServiceRepository _serviceRepository;
+  public RoomHandler(IRoomRepository repository, IServiceRepository serviceRepository)
+  {
+    _repository = repository;
+    _serviceRepository = serviceRepository;
+  }
+ 
 
   public async Task<Response<object>> HandleCreateAsync(EditorRoom model)
   {
