@@ -46,17 +46,17 @@ public class EmployeeController : ControllerBase
   => Ok(await _handler.HandleDeleteAsync(id));
 
   [HttpPost("v1/employees/{Id:guid}/responsabilities/{resId}")]
-  public async Task<IActionResult> AddResponsabilityAsync(
+  public async Task<IActionResult> AssignResponsabilityAsync(
     [FromRoute] Guid id,
     [FromRoute] Guid resId
   )
-  => Ok(await _handler.HandleAddResponsabilityAsync(id, resId));
+  => Ok(await _handler.HandleAssignResponsabilityAsync(id, resId));
 
   [HttpDelete("v1/employees/{Id:guid}/responsabilities/{resId}")]
-  public async Task<IActionResult> RemoveResponsabilityAsync(
+  public async Task<IActionResult> UnassingResponsabilityAsync(
     [FromRoute] Guid id,
     [FromRoute] Guid resId
   )
-  => Ok(await _handler.HandleRemoveResponsabilityAsync(id, resId));
+  => Ok(await _handler.HandleUnassignResponsabilityAsync(id, resId));
 
 }

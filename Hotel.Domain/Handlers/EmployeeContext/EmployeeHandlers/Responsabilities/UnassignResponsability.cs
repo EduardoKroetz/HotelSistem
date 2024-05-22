@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
 
 public partial class EmployeeHandler : IHandler
 {
-  public async Task<Response<object>> HandleAddResponsabilityAsync(Guid id, Guid responsabilityId)
+  public async Task<Response<object>> HandleUnassignResponsabilityAsync(Guid id, Guid responsabilityId)
   {
     var employee = await _repository.GetEmployeeIncludeResponsabilities(id);
     if (employee == null)
@@ -15,10 +15,10 @@ public partial class EmployeeHandler : IHandler
     if (responsability == null)
       throw new ArgumentException("Responsabilidade não encontrada.");
 
-    employee.AddResponsability(responsability);
-    
+    employee.RemoveResponsability(responsability);
+
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Responsabilidade associada.");
+    return new Response<object>(200, "Responsabilidade desatribuida.");
   }
 }

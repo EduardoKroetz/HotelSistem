@@ -8,7 +8,7 @@ public partial class Employee : IResponsabilitiesMethods
   public void AddResponsability(Responsability responsability)
   {
     if (Responsabilities.Contains(responsability))
-      throw new ArgumentException("Essa responsabilidade já está associada.");
+      throw new ArgumentException("Essa responsabilidade já está atribuida.");
     Responsabilities.Add(responsability);
   }
  
@@ -16,7 +16,7 @@ public partial class Employee : IResponsabilitiesMethods
   public void RemoveResponsability(Responsability responsability)
   {
     if (!Responsabilities.Contains(responsability))
-      throw new ArgumentException("Essa responsabilidade não está associada.");
+      throw new ArgumentException("Essa responsabilidade não está atribuida.");
     Responsabilities.Remove(responsability);
   }
 
