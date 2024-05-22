@@ -42,5 +42,17 @@ public class ReportController : ControllerBase
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleDeleteAsync(id));
-  
-}
+
+  [HttpPatch("v1/reports/{Id:guid}/finish")]
+  public async Task<IActionResult> FinishAsync(
+    [FromRoute] Guid id
+  )
+  => Ok(await _handler.HandleFinishAsync(id));
+
+  [HttpPatch("v1/reports/{Id:guid}/cancel")]
+  public async Task<IActionResult> CancelAsync(
+  [FromRoute] Guid id
+  )
+  => Ok(await _handler.HandleCancelAsync(id));
+
+} 
