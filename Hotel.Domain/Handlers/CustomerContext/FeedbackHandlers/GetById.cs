@@ -7,10 +7,10 @@ public partial class FeedbackHandler
 {
   public async Task<Response<GetFeedback>> HandleGetByIdAsync(Guid id)
   {
-    var permission = await _repository.GetByIdAsync(id);
-    if (permission == null)
+    var feedback = await _repository.GetByIdAsync(id);
+    if (feedback == null)
       throw new ArgumentException("Feedback não encontrado.");
     
-    return new Response<GetFeedback>(200,"Feedback encontrado.", permission);
+    return new Response<GetFeedback>(200,"Feedback encontrado.", feedback);
   }
 }
