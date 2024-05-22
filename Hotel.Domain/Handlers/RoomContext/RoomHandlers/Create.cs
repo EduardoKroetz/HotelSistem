@@ -10,12 +10,15 @@ public partial class RoomHandler : IHandler
 {
   private readonly IRoomRepository  _repository;
   private readonly IServiceRepository _serviceRepository;
-  public RoomHandler(IRoomRepository repository, IServiceRepository serviceRepository)
+  private readonly ICategoryRepository _categoryRepository;
+
+  public RoomHandler(IRoomRepository repository, IServiceRepository serviceRepository, ICategoryRepository categoryRepository)
   {
     _repository = repository;
     _serviceRepository = serviceRepository;
+    _categoryRepository = categoryRepository;
   }
- 
+
 
   public async Task<Response<object>> HandleCreateAsync(EditorRoom model)
   {
