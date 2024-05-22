@@ -2,6 +2,7 @@ using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
+using System;
 
 namespace Hotel.Tests.Entities.EmployeeContext;
 
@@ -43,12 +44,13 @@ public class EmployeeEntityTest
   }
 
   [TestMethod]
-  public void AddSameResponsability_AddJustOne()
+  [ExpectedException(typeof(ArgumentException))]
+  public void AddSameResponsability_ExpectedException()
   {
     var employee = new Employee(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
     employee.AddResponsability(Responsability);
     employee.AddResponsability(Responsability);
-    Assert.AreEqual(1,employee.Responsabilities.Count);
+    Assert.Fail();
   }
 
   [TestMethod]
@@ -61,10 +63,11 @@ public class EmployeeEntityTest
   }
 
   [TestMethod]
-  public void RemoveNonExistingResponsability_DoNothing()
+  [ExpectedException(typeof(ArgumentException))]
+  public void RemoveNonExistingResponsability_ExpectedException()
   {
     var employee = new Employee(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
     employee.RemoveResponsability(Responsability);
-    Assert.IsTrue(true);
+    Assert.Fail();
   }
 }

@@ -5,4 +5,5 @@ namespace Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 
 public interface IEmployeeRepository : IRepository<Employee>, IRepositoryQuery<GetEmployee, EmployeeQueryParameters>
 {
+  public Task<Employee?> GetEmployeeIncludeResponsabilities(Guid id);
 }
