@@ -72,4 +72,12 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
         x.CreatedAt
     )).ToListAsync();
   }
+
+  public async Task<Room?> GetRoomIncludeServices(Guid roomId)
+  {
+    return await _context.Rooms
+      .Where(x => x.Id == roomId)
+      .Include(x => x.Services)
+      .FirstOrDefaultAsync();
+  }
 }

@@ -42,5 +42,18 @@ public class RoomController : ControllerBase
     [FromRoute]Guid id
   )
   => Ok(await _handler.HandleDeleteAsync(id));
-  
+
+  [HttpPost("v1/rooms/{Id:guid}/services/{serviceId:guid}")]
+  public async Task<IActionResult> AddServiceAsync(
+    [FromRoute] Guid id,
+    [FromRoute] Guid serviceId
+  )
+  => Ok(await _handler.HandleAddServiceAsync(id,serviceId));
+
+  [HttpDelete("v1/rooms/{Id:guid}/services/{serviceId:guid}")]
+  public async Task<IActionResult> RemoveServiceAsync(
+  [FromRoute] Guid id,
+  [FromRoute] Guid serviceId
+  )
+  => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
 }

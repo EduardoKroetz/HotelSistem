@@ -125,6 +125,11 @@ public class ServiceRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereIsActiveEqualsFalse_ReturnServices()
   {
+    //Desativar algum serviço
+    var anyService = await BaseRepositoryTest.MockConnection.Context.Services.FirstOrDefaultAsync();
+    anyService?.Disable();
+    await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
+
     var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, false, null, null, null, null, null, null, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
