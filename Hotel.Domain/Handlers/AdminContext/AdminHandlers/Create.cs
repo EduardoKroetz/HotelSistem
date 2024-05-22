@@ -2,17 +2,18 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
+using Hotel.Domain.Handlers.Base.GenericUserHandler;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
-public partial class AdminHandler : IHandler
+public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, IHandler
 {
   private readonly IAdminRepository _repository;
   private readonly IPermissionRepository _permissionRepository; 
-  public AdminHandler(IAdminRepository repository, IPermissionRepository permissionRepository)
+  public AdminHandler(IAdminRepository repository, IPermissionRepository permissionRepository) : base(repository)
   {
     _repository = repository;
     _permissionRepository = permissionRepository;

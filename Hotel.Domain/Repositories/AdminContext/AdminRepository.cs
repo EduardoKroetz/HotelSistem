@@ -1,7 +1,6 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
-using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Repositories.Base;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Microsoft.EntityFrameworkCore;
