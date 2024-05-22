@@ -1,17 +1,16 @@
 ﻿using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 
 namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 
 public partial class FeedbackHandler
 {
-  public async Task<Response<object>> HandleUpdateCommentAsync(Guid id, UpdateComment updateComment)
+  public async Task<Response<object>> HandleUpdateCommentAsync(Guid id, string comment)
   {
     var feedback = await _repository.GetEntityByIdAsync(id);
     if (feedback == null)
       throw new ArgumentException("Feedback não encontrado.");
 
-    feedback.ChangeComment(updateComment.Comment);
+    feedback.ChangeComment(comment);
 
     await _repository.SaveChangesAsync();
 

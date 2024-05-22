@@ -77,12 +77,12 @@ public class FeedbackController : ControllerBase
   => Ok(await _handler.HandleRemoveDeslikeAsync(id));
 
 
-  [HttpPatch("v1/feedbacks/{Id:guid}/rate")]
+  [HttpPatch("v1/feedbacks/{Id:guid}/rate/{rate:int}")]
   public async Task<IActionResult> UpdateRateAsync(
     [FromRoute] Guid id,
-    [FromBody]UpdateRate updateRate
+    [FromRoute] int rate
   )
-  => Ok(await _handler.HandleUpdateRateAsync(id, updateRate));
+  => Ok(await _handler.HandleUpdateRateAsync(id, rate));
 
 
   [HttpPatch("v1/feedbacks/{Id:guid}/comment")]
@@ -90,6 +90,6 @@ public class FeedbackController : ControllerBase
     [FromRoute] Guid id,
     [FromBody]UpdateComment updateComment
   )
-  => Ok(await _handler.HandleUpdateCommentAsync(id, updateComment));
+  => Ok(await _handler.HandleUpdateCommentAsync(id, updateComment.Comment));
 
 }
