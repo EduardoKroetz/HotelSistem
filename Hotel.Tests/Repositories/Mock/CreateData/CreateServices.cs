@@ -24,7 +24,7 @@ public class CreateServices
       new("Piscina", 10, EPriority.Trivial, 120),
       new("Spa", 50.00m, EPriority.Critical, 90),
     };
-    services[0].Disable();
+
     services[0].AddResponsability(BaseRepositoryTest.Responsabilities[0]);
 
     await BaseRepositoryTest.MockConnection.Context.Services.AddRangeAsync(services);
