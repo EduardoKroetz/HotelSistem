@@ -15,11 +15,13 @@ public partial class ReservationHandler : IHandler
   private readonly IReservationRepository  _repository;
   private readonly IRoomRepository  _roomRepository;
   private readonly ICustomerRepository  _customerRepository;
-  public ReservationHandler(IReservationRepository repository, IRoomRepository roomRepository,ICustomerRepository customerRepository)
+  private readonly IServiceRepository _serviceRepository;
+  public ReservationHandler(IReservationRepository repository, IRoomRepository roomRepository,ICustomerRepository customerRepository, IServiceRepository serviceRepository)
   {
     _repository = repository;
     _roomRepository = roomRepository;
     _customerRepository = customerRepository;
+    _serviceRepository = serviceRepository;
   }
 
 
