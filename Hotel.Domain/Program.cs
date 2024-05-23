@@ -25,13 +25,16 @@ using Hotel.Domain.Repositories.Interfaces.RoomContext;
 using Hotel.Domain.Repositories.PaymentContext;
 using Hotel.Domain.Repositories.ReservationContext;
 using Hotel.Domain.Repositories.RoomContext;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 LoadConfiguration(builder);
 ConfigureDependencies(builder);
-
+ConfigureAuthentication(builder.Services);
 //builder.WebHost.UseUrls("http://0.0.0.0:80");
 
 builder.Services.AddEndpointsApiExplorer();
@@ -42,6 +45,9 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 app.UseHandleExceptions();
@@ -54,6 +60,7 @@ app.Run();
 void LoadConfiguration(WebApplicationBuilder builder)
 {
   Configuration.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+  Configuration.JwtKey = builder.Configuration.GetValue<string>("JwtKey") ?? null!;
 }
 
 void ConfigureDependencies(WebApplicationBuilder builder)
@@ -87,4 +94,26 @@ void ConfigureDependencies(WebApplicationBuilder builder)
   builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
   builder.Services.AddScoped<ServiceHandler>();
 
+}
+
+void ConfigureAuthentication(IServiceCollection services)
+{
+  var key = Encoding.ASCII.GetBytes(Configuration.JwtKey);
+  services.AddAuthentication(options =>
+  {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+  })
+  .AddJwtBearer(options =>
+  {
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+      ValidateIssuerSigningKey = true,
+      IssuerSigningKey = new SymmetricSecurityKey(key),
+      ValidateAudience = false,
+      ValidateIssuer = false
+    };
+  });
 }

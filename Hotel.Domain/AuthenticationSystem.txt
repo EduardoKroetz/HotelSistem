@@ -1,0 +1,12 @@
+SISTEMA DE AUTENTICAÇÃO:
+  Todas as rotas devem possuir autenticação, menos a de registrar e fazer login de um cliente.
+  Implementar login com OAuth2.0 e JWT
+  Deve possuir um sistema de permissões, onde cada rota mais protegida pode ser gerenciada através dessas permissões
+  Verificar as permissões(funcionalidades do sistema que possui acesso) na rota
+  CADASTRO DE USUÁRIO
+    -Vou receber um token do servidor
+    -Vou pegar algumas informações desse token como email, id e telefone, que são informações únicas;
+    -Vou verificar no meu banco de dados se nenhum usuário existe com esse Id
+    -Depois vou cadastrar o usuário se nenhum dado for duplicado
+    -Criar um novo token porém com as permissões, id, nome email
+    -Retornar esse token
