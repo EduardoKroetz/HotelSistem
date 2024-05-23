@@ -1,17 +1,18 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
+using Hotel.Domain.Handlers.Base.GenericUserHandler;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
 
-public partial class EmployeeHandler : IHandler
+public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Employee> ,IHandler
 {
   private readonly IEmployeeRepository  _repository;
   private readonly IResponsabilityRepository _responsabilityRepository;
-  public EmployeeHandler(IEmployeeRepository repository, IResponsabilityRepository responsabilityRepository)
+  public EmployeeHandler(IEmployeeRepository repository, IResponsabilityRepository responsabilityRepository) : base(repository)
   {
     _repository = repository;
     _responsabilityRepository = responsabilityRepository;
