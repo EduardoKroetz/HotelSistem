@@ -9,6 +9,7 @@
 /Properties
 /Data/Migrations
 /HotelSystemRoutes.txt
+/AuthenticationSystem.txt
 # dotenv files
 .env
 
