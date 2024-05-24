@@ -1,4 +1,5 @@
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
+using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
@@ -69,5 +70,55 @@ public class EmployeeEntityTest
     var employee = new Employee(TestParameters.Name,TestParameters.Email,TestParameters.Phone,"password123");
     employee.RemoveResponsability(Responsability);
     Assert.Fail();
+  }
+
+
+  [TestMethod]
+  public void AssignValidPermission_MustBeAssigned()
+  {
+    var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
+    employee.AssignPermission(TestParameters.Permission);
+
+    Assert.AreEqual(1, employee.Permissions.Count);
+  }
+
+  [TestMethod]
+  [ExpectedException(typeof(ValidationException))]
+  public void AssignDisabledPermission_ExpectedException()
+  {
+    var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
+    var permission = new Permission("Permission 1", "Permission 1");
+    permission.Disable();
+    employee.AssignPermission(permission);
+    Assert.Fail();
+  }
+
+  [TestMethod]
+  [ExpectedException(typeof(ValidationException))]
+  public void AssignSamePermission_ExpectedException()
+  {
+    var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
+    employee.AssignPermission(TestParameters.Permission);
+    employee.AssignPermission(TestParameters.Permission);
+    Assert.AreEqual(1, employee.Permissions.Count);
+  }
+
+  [TestMethod]
+  public void UnassignExistPermission_MustBeUnassign()
+  {
+    var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
+    employee.AssignPermission(TestParameters.Permission);
+    employee.UnassignPermission(TestParameters.Permission);
+
+    Assert.AreEqual(0, employee.Permissions.Count);
+  }
+
+  [TestMethod]
+  [ExpectedException(typeof(ValidationException))]
+  public void UnassignNonExistingPermission_ExpectedException()
+  {
+    var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
+    employee.UnassignPermission(TestParameters.Permission);
+    Assert.AreEqual(0, employee.Permissions.Count);
   }
 }

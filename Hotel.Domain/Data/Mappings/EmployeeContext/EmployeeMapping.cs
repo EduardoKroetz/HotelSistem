@@ -23,6 +23,10 @@ public class EmployeeMapping : UserBaseMapping<Employee>, IEntityTypeConfigurati
       .IsRequired()
       .OnDelete(DeleteBehavior.Cascade);
 
+    builder.HasMany(x => x.Permissions)
+      .WithMany(x => x.Employees)
+      .UsingEntity(x => x.ToTable("EmployeePermissions"));
+
     builder.HasMany(e => e.Responsabilities)
       .WithMany(x => x.Employees)
       .UsingEntity<Dictionary<string,object>>
