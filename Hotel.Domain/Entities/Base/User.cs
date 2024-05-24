@@ -5,7 +5,7 @@ using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Entities.Base;
 
-public class User : Entity, IUser
+public abstract class User : Entity, IUser
 {
   public User()
   {}
@@ -15,7 +15,7 @@ public class User : Entity, IUser
     Name = name;
     Email = email;
     Phone = phone;
-    PasswordHash = GeneratePasswordHash(password);
+    PasswordHash = PasswordHasher.HashPassword(password);
     Gender = gender;
     DateOfBirth = dateOfBirth;
     Address = address;
@@ -27,7 +27,7 @@ public class User : Entity, IUser
   public Name Name { get; private set; } = null!;
   public Email Email { get; private set; } = null!;
   public Phone Phone { get; private set; } = null!;
-  public string? PasswordHash { get; private set; } 
+  public string PasswordHash { get; private set; } = null!;
   public EGender? Gender { get; private set; } 
   public DateTime? DateOfBirth { get; private set; }
   public Address? Address { get; private set; }
@@ -55,12 +55,6 @@ public class User : Entity, IUser
   => DateOfBirth = birth; 
   public void CompleteProfile()
   => IncompleteProfile = Address == null || Gender == null || DateOfBirth == null;
-
-  public string GeneratePasswordHash(string Password)
-  {
-    //Implementar
-    return "";
-  }
 
   public override void Validate()
   {

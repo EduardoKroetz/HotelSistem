@@ -25,15 +25,7 @@ public class AdminController : ControllerBase
   public async Task<IActionResult> GetByIdAsync(
     [FromRoute]Guid id
   )
-  => Ok(await _handler.HandleGetByIdAsync(id));
-  
-
-  [HttpPost("v1/admins")]
-  public async Task<IActionResult> PostAsync(
-    [FromBody]CreateUser model
-  )
-  => Ok(await _handler.HandleCreateAsync(model));
-  
+  => Ok(await _handler.HandleGetByIdAsync(id));  
 
   [HttpPut("v1/admins/{Id:guid}")]
   public async Task<IActionResult> PutAsync(

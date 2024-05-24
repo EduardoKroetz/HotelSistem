@@ -93,7 +93,6 @@ void ConfigureDependencies(WebApplicationBuilder builder)
   builder.Services.AddScoped<ReportHandler>();
   builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
   builder.Services.AddScoped<ServiceHandler>();
-
 }
 
 void ConfigureAuthentication(IServiceCollection services)
