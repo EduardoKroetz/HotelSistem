@@ -64,6 +64,7 @@ public partial class Authentication
       new(ClaimTypes.NameIdentifier, employee.Id.ToString()),
       new(ClaimTypes.Email, employee.Email.Address),
       new(ClaimTypes.Role, "Employee"),
+      new("Permissions", string.Join(",",employee.Permissions))
     };
     var tokenDescriptor = new SecurityTokenDescriptor()
     {
