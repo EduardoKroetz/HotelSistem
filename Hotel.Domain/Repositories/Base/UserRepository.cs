@@ -23,6 +23,15 @@ public abstract class UserRepository<T> : GenericRepository<T>, IUserRepository<
 
   }
 
+  public async Task<T?> GetEntityByEmailAsync(string email)
+  {
+    return await _context
+      .Set<T>()
+      .AsNoTracking()
+      .Where(x => x.Email.Address == email)
+      .FirstOrDefaultAsync();
+  }
+
   public virtual IQueryable<T> GetAsync(UserQueryParameters queryParameters)
   {
     var query = _context.Set<T>().AsQueryable();

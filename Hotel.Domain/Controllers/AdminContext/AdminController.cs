@@ -3,6 +3,7 @@ using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Hotel.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.AdminContext;

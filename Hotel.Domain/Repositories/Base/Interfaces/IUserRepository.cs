@@ -5,4 +5,5 @@ namespace Hotel.Domain.Repositories.Base.Interfaces;
 
 public interface IUserRepository<T> : IRepository<T> where T : User 
 {
+  public Task<T?> GetEntityByEmailAsync(string email);
 }
