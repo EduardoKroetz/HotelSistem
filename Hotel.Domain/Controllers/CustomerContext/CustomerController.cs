@@ -26,14 +26,6 @@ public class CustomerController : ControllerBase
   )
   => Ok(await _handler.HandleGetByIdAsync(id));
   
-
-  [HttpPost("v1/customers")]
-  public async Task<IActionResult> PostAsync(
-    [FromBody]CreateUser model
-  )
-  => Ok(await _handler.HandleCreateAsync(model));
-  
-
   [HttpPut("v1/customers/{Id:guid}")]
   public async Task<IActionResult> PutAsync(
     [FromBody]UpdateUser model,

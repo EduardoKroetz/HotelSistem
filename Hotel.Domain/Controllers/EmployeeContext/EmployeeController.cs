@@ -25,11 +25,6 @@ public class EmployeeController : ControllerBase
     [FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
-  [HttpPost]
-  public async Task<IActionResult> PostAsync(
-    [FromBody] CreateEmployee model)
-    => Ok(await _handler.HandleCreateAsync(model));
-
   [HttpPut("{id:guid}")]
   public async Task<IActionResult> PutAsync(
     [FromBody] UpdateEmployee model,
