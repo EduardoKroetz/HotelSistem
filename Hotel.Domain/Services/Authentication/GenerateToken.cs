@@ -9,9 +9,9 @@ using System.Text;
 
 namespace Hotel.Domain.Services.Authentication;
 
-public partial class Authentication
+public static partial class Authentication
 {
-  public string GenerateToken(Admin admin)
+  public static string GenerateToken(Admin admin)
   {
     var key = Encoding.ASCII.GetBytes(Configuration.Configuration.JwtKey);
     var tokenHandler = new JwtSecurityTokenHandler();
@@ -33,7 +33,7 @@ public partial class Authentication
     return tokenHandler.WriteToken(token);
   }
 
-  public string GenerateToken(Customer customer)
+  public static string GenerateToken(Customer customer)
   {
     var key = Encoding.ASCII.GetBytes(Configuration.Configuration.JwtKey);
     var tokenHandler = new JwtSecurityTokenHandler();
@@ -52,10 +52,9 @@ public partial class Authentication
 
     var token = tokenHandler.CreateToken(tokenDescriptor);
     return tokenHandler.WriteToken(token);
-
   }
 
-  public string GenerateToken(Employee employee)
+  public static string GenerateToken(Employee employee)
   {
     var key = Encoding.ASCII.GetBytes(Configuration.Configuration.JwtKey);
     var tokenHandler = new JwtSecurityTokenHandler();
