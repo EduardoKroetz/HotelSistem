@@ -1,5 +1,6 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
+using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Base;
@@ -63,6 +64,16 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
     return await _context.Employees
       .Where(x => x.Id == id)
       .Include(x => x.Responsabilities)
+      .FirstOrDefaultAsync();
+  }
+
+  new public async Task<Employee?> GetEntityByEmailAsync(string email)
+  {
+    return await _context
+      .Employees
+      .AsNoTracking()
+      .Include(x => x.Permissions)
+      .Where(x => x.Email.Address == email)
       .FirstOrDefaultAsync();
   }
 }

@@ -1,8 +1,10 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
+using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Repositories.Base;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
+using Hotel.Domain.Services.Permissions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Repositories.AdminContext;
@@ -42,6 +44,22 @@ public class AdminRepository : UserRepository<Admin>, IAdminRepository
       .Where(x => x.Id == adminId)
       .Include(x => x.Permissions)
       .FirstOrDefaultAsync();
+  }
+
+  new public async Task<Admin?> GetEntityByEmailAsync(string email)
+  {
+    return await _context
+      .Admins
+      .AsNoTracking()
+      .Include(x => x.Permissions)
+      .Where(x => x.Email.Address == email)
+      .FirstOrDefaultAsync();
+  }
+  public async Task<List<Permission>> GetDefaultPermissions()
+  {
+    return await _context.Permissions
+      .Where(p => DefaultAdminPermissions.Permissions.Contains(p.Name))
+      .ToListAsync();
   }
 
 }
