@@ -59,6 +59,9 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
         .IsRequired()
         .HasColumnName("Email")
         .HasColumnType("VARCHAR(120)");
+
+      e.HasIndex(x => x.Address)
+        .IsUnique();
     });
 
     builder.OwnsOne(x => x.Phone, p =>
@@ -69,6 +72,9 @@ public class UserBaseMapping<T> : EntityBaseMapping<T> where T : User
         .IsRequired()
         .HasColumnName("Phone")
         .HasColumnType("VARCHAR(50)");
+
+      p.HasIndex(x => x.Number)
+        .IsUnique();
     });
 
     builder.Property(x => x.PasswordHash)
