@@ -91,8 +91,9 @@ public class PermissionRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereIsActiveEqualsFalse_ReturnsPermissions()
   {
-    BaseRepositoryTest.Permissions[1].Disable();
-
+    var trackPermission = BaseRepositoryTest.Permissions[1];
+    trackPermission.Disable();
+    BaseRepositoryTest.MockConnection.Context.Permissions.Update(trackPermission);
     await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
 
     var parameters = new PermissionQueryParameters(0, 1, null, null, null, false, null);
@@ -106,7 +107,7 @@ public class PermissionRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereAdminId_ReturnsPermissions()
   {
-    var admin = new Admin(new Name("Rafael", "Silveira"), new Email("rafaelsilveira@example.com"), new Phone("+55 (19) 98765-4321"), "rafa789", EGender.Masculine, DateTime.Now.AddYears(-32), new Address("Brazil", "Campinas", "Rua Barão de Jaguara", 789));
+    var admin = new Admin(new Name("Rafael", "Silveira"), new Email("rafaelsilv@example.com"), new Phone("+55 (17) 93465-4321"), "rafa789", EGender.Masculine, DateTime.Now.AddYears(-32), new Address("Brazil", "Campinas", "Rua Barão de Jaguara", 789));
     admin.AddPermission(BaseRepositoryTest.Permissions[0]);
 
     await BaseRepositoryTest.MockConnection.Context.Admins.AddAsync(admin);
@@ -129,16 +130,16 @@ public class PermissionRepositoryTest
   }
 
   [TestMethod]
-  public async Task GetAsync_WhereNameIncludesAdmin_And_IsActiveEqualsTrue()
+  public async Task GetAsync_WhereNameIncludes_And_IsActiveEqualsTrue()
   {
-    var parameters = new PermissionQueryParameters(0, 1, null, null, "admin", true, null);
+    var parameters = new PermissionQueryParameters(0, 1, null, null, BaseRepositoryTest.Permissions[0].Name, true, null);
     var permissions = await PermissionRepository.GetAsync(parameters);
 
     Assert.IsTrue(permissions.Any());
 
     foreach (var permission in permissions)
     { 
-      Assert.IsTrue(permission.Name.Contains("admin"));
+      Assert.IsTrue(permission.Name.Contains(BaseRepositoryTest.Permissions[0].Name));
       Assert.IsTrue(permission.IsActive);
     }
   }

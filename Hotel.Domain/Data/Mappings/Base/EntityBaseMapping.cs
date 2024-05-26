@@ -11,6 +11,8 @@ public class EntityBaseMapping<T> where T : Entity
   {
     builder.HasKey(x => x.Id);
 
+    builder.Ignore(x => x.IsValid);
+
     builder.Property(x => x.Id)
       .IsRequired()
       .ValueGeneratedNever()

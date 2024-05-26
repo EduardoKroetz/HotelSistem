@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
+using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.AdminContext;
 using Hotel.Tests.Entities;
@@ -155,19 +156,19 @@ public class AdminRepositoryTest
   [TestMethod]
   public async Task GetAsync_WherePermissionId_ReturnsAdmins()
   {
-    BaseRepositoryTest.Admins[0].AddPermission(TestParameters.Permission);
+    BaseRepositoryTest.Admins[0].AddPermission(BaseRepositoryTest.Permissions[0]);
     await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
-    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null,null, null, TestParameters.Permission.Id);
+    var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null,null, null, BaseRepositoryTest.Permissions[0].Id);
     var admins = await AdminRepository.GetAsync(parameters);
 
   
     Assert.IsTrue(admins.Any());
     foreach (var admin in admins)
-    { 
+    {
       var hasPermission = await BaseRepositoryTest.MockConnection.Context.Admins
         .Where(x => x.Id == admin.Id)
         .SelectMany(x => x.Permissions)
-        .AnyAsync(x => x.Id == TestParameters.Permission.Id);
+        .AnyAsync(x => x.Id == BaseRepositoryTest.Permissions[0].Id);
 
       Assert.IsTrue(hasPermission);
     }

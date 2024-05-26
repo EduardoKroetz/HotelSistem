@@ -16,6 +16,9 @@ public class CategoryMapping : EntityBaseMapping<Category>, IEntityTypeConfigura
     builder.Property(x => x.Name)
       .IsRequired();
 
+    builder.HasIndex(x => x.Name)
+      .IsUnique();
+
     builder.Property(x => x.Description)
       .IsRequired();
 

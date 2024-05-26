@@ -17,6 +17,9 @@ public class RoomInvoiceMapping : EntityBaseMapping<RoomInvoice>, IEntityTypeCon
         .IsRequired()
         .HasMaxLength(50);
 
+    builder.HasIndex(x => x.Number)
+      .IsUnique();
+
     builder.Property(x => x.IssueDate)
         .IsRequired();
 

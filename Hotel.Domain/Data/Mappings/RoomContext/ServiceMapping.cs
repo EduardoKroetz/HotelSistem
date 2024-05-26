@@ -16,6 +16,9 @@ public class ServiceMapping : EntityBaseMapping<Service>, IEntityTypeConfigurati
     builder.Property(x => x.Name)
       .IsRequired();;
 
+    builder.HasIndex(x => x.Name)
+      .IsUnique();
+
     builder.Property(x => x.Price)
       .IsRequired()
       .HasColumnType("DECIMAL(18,2)");;
