@@ -14,6 +14,9 @@ public class PermissionMapping : EntityBaseMapping<Permission> ,IEntityTypeConfi
       .HasColumnType("VARCHAR")
       .HasMaxLength(100);
 
+    builder.HasIndex(p => p.Name)
+      .IsUnique();
+
     builder.Property(p => p.Description)
       .IsRequired()
       .HasColumnType("VARCHAR")

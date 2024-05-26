@@ -16,6 +16,9 @@ public class ImageMapping : EntityBaseMapping<Image>, IEntityTypeConfiguration<I
     builder.Property(x => x.Url)
       .IsRequired();
 
+    builder.HasIndex(x => x.Url)
+      .IsUnique();
+
     builder.Property(x => x.RoomId)
       .IsRequired();
   }

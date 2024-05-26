@@ -12,17 +12,20 @@ public class ResponsabilityMapping : EntityBaseMapping<Responsability>, IEntityT
 
     builder.ToTable("Responsabilities");
 
-    builder.Property(p => p.Name)
+    builder.Property(r => r.Name)
       .IsRequired()
       .HasColumnType("VARCHAR")
       .HasMaxLength(100);
 
-    builder.Property(p => p.Description)
+    builder.HasIndex(r => r.Name)
+      .IsUnique();
+
+    builder.Property(r => r.Description)
       .IsRequired()
       .HasColumnType("VARCHAR")
       .HasMaxLength(255);
 
-    builder.Property(p => p.Priority)
+    builder.Property(r => r.Priority)
       .IsRequired()
       .HasConversion<int>();
 

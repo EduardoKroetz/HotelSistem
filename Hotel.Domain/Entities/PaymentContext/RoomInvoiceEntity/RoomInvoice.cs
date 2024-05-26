@@ -14,7 +14,7 @@ public partial class RoomInvoice : Entity, IRoomInvoice
   public RoomInvoice(EPaymentMethod paymentMethod,Reservation reservation,decimal taxInformation = 0)
   {
     TotalAmount = reservation.TotalAmount();
-    Number = ""; //Serviço para gerar número
+    Number = Guid.NewGuid().ToString(); //Serviço para gerar número
     IssueDate = DateTime.Now;
     Status = EStatus.Pending;
     PaymentMethod = paymentMethod;

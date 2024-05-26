@@ -115,15 +115,15 @@ public class ReservationRepositoryTest
   }
 
   [TestMethod]
-  public async Task GetAsync_WhereDailyRateEquals50_ReturnsReservations()
+  public async Task GetAsync_WhereDailyRateEquals_ReturnsReservations()
   {
-    var parameters = new ReservationQueryParameters(0, 100, null, null, 50, "eq", null, null, null, null, null, null, null, null, null, null, null, null, null);
+    var parameters = new ReservationQueryParameters(0, 100, null, null, BaseRepositoryTest.Reservations[0].DailyRate, "eq", null, null, null, null, null, null, null, null, null, null, null, null, null);
     var reservations = await ReservationRepository.GetAsync(parameters);
 
     Assert.IsTrue(reservations.Any());
 
     foreach (var reservation in reservations)
-      Assert.AreEqual(50, reservation.DailyRate);
+      Assert.AreEqual(BaseRepositoryTest.Reservations[0].DailyRate, reservation.DailyRate);
   }
 
   [TestMethod]
