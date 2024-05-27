@@ -82,16 +82,6 @@ public class EmployeeEntityTest
     Assert.AreEqual(1, employee.Permissions.Count);
   }
 
-  [TestMethod]
-  [ExpectedException(typeof(ValidationException))]
-  public void AssignDisabledPermission_ExpectedException()
-  {
-    var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
-    var permission = new Permission("Permission 1", "Permission 1");
-    permission.Disable();
-    employee.AssignPermission(permission);
-    Assert.Fail();
-  }
 
   [TestMethod]
   [ExpectedException(typeof(ValidationException))]

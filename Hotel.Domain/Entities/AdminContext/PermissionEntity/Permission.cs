@@ -20,6 +20,6 @@ public partial class Permission : Entity, IPermission
   public string Name { get; private set; } = string.Empty;
   public string Description { get; private set; } = string.Empty;
   public bool IsActive { get; private set; } = false;
-  public HashSet<Admin> Admins { get; private set; } = [];
+  public ICollection<Admin> Admins { get; private set; } = [];
   public ICollection<Employee> Employees { get; private set; } = [];
 }
