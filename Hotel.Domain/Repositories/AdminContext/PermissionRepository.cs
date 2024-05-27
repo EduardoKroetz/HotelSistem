@@ -7,9 +7,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Repositories.AdminContext;
 
-public class PermissionRepository : GenericRepository<Permission>, IPermissionRepository
+public class PermissionRepository : IPermissionRepository
 {
-  public PermissionRepository(HotelDbContext context) : base(context) { }
+  private readonly HotelDbContext _context;  
+
+  public PermissionRepository(HotelDbContext context)
+  => _context = context;
+
+  public async Task<Permission?> GetEntityByIdAsync(Guid id)
+  {
+    return await _context
+      .Permissions
+      .FirstOrDefaultAsync(x => x.Id == id);
+  }
+
+  public async Task<IEnumerable<Permission>> GetEntitiesAsync()
+  {
+    return await _context
+      .Permissions
+      .AsNoTracking()
+      .ToListAsync();
+  }
 
   public async Task<GetPermission?> GetByIdAsync(Guid id)
   {

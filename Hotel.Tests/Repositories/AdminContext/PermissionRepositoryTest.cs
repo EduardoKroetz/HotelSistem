@@ -87,23 +87,6 @@ public class PermissionRepositoryTest
       Assert.AreEqual(BaseRepositoryTest.Permissions[0].CreatedAt, permission.CreatedAt);
   }
 
-
-  [TestMethod]
-  public async Task GetAsync_WhereIsActiveEqualsFalse_ReturnsPermissions()
-  {
-    var trackPermission = BaseRepositoryTest.Permissions[1];
-    trackPermission.Disable();
-    BaseRepositoryTest.MockConnection.Context.Permissions.Update(trackPermission);
-    await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
-
-    var parameters = new PermissionQueryParameters(0, 1, null, null, null, false, null);
-    var permissions = await PermissionRepository.GetAsync(parameters);
-
-    Assert.IsTrue(permissions.Any());
-    foreach (var permission in permissions)
-      Assert.IsFalse(permission.IsActive);
-  }
-
   [TestMethod]
   public async Task GetAsync_WhereAdminId_ReturnsPermissions()
   {

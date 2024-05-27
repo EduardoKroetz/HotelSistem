@@ -26,7 +26,7 @@ public static partial class Authentication
     else
       claims.Add(new(ClaimTypes.Role, "Admin"));
 
-    var permissions = admin.Permissions.Select(x => (int)(EPermissions)Enum.Parse(typeof(EPermissions),x.Name)).ToList(); //Pega todos os nomes das permissõs dos administradores
+    var permissions = admin.Permissions.Select(x => (int)(EPermissions)Enum.Parse(typeof(EPermissions),x.Name)).ToList(); //Pega todos os enumeradores das permissõs dos administradores
     claims.Add(new("permissions", string.Join(",", permissions))); //separa todas as permissões por vírgula
 
     //criar tokenDescriptor
