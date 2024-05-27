@@ -55,11 +55,17 @@ public class AdminRepository : UserRepository<Admin>, IAdminRepository
       .Where(x => x.Email.Address == email)
       .FirstOrDefaultAsync();
   }
-  public async Task<List<Permission>> GetDefaultPermissions()
+
+  public async Task<List<Permission>> GetAllDefaultPermissions()
   {
     return await _context.Permissions
-      .Where(p => DefaultAdminPermissions.Permissions.Contains(p.Name))
-      .ToListAsync();
+      .Where(p => DefaultAdminPermissions.PermissionsName.Contains(p.Name))
+      .ToListAsync(); 
   }
 
+  public async Task<Permission?> GetDefaultAdminPermission()
+  {
+    return await _context.Permissions
+      .FirstOrDefaultAsync(x => x.Name.Contains("DefaultAdminPermission"));
+  }
 }

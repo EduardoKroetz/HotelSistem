@@ -1,6 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
 
-
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 partial class AdminHandler
 {
@@ -20,6 +19,6 @@ partial class AdminHandler
  
     await _repository.SaveChangesAsync();
   
-    return new Response<object>(200,"Permissão adicionada.",null!);
+    return new Response<object>(200, "Permissão adicionada! Faça login novamente para aplicar as alterações.", null!);
   }
 }

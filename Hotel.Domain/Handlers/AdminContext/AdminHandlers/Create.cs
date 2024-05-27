@@ -21,8 +21,8 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, 
 
   public async Task<Response<object>> HandleCreateAsync(CreateUser model)
   {
-    var defaultPermissions = await _repository.GetDefaultPermissions();
-    
+    var defaultAdminPermission = await _repository.GetDefaultAdminPermission();
+
     var admin = new Admin(
       new Name(model.FirstName,model.LastName),
       new Email(model.Email),
@@ -31,7 +31,7 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, 
       model.Gender,
       model.DateOfBirth,
       new Address(model.Country,model.City,model.Street,model.Number),
-      defaultPermissions
+      [defaultAdminPermission]
     );
 
     await _repository.CreateAsync(admin);

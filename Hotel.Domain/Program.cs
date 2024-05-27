@@ -10,7 +10,6 @@ builder.Logging.AddDebug();
 LoadConfigurationClass.Configure(builder);
 ConfigureDependencies.Configure(builder);
 ConfigureAuthentication.Configure(builder.Services);
-ConfigureAuthorization.Configure(builder.Services);
 
 //builder.WebHost.UseUrls("http://0.0.0.0:80");
 

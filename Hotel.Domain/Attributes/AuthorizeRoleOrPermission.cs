@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hotel.Domain.Enums;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace Hotel.Domain.Attributes;
 
 public class AuthorizeRoleOrPermissions : Attribute, IAuthorizationFilter
 {
-  private readonly string[] _roles;
-  private readonly string[] _permissions;
-  public AuthorizeRoleOrPermissions(string[] roles, string[] permissions)
+  private readonly ERoles[] _roles;
+  private readonly EPermissions[] _permissions;
+  public AuthorizeRoleOrPermissions(EPermissions[] permissions, ERoles[]? roles = null)
   {
-    _roles = roles;
+    _roles = roles ?? [];
     _permissions = permissions;
   }
 
@@ -22,8 +24,19 @@ public class AuthorizeRoleOrPermissions : Attribute, IAuthorizationFilter
       return;
     }
 
-    var permissions = user.FindFirst("permissions")!.Value.Split(","); //separar as permissões por vírgula
-    var hasRole = _roles.Any(role => user.IsInRole(role));
+    var role = (ERoles)Enum.Parse(typeof(ERoles),user.FindFirst(ClaimTypes.Role)!.Value);
+    if (role == ERoles.RootAdmin)
+      return;
+
+    var stringPermissions = user.FindFirst("permissions")!.Value.Split(","); //separar as permissões por vírgula
+    //Convertendo as permissões de string para enumerador
+    EPermissions[] permissions = stringPermissions.Select( permissionStr => 
+    {
+      return (EPermissions)Enum.Parse(typeof(EPermissions), permissionStr);
+    }).ToArray();
+    
+    
+    var hasRole = _roles.Any(x => x == role);
     var hasPermission = _permissions.Any(permission => permissions!.Contains(permission));
 
     if (!hasRole && !hasPermission) 

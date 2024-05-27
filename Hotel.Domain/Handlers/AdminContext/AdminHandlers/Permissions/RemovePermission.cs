@@ -1,5 +1,6 @@
 ﻿
 using Hotel.Domain.DTOs;
+using Hotel.Domain.Services.Permissions;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 partial class AdminHandler
@@ -16,10 +17,12 @@ partial class AdminHandler
     if (permission == null)
       throw new ArgumentException("Permissão não encontrada.");
 
+    await DefaultAdminPermissions.RemoveDefaultPermissionIfExists(permission ,admin, _repository);
+
     admin.RemovePermission(permission);
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Permissão removida.",null!);
+    return new Response<object>(200, "Permissão removida! Faça login novamente para aplicar as alterações.",null!);
   }
 }

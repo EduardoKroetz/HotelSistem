@@ -9,5 +9,6 @@ namespace Hotel.Domain.Repositories.Interfaces.AdminContext;
 public interface IAdminRepository : IRepository<Admin>, IRepositoryQuery<GetUser, GetAdmin, AdminQueryParameters>, IUserRepository<Admin>
 {
   Task<Admin?> GetAdminIncludePermissions(Guid adminId);
-  Task<List<Permission>> GetDefaultPermissions();
+  Task<Permission?> GetDefaultAdminPermission();
+  Task<List<Permission>> GetAllDefaultPermissions();
 }
