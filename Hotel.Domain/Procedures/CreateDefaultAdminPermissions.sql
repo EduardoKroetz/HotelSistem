@@ -79,5 +79,18 @@ BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'DefaultAdminPermission', 'Todas as permissões padrão de um administrador', 1, GETDATE());
     END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditCustomer')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'EditCustomer', 'Permissão para editar os campos de um cliente.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteCustomer')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DeleteCustomer', 'Permissão para deletar um cliente.', 1, GETDATE());
+    END;
 END;
+
 

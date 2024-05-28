@@ -15,6 +15,8 @@ public enum EPermissions
   AdminEditEmail,
   AdminEditAddress,
   AdminEditPhone,
-  AdminEditName
+  AdminEditName,
+  EditCustomer,
+  DeleteCustomer,
 }
 

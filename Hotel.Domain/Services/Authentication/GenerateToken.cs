@@ -22,9 +22,9 @@ public static partial class Authentication
 
     //Se for admin ou rootAdmin
     if (admin.IsRootAdmin) // Possui todo acesso
-      claims.Add(new(ClaimTypes.Role, "RootAdmin"));
+      claims.Add(new(ClaimTypes.Role, nameof(ERoles.RootAdmin)));
     else
-      claims.Add(new(ClaimTypes.Role, "Admin"));
+      claims.Add(new(ClaimTypes.Role, nameof(ERoles.Admin)));
 
     var permissions = admin.Permissions.Select(x => (int)(EPermissions)Enum.Parse(typeof(EPermissions),x.Name)).ToList(); //Pega todos os enumeradores das permissõs dos administradores
     claims.Add(new("permissions", string.Join(",", permissions))); //separa todas as permissões por vírgula
@@ -45,12 +45,11 @@ public static partial class Authentication
   public static string GenerateToken(Customer customer)
   {
     var key = Encoding.ASCII.GetBytes(Configuration.Configuration.JwtKey);
-    var tokenHandler = new JwtSecurityTokenHandler();
     var claims = new List<Claim>()
     {
       new(ClaimTypes.NameIdentifier, customer.Id.ToString()),
       new(ClaimTypes.Email, customer.Email.Address),
-      new(ClaimTypes.Role, "Customer"),
+      new(ClaimTypes.Role, nameof(ERoles.Customer)),
     };
     var tokenDescriptor = new SecurityTokenDescriptor()
     {
@@ -59,8 +58,8 @@ public static partial class Authentication
       SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
     };
 
-    var token = tokenHandler.CreateToken(tokenDescriptor);
-    return tokenHandler.WriteToken(token);
+    return new JwtSecurityTokenHandler().CreateEncodedJwt(tokenDescriptor);
+
   }
 
   public static string GenerateToken(Employee employee)
