@@ -94,4 +94,12 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .Include(x => x.Services)
       .FirstOrDefaultAsync();
   }
+
+  public async Task<Reservation?> GetReservationIncludeCustomers(Guid id)
+  {
+    return await _context.Reservations
+      .Where(x => x.Id == id)
+      .Include(x => x.Customers)
+      .FirstOrDefaultAsync();
+  }
 }
