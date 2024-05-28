@@ -24,9 +24,13 @@ public class AuthorizeRoleOrPermissions : Attribute, IAuthorizationFilter
       return;
     }
 
-    var role = (ERoles)Enum.Parse(typeof(ERoles),user.FindFirst(ClaimTypes.Role)!.Value);
+    var role = (ERoles)Enum.Parse(typeof(ERoles),user.FindFirst(ClaimTypes.Role)!.Value); //Pegar a role atual
     if (role == ERoles.RootAdmin)
       return;
+    else if (role == ERoles.Customer){
+      context.Result = new ForbidResult();
+      return;
+    }
 
     var stringPermissions = user.FindFirst("permissions")!.Value.Split(","); //separar as permissões por vírgula
     //Convertendo as permissões de string para enumerador

@@ -36,6 +36,8 @@ public class DefaultAdminPermissions
     "AdminEditPhone",
     "AdminEditAddress",
     "AdminEditGender",
-    "AdminEditDateOfBirth"
+    "AdminEditDateOfBirth",
+    "EditCustomer",
+    "DeleteCustomer"
   ];
 }
