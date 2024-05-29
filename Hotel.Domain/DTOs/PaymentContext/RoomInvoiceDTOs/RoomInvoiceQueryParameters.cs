@@ -31,7 +31,7 @@ public class RoomInvoiceQueryParameters : IDataTransferObject
   public string? TotalAmountOperator { get; private set; }
   public EStatus? Status { get; private set; }
   public EPaymentMethod? PaymentMethod { get; private set; }
-  public Guid? CustomerId { get; private set; }
+  public Guid? CustomerId { get; set; }
   public Guid? ReservationId { get; private set; }
   public Guid? ServiceId { get; private set; }
   public decimal? TaxInformation { get; private set; }

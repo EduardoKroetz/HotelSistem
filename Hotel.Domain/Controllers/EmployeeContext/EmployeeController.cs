@@ -1,13 +1,17 @@
+using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Enums;
-using Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
+using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
+using Hotel.Domain.Services.Users;
 using Hotel.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.EmployeeContext;
 
 [Route("v1/employees")]
+[Authorize(Roles = "RootAdmin,Admin,Employee")]
 public class EmployeeController : ControllerBase
 {
   private readonly EmployeeHandler _handler;
@@ -16,71 +20,111 @@ public class EmployeeController : ControllerBase
   => _handler = handler;
 
   [HttpGet]
-  public async Task<IActionResult> GetAsync(
-    [FromBody] EmployeeQueryParameters queryParameters)
+  [AuthorizeRoleOrPermissions([EPermissions.GetEmployees, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> GetAsync([FromBody] EmployeeQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
 
   [HttpGet("{id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id)
+  [AuthorizeRoleOrPermissions([EPermissions.GetEmployee, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
   [HttpPut("{id:guid}")]
-  public async Task<IActionResult> PutAsync(
+  [AuthorizeRoleOrPermissions([EPermissions.EditEmployee, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> AdminEditAsync(
     [FromBody] UpdateEmployee model,
     [FromRoute] Guid id)
     => Ok(await _handler.HandleUpdateAsync(model, id));
 
-  [HttpDelete("{id:guid}")]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id)
-    => Ok(await _handler.HandleDeleteAsync(id));
-
   [HttpPost("{id:guid}/responsabilities/{resId:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.AssignEmployeeResponsability, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
   public async Task<IActionResult> AssignResponsibilityAsync(
     [FromRoute] Guid id,
     [FromRoute] Guid resId)
     => Ok(await _handler.HandleAssignResponsabilityAsync(id, resId));
 
   [HttpDelete("{id:guid}/responsabilities/{resId:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.UnassignEmployeeResponsability, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
   public async Task<IActionResult> UnassignResponsibilityAsync(
     [FromRoute] Guid id,
     [FromRoute] Guid resId)
     => Ok(await _handler.HandleUnassignResponsabilityAsync(id, resId));
 
-  [HttpPatch("{employeeId:guid}/name")]
-  public async Task<IActionResult> UpdateNameAsync(
-    [FromRoute] Guid employeeId,
-    [FromBody] Name name)
-    => Ok(await _handler.HandleUpdateNameAsync(employeeId, name));
 
-  [HttpPatch("{employeeId:guid}/email")]
-  public async Task<IActionResult> UpdateEmailAsync(
+  [HttpPost("{employeeId:guid}/permissions/{permissionId:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.AdminAssignPermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> AssignPermissionAsync(
     [FromRoute] Guid employeeId,
-    [FromBody] Email email)
-    => Ok(await _handler.HandleUpdateEmailAsync(employeeId, email));
+    [FromRoute] Guid permissionId)
+    => Ok(await _handler.HandleAssignPermission(employeeId, permissionId));
 
-  [HttpPatch("{employeeId:guid}/phone")]
-  public async Task<IActionResult> UpdatePhoneAsync(
-    [FromRoute] Guid employeeId,
-    [FromBody] Phone phone)
-    => Ok(await _handler.HandleUpdatePhoneAsync(employeeId, phone));
 
-  [HttpPatch("{employeeId:guid}/address")]
-  public async Task<IActionResult> UpdateAddressAsync(
+  [HttpDelete("{employeeId:guid}/permissions/{permissionId:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.UnassignEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> UnassignPermissionAsync(
     [FromRoute] Guid employeeId,
-    [FromBody] Address address)
-    => Ok(await _handler.HandleUpdateAddressAsync(employeeId, address));
+    [FromRoute] Guid permissionId)
+    => Ok(await _handler.HandleUnassignPermission(employeeId, permissionId));
 
-  [HttpPatch("{employeeId:guid}/gender/{gender:int}")]
-  public async Task<IActionResult> UpdateGenderAsync(
-    [FromRoute] Guid employeeId,
-    [FromRoute] int gender)
-    => Ok(await _handler.HandleUpdateGenderAsync(employeeId, (EGender)gender));
 
-  [HttpPatch("{employeeId:guid}/date-of-birth")]
-  public async Task<IActionResult> UpdateDateOfBirthAsync(
-    [FromRoute] Guid employeeId,
-    [FromBody] UpdateDateOfBirth newDateOfBirth)
-    => Ok(await _handler.HandleUpdateDateOfBirthAsync(employeeId, newDateOfBirth.DateOfBirth));
+  [HttpDelete("{id:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.DeleteEmployee, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> AdminDeleteAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleDeleteAsync(id));
+
+  [HttpDelete]
+  public async Task<IActionResult> DeleteAsync()
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleDeleteAsync(userId));
+  }
+
+  [HttpPut]
+  public async Task<IActionResult> EditAsync([FromBody] UpdateEmployee model)
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleUpdateAsync(model, userId));
+  }
+
+  [HttpPatch("name")]
+  public async Task<IActionResult> UpdateNameAsync([FromBody] Name name)
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleUpdateNameAsync(userId, name));
+  }
+
+  [HttpPatch("email")]
+  public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleUpdateEmailAsync(userId, email));
+  }
+
+  [HttpPatch("phone")]
+  public async Task<IActionResult> UpdatePhoneAsync([FromBody] Phone phone)
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleUpdatePhoneAsync(userId, phone));
+  }
+
+  [HttpPatch("address")]
+  public async Task<IActionResult> UpdateAddressAsync([FromBody] Address address)
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleUpdateAddressAsync(userId, address));
+  }
+
+  [HttpPatch("gender/{gender:int}")]
+  public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleUpdateGenderAsync(userId, (EGender)gender));
+    }
+
+  [HttpPatch("date-of-birth")]
+  public async Task<IActionResult> UpdateDateOfBirthAsync([FromBody] UpdateDateOfBirth newDateOfBirth)
+  {
+    var userId = UserServices.GetIdFromClaim(User);
+    return Ok(await _handler.HandleUpdateDateOfBirthAsync(userId, newDateOfBirth.DateOfBirth));
+  }
 }

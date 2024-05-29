@@ -1,9 +1,15 @@
+using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.ReservationContext;
 
+[ApiController]
+[Route("v1/reservations")]
+[Authorize(Roles = "RootAdmin,Admin,Employee,Customer")]
 public class ReservationController : ControllerBase
 {
   private readonly ReservationHandler _handler;
@@ -11,58 +17,56 @@ public class ReservationController : ControllerBase
   public ReservationController(ReservationHandler handler)
   => _handler = handler;
 
-
-  [HttpGet("v1/reservations")]
+  [HttpGet]
+  [AuthorizeRoleOrPermissions([EPermissions.GetReservations, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> GetAsync(
   [FromBody] ReservationQueryParameters queryParameters)
-  => Ok(await _handler.HandleGetAsync(queryParameters));
+    => Ok(await _handler.HandleGetAsync(queryParameters));
 
-  [HttpGet("v1/reservations/{Id:guid}")]
+  [HttpGet("{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleGetByIdAsync(id));
+    [FromRoute] Guid id)
+    => Ok(await _handler.HandleGetByIdAsync(id));
 
-
-  [HttpPost("v1/reservations")]
+  [HttpPost]
+  [Authorize(Roles = "Customer")]
   public async Task<IActionResult> PostAsync(
-    [FromBody] CreateReservation model
-  )
-  => Ok(await _handler.HandleCreateAsync(model));
+    [FromBody] CreateReservation model)
+    => Ok(await _handler.HandleCreateAsync(model));
 
-
-  [HttpDelete("v1/reservations/{Id:guid}")]
+  [HttpDelete("{Id:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.DeleteReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleDeleteAsync(id));
+    [FromRoute] Guid id)
+    => Ok(await _handler.HandleDeleteAsync(id));
 
-  [HttpPatch("v1/reservations/{Id:guid}/checkout")]
+  [HttpPatch("{Id:guid}/check-out")]
+  [AuthorizeRoleOrPermissions([EPermissions.UpdateReservationCheckout, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
   public async Task<IActionResult> UpdateCheckoutAsync(
     [FromRoute] Guid id,
-    [FromBody] UpdateCheckOut updateCheckOut
-  )
-  => Ok(await _handler.HandleUpdateCheckOutAsync(id, updateCheckOut.CheckOut));
+    [FromBody] UpdateCheckOut updateCheckOut)
+    => Ok(await _handler.HandleUpdateCheckOutAsync(id, updateCheckOut.CheckOut));
 
-  [HttpPost("v1/reservations/{Id:guid}/services/{serviceId:guid}")]
+  [HttpPatch("{Id:guid}/check-in")]
+  [AuthorizeRoleOrPermissions([EPermissions.UpdateReservationCheckIn, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
+  public async Task<IActionResult> UpdateCheckInAsync(
+  [FromRoute] Guid id,
+  [FromBody] UpdateCheckIn updateCheckIn)
+  => Ok(await _handler.HandleUpdateCheckInAsync(id, updateCheckIn.CheckIn));
+
+  [HttpPost("{Id:guid}/services/{serviceId:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.AddServiceToReservation, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> AddServiceAsync(
     [FromRoute] Guid id,
-    [FromRoute] Guid serviceId
-  )
-  => Ok(await _handler.HandleAddServiceAsync(id, serviceId));
+    [FromRoute] Guid serviceId)
+    => Ok(await _handler.HandleAddServiceAsync(id, serviceId));
 
-  //Somente administradores
-  [HttpDelete("v1/reservations/{Id:guid}/services/{serviceid:guid}")]
+  [HttpDelete("{Id:guid}/services/{serviceid:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.RemoveServiceFromReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> RemoveServiceAsync(
     [FromRoute] Guid id,
-    [FromRoute] Guid serviceId
-  )
-  => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
+    [FromRoute] Guid serviceId)
+    => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
 
-  [HttpPatch("v1/reservations/{Id:guid}/checkin")]
-  public async Task<IActionResult> UpdateCheckInAsync(
-    [FromRoute] Guid id,
-    [FromBody] UpdateCheckIn updateCheckIn
-  )
-  => Ok(await _handler.HandleUpdateCheckInAsync(id, updateCheckIn.CheckIn));
+
 }

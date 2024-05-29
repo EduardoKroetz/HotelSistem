@@ -87,7 +87,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     )).ToListAsync();
   }
 
-  public async Task<Reservation?> GetReservationIncludeServices(Guid id)
+  public async Task<Reservation?> GetReservationIncludesServices(Guid id)
   {
     return await _context.Reservations
       .Where(x => x.Id == id)
@@ -95,11 +95,10 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .FirstOrDefaultAsync();
   }
 
-  public async Task<Reservation?> GetReservationIncludeCustomers(Guid id)
+  public async Task<Reservation?> GetReservationIncludesCustomers(Guid id)
   {
     return await _context.Reservations
-      .Where(x => x.Id == id)
       .Include(x => x.Customers)
-      .FirstOrDefaultAsync();
+      .FirstOrDefaultAsync(x => x.Id == id);
   }
 }
