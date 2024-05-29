@@ -65,14 +65,16 @@ public static partial class Authentication
   public static string GenerateToken(Employee employee)
   {
     var key = Encoding.ASCII.GetBytes(Configuration.Configuration.JwtKey);
-    var tokenHandler = new JwtSecurityTokenHandler();
     var claims = new List<Claim>()
     {
       new(ClaimTypes.NameIdentifier, employee.Id.ToString()),
       new(ClaimTypes.Email, employee.Email.Address),
-      new(ClaimTypes.Role, "Employee"),
-      new("Permissions", string.Join(",",employee.Permissions))
+      new(ClaimTypes.Role, nameof(ERoles.Employee))
     };
+
+    var permissions = employee.Permissions.Select(x => (int)(EPermissions)Enum.Parse(typeof(EPermissions), x.Name)).ToList(); //Pega todos os enumeradores das permissõs dos funcionários
+    claims.Add(new("permissions", string.Join(",", permissions))); //separa todas as permissões por vírgula
+
     var tokenDescriptor = new SecurityTokenDescriptor()
     {
       Subject = new ClaimsIdentity(claims),
@@ -80,7 +82,6 @@ public static partial class Authentication
       SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
     };
 
-    var token = tokenHandler.CreateToken(tokenDescriptor);
-    return tokenHandler.WriteToken(token);
+    return new JwtSecurityTokenHandler().CreateEncodedJwt(tokenDescriptor);
   }
 }

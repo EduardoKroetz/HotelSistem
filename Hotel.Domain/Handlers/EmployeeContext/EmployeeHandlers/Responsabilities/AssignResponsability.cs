@@ -1,13 +1,13 @@
 ﻿using Hotel.Domain.DTOs;
 using Hotel.Domain.Handlers.Interfaces;
 
-namespace Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
+namespace Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 
 public partial class EmployeeHandler : IHandler
 {
   public async Task<Response<object>> HandleAssignResponsabilityAsync(Guid id, Guid responsabilityId)
   {
-    var employee = await _repository.GetEmployeeIncludeResponsabilities(id);
+    var employee = await _repository.GetEmployeeIncludesResponsabilities(id);
     if (employee == null)
       throw new ArgumentException("Funcionário não encontrado.");
 

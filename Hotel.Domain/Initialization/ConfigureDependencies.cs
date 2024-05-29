@@ -4,7 +4,7 @@ using Hotel.Domain.Handlers.AdminContext.PermissionHandlers;
 using Hotel.Domain.Handlers.AuthenticationContext.LoginHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
-using Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
+using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 using Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
 using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;

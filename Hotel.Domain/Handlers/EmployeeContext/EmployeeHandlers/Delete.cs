@@ -1,6 +1,6 @@
 using Hotel.Domain.DTOs;
 
-namespace Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
+namespace Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 
 public partial class EmployeeHandler
 {
