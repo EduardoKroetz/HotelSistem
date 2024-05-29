@@ -1,5 +1,6 @@
 ﻿using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 
 namespace Hotel.Domain.Services.Permissions;
@@ -21,12 +22,16 @@ public class DefaultEmployeePermissions
 
   public static List<string> PermissionsName { get; set; } =
   [
-    "GetEmployee",
-    "GetEmployees",
-    "GetResponsabilities",
-    "GetResponsability",
-    "GetRoomInvoices",
-    "GetRoomInvoice"
+    EPermissions.GetEmployee.ToString(),
+    EPermissions.GetEmployees.ToString(),
+    EPermissions.GetResponsabilities.ToString(),
+    EPermissions.GetResponsability.ToString(),
+    EPermissions.GetRoomInvoices.ToString(),
+    EPermissions.GetRoomInvoice.ToString(),
+    EPermissions.GetReservations.ToString(),
+    EPermissions.UpdateReservationCheckout.ToString(),
+    EPermissions.UpdateReservationCheckIn.ToString(),
+    EPermissions.AddServiceToReservation.ToString(),
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;

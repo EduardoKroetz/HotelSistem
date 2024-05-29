@@ -33,6 +33,7 @@ public class RoomInvoiceController : ControllerBase
   }
 
   [HttpGet("{Id:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.GetRoomInvoice, EPermissions.DefaultAdminPermission,EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> GetByIdAsync(
     [FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
