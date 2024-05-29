@@ -16,7 +16,20 @@ public enum EPermissions
   AdminEditAddress,
   AdminEditPhone,
   AdminEditName,
+  CreateAdmin,
+
   EditCustomer,
   DeleteCustomer,
+
+  DefaultEmployeePermission,
+  GetEmployee,
+  GetEmployees,
+  DeleteEmployee,
+  EditEmployee,
+  CreateEmployee,
+  AssignEmployeeResponsability,
+  UnassignEmployeeResponsability,
+  AssignEmployeePermission,
+  UnassignEmployeePermission
 }
 

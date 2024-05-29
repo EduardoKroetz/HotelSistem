@@ -1,10 +1,11 @@
 using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
-using Hotel.Domain.Entities.AdminContext.AdminEntity;
+using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Base;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
+using Hotel.Domain.Services.Permissions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Repositories.EmployeeContext;
@@ -59,7 +60,7 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
     )).ToListAsync();
   }
 
-  public async Task<Employee?> GetEmployeeIncludeResponsabilities(Guid id)
+  public async Task<Employee?> GetEmployeeIncludesResponsabilities(Guid id)
   {
     return await _context.Employees
       .Where(x => x.Id == id)
@@ -75,5 +76,25 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
       .Include(x => x.Permissions)
       .Where(x => x.Email.Address == email)
       .FirstOrDefaultAsync();
+  }
+
+  public async Task<List<Permission>> GetAllDefaultPermissions()
+  {
+    return await _context.Permissions
+      .Where(x => DefaultEmployeePermissions.PermissionsName.Contains(x.Name))
+      .ToListAsync();
+  }
+
+  public async Task<Permission?> GetDefaultPermission()
+  {
+    return await _context.Permissions
+      .FirstOrDefaultAsync(x => x.Name.Contains("DefaultEmployeePermission"));
+  }
+
+  public async Task<Employee?> GetEmployeeIncludesPermissions(Guid id)
+  {
+    return await _context.Employees
+      .Include(x => x.Permissions)
+      .FirstOrDefaultAsync(x => x.Id == id);
   }
 }
