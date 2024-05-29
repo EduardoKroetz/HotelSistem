@@ -1,5 +1,4 @@
-﻿
-using Hotel.Domain.Entities.AdminContext.PermissionEntity;
+﻿using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 
@@ -24,6 +23,8 @@ public class DefaultEmployeePermissions
   [
     "GetEmployee",
     "GetEmployees",
+    "GetResponsabilities",
+    "GetResponsability",
     "GetRoomInvoices",
     "GetRoomInvoice"
   ];

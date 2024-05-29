@@ -47,7 +47,12 @@ public class DefaultAdminPermissions
     "AssignEmployeeResponsability",
     "UnassignEmployeeResponsability",
     "AssignEmployeePermission",
-    "UnassignEmployeePermission"
+    "UnassignEmployeePermission",
+    "GetResponsabilities",
+    "GetResponsability",
+    "CreateResponsability",
+    "EditResponsability",
+    "DeleteResponsability"
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;
