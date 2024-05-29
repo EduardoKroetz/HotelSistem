@@ -20,7 +20,7 @@ public partial class RoomInvoiceHandler : IHandler
 
   public async Task<Response<object>> HandleCreateAsync(CreateRoomInvoice model)
   {
-    var reservation = await _reservationRepository.GetEntityByIdAsync(model.ReservationId);
+    var reservation = await _reservationRepository.GetReservationIncludesCustomers(model.ReservationId);
     if (reservation == null)
       throw new ArgumentException("Reserva não encontrada.");
 
@@ -29,6 +29,6 @@ public partial class RoomInvoiceHandler : IHandler
     await _repository.CreateAsync(roomInvoice);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Fatura de quarto gerada.",new { reservation.Id });
+    return new Response<object>(200,"Fatura de quarto gerada.",new { roomInvoice.Id });
   }
 }

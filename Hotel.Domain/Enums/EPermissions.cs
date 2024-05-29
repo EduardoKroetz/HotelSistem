@@ -30,6 +30,9 @@ public enum EPermissions
   AssignEmployeeResponsability,
   UnassignEmployeeResponsability,
   AssignEmployeePermission,
-  UnassignEmployeePermission
+  UnassignEmployeePermission,
+
+  DeleteRoomInvoice,
+  GetRoomInvoices,
 }
 
