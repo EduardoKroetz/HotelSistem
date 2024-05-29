@@ -27,10 +27,10 @@ public class AuthorizeRoleOrPermissions : Attribute, IAuthorizationFilter
     var role = (ERoles)Enum.Parse(typeof(ERoles),user.FindFirst(ClaimTypes.Role)!.Value); //Pegar a role atual
     if (role == ERoles.RootAdmin)
       return;
-    else if (role == ERoles.Customer){
-      context.Result = new ForbidResult();
+
+    var hasRole = _roles.Any(x => x == role);
+    if (hasRole)
       return;
-    }
 
     var stringPermissions = user.FindFirst("permissions")!.Value.Split(","); //separar as permissões por vírgula
     //Convertendo as permissões de string para enumerador
@@ -40,7 +40,7 @@ public class AuthorizeRoleOrPermissions : Attribute, IAuthorizationFilter
     }).ToArray();
     
     
-    var hasRole = _roles.Any(x => x == role);
+
     var hasPermission = _permissions.Any(permission => permissions!.Contains(permission));
 
     if (!hasRole && !hasPermission) 

@@ -3,6 +3,7 @@
 
 public enum EPermissions
 {
+  //Admins
   DefaultAdminPermission = 1,
   AdminAssignPermission,
   AdminUnassignPermission,
@@ -18,9 +19,11 @@ public enum EPermissions
   AdminEditName,
   CreateAdmin,
 
+  //Customers
   EditCustomer,
   DeleteCustomer,
 
+  //Employees
   DefaultEmployeePermission,
   GetEmployee,
   GetEmployees,
@@ -31,15 +34,25 @@ public enum EPermissions
   UnassignEmployeeResponsability,
   AssignEmployeePermission,
   UnassignEmployeePermission,
-
+    
+  //Responsabilities
   GetResponsabilities,
   GetResponsability,
   CreateResponsability,
   EditResponsability,
-  DeleteResponsability
+  DeleteResponsability,
   
+  //RoomInvoices
   DeleteRoomInvoice,
   GetRoomInvoices,
+  GetRoomInvoice,
 
+  //Reservations
+  GetReservations,
+  DeleteReservation,
+  UpdateReservationCheckout,
+  UpdateReservationCheckIn,
+  AddServiceToReservation,
+  RemoveServiceFromReservation
 }
 

@@ -1,6 +1,8 @@
 ﻿
+using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 
 namespace Hotel.Domain.Services.Permissions;
@@ -29,30 +31,39 @@ public class DefaultAdminPermissions
 
   public static List<string> PermissionsName { get; set; } = 
   [
-    "GetAdmins",
-    "GetAdmin",
-    "AdminEditName",
-    "AdminEditEmail",
-    "AdminEditPhone",
-    "AdminEditAddress",
-    "AdminEditGender",
-    "AdminEditDateOfBirth",
-    "EditCustomer",
-    "DeleteCustomer",
-    "GetEmployee",
-    "GetEmployees",
-    "DeleteEmployee",
-    "EditEmployee",
-    "CreateEmployee",
-    "AssignEmployeeResponsability",
-    "UnassignEmployeeResponsability",
-    "AssignEmployeePermission",
-    "UnassignEmployeePermission",
-    "GetResponsabilities",
-    "GetResponsability",
-    "CreateResponsability",
-    "EditResponsability",
-    "DeleteResponsability"
+    EPermissions.GetAdmins.ToString(),
+    EPermissions.GetAdmin.ToString(),
+    EPermissions.AdminEditName.ToString(),
+    EPermissions.AdminEditEmail.ToString(),
+    EPermissions.AdminEditPhone.ToString(),
+    EPermissions.AdminEditAddress.ToString(),
+    EPermissions.AdminEditGender.ToString(),
+    EPermissions.AdminEditDateOfBirth.ToString(),
+    EPermissions.EditCustomer.ToString(),
+    EPermissions.DeleteCustomer.ToString(),
+    EPermissions.GetEmployee.ToString(),
+    EPermissions.GetEmployees.ToString(),
+    EPermissions.DeleteEmployee.ToString(),
+    EPermissions.EditEmployee.ToString(),
+    EPermissions.CreateEmployee.ToString(),
+    EPermissions.AssignEmployeeResponsability.ToString(),
+    EPermissions.UnassignEmployeeResponsability.ToString(),
+    EPermissions.AssignEmployeePermission.ToString(),
+    EPermissions.UnassignEmployeePermission.ToString(),
+    EPermissions.GetResponsabilities.ToString(),
+    EPermissions.GetResponsability.ToString(),
+    EPermissions.CreateResponsability.ToString(),
+    EPermissions.EditResponsability.ToString(),
+    EPermissions.DeleteResponsability.ToString(),
+    EPermissions.GetRoomInvoices.ToString(),
+    EPermissions.GetRoomInvoice.ToString(),
+    EPermissions.DeleteRoomInvoice.ToString(),
+    EPermissions.GetReservations.ToString(),
+    EPermissions.DeleteReservation.ToString(),
+    EPermissions.UpdateReservationCheckout.ToString(),
+    EPermissions.UpdateReservationCheckIn.ToString(),
+    EPermissions.AddServiceToReservation.ToString(),
+    EPermissions.RemoveServiceFromReservation.ToString()
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;

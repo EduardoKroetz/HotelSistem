@@ -186,6 +186,7 @@ BEGIN
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'DeleteResponsability', 'Permissão para deletar uma responsabilidade.', 1, GETDATE());
+    END;
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteRoomInvoice')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
@@ -198,7 +199,61 @@ BEGIN
         VALUES (NEWID(), 'GetRoomInvoices', 'Permissão para visualizar faturas de quarto.', 1, GETDATE());
     END;
 
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetRoomInvoice')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetRoomInvoice', 'Permissão para visualizar uma fatura de quarto.', 1, GETDATE());
+    END;
 
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetReservations')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetReservations', 'Permissão para visualizar todas as reservas.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetReservation')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetReservation', 'Permissão para visualizar uma reserva específica.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateReservation')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'CreateReservation', 'Permissão para criar uma nova reserva.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteReservation')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DeleteReservation', 'Permissão para deletar uma reserva.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UpdateReservationCheckout')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'UpdateReservationCheckout', 'Permissão para atualizar o checkout de uma reserva.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UpdateReservationCheckIn')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'UpdateReservationCheckIn', 'Permissão para atualizar o check-in de uma reserva.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AddServiceToReservation')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'AddServiceToReservation', 'Permissão para adicionar um serviço a uma reserva.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'RemoveServiceFromReservation')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'RemoveServiceFromReservation', 'Permissão para remover um serviço de uma reserva.', 1, GETDATE());
+    END;
 END;
+
+
 
 
