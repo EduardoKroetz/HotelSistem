@@ -1,3 +1,4 @@
+using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
@@ -9,6 +10,7 @@ public partial class Feedback
   {      
     ValidateComment(Comment);
     ValidateRate(Rate);
+    ValidateReservation(Reservation);
     
     base.Validate();
   }
@@ -26,4 +28,14 @@ public partial class Feedback
     if (comment.Length > 500)
       throw new ValidationException("Limite máximo de 500 caracteres por comentário foi atingido.");
   }
+
+  public void ValidateReservation(Reservation? reservation)
+  {
+    if (reservation != null)
+    {
+      if (!reservation.Customers.Any(x => x.Id == CustomerId))
+        throw new ArgumentException("Você não tem autorização para criar feedback em uma reserva alheia.");
+    }
+  }
+
 }
