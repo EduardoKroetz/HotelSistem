@@ -1,8 +1,10 @@
-﻿using Hotel.Domain.DTOs.Base.User;
+﻿using Hotel.Domain.Attributes;
+using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
-using Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
+using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.AuthenticationContext;
@@ -28,12 +30,13 @@ public class RegisterController : ControllerBase
     => Ok(await _customerHandler.HandleCreateAsync(customer));
 
   [HttpPost("admins")]
+  [AuthorizeRoleOrPermissions([EPermissions.CreateAdmin])]
   public async Task<IActionResult> RegisterAdminAsync(
     [FromBody] CreateUser admin)
     => Ok(await _adminHandler.HandleCreateAsync(admin));
 
-
   [HttpPost("employees")]
+  [AuthorizeRoleOrPermissions([EPermissions.CreateEmployee, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> RegisterEmployeeAsync(
     [FromBody] CreateEmployee employee)
     => Ok(await _employeeHandler.HandleCreateAsync(employee));

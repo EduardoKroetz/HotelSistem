@@ -7,7 +7,7 @@ namespace Hotel.Domain.Services.Permissions;
 
 public class DefaultAdminPermissions
 {
-  public static async Task RemoveDefaultPermissionIfExists(Permission permission,Admin admin, IAdminRepository adminRepository)
+  public static async Task HandleDefaultPermission(Permission permission,Admin admin, IAdminRepository adminRepository)
   {
     //Esse esquema é feito para economizar a quantidade de dados no token, sendo que só vai ser adicionado no token as permissões
     // quando as permissões padrões forem removidas
@@ -15,13 +15,13 @@ public class DefaultAdminPermissions
     //Se a alteração em permissões vai remover alguma das permissões padrões, então vai ser removido a permissão padrão de administrador
     //e adicionado todas as permissões padrões para poder editar em cima dessas permissões
 
-    var permissions = await adminRepository.GetAllDefaultPermissions(); // busca todas as permissões padrões
-    var defaultAdminPermission = await adminRepository.GetDefaultAdminPermission(); //busca a permissão padrão
+    DefaultPermission = DefaultPermission ?? await adminRepository.GetDefaultAdminPermission(); //permissão padrão, que define o conjunto de permissões padrões
+    DefaultPermissions = DefaultPermissions ?? await adminRepository.GetAllDefaultPermissions(); // busca todas as permissões padrões
 
-    if (permissions.Contains(permission) && admin.Permissions.Contains(defaultAdminPermission!)) //Se a permissão que deseja remover inclui nas permissões padrões
+    if (DefaultPermissions.Contains(permission) && admin.Permissions.Contains(DefaultPermission!)) //Se a permissão que deseja remover inclui nas permissões padrões
     {
-      admin.RemovePermission(defaultAdminPermission!); //remove a permissão padrão
-      foreach (var defaultPermission in permissions)
+      admin.RemovePermission(DefaultPermission!); //remove a permissão padrão
+      foreach (var defaultPermission in DefaultPermissions)
         admin.AddPermission(defaultPermission); // e então adiciona todas essas permissões padrões
     }
   }
@@ -38,6 +38,18 @@ public class DefaultAdminPermissions
     "AdminEditGender",
     "AdminEditDateOfBirth",
     "EditCustomer",
-    "DeleteCustomer"
+    "DeleteCustomer",
+    "GetEmployee",
+    "GetEmployees",
+    "DeleteEmployee",
+    "EditEmployee",
+    "CreateEmployee",
+    "AssignEmployeeResponsability",
+    "UnassignEmployeeResponsability",
+    "AssignEmployeePermission",
+    "UnassignEmployeePermission"
   ];
+
+  public static Permission? DefaultPermission { get; set; } = null!;
+  public static List<Permission> DefaultPermissions { get; set; } = null!;
 }

@@ -17,7 +17,9 @@ partial class AdminHandler
     if (permission == null)
       throw new ArgumentException("Permissão não encontrada.");
 
-    await DefaultAdminPermissions.RemoveDefaultPermissionIfExists(permission ,admin, _repository);
+    //Faz verificação se a permissão a ser removida é uma permissão padrão. Se for, vai remover 'DefaultAdminPermissions'
+    //e adicionar todas as permissões padrões menos a removida
+    await DefaultAdminPermissions.HandleDefaultPermission(permission ,admin, _repository);
 
     admin.RemovePermission(permission);
 
