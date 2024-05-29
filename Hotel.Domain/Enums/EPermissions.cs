@@ -30,6 +30,12 @@ public enum EPermissions
   AssignEmployeeResponsability,
   UnassignEmployeeResponsability,
   AssignEmployeePermission,
-  UnassignEmployeePermission
+  UnassignEmployeePermission,
+
+  GetResponsabilities,
+  GetResponsability,
+  CreateResponsability,
+  EditResponsability,
+  DeleteResponsability
 }
 
