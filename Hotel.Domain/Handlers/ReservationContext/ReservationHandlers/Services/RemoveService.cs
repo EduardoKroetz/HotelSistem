@@ -7,7 +7,7 @@ public partial class ReservationHandler
   public async Task<Response<object>> HandleRemoveServiceAsync(Guid id, Guid serviceId)
   {
     //Somente admins tem acesso
-    var reservation = await _repository.GetReservationIncludeServices(id);
+    var reservation = await _repository.GetReservationIncludesServices(id);
     if (reservation == null)
       throw new ArgumentException("Reserva não encontrada.");
 
