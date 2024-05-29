@@ -1,4 +1,4 @@
-CREATE PROCEDURE AddDefaultAdminPermissions
+CREATE PROCEDURE CreatePermissions
 AS
 BEGIN
     -- Verifica se a permissão já existe antes de adicioná-la para evitar duplicatas
@@ -91,6 +91,73 @@ BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'DeleteCustomer', 'Permissão para deletar um cliente.', 1, GETDATE());
     END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateAdmin')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'CreateAdmin', 'Permissão para criar um administrador.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DefaultEmployeePermission')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DefaultEmployeePermission', 'Permissão padrão para um funcionário.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetEmployee')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetEmployee', 'Permissão para visualizar informações de um funcionário.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetEmployees')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetEmployees', 'Permissão para visualizar informações de múltiplos funcionários.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteEmployee')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DeleteEmployee', 'Permissão para deletar um funcionário.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditEmployee')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'EditEmployee', 'Permissão para editar informações de um funcionário.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateEmployee')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'CreateEmployee', 'Permissão para criar um funcionário.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignEmployeeResponsability')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'AssignEmployeeResponsability', 'Permissão para atribuir responsabilidades a um funcionário.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignEmployeeResponsability')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'UnassignEmployeeResponsability', 'Permissão para desatribuir responsabilidades de um funcionário.', 1, GETDATE());
+    END;
+
+        IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignEmployeePermission')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'AssignEmployeePermission', 'Permissão para atribuir permissões a um funcionário.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignEmployeePermission')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'UnassignEmployeePermission', 'Permissão para desatribuir permissões de um funcionário.', 1, GETDATE());
+    END;
+
 END;
 
 

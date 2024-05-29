@@ -12,10 +12,11 @@ public partial class Employee : User, IEmployee
 {
   internal Employee(){}
 
-  public Employee(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null, decimal? salary = null) 
+  public Employee(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null, decimal? salary = null,ICollection<Permission>? permissions = null) 
     : base( name, email, phone, password, gender, dateOfBirth, address)
   {
     Salary = salary;
+    Permissions = permissions ?? [];
   }
   
   public decimal? Salary { get; private set; }
