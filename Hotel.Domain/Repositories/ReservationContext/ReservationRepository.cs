@@ -87,11 +87,18 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     )).ToListAsync();
   }
 
-  public async Task<Reservation?> GetReservationIncludeServices(Guid id)
+  public async Task<Reservation?> GetReservationIncludesServices(Guid id)
   {
     return await _context.Reservations
       .Where(x => x.Id == id)
       .Include(x => x.Services)
       .FirstOrDefaultAsync();
+  }
+
+  public async Task<Reservation?> GetReservationIncludesCustomers(Guid id)
+  {
+    return await _context.Reservations
+      .Include(x => x.Customers)
+      .FirstOrDefaultAsync(x => x.Id == id);
   }
 }

@@ -37,5 +37,9 @@ public enum EPermissions
   CreateResponsability,
   EditResponsability,
   DeleteResponsability
+  
+  DeleteRoomInvoice,
+  GetRoomInvoices,
+
 }
 

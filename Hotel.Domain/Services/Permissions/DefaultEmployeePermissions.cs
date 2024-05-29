@@ -25,6 +25,8 @@ public class DefaultEmployeePermissions
     "GetEmployees",
     "GetResponsabilities",
     "GetResponsability",
+    "GetRoomInvoices",
+    "GetRoomInvoice"
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;
