@@ -53,6 +53,13 @@ public enum EPermissions
   UpdateReservationCheckout,
   UpdateReservationCheckIn,
   AddServiceToReservation,
-  RemoveServiceFromReservation
+  RemoveServiceFromReservation,
+
+  //Reports
+  GetReports,
+  GetReport,
+  EditReport,
+  CreateReport,
+  FinishReport,
 }
 
