@@ -18,7 +18,7 @@ public class ReservationController : ControllerBase
   => _handler = handler;
 
   [HttpGet]
-  [AuthorizeRoleOrPermissions([EPermissions.GetReservations, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  [AuthorizePermissions([EPermissions.GetReservations, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> GetAsync(
   [FromBody] ReservationQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
@@ -35,34 +35,34 @@ public class ReservationController : ControllerBase
     => Ok(await _handler.HandleCreateAsync(model));
 
   [HttpDelete("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.DeleteReservation, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.DeleteReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync(
     [FromRoute] Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
 
   [HttpPatch("{Id:guid}/check-out")]
-  [AuthorizeRoleOrPermissions([EPermissions.UpdateReservationCheckout, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
+  [AuthorizePermissions([EPermissions.UpdateReservationCheckout, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
   public async Task<IActionResult> UpdateCheckoutAsync(
     [FromRoute] Guid id,
     [FromBody] UpdateCheckOut updateCheckOut)
     => Ok(await _handler.HandleUpdateCheckOutAsync(id, updateCheckOut.CheckOut));
 
   [HttpPatch("{Id:guid}/check-in")]
-  [AuthorizeRoleOrPermissions([EPermissions.UpdateReservationCheckIn, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
+  [AuthorizePermissions([EPermissions.UpdateReservationCheckIn, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
   public async Task<IActionResult> UpdateCheckInAsync(
   [FromRoute] Guid id,
   [FromBody] UpdateCheckIn updateCheckIn)
   => Ok(await _handler.HandleUpdateCheckInAsync(id, updateCheckIn.CheckIn));
 
   [HttpPost("{Id:guid}/services/{serviceId:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.AddServiceToReservation, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  [AuthorizePermissions([EPermissions.AddServiceToReservation, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> AddServiceAsync(
     [FromRoute] Guid id,
     [FromRoute] Guid serviceId)
     => Ok(await _handler.HandleAddServiceAsync(id, serviceId));
 
   [HttpDelete("{Id:guid}/services/{serviceid:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.RemoveServiceFromReservation, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.RemoveServiceFromReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> RemoveServiceAsync(
     [FromRoute] Guid id,
     [FromRoute] Guid serviceId)

@@ -18,32 +18,32 @@ public class ResponsabilityController : ControllerBase
   => _handler = handler;
 
   [HttpGet]
-  [AuthorizeRoleOrPermissions([EPermissions.GetResponsabilities,EPermissions.DefaultEmployeePermission,EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.GetResponsabilities,EPermissions.DefaultEmployeePermission,EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> GetAsync(
     [FromBody] ResponsabilityQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
 
   [HttpGet("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.GetResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.GetResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> GetByIdAsync(
     [FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
   [HttpPost]
-  [AuthorizeRoleOrPermissions([EPermissions.CreateResponsability, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.CreateResponsability, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> PostAsync(
     [FromBody] EditorResponsability model)
     => Ok(await _handler.HandleCreateAsync(model));
 
   [HttpPut("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.EditResponsability, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.EditResponsability, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> PutAsync(
     [FromBody] EditorResponsability model,
     [FromRoute] Guid id)
     => Ok(await _handler.HandleUpdateAsync(model, id));
 
   [HttpDelete("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.DeleteResponsability, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.DeleteResponsability, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync(
     [FromRoute] Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));

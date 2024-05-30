@@ -19,33 +19,33 @@ public class AdminController : ControllerBase
   => _handler = handler;
 
   [HttpGet]
-  [AuthorizeRoleOrPermissions([EPermissions.GetAdmins, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.GetAdmins, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> GetAsync(
     [FromBody]AdminQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
   
   [HttpGet("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.GetAdmin, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.GetAdmin, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> GetByIdAsync(
     [FromRoute]Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));  
 
   [HttpPut("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.EditAdmin])]
+  [AuthorizePermissions([EPermissions.EditAdmin])]
   public async Task<IActionResult> PutAsync(
     [FromBody]UpdateUser model,
     [FromRoute]Guid id)
     => Ok(await _handler.HandleUpdateAsync(model,id));
  
   [HttpDelete("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.DeleteAdmin])]
+  [AuthorizePermissions([EPermissions.DeleteAdmin])]
   public async Task<IActionResult> DeleteAsync(
     [FromRoute]Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
 
 
   [HttpPost("{adminId:guid}/permissions/{permissionId:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminAssignPermission])]
+  [AuthorizePermissions([EPermissions.AdminAssignPermission])]
   public async Task<IActionResult> AddPermissionAsync(
     [FromRoute] Guid adminId,
     [FromRoute] Guid permissionId)
@@ -53,7 +53,7 @@ public class AdminController : ControllerBase
 
 
   [HttpDelete("{adminId:guid}/permissions/{permissionId:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminUnassignPermission])]
+  [AuthorizePermissions([EPermissions.AdminUnassignPermission])]
   public async Task<IActionResult> RemovePermissionAsync(
     [FromRoute] Guid adminId,
     [FromRoute] Guid permissionId)
@@ -67,28 +67,28 @@ public class AdminController : ControllerBase
     => Ok(await _handler.HandleChangeToRootAdminAsync(adminId,toRootAdminId));
 
   [HttpPatch("{adminId:guid}/name")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminEditName , EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.AdminEditName , EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> UpdateNameAsync(
     [FromRoute] Guid adminId,
     [FromBody] Name name)
     => Ok(await _handler.HandleUpdateNameAsync(adminId, name));
 
   [HttpPatch("{adminId:guid}/email")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminEditEmail ,EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.AdminEditEmail ,EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> UpdateEmailAsync(
     [FromRoute] Guid adminId,
     [FromBody] Email email)
     => Ok(await _handler.HandleUpdateEmailAsync(adminId, email));
 
   [HttpPatch("{adminId:guid}/phone")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminEditPhone ,EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.AdminEditPhone ,EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> UpdatePhoneAsync(
     [FromRoute] Guid adminId,
     [FromBody] Phone phone)
     => Ok(await _handler.HandleUpdatePhoneAsync(adminId, phone));
 
   [HttpPatch("{adminId:guid}/address")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminEditAddress ,EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.AdminEditAddress ,EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> UpdateAddressAsync(
     [FromRoute] Guid adminId,
     [FromBody] Address address) 
@@ -96,14 +96,14 @@ public class AdminController : ControllerBase
   
 
   [HttpPatch("{adminId:guid}/gender/{gender:int}")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminEditGender ,EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.AdminEditGender ,EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> UpdateGenderAsync(
     [FromRoute] Guid adminId,
     [FromRoute] int gender)
     => Ok(await _handler.HandleUpdateGenderAsync(adminId, (EGender)gender));
 
   [HttpPatch("{adminId:guid}/date-of-birth")]
-  [AuthorizeRoleOrPermissions([EPermissions.AdminEditDateOfBirth ,EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.AdminEditDateOfBirth ,EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> UpdateDateOfBirthAsync(
     [FromRoute] Guid adminId,
     [FromBody] UpdateDateOfBirth newDateOfBirth)

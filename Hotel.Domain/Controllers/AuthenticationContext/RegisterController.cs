@@ -30,13 +30,13 @@ public class RegisterController : ControllerBase
     => Ok(await _customerHandler.HandleCreateAsync(customer));
 
   [HttpPost("admins")]
-  [AuthorizeRoleOrPermissions([EPermissions.CreateAdmin])]
+  [AuthorizePermissions([EPermissions.CreateAdmin])]
   public async Task<IActionResult> RegisterAdminAsync(
     [FromBody] CreateUser admin)
     => Ok(await _adminHandler.HandleCreateAsync(admin));
 
   [HttpPost("employees")]
-  [AuthorizeRoleOrPermissions([EPermissions.CreateEmployee, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.CreateEmployee, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> RegisterEmployeeAsync(
     [FromBody] CreateEmployee employee)
     => Ok(await _employeeHandler.HandleCreateAsync(employee));

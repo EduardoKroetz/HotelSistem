@@ -30,14 +30,14 @@ public class CustomerController : ControllerBase
   
   //Somente para admins
   [HttpPut("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.EditCustomer, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.EditCustomer, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> EditCustomerAsync(
     [FromBody]UpdateUser model,
     [FromRoute]Guid id)
     => Ok(await _handler.HandleUpdateAsync(model,id));
 
   [HttpDelete("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.DeleteCustomer, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.DeleteCustomer, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync(
     [FromRoute] Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
