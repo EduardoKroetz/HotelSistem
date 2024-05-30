@@ -39,6 +39,22 @@ public class DefaultEmployeePermissions
     EPermissions.DeleteService.ToString(),
     EPermissions.AssignServiceResponsability.ToString(),
     EPermissions.UnassignServiceResponsability.ToString()
+    EPermissions.EditRoom.ToString(),
+    EPermissions.CreateRoom.ToString(),
+    EPermissions.DeleteRoom.ToString(),
+    EPermissions.AddServiceToRoom.ToString(),
+    EPermissions.RemoveServiceToRoom.ToString(),
+    EPermissions.UpdateRoomNumber.ToString(),
+    EPermissions.UpdateRoomCapacity.ToString(),
+    EPermissions.UpdateRoomCategory.ToString(),
+    EPermissions.UpdateRoomPrice.ToString(),
+    EPermissions.GetReports.ToString(),
+    EPermissions.GetReport.ToString(),
+    EPermissions.EditReport.ToString(),
+    EPermissions.CreateReport.ToString(),
+    EPermissions.FinishReport.ToString(),
+    EPermissions.CreateCategory.ToString(),
+    EPermissions.EditCategory.ToString()
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;
