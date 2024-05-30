@@ -306,6 +306,54 @@ BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'UpdateRoomPrice', 'Permissão para atualizar o preço de um quarto.', 1, GETDATE());
     END;
+    
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetReports')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetReports', 'Permissão para visualizar todos os relatórios.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetReport')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetReport', 'Permissão para visualizar um relatório específico.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditReport')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'EditReport', 'Permissão para editar um relatório.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateReport')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'CreateReport', 'Permissão para criar um novo relatório.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'FinishReport')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'FinishReport', 'Permissão para finalizar um relatório.', 1, GETDATE());
+    END;
+    
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateCategory')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'CreateCategory', 'Permissão para criar uma nova categoria.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditCategory')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'EditCategory', 'Permissão para editar uma categoria existente.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteCategory')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DeleteCategory', 'Permissão para deletar uma categoria.', 1, GETDATE());
+    END;
 
 END;
 
