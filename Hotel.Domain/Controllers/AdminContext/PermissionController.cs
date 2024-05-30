@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.AdminContext;
 
-[Authorize(Roles = "RootAdmin,Admin,Employee")]
+
+[ApiController]
+//Administradores e funcionários tem permissão.
+[Authorize(Roles = "RootAdmin,Admin,Employee")] 
 public class PermissionController : ControllerBase
 {
   private readonly PermissionHandler _handler;

@@ -25,17 +25,21 @@ public class RegisterController : ControllerBase
   }
 
   //Criar cliente
+  //Todos tem acesso.
   [HttpPost("customers")]
   public async Task<IActionResult> RegisterCustomerAsync([FromBody] CreateUser customer)
     => Ok(await _customerHandler.HandleCreateAsync(customer));
 
   //Criar administrador
+  //Administradores com permissão podem acessar.
   [HttpPost("admins")]
   [AuthorizePermissions([EPermissions.CreateAdmin])]
   public async Task<IActionResult> RegisterAdminAsync([FromBody] CreateUser admin)
     => Ok(await _adminHandler.HandleCreateAsync(admin));
 
   //Criar funcionário
+  //Administradores ou funcionários com permissão podem acessar.
+  //Administradores podem acessar por padrão.
   [HttpPost("employees")]
   [AuthorizePermissions([EPermissions.CreateEmployee, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> RegisterEmployeeAsync([FromBody] CreateEmployee employee)
