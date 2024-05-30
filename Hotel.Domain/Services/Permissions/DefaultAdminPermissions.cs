@@ -1,5 +1,6 @@
 ﻿
 using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
+using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Enums;
@@ -66,7 +67,12 @@ public class DefaultAdminPermissions
     EPermissions.RemoveServiceFromReservation.ToString(),
     EPermissions.CreateCategory.ToString(),
     EPermissions.EditCategory.ToString(),
-    EPermissions.DeleteCategory.ToString()
+    EPermissions.DeleteCategory.ToString(),
+    EPermissions.GetReports.ToString(),
+    EPermissions.GetReport.ToString(),
+    EPermissions.EditReport.ToString(),
+    EPermissions.CreateReport.ToString(),
+    EPermissions.FinishReport.ToString()
 
   ];
 
