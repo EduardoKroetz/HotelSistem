@@ -19,33 +19,27 @@ public class ResponsabilityController : ControllerBase
 
   [HttpGet]
   [AuthorizePermissions([EPermissions.GetResponsabilities,EPermissions.DefaultEmployeePermission,EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> GetAsync(
-    [FromBody] ResponsabilityQueryParameters queryParameters)
+  public async Task<IActionResult> GetAsync([FromBody] ResponsabilityQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
 
   [HttpGet("{Id:guid}")]
   [AuthorizePermissions([EPermissions.GetResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
   [HttpPost]
   [AuthorizePermissions([EPermissions.CreateResponsability, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> PostAsync(
-    [FromBody] EditorResponsability model)
+  public async Task<IActionResult> PostAsync([FromBody] EditorResponsability model)
     => Ok(await _handler.HandleCreateAsync(model));
 
   [HttpPut("{Id:guid}")]
   [AuthorizePermissions([EPermissions.EditResponsability, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> PutAsync(
-    [FromBody] EditorResponsability model,
-    [FromRoute] Guid id)
+  public async Task<IActionResult> PutAsync([FromBody] EditorResponsability model,[FromRoute] Guid id)
     => Ok(await _handler.HandleUpdateAsync(model, id));
 
   [HttpDelete("{Id:guid}")]
   [AuthorizePermissions([EPermissions.DeleteResponsability, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
 
 }

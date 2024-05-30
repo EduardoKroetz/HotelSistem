@@ -24,20 +24,20 @@ public class RegisterController : ControllerBase
     _employeeHandler = employeeHandler;
   }
 
+  //Criar cliente
   [HttpPost("customers")]
-  public async Task<IActionResult> RegisterCustomerAsync(
-    [FromBody] CreateUser customer)
+  public async Task<IActionResult> RegisterCustomerAsync([FromBody] CreateUser customer)
     => Ok(await _customerHandler.HandleCreateAsync(customer));
 
+  //Criar administrador
   [HttpPost("admins")]
   [AuthorizePermissions([EPermissions.CreateAdmin])]
-  public async Task<IActionResult> RegisterAdminAsync(
-    [FromBody] CreateUser admin)
+  public async Task<IActionResult> RegisterAdminAsync([FromBody] CreateUser admin)
     => Ok(await _adminHandler.HandleCreateAsync(admin));
 
+  //Criar funcionário
   [HttpPost("employees")]
   [AuthorizePermissions([EPermissions.CreateEmployee, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> RegisterEmployeeAsync(
-    [FromBody] CreateEmployee employee)
+  public async Task<IActionResult> RegisterEmployeeAsync([FromBody] CreateEmployee employee)
     => Ok(await _employeeHandler.HandleCreateAsync(employee));
 }

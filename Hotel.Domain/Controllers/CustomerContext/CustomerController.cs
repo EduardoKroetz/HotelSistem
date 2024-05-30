@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.CustomerContext;
 
+[ApiController]
 [Route("v1/customers")]
 [Authorize(Roles = "RootAdmin,Admin,Employee,Customer")]
 public class CustomerController : ControllerBase

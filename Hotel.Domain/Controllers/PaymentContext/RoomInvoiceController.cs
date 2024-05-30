@@ -19,8 +19,7 @@ public class RoomInvoiceController : ControllerBase
 
   [HttpGet]
   [AuthorizePermissions([EPermissions.GetRoomInvoices, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> GetAsync(
-    [FromBody] RoomInvoiceQueryParameters queryParameters)
+  public async Task<IActionResult> GetAsync([FromBody] RoomInvoiceQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
 
   [HttpGet("my")]
@@ -34,22 +33,19 @@ public class RoomInvoiceController : ControllerBase
 
   [HttpGet("{Id:guid}")]
   [AuthorizePermissions([EPermissions.GetRoomInvoice, EPermissions.DefaultAdminPermission,EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
 
   [HttpPost]
   [Authorize(Roles = "Customer")]
-  public async Task<IActionResult> PostAsync(
-    [FromBody] CreateRoomInvoice model)
+  public async Task<IActionResult> PostAsync([FromBody] CreateRoomInvoice model)
     => Ok(await _handler.HandleCreateAsync(model));
 
 
   [HttpDelete("{Id:guid}")]
   [AuthorizePermissions([EPermissions.DeleteRoomInvoice, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
 
 }

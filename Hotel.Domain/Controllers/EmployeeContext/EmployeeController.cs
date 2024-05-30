@@ -31,41 +31,29 @@ public class EmployeeController : ControllerBase
 
   [HttpPut("{id:guid}")]
   [AuthorizePermissions([EPermissions.EditEmployee, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> AdminEditAsync(
-    [FromBody] UpdateEmployee model,
-    [FromRoute] Guid id)
+  public async Task<IActionResult> AdminEditAsync([FromBody] UpdateEmployee model,[FromRoute] Guid id)
     => Ok(await _handler.HandleUpdateAsync(model, id));
 
   [HttpPost("{id:guid}/responsabilities/{resId:guid}")]
   [AuthorizePermissions([EPermissions.AssignEmployeeResponsability, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
-  public async Task<IActionResult> AssignResponsibilityAsync(
-    [FromRoute] Guid id,
-    [FromRoute] Guid resId)
+  public async Task<IActionResult> AssignResponsibilityAsync([FromRoute] Guid id,[FromRoute] Guid resId)
     => Ok(await _handler.HandleAssignResponsabilityAsync(id, resId));
 
   [HttpDelete("{id:guid}/responsabilities/{resId:guid}")]
   [AuthorizePermissions([EPermissions.UnassignEmployeeResponsability, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
-  public async Task<IActionResult> UnassignResponsibilityAsync(
-    [FromRoute] Guid id,
-    [FromRoute] Guid resId)
+  public async Task<IActionResult> UnassignResponsibilityAsync([FromRoute] Guid id,[FromRoute] Guid resId)
     => Ok(await _handler.HandleUnassignResponsabilityAsync(id, resId));
-
 
   [HttpPost("{employeeId:guid}/permissions/{permissionId:guid}")]
   [AuthorizePermissions([EPermissions.AdminAssignPermission, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> AssignPermissionAsync(
-    [FromRoute] Guid employeeId,
-    [FromRoute] Guid permissionId)
+  public async Task<IActionResult> AssignPermissionAsync([FromRoute] Guid employeeId,[FromRoute] Guid permissionId)
     => Ok(await _handler.HandleAssignPermission(employeeId, permissionId));
 
 
   [HttpDelete("{employeeId:guid}/permissions/{permissionId:guid}")]
   [AuthorizePermissions([EPermissions.UnassignEmployeePermission, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> UnassignPermissionAsync(
-    [FromRoute] Guid employeeId,
-    [FromRoute] Guid permissionId)
+  public async Task<IActionResult> UnassignPermissionAsync([FromRoute] Guid employeeId,[FromRoute] Guid permissionId)
     => Ok(await _handler.HandleUnassignPermission(employeeId, permissionId));
-
 
   [HttpDelete("{id:guid}")]
   [AuthorizePermissions([EPermissions.DeleteEmployee, EPermissions.DefaultAdminPermission])]

@@ -13,13 +13,13 @@ public class PermissionController : ControllerBase
   public PermissionController(PermissionHandler handler)
   => _handler = handler;
 
+  //Buscar as permissões
   [HttpGet("v1/permissions")]
-  public async Task<IActionResult> GetAsync(
-    [FromBody]PermissionQueryParameters queryParameters)
+  public async Task<IActionResult> GetAsync([FromBody]PermissionQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
   
+  //Buscar as permissões pelo Id
   [HttpGet("v1/permissions/{Id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute]Guid id)
+  public async Task<IActionResult> GetByIdAsync([FromRoute]Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 }
