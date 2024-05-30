@@ -1,4 +1,3 @@
-﻿
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Enums;
@@ -56,7 +55,30 @@ public class DefaultAdminPermissions
     EPermissions.UpdateReservationCheckout.ToString(),
     EPermissions.UpdateReservationCheckIn.ToString(),
     EPermissions.AddServiceToReservation.ToString(),
-    EPermissions.RemoveServiceFromReservation.ToString()
+    EPermissions.RemoveServiceFromReservation.ToString(),
+    EPermissions.GetServices.ToString(),
+    EPermissions.GetService.ToString(),
+    EPermissions.UpdateService.ToString(),
+    EPermissions.CreateService.ToString(),
+    EPermissions.DeleteService.ToString(),
+    EPermissions.AssignServiceResponsability.ToString(),
+    EPermissions.UnassignServiceResponsability.ToString()
+    EPermissions.CreateRoom.ToString(),
+    EPermissions.DeleteRoom.ToString(),
+    EPermissions.AddServiceToRoom.ToString(),
+    EPermissions.RemoveServiceToRoom.ToString(),
+    EPermissions.UpdateRoomNumber.ToString(),
+    EPermissions.UpdateRoomCapacity.ToString(),
+    EPermissions.UpdateRoomCategory.ToString(),
+    EPermissions.UpdateRoomPrice.ToString(),
+    EPermissions.CreateCategory.ToString(),
+    EPermissions.EditCategory.ToString(),
+    EPermissions.DeleteCategory.ToString(),
+    EPermissions.GetReports.ToString(),
+    EPermissions.GetReport.ToString(),
+    EPermissions.EditReport.ToString(),
+    EPermissions.CreateReport.ToString(),
+    EPermissions.FinishReport.ToString()
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;

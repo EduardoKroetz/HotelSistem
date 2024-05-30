@@ -28,14 +28,14 @@ public enum EPermissions
   UnassignEmployeeResponsability,
   AssignEmployeePermission,
   UnassignEmployeePermission,
-    
+
   //Responsabilities
   GetResponsabilities,
   GetResponsability,
   CreateResponsability,
   EditResponsability,
   DeleteResponsability,
-  
+
   //RoomInvoices
   DeleteRoomInvoice,
   GetRoomInvoices,
@@ -47,6 +47,38 @@ public enum EPermissions
   UpdateReservationCheckout,
   UpdateReservationCheckIn,
   AddServiceToReservation,
-  RemoveServiceFromReservation
+  RemoveServiceFromReservation,
+    
+  //Categories
+  CreateCategory,
+  EditCategory,
+  DeleteCategory,
+  
+  //Reports
+  GetReports,
+  GetReport,
+  EditReport,
+  CreateReport,
+  FinishReport,
+  
+  //Rooms
+  CreateRoom,
+  EditRoom,
+  DeleteRoom,
+  AddServiceToRoom,
+  RemoveServiceToRoom,
+  UpdateRoomNumber,
+  UpdateRoomCapacity,
+  UpdateRoomCategory,
+  UpdateRoomPrice
+
+  //Services
+  GetServices,
+  GetService,
+  UpdateService,
+  CreateService,
+  DeleteService,
+  AssignServiceResponsability,
+  UnassignServiceResponsability,
 }
 
