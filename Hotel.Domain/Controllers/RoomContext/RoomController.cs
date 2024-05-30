@@ -15,78 +15,69 @@ public class RoomController : ControllerBase
   private readonly RoomHandler _handler;
 
   public RoomController(RoomHandler handler)
-  => _handler = handler;
+    => _handler = handler;
 
+  // Endpoint para buscar todos os quartos
   [HttpGet]
-  public async Task<IActionResult> GetAsync(
-    [FromBody] RoomQueryParameters queryParameters)
+  public async Task<IActionResult> GetAsync([FromBody] RoomQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
 
+  // Endpoint para buscar um quarto por ID
   [HttpGet("{Id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
+  // Endpoint para atualizar um quarto (com permissão)
   [HttpPut("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.EditRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> PutAsync(
-    [FromBody] EditorRoom model,
-    [FromRoute] Guid id)
+  [AuthorizePermissions([EPermissions.EditRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> PutAsync([FromBody] EditorRoom model, [FromRoute] Guid id)
     => Ok(await _handler.HandleUpdateAsync(model, id));
 
+  // Endpoint para criar um novo quarto (com permissão)
   [HttpPost]
-  [AuthorizeRoleOrPermissions([EPermissions.CreateRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> PostAsync(
-    [FromBody] EditorRoom model)
+  [AuthorizePermissions([EPermissions.CreateRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> PostAsync([FromBody] EditorRoom model)
     => Ok(await _handler.HandleCreateAsync(model));
 
-
+  // Endpoint para deletar um quarto (com permissão)
   [HttpDelete("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.DeleteRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id)
+  [AuthorizePermissions([EPermissions.DeleteRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
 
+  // Endpoint para adicionar um serviço a um quarto (com permissão)
   [HttpPost("{Id:guid}/services/{serviceId:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.AddServiceToRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> AddServiceAsync(
-    [FromRoute] Guid id,
-    [FromRoute] Guid serviceId)
+  [AuthorizePermissions([EPermissions.AddServiceToRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> AddServiceAsync([FromRoute] Guid id, [FromRoute] Guid serviceId)
     => Ok(await _handler.HandleAddServiceAsync(id, serviceId));
 
+  // Endpoint para remover um serviço de um quarto (com permissão)
   [HttpDelete("{Id:guid}/services/{serviceId:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.RemoveServiceToRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> RemoveServiceAsync(
-    [FromRoute] Guid id,
-    [FromRoute] Guid serviceId)
+  [AuthorizePermissions([EPermissions.RemoveServiceToRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> RemoveServiceAsync([FromRoute] Guid id, [FromRoute] Guid serviceId)
     => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
 
-
+  // Endpoint para atualizar o número de um quarto (com permissão)
   [HttpPatch("{id:guid}/number/{number:int}")]
-  [AuthorizeRoleOrPermissions([EPermissions.UpdateRoomNumber, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> UpdateNumberAsync(
-    [FromRoute] Guid id,
-    [FromRoute] int number)
+  [AuthorizePermissions([EPermissions.UpdateRoomNumber, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> UpdateNumberAsync([FromRoute] Guid id, [FromRoute] int number)
     => Ok(await _handler.HandleUpdateNumberAsync(id, number));
 
+  // Endpoint para atualizar a capacidade de um quarto (com permissão)
   [HttpPatch("{id:guid}/capacity/{capacity:int}")]
-  [AuthorizeRoleOrPermissions([EPermissions.UpdateRoomCapacity, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> UpdateCapacityAsync(
-    [FromRoute] Guid id,
-    [FromRoute] int capacity)
+  [AuthorizePermissions([EPermissions.UpdateRoomCapacity, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> UpdateCapacityAsync([FromRoute] Guid id, [FromRoute] int capacity)
     => Ok(await _handler.HandleUpdateCapacityAsync(id, capacity));
 
+  // Endpoint para atualizar a categoria de um quarto (com permissão)
   [HttpPatch("{id:guid}/categories/{categoryId:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.UpdateRoomCategory, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> UpdateCategoryAsync(
-    [FromRoute] Guid id,
-    [FromRoute] Guid categoryId)
+  [AuthorizePermissions([EPermissions.UpdateRoomCategory, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> UpdateCategoryAsync([FromRoute] Guid id, [FromRoute] Guid categoryId)
     => Ok(await _handler.HandleUpdateCategoryAsync(id, categoryId));
 
+  // Endpoint para atualizar o preço de um quarto (com permissão)
   [HttpPatch("{id:guid}/price/{price:decimal}")]
-  [AuthorizeRoleOrPermissions([EPermissions.UpdateRoomNumber, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> UpdatePriceAsync(
-    [FromRoute] Guid id,
-    [FromRoute] decimal price)
+  [AuthorizePermissions([EPermissions.UpdateRoomPrice, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> UpdatePriceAsync([FromRoute] Guid id, [FromRoute] decimal price)
     => Ok(await _handler.HandleUpdatePriceAsync(id, price));
 }

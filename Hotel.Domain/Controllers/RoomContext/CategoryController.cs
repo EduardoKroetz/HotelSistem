@@ -17,32 +17,36 @@ public class CategoryController : ControllerBase
   public CategoryController(CategoryHandler handler)
   => _handler = handler;
 
+  // Endpoint para buscar as categorias
   [HttpGet]
   public async Task<IActionResult> GetAsync(
     [FromBody] CategoryQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
-  
+
+  // Endpoint para buscar uma categoria por ID
   [HttpGet("{Id:guid}")]
   public async Task<IActionResult> GetByIdAsync(
     [FromRoute]Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
-  
+
+  // Endpoint para atualizar uma categoria (acesso com permissão)
   [HttpPut("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.EditCategory, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.EditCategory, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> PutAsync(
     [FromBody]EditorCategory model,
     [FromRoute]Guid id)
     => Ok(await _handler.HandleUpdateAsync(model,id));
 
+  // Endpoint para criar uma nova categoria (acesso com permissão)
   [HttpPost]
-  [AuthorizeRoleOrPermissions([EPermissions.CreateCategory, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.CreateCategory, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> PostAsync(
     [FromBody]EditorCategory model)
     => Ok(await _handler.HandleCreateAsync(model));
-  
-  
+
+  // Endpoint para deletar uma categoria (acesso com permissão)
   [HttpDelete("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.DeleteCategory, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.DeleteCategory, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync(
     [FromRoute]Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
