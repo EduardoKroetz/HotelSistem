@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.CustomerContext;
 
+[ApiController]
 [Route("v1/feedbacks")]
 [Authorize(Roles = "RootAdmin,Admin,Employee,Customer")]
 public class FeedbackController : ControllerBase
@@ -13,32 +14,35 @@ public class FeedbackController : ControllerBase
   private readonly FeedbackHandler _handler;
 
   public FeedbackController(FeedbackHandler handler)
-  => _handler = handler;
+    => _handler = handler;
 
+  // Endpoint para buscar feedbacks
   [HttpGet]
-  public async Task<IActionResult> GetAsync(
-    [FromBody] FeedbackQueryParameters queryParameters)
+  public async Task<IActionResult> GetAsync([FromBody] FeedbackQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
 
+  // Endpoint para buscar feedback por ID
   [HttpGet("{Id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
+  // Endpoint para criar um novo feedback
   [HttpPost]
   public async Task<IActionResult> PostAsync([FromBody] CreateFeedback model)
   {
-    var userId = UserServices.GetIdFromClaim(User); //Somente clientes tem acesso à criação de feedbacks
+    var userId = UserServices.GetIdFromClaim(User);
     return Ok(await _handler.HandleCreateAsync(model, userId));
   }
 
+  // Endpoint para atualizar um feedback
   [HttpPut("{Id:guid}")]
-  public async Task<IActionResult> PutAsync([FromBody] UpdateFeedback model,[FromRoute] Guid id)
+  public async Task<IActionResult> PutAsync([FromBody] UpdateFeedback model, [FromRoute] Guid id)
   {
     var customerId = UserServices.GetIdFromClaim(User);
     return Ok(await _handler.HandleUpdateAsync(model, id, customerId));
   }
- 
+
+  // Endpoint para deletar um feedback
   [HttpDelete("{Id:guid}")]
   public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
   {
@@ -46,6 +50,7 @@ public class FeedbackController : ControllerBase
     return Ok(await _handler.HandleDeleteAsync(id, customerId));
   }
 
+  // Endpoint para atualizar a avaliação (rate) de um feedback
   [HttpPatch("{Id:guid}/rate/{rate:int}")]
   public async Task<IActionResult> UpdateRateAsync([FromRoute] Guid id, [FromRoute] int rate)
   {
@@ -53,6 +58,7 @@ public class FeedbackController : ControllerBase
     return Ok(await _handler.HandleUpdateRateAsync(id, rate, customerId));
   }
 
+  // Endpoint para atualizar o comentário de um feedback
   [HttpPatch("{Id:guid}/comment")]
   public async Task<IActionResult> UpdateCommentAsync([FromRoute] Guid id, [FromBody] UpdateComment updateComment)
   {
@@ -60,30 +66,20 @@ public class FeedbackController : ControllerBase
     return Ok(await _handler.HandleUpdateCommentAsync(id, updateComment.Comment, customerId));
   }
 
-
-
-  //Rotas de like e deslike
+  // Rotas para adicionar/remover likes e dislikes em um feedback
   [HttpPatch("add-like/{Id:guid}")]
-  public async Task<IActionResult> AddLikeAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> AddLikeAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleAddLikeAsync(id));
 
-
   [HttpPatch("remove-like/{Id:guid}")]
-  public async Task<IActionResult> RemoveLikeAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> RemoveLikeAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleRemoveLikeAsync(id));
 
-
   [HttpPatch("add-deslike/{Id:guid}")]
-  public async Task<IActionResult> AddDeslikeAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> AddDeslikeAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleAddDeslikeAsync(id));
 
-
   [HttpPatch("remove-deslike/{Id:guid}")]
-  public async Task<IActionResult> RemoveDeslikeAsync(
-    [FromRoute] Guid id)
+  public async Task<IActionResult> RemoveDeslikeAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleRemoveDeslikeAsync(id));
-
 }

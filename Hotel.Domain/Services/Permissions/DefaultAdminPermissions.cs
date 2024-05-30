@@ -1,6 +1,3 @@
-﻿
-using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
-using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Enums;
@@ -34,12 +31,6 @@ public class DefaultAdminPermissions
   [
     EPermissions.GetAdmins.ToString(),
     EPermissions.GetAdmin.ToString(),
-    EPermissions.AdminEditName.ToString(),
-    EPermissions.AdminEditEmail.ToString(),
-    EPermissions.AdminEditPhone.ToString(),
-    EPermissions.AdminEditAddress.ToString(),
-    EPermissions.AdminEditGender.ToString(),
-    EPermissions.AdminEditDateOfBirth.ToString(),
     EPermissions.EditCustomer.ToString(),
     EPermissions.DeleteCustomer.ToString(),
     EPermissions.GetEmployee.ToString(),

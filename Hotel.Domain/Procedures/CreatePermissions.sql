@@ -38,42 +38,6 @@ BEGIN
         VALUES (NEWID(), 'AdminUnassignPermission', 'Permissão para remover permissões de um administrador', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AdminEditName')
-    BEGIN
-        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AdminEditName', 'Permissão para editar o nome de um administrador', 1, GETDATE());
-    END;
-
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AdminEditEmail')
-    BEGIN
-        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AdminEditEmail', 'Permissão para editar o e-mail de um administrador', 1, GETDATE());
-    END;
-
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AdminEditPhone')
-    BEGIN
-        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AdminEditPhone', 'Permissão para editar o telefone de um administrador', 1, GETDATE());
-    END;
-
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AdminEditAddress')
-    BEGIN
-        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AdminEditAddress', 'Permissão para editar o endereço de um administrador', 1, GETDATE());
-    END;
-
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AdminEditGender')
-    BEGIN
-        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AdminEditGender', 'Permissão para editar o gênero de um administrador', 1, GETDATE());
-    END;
-
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AdminEditDateOfBirth')
-    BEGIN
-        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AdminEditDateOfBirth', 'Permissão para editar a data de nascimento de um administrador', 1, GETDATE());
-    END;
-
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DefaultAdminPermission')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)

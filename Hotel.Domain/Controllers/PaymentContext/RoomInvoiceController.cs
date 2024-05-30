@@ -9,20 +9,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace Hotel.Domain.Controllers.PaymentContext;
 
 [Route("v1/room-invoices")]
-[Authorize(Roles = "RootAdmin,Admin,Employee,Customer")]
+[Authorize(Roles = "RootAdmin,Admin,Employee,Customer")] //Acesso a todos os usuários
 public class RoomInvoiceController : ControllerBase
 {
   private readonly RoomInvoiceHandler _handler;
 
   public RoomInvoiceController(RoomInvoiceHandler handler)
-  => _handler = handler;
+    => _handler = handler;
 
+  //Buscar faturas de quarto. Somente administradores ou funcionários com permissão possuem acesso.
   [HttpGet]
-  [AuthorizeRoleOrPermissions([EPermissions.GetRoomInvoices, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> GetAsync(
-    [FromBody] RoomInvoiceQueryParameters queryParameters)
+  [AuthorizePermissions([EPermissions.GetRoomInvoices, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> GetAsync([FromBody] RoomInvoiceQueryParameters queryParameters)
     => Ok(await _handler.HandleGetAsync(queryParameters));
 
+  //Buscar minhas faturas de quarto. Qualquer usuário tem acesso, apesar de que somente clientes podem criar faturas.
   [HttpGet("my")]
   public async Task<IActionResult> GetMyRoomInvoicesAsync(
   [FromBody] RoomInvoiceQueryParameters queryParameters)
@@ -32,24 +33,22 @@ public class RoomInvoiceController : ControllerBase
     return Ok(await _handler.HandleGetAsync(queryParameters));
   }
 
+  //Buscar fatura de quarto pelo Id. Somente administradores ou funcionários com permissão possuem acesso.
   [HttpGet("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.GetRoomInvoice, EPermissions.DefaultAdminPermission,EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id)
+  [AuthorizePermissions([EPermissions.GetRoomInvoice, EPermissions.DefaultAdminPermission,EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
-
+  //Criar fatura de quarto. Somente os clientes tem acesso.
   [HttpPost]
   [Authorize(Roles = "Customer")]
-  public async Task<IActionResult> PostAsync(
-    [FromBody] CreateRoomInvoice model)
+  public async Task<IActionResult> PostAsync([FromBody] CreateRoomInvoice model)
     => Ok(await _handler.HandleCreateAsync(model));
 
-
+  //Deletar fatura de quarto. Somente administradores ou funcionários com permissão possuem acesso.
   [HttpDelete("{Id:guid}")]
-  [AuthorizeRoleOrPermissions([EPermissions.DeleteRoomInvoice, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id)
+  [AuthorizePermissions([EPermissions.DeleteRoomInvoice, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleDeleteAsync(id));
 
 }

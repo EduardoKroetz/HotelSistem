@@ -13,9 +13,9 @@ public class LoginController : ControllerBase
   public LoginController(LoginHandler loginHandler)
   => _loginHandler = loginHandler;
 
-  [HttpPost()]
-  public async Task<IActionResult> LoginAsync(
-    [FromBody] LoginDTO loginDto)
+  //Fazer login com qualquer usuário
+  [HttpPost]
+  public async Task<IActionResult> LoginAsync([FromBody] LoginDTO loginDto)
     => Ok(await _loginHandler.HandleLogin(loginDto.Email, loginDto.Password));
   
 }
