@@ -10,7 +10,7 @@ public static partial class AuthorizationService
   /// </summary>
   /// <param name="user">Aceita uma ClaimPrincipal como parâmetro</param>
   /// <returns>Retorna um array de permissões</returns>
-  public static EPermissions[] GetUserPermissions(ClaimsPrincipal user)
+  public static IEnumerable<EPermissions> GetUserPermissions(ClaimsPrincipal user)
   {
     var permissionsClaim = user.FindFirst("permissions");
     if (permissionsClaim == null)
@@ -19,10 +19,10 @@ public static partial class AuthorizationService
     var stringPermissions = permissionsClaim.Value.Split(","); // separar as permissões por vírgula(',')
 
     //Convertendo as permissões de string para enumerador
-    EPermissions[] permissions = stringPermissions.Select(permissionStr =>
-    {
-      return (EPermissions)Enum.Parse(typeof(EPermissions), permissionStr);
-    }).ToArray();
+    Func<IEnumerable<EPermissions>, string, IEnumerable<EPermissions>> aggregateFunction = (acc, name) 
+      => acc = acc.Append(ConvertToPermission(name));
+
+    var permissions = stringPermissions.Aggregate([],aggregateFunction);
 
     return permissions;
   }

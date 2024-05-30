@@ -45,7 +45,7 @@ public class CustomerController : ControllerBase
   [HttpPut]
   public async Task<IActionResult> EditAsync([FromBody] UpdateUser model)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAsync(model, customerId));
   }
 
@@ -53,7 +53,7 @@ public class CustomerController : ControllerBase
   [HttpDelete]
   public async Task<IActionResult> DeleteAsync()
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleDeleteAsync(customerId));
   }
 
@@ -61,7 +61,7 @@ public class CustomerController : ControllerBase
   [HttpPatch("name")]
   public async Task<IActionResult> UpdateNameAsync([FromBody] Name name)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateNameAsync(customerId, name));
   }
 
@@ -69,7 +69,7 @@ public class CustomerController : ControllerBase
   [HttpPatch("email")]
   public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateEmailAsync(customerId, email));
   }
 
@@ -77,7 +77,7 @@ public class CustomerController : ControllerBase
   [HttpPatch("phone")]
   public async Task<IActionResult> UpdatePhoneAsync([FromBody] Phone phone)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdatePhoneAsync(customerId, phone));
   }
 
@@ -85,7 +85,7 @@ public class CustomerController : ControllerBase
   [HttpPatch("address")]
   public async Task<IActionResult> UpdateAddressAsync([FromBody] Address address)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAddressAsync(customerId, address));
   }
 
@@ -93,7 +93,7 @@ public class CustomerController : ControllerBase
   [HttpPatch("gender/{gender:int}")]
   public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateGenderAsync(customerId, (EGender)gender));
   }
 
@@ -101,7 +101,7 @@ public class CustomerController : ControllerBase
   [HttpPatch("date-of-birth")]
   public async Task<IActionResult> UpdateDateOfBirthAsync([FromBody] UpdateDateOfBirth newDateOfBirth)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateDateOfBirthAsync(customerId, newDateOfBirth.DateOfBirth));
   }
 }

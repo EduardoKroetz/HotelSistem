@@ -65,12 +65,12 @@ public enum EPermissions
   CreateRoom,
   EditRoom,
   DeleteRoom,
-  AddServiceToRoom,
-  RemoveServiceToRoom,
+  AddRoomService,
+  RemoveRoomService,
   UpdateRoomNumber,
   UpdateRoomCapacity,
   UpdateRoomCategory,
-  UpdateRoomPrice
+  UpdateRoomPrice,
 
   //Services
   GetServices,

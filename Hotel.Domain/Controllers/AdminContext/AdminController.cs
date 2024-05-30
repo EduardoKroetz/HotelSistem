@@ -69,7 +69,7 @@ public class AdminController : ControllerBase
   [Authorize(Roles = "RootAdmin")]
   public async Task<IActionResult> ChangeToRootAdminAsync( [FromRoute] Guid toRootAdminId)
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleChangeToRootAdminAsync(adminId, toRootAdminId));
   }
 
@@ -78,7 +78,7 @@ public class AdminController : ControllerBase
   [HttpDelete]
   public async Task<IActionResult> DeleteAsync()
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleDeleteAsync(adminId));
   }
 
@@ -87,7 +87,7 @@ public class AdminController : ControllerBase
   [HttpPut]
   public async Task<IActionResult> PutAsync([FromBody] UpdateUser model)
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAsync(model, adminId));
   }
 
@@ -96,7 +96,7 @@ public class AdminController : ControllerBase
   [HttpPatch("name")]
   public async Task<IActionResult> UpdateNameAsync([FromBody] Name name)
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateNameAsync(adminId, name));
   }
 
@@ -105,7 +105,7 @@ public class AdminController : ControllerBase
   [HttpPatch("email")]
   public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateEmailAsync(adminId, email));
   }
 
@@ -114,7 +114,7 @@ public class AdminController : ControllerBase
   [HttpPatch("phone")]
   public async Task<IActionResult> UpdatePhoneAsync([FromBody] Phone phone)
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdatePhoneAsync(adminId, phone));
   }
 
@@ -123,7 +123,7 @@ public class AdminController : ControllerBase
   [HttpPatch("address")]
   public async Task<IActionResult> UpdateAddressAsync([FromBody] Address address) 
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAddressAsync(adminId, address));
   }
 
@@ -132,7 +132,7 @@ public class AdminController : ControllerBase
   [HttpPatch("gender/{gender:int}")]
   public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateGenderAsync(adminId, (EGender)gender));
   }
 
@@ -141,7 +141,7 @@ public class AdminController : ControllerBase
   [HttpPatch("date-of-birth")]
   public async Task<IActionResult> UpdateDateOfBirthAsync([FromBody] UpdateDateOfBirth newDateOfBirth)
   {
-    var adminId = UserServices.GetIdFromClaim(User);
+    var adminId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateDateOfBirthAsync(adminId, newDateOfBirth.DateOfBirth));
   }  
 }

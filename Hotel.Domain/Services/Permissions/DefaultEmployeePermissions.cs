@@ -20,43 +20,43 @@ public class DefaultEmployeePermissions
     }
   }
 
-  public static List<string> PermissionsName { get; set; } =
+  public static List<EPermissions> PermissionsName { get; set; } =
   [
-    EPermissions.GetEmployee.ToString(),
-    EPermissions.GetEmployees.ToString(),
-    EPermissions.GetResponsabilities.ToString(),
-    EPermissions.GetResponsability.ToString(),
-    EPermissions.GetRoomInvoices.ToString(),
-    EPermissions.GetRoomInvoice.ToString(),
-    EPermissions.GetReservations.ToString(),
-    EPermissions.UpdateReservationCheckout.ToString(),
-    EPermissions.UpdateReservationCheckIn.ToString(),
-    EPermissions.AddServiceToReservation.ToString(),
-    EPermissions.GetServices.ToString(),
-    EPermissions.GetService.ToString(),
-    EPermissions.UpdateService.ToString(),
-    EPermissions.CreateService.ToString(),
-    EPermissions.DeleteService.ToString(),
-    EPermissions.AssignServiceResponsability.ToString(),
-    EPermissions.UnassignServiceResponsability.ToString()
-    EPermissions.EditRoom.ToString(),
-    EPermissions.CreateRoom.ToString(),
-    EPermissions.DeleteRoom.ToString(),
-    EPermissions.AddServiceToRoom.ToString(),
-    EPermissions.RemoveServiceToRoom.ToString(),
-    EPermissions.UpdateRoomNumber.ToString(),
-    EPermissions.UpdateRoomCapacity.ToString(),
-    EPermissions.UpdateRoomCategory.ToString(),
-    EPermissions.UpdateRoomPrice.ToString(),
-    EPermissions.GetReports.ToString(),
-    EPermissions.GetReport.ToString(),
-    EPermissions.EditReport.ToString(),
-    EPermissions.CreateReport.ToString(),
-    EPermissions.FinishReport.ToString(),
-    EPermissions.CreateCategory.ToString(),
-    EPermissions.EditCategory.ToString()
+    EPermissions.GetEmployee,
+    EPermissions.GetEmployees,
+    EPermissions.GetResponsabilities,
+    EPermissions.GetResponsability,
+    EPermissions.GetRoomInvoices,
+    EPermissions.GetRoomInvoice,
+    EPermissions.GetReservations,
+    EPermissions.UpdateReservationCheckout,
+    EPermissions.UpdateReservationCheckIn,
+    EPermissions.AddServiceToReservation,
+    EPermissions.GetServices,
+    EPermissions.GetService,
+    EPermissions.UpdateService,
+    EPermissions.CreateService,
+    EPermissions.DeleteService,
+    EPermissions.AssignServiceResponsability,
+    EPermissions.UnassignServiceResponsability,
+    EPermissions.EditRoom,
+    EPermissions.CreateRoom,
+    EPermissions.DeleteRoom,
+    EPermissions.AddRoomService,
+    EPermissions.RemoveRoomService,
+    EPermissions.UpdateRoomNumber,
+    EPermissions.UpdateRoomCapacity,
+    EPermissions.UpdateRoomCategory,
+    EPermissions.UpdateRoomPrice,
+    EPermissions.GetReports,
+    EPermissions.GetReport,
+    EPermissions.EditReport,
+    EPermissions.CreateReport,
+    EPermissions.FinishReport,
+    EPermissions.CreateCategory,
+    EPermissions.EditCategory
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;
-  public static List<Permission> DefaultPermissions { get; set; } = null!;
+  public static IEnumerable<Permission> DefaultPermissions { get; set; } = null!;
 }

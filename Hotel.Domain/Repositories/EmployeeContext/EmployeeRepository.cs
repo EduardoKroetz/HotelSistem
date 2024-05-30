@@ -5,6 +5,7 @@ using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Base;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
+using Hotel.Domain.Services.Authorization;
 using Hotel.Domain.Services.Permissions;
 using Microsoft.EntityFrameworkCore;
 
@@ -78,11 +79,14 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
       .FirstOrDefaultAsync();
   }
 
-  public async Task<List<Permission>> GetAllDefaultPermissions()
+  public async Task<IEnumerable<Permission>> GetAllDefaultPermissions()
   {
-    return await _context.Permissions
-      .Where(x => DefaultEmployeePermissions.PermissionsName.Contains(x.Name))
-      .ToListAsync();
+    var permissions = await _context.Permissions.ToListAsync();
+
+    return permissions
+      .Where(p => DefaultEmployeePermissions.PermissionsName
+          .Any(pEnum => p.Name.Contains(pEnum.ToString())))
+      .ToList();
   }
 
   public async Task<Permission?> GetDefaultPermission()

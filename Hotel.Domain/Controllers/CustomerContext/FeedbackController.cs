@@ -30,7 +30,7 @@ public class FeedbackController : ControllerBase
   [HttpPost]
   public async Task<IActionResult> PostAsync([FromBody] CreateFeedback model)
   {
-    var userId = UserServices.GetIdFromClaim(User);
+    var userId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleCreateAsync(model, userId));
   }
 
@@ -38,7 +38,7 @@ public class FeedbackController : ControllerBase
   [HttpPut("{Id:guid}")]
   public async Task<IActionResult> PutAsync([FromBody] UpdateFeedback model, [FromRoute] Guid id)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAsync(model, id, customerId));
   }
 
@@ -46,7 +46,7 @@ public class FeedbackController : ControllerBase
   [HttpDelete("{Id:guid}")]
   public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleDeleteAsync(id, customerId));
   }
 
@@ -54,7 +54,7 @@ public class FeedbackController : ControllerBase
   [HttpPatch("{Id:guid}/rate/{rate:int}")]
   public async Task<IActionResult> UpdateRateAsync([FromRoute] Guid id, [FromRoute] int rate)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateRateAsync(id, rate, customerId));
   }
 
@@ -62,7 +62,7 @@ public class FeedbackController : ControllerBase
   [HttpPatch("{Id:guid}/comment")]
   public async Task<IActionResult> UpdateCommentAsync([FromRoute] Guid id, [FromBody] UpdateComment updateComment)
   {
-    var customerId = UserServices.GetIdFromClaim(User);
+    var customerId = UserServices.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateCommentAsync(id, updateComment.Comment, customerId));
   }
 

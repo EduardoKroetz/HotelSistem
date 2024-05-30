@@ -2,6 +2,7 @@
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Enums;
+using Hotel.Domain.Services.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -26,7 +27,7 @@ public static partial class Authentication
     else
       claims.Add(new(ClaimTypes.Role, nameof(ERoles.Admin)));
 
-    var permissions = admin.Permissions.Select(x => (int)(EPermissions)Enum.Parse(typeof(EPermissions),x.Name)).ToList(); //Pega todos os enumeradores das permissõs dos administradores
+    var permissions = admin.Permissions.Select(x => (int)AuthorizationService.ConvertToPermission(x.Name)).ToList(); //Pega todos os enumeradores das permissõs dos administradores
     claims.Add(new("permissions", string.Join(",", permissions))); //separa todas as permissões por vírgula
 
     //criar tokenDescriptor

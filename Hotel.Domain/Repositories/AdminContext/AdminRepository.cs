@@ -58,9 +58,12 @@ public class AdminRepository : UserRepository<Admin>, IAdminRepository
 
   public async Task<List<Permission>> GetAllDefaultPermissions()
   {
-    return await _context.Permissions
-      .Where(p => DefaultAdminPermissions.PermissionsName.Contains(p.Name))
-      .ToListAsync(); 
+    var permissions = await _context.Permissions.ToListAsync();
+
+    return permissions
+      .Where(p => DefaultAdminPermissions.PermissionsName
+          .Any(pEnum => p.Name.Contains(pEnum.ToString())))
+      .ToList();
   }
 
   public async Task<Permission?> GetDefaultAdminPermission()

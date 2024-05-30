@@ -28,7 +28,7 @@ public class RoomInvoiceController : ControllerBase
   public async Task<IActionResult> GetMyRoomInvoicesAsync(
   [FromBody] RoomInvoiceQueryParameters queryParameters)
   {
-    var userId = UserServices.GetIdFromClaim(User);
+    var userId = UserServices.GetUserIdentifier(User);
     queryParameters.CustomerId = userId; //Vai filtrar pelo Id do cliente, ainda podendo aplicar o restante dos filtros.
     return Ok(await _handler.HandleGetAsync(queryParameters));
   }

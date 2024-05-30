@@ -47,13 +47,13 @@ public class RoomController : ControllerBase
 
   // Endpoint para adicionar um serviço a um quarto (com permissão)
   [HttpPost("{Id:guid}/services/{serviceId:guid}")]
-  [AuthorizePermissions([EPermissions.AddServiceToRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  [AuthorizePermissions([EPermissions.AddRoomService, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> AddServiceAsync([FromRoute] Guid id, [FromRoute] Guid serviceId)
     => Ok(await _handler.HandleAddServiceAsync(id, serviceId));
 
   // Endpoint para remover um serviço de um quarto (com permissão)
   [HttpDelete("{Id:guid}/services/{serviceId:guid}")]
-  [AuthorizePermissions([EPermissions.RemoveServiceToRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  [AuthorizePermissions([EPermissions.RemoveRoomService, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> RemoveServiceAsync([FromRoute] Guid id, [FromRoute] Guid serviceId)
     => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
 
