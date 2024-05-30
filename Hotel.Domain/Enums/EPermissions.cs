@@ -54,7 +54,7 @@ public enum EPermissions
   UpdateReservationCheckIn,
   AddServiceToReservation,
   RemoveServiceFromReservation,
-  
+    
   //Categories
   CreateCategory,
   EditCategory,
@@ -66,5 +66,17 @@ public enum EPermissions
   EditReport,
   CreateReport,
   FinishReport,
+  
+  //Rooms
+  CreateRoom,
+  EditRoom,
+  DeleteRoom,
+  AddServiceToRoom,
+  RemoveServiceToRoom,
+  UpdateRoomNumber,
+  UpdateRoomCapacity,
+  UpdateRoomCategory,
+  UpdateRoomPrice
+
 }
 
