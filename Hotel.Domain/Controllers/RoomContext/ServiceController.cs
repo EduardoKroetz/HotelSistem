@@ -1,9 +1,15 @@
+using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.RoomContext.ServiceHandler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.RoomContext;
 
+[ApiController]
+[Route("v1/services")]
+[Authorize(Roles = "RootAdmin,Admin,Employee")]
 public class ServiceController : ControllerBase
 {
   private readonly ServiceHandler _handler;
@@ -11,49 +17,48 @@ public class ServiceController : ControllerBase
   public ServiceController(ServiceHandler handler)
   => _handler = handler;
 
-
-  [HttpGet("v1/services")]
+  [HttpGet]
+  [AuthorizeRoleOrPermissions([EPermissions.GetServices, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> GetAsync(
-  [FromBody] ServiceQueryParameters queryParameters)
-  => Ok(await _handler.HandleGetAsync(queryParameters));
+    [FromBody] ServiceQueryParameters queryParameters)
+    => Ok(await _handler.HandleGetAsync(queryParameters));
   
-  [HttpGet("v1/services/{Id:guid}")]
+  [HttpGet("{Id:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.GetService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> GetByIdAsync(
-    [FromRoute]Guid id
-  )
-  => Ok(await _handler.HandleGetByIdAsync(id));
+    [FromRoute]Guid id)
+    => Ok(await _handler.HandleGetByIdAsync(id));
   
-  [HttpPut("v1/services/{Id:guid}")]
+  [HttpPut("{Id:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.UpdateService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> PutAsync(
     [FromBody]EditorService model,
-    [FromRoute]Guid id
-  )
-  => Ok(await _handler.HandleUpdateAsync(model,id));
+    [FromRoute]Guid id)
+    => Ok(await _handler.HandleUpdateAsync(model,id));
 
-  [HttpPost("v1/services")]
+  [HttpPost]
+  [AuthorizeRoleOrPermissions([EPermissions.CreateService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> PostAsync(
-    [FromBody]EditorService model
-  )
-  => Ok(await _handler.HandleCreateAsync(model));
+    [FromBody]EditorService model)
+    => Ok(await _handler.HandleCreateAsync(model));
   
-  
-  [HttpDelete("v1/services/{Id:guid}")]
+  [HttpDelete("{Id:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.DeleteService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync(
-    [FromRoute]Guid id
-  )
-  => Ok(await _handler.HandleDeleteAsync(id));
+    [FromRoute]Guid id)
+    => Ok(await _handler.HandleDeleteAsync(id));
 
-  [HttpPost("v1/services/{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  [HttpPost("{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.AssignServiceResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> AssignResponsabilityAsync(
     [FromRoute] Guid id,
-    [FromRoute] Guid responsabilityId
-  )
-  => Ok(await _handler.HandleAssignResponsabilityAsync(id,responsabilityId));
+    [FromRoute] Guid responsabilityId)
+    => Ok(await _handler.HandleAssignResponsabilityAsync(id,responsabilityId));
 
-  [HttpDelete("v1/services/{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  [HttpDelete("{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  [AuthorizeRoleOrPermissions([EPermissions.UnassignServiceResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> UnassignResponsabilityAsync(
-  [FromRoute] Guid id,
-  [FromRoute] Guid responsabilityId
-  )
-  => Ok(await _handler.HandleUnassignResponsabilityAsync(id, responsabilityId));
+    [FromRoute] Guid id,
+    [FromRoute] Guid responsabilityId)
+    => Ok(await _handler.HandleUnassignResponsabilityAsync(id, responsabilityId));
 }

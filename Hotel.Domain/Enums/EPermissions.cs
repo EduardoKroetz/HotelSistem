@@ -34,14 +34,14 @@ public enum EPermissions
   UnassignEmployeeResponsability,
   AssignEmployeePermission,
   UnassignEmployeePermission,
-    
+
   //Responsabilities
   GetResponsabilities,
   GetResponsability,
   CreateResponsability,
   EditResponsability,
   DeleteResponsability,
-  
+
   //RoomInvoices
   DeleteRoomInvoice,
   GetRoomInvoices,
@@ -78,5 +78,13 @@ public enum EPermissions
   UpdateRoomCategory,
   UpdateRoomPrice
 
+  //Services
+  GetServices,
+  GetService,
+  UpdateService,
+  CreateService,
+  DeleteService,
+  AssignServiceResponsability,
+  UnassignServiceResponsability,
 }
 

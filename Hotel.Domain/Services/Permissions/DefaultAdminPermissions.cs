@@ -65,6 +65,13 @@ public class DefaultAdminPermissions
     EPermissions.UpdateReservationCheckIn.ToString(),
     EPermissions.AddServiceToReservation.ToString(),
     EPermissions.RemoveServiceFromReservation.ToString(),
+    EPermissions.GetServices.ToString(),
+    EPermissions.GetService.ToString(),
+    EPermissions.UpdateService.ToString(),
+    EPermissions.CreateService.ToString(),
+    EPermissions.DeleteService.ToString(),
+    EPermissions.AssignServiceResponsability.ToString(),
+    EPermissions.UnassignServiceResponsability.ToString()
     EPermissions.CreateRoom.ToString(),
     EPermissions.DeleteRoom.ToString(),
     EPermissions.AddServiceToRoom.ToString(),

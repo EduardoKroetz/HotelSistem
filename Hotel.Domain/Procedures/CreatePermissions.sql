@@ -253,6 +253,48 @@ BEGIN
         VALUES (NEWID(), 'RemoveServiceFromReservation', 'Permissão para remover um serviço de uma reserva.', 1, GETDATE());
     END;
 
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetServices')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetServices', 'Permissão para obter todos os serviços.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetService')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'GetService', 'Permissão para obter um serviço por ID.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UpdateService')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'UpdateService', 'Permissão para atualizar um serviço.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateService')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'CreateService', 'Permissão para criar um novo serviço.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteService')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DeleteService', 'Permissão para deletar um serviço.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignResponsability')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'AssignResponsability', 'Permissão para atribuir uma responsabilidade a um serviço.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignResponsability')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'UnassignResponsability', 'Permissão para desatribuir uma responsabilidade de um serviço.', 1, GETDATE());
+    END;
+
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateRoom')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
