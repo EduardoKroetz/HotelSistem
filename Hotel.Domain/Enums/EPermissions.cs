@@ -53,6 +53,17 @@ public enum EPermissions
   UpdateReservationCheckout,
   UpdateReservationCheckIn,
   AddServiceToReservation,
-  RemoveServiceFromReservation
+  RemoveServiceFromReservation,
+
+  //Rooms
+  CreateRoom,
+  EditRoom,
+  DeleteRoom,
+  AddServiceToRoom,
+  RemoveServiceToRoom,
+  UpdateRoomNumber,
+  UpdateRoomCapacity,
+  UpdateRoomCategory,
+  UpdateRoomPrice,
 }
 

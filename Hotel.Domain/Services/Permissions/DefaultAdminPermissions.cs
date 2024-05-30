@@ -63,7 +63,15 @@ public class DefaultAdminPermissions
     EPermissions.UpdateReservationCheckout.ToString(),
     EPermissions.UpdateReservationCheckIn.ToString(),
     EPermissions.AddServiceToReservation.ToString(),
-    EPermissions.RemoveServiceFromReservation.ToString()
+    EPermissions.RemoveServiceFromReservation.ToString(),
+    EPermissions.CreateRoom.ToString(),
+    EPermissions.DeleteRoom.ToString(),
+    EPermissions.AddServiceToRoom.ToString(),
+    EPermissions.RemoveServiceToRoom.ToString(),
+    EPermissions.UpdateRoomNumber.ToString(),
+    EPermissions.UpdateRoomCapacity.ToString(),
+    EPermissions.UpdateRoomCategory.ToString(),
+    EPermissions.UpdateRoomPrice.ToString(),
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;
