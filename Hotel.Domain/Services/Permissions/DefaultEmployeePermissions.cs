@@ -32,6 +32,8 @@ public class DefaultEmployeePermissions
     EPermissions.UpdateReservationCheckout.ToString(),
     EPermissions.UpdateReservationCheckIn.ToString(),
     EPermissions.AddServiceToReservation.ToString(),
+    EPermissions.CreateCategory.ToString(),
+    EPermissions.EditCategory.ToString(),
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;
