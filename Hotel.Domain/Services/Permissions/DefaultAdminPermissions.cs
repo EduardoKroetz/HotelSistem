@@ -65,11 +65,15 @@ public class DefaultAdminPermissions
     EPermissions.UpdateReservationCheckIn.ToString(),
     EPermissions.AddServiceToReservation.ToString(),
     EPermissions.RemoveServiceFromReservation.ToString(),
+    EPermissions.CreateCategory.ToString(),
+    EPermissions.EditCategory.ToString(),
+    EPermissions.DeleteCategory.ToString(),
     EPermissions.GetReports.ToString(),
     EPermissions.GetReport.ToString(),
     EPermissions.EditReport.ToString(),
     EPermissions.CreateReport.ToString(),
-    EPermissions.FinishReport.ToString(),
+    EPermissions.FinishReport.ToString()
+
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;

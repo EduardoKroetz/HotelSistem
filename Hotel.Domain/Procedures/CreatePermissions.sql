@@ -282,6 +282,24 @@ BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'FinishReport', 'Permissão para finalizar um relatório.', 1, GETDATE());
     END;
+    
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateCategory')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'CreateCategory', 'Permissão para criar uma nova categoria.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditCategory')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'EditCategory', 'Permissão para editar uma categoria existente.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteCategory')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DeleteCategory', 'Permissão para deletar uma categoria.', 1, GETDATE());
+    END;
 
 END;
 
