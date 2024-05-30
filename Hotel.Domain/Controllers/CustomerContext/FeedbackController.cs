@@ -1,95 +1,85 @@
-using Hotel.Domain.DTOs.Base;
 using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
+using Hotel.Domain.Services.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.CustomerContext;
 
+[ApiController]
+[Route("v1/feedbacks")]
+[Authorize(Roles = "RootAdmin,Admin,Employee,Customer")]
 public class FeedbackController : ControllerBase
 {
   private readonly FeedbackHandler _handler;
 
   public FeedbackController(FeedbackHandler handler)
+    => _handler = handler;
+
+  // Endpoint para buscar feedbacks
+  [HttpGet]
+  public async Task<IActionResult> GetAsync([FromBody] FeedbackQueryParameters queryParameters)
+    => Ok(await _handler.HandleGetAsync(queryParameters));
+
+  // Endpoint para buscar feedback por ID
+  [HttpGet("{Id:guid}")]
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleGetByIdAsync(id));
+
+  // Endpoint para criar um novo feedback
+  [HttpPost]
+  public async Task<IActionResult> PostAsync([FromBody] CreateFeedback model)
   {
-    _handler = handler;
+    var userId = UserServices.GetUserIdentifier(User);
+    return Ok(await _handler.HandleCreateAsync(model, userId));
   }
 
-  [HttpGet("v1/feedbacks")]
-  public async Task<IActionResult> GetAsync(
-  [FromBody] FeedbackQueryParameters queryParameters)
-  => Ok(await _handler.HandleGetAsync(queryParameters));
+  // Endpoint para atualizar um feedback
+  [HttpPut("{Id:guid}")]
+  public async Task<IActionResult> PutAsync([FromBody] UpdateFeedback model, [FromRoute] Guid id)
+  {
+    var customerId = UserServices.GetUserIdentifier(User);
+    return Ok(await _handler.HandleUpdateAsync(model, id, customerId));
+  }
 
-  [HttpGet("v1/feedbacks/{Id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleGetByIdAsync(id));
+  // Endpoint para deletar um feedback
+  [HttpDelete("{Id:guid}")]
+  public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+  {
+    var customerId = UserServices.GetUserIdentifier(User);
+    return Ok(await _handler.HandleDeleteAsync(id, customerId));
+  }
 
+  // Endpoint para atualizar a avaliação (rate) de um feedback
+  [HttpPatch("{Id:guid}/rate/{rate:int}")]
+  public async Task<IActionResult> UpdateRateAsync([FromRoute] Guid id, [FromRoute] int rate)
+  {
+    var customerId = UserServices.GetUserIdentifier(User);
+    return Ok(await _handler.HandleUpdateRateAsync(id, rate, customerId));
+  }
 
-  [HttpPost("v1/feedbacks")]
-  public async Task<IActionResult> PostAsync(
-    [FromBody] CreateFeedback model
-  )
-  => Ok(await _handler.HandleCreateAsync(model));
+  // Endpoint para atualizar o comentário de um feedback
+  [HttpPatch("{Id:guid}/comment")]
+  public async Task<IActionResult> UpdateCommentAsync([FromRoute] Guid id, [FromBody] UpdateComment updateComment)
+  {
+    var customerId = UserServices.GetUserIdentifier(User);
+    return Ok(await _handler.HandleUpdateCommentAsync(id, updateComment.Comment, customerId));
+  }
 
+  // Rotas para adicionar/remover likes e dislikes em um feedback
+  [HttpPatch("add-like/{Id:guid}")]
+  public async Task<IActionResult> AddLikeAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleAddLikeAsync(id));
 
+  [HttpPatch("remove-like/{Id:guid}")]
+  public async Task<IActionResult> RemoveLikeAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleRemoveLikeAsync(id));
 
-  [HttpPut("v1/feedbacks/{Id:guid}")]
-  public async Task<IActionResult> PutAsync(
-    [FromBody] UpdateFeedback model,
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleUpdateAsync(model, id));
+  [HttpPatch("add-deslike/{Id:guid}")]
+  public async Task<IActionResult> AddDeslikeAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleAddDeslikeAsync(id));
 
-
-  [HttpDelete("v1/feedbacks/{Id:guid}")]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleDeleteAsync(id));
-
-
-  [HttpPatch("v1/feedbacks/add-like/{Id:guid}")]
-  public async Task<IActionResult> AddLikeAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleAddLikeAsync(id));
-
-
-  [HttpPatch("v1/feedbacks/remove-like/{Id:guid}")]
-  public async Task<IActionResult> RemoveLikeAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleRemoveLikeAsync(id));
-
-
-  [HttpPatch("v1/feedbacks/add-deslike/{Id:guid}")]
-  public async Task<IActionResult> AddDeslikeAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleAddDeslikeAsync(id));
-
-
-  [HttpPatch("v1/feedbacks/remove-deslike/{Id:guid}")]
-  public async Task<IActionResult> RemoveDeslikeAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleRemoveDeslikeAsync(id));
-
-
-  [HttpPatch("v1/feedbacks/{Id:guid}/rate/{rate:int}")]
-  public async Task<IActionResult> UpdateRateAsync(
-    [FromRoute] Guid id,
-    [FromRoute] int rate
-  )
-  => Ok(await _handler.HandleUpdateRateAsync(id, rate));
-
-
-  [HttpPatch("v1/feedbacks/{Id:guid}/comment")]
-  public async Task<IActionResult> UpdateCommentAsync(
-    [FromRoute] Guid id,
-    [FromBody]UpdateComment updateComment
-  )
-  => Ok(await _handler.HandleUpdateCommentAsync(id, updateComment.Comment));
-
+  [HttpPatch("remove-deslike/{Id:guid}")]
+  public async Task<IActionResult> RemoveDeslikeAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleRemoveDeslikeAsync(id));
 }

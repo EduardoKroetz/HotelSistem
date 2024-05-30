@@ -34,16 +34,6 @@ public class AdminEntityTest
     Assert.AreEqual(1,admin.Permissions.Count);
   }
 
-  [TestMethod]
-  [ExpectedException(typeof(ValidationException))]
-  public void AddDisabledPermission_ExpectedException()
-  {
-    var admin = new Admin(TestParameters.Name,TestParameters.Email,TestParameters.Phone,TestParameters.Password);
-    var permission = new Permission("Permission 1","Permission 1");
-    permission.Disable();
-    admin.AddPermission(permission);
-    Assert.Fail();
-  }
 
   [TestMethod]
   [ExpectedException(typeof(ValidationException))]

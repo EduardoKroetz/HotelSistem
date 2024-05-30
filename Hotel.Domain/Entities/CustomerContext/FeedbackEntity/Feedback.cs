@@ -10,12 +10,13 @@ public partial class Feedback : Entity, IFeedback
   internal Feedback(){}
 
 
-  public Feedback(string comment, int rate, Guid customerId, Guid reservationId, Guid roomId)
+  public Feedback(string comment, int rate, Guid customerId, Guid reservationId, Guid roomId, Reservation? reservation = null)
   {
     Comment = comment;
     Rate = rate;
     RoomId = roomId;
     CustomerId = customerId;
+    Reservation = reservation;
     ReservationId = reservationId;
     UpdatedAt = DateTime.Now;
     Likes = 0;

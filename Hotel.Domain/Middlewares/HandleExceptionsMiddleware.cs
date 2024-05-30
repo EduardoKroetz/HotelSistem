@@ -38,6 +38,13 @@ public class HandleExceptionMiddleware
         new Response<string>(400,[e.Message])
       );
     }
+    catch (UnauthorizedAccessException e)
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+      await context.Response.WriteAsJsonAsync(
+        new Response<string>(403, [e.Message])
+      );
+    }
     catch (DbUpdateException)
     {
       context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

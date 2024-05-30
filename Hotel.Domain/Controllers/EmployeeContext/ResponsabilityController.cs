@@ -1,49 +1,50 @@
-using Hotel.Domain.DTOs.Base;
+using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.EmployeeContext;
 
+[ApiController]
+[Route("v1/responsabilities")]
+[Authorize(Roles = "RootAdmin,Admin,Employee")] //Somente tem acesso os administradores e os funcionários
 public class ResponsabilityController : ControllerBase
 {
   private readonly ResponsabilityHandler _handler;
 
   public ResponsabilityController(ResponsabilityHandler handler)
-  {
-    _handler = handler;
-  }
+  => _handler = handler;
 
-  [HttpGet("v1/responsabilities")]
-  public async Task<IActionResult> GetAsync(
-  [FromBody] ResponsabilityQueryParameters queryParameters)
-  => Ok(await _handler.HandleGetAsync(queryParameters));
+  //Buscar responsabilidades
+  [HttpGet]
+  [AuthorizePermissions([EPermissions.GetResponsabilities,EPermissions.DefaultEmployeePermission,EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> GetAsync([FromBody] ResponsabilityQueryParameters queryParameters)
+    => Ok(await _handler.HandleGetAsync(queryParameters));
 
-  [HttpGet("v1/responsabilities/{Id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleGetByIdAsync(id));
+  //Buscar responsabilidade pelo Id
+  [HttpGet("{Id:guid}")]
+  [AuthorizePermissions([EPermissions.GetResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleGetByIdAsync(id));
 
+  //Criar responsabilidade
+  [HttpPost]
+  [AuthorizePermissions([EPermissions.CreateResponsability, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> PostAsync([FromBody] EditorResponsability model)
+    => Ok(await _handler.HandleCreateAsync(model));
 
-  [HttpPost("v1/responsabilities")]
-  public async Task<IActionResult> PostAsync(
-    [FromBody] EditorResponsability model
-  )
-  => Ok(await _handler.HandleCreateAsync(model));
+  //Editar responsabilidade
+  [HttpPut("{Id:guid}")]
+  [AuthorizePermissions([EPermissions.EditResponsability, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> PutAsync([FromBody] EditorResponsability model,[FromRoute] Guid id)
+    => Ok(await _handler.HandleUpdateAsync(model, id));
 
-
-  [HttpPut("v1/responsabilities/{Id:guid}")]
-  public async Task<IActionResult> PutAsync(
-    [FromBody] EditorResponsability model,
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleUpdateAsync(model, id));
-
-  [HttpDelete("v1/responsabilities/{Id:guid}")]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute] Guid id
-  )
-  => Ok(await _handler.HandleDeleteAsync(id));
+  //Deletar responsabilidade
+  [HttpDelete("{Id:guid}")]
+  [AuthorizePermissions([EPermissions.DeleteResponsability, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleDeleteAsync(id));
 
 }

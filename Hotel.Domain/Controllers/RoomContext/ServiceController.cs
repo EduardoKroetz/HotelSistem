@@ -1,59 +1,61 @@
+using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.RoomContext.ServiceHandler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.RoomContext;
 
+[ApiController]
+[Route("v1/services")]
+[Authorize(Roles = "RootAdmin,Admin,Employee")]
 public class ServiceController : ControllerBase
 {
   private readonly ServiceHandler _handler;
 
   public ServiceController(ServiceHandler handler)
-  => _handler = handler;
+    => _handler = handler;
 
+  // Endpoint para buscar todos os serviços (com permissão)
+  [HttpGet]
+  [AuthorizePermissions([EPermissions.GetServices, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> GetAsync([FromBody] ServiceQueryParameters queryParameters)
+    => Ok(await _handler.HandleGetAsync(queryParameters));
 
-  [HttpGet("v1/services")]
-  public async Task<IActionResult> GetAsync(
-  [FromBody] ServiceQueryParameters queryParameters)
-  => Ok(await _handler.HandleGetAsync(queryParameters));
-  
-  [HttpGet("v1/services/{Id:guid}")]
-  public async Task<IActionResult> GetByIdAsync(
-    [FromRoute]Guid id
-  )
-  => Ok(await _handler.HandleGetByIdAsync(id));
-  
-  [HttpPut("v1/services/{Id:guid}")]
-  public async Task<IActionResult> PutAsync(
-    [FromBody]EditorService model,
-    [FromRoute]Guid id
-  )
-  => Ok(await _handler.HandleUpdateAsync(model,id));
+  // Endpoint para buscar um serviço por ID (com permissão)
+  [HttpGet("{Id:guid}")]
+  [AuthorizePermissions([EPermissions.GetService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleGetByIdAsync(id));
 
-  [HttpPost("v1/services")]
-  public async Task<IActionResult> PostAsync(
-    [FromBody]EditorService model
-  )
-  => Ok(await _handler.HandleCreateAsync(model));
-  
-  
-  [HttpDelete("v1/services/{Id:guid}")]
-  public async Task<IActionResult> DeleteAsync(
-    [FromRoute]Guid id
-  )
-  => Ok(await _handler.HandleDeleteAsync(id));
+  // Endpoint para atualizar um serviço (com permissão)
+  [HttpPut("{Id:guid}")]
+  [AuthorizePermissions([EPermissions.UpdateService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> PutAsync([FromBody] EditorService model, [FromRoute] Guid id)
+    => Ok(await _handler.HandleUpdateAsync(model, id));
 
-  [HttpPost("v1/services/{Id:guid}/responsabilities/{responsabilityId:guid}")]
-  public async Task<IActionResult> AssignResponsabilityAsync(
-    [FromRoute] Guid id,
-    [FromRoute] Guid responsabilityId
-  )
-  => Ok(await _handler.HandleAssignResponsabilityAsync(id,responsabilityId));
+  // Endpoint para criar um novo serviço (com permissão)
+  [HttpPost]
+  [AuthorizePermissions([EPermissions.CreateService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> PostAsync([FromBody] EditorService model)
+    => Ok(await _handler.HandleCreateAsync(model));
 
-  [HttpDelete("v1/services/{Id:guid}/responsabilities/{responsabilityId:guid}")]
-  public async Task<IActionResult> UnassignResponsabilityAsync(
-  [FromRoute] Guid id,
-  [FromRoute] Guid responsabilityId
-  )
-  => Ok(await _handler.HandleUnassignResponsabilityAsync(id, responsabilityId));
+  // Endpoint para deletar um serviço (com permissão)
+  [HttpDelete("{Id:guid}")]
+  [AuthorizePermissions([EPermissions.DeleteService, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleDeleteAsync(id));
+
+  // Endpoint para atribuir uma responsabilidade a um serviço (com permissão)
+  [HttpPost("{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  [AuthorizePermissions([EPermissions.AssignServiceResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> AssignResponsabilityAsync([FromRoute] Guid id, [FromRoute] Guid responsabilityId)
+    => Ok(await _handler.HandleAssignResponsabilityAsync(id, responsabilityId));
+
+  // Endpoint para remover uma responsabilidade de um serviço (com permissão)
+  [HttpDelete("{Id:guid}/responsabilities/{responsabilityId:guid}")]
+  [AuthorizePermissions([EPermissions.UnassignServiceResponsability, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> UnassignResponsabilityAsync([FromRoute] Guid id, [FromRoute] Guid responsabilityId)
+    => Ok(await _handler.HandleUnassignResponsabilityAsync(id, responsabilityId));
 }

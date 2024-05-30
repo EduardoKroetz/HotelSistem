@@ -1,8 +1,10 @@
-﻿using Hotel.Domain.DTOs.Base.User;
+﻿using Hotel.Domain.Attributes;
+using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
+using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
-using Hotel.Domain.Handlers.EmployeeContexty.EmployeeHandlers;
+using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.AuthenticationContext;
@@ -22,19 +24,24 @@ public class RegisterController : ControllerBase
     _employeeHandler = employeeHandler;
   }
 
+  //Criar cliente
+  //Todos tem acesso.
   [HttpPost("customers")]
-  public async Task<IActionResult> RegisterCustomerAsync(
-    [FromBody] CreateUser customer)
+  public async Task<IActionResult> RegisterCustomerAsync([FromBody] CreateUser customer)
     => Ok(await _customerHandler.HandleCreateAsync(customer));
 
+  //Criar administrador
+  //Administradores com permissão podem acessar.
   [HttpPost("admins")]
-  public async Task<IActionResult> RegisterAdminAsync(
-    [FromBody] CreateUser admin)
+  [AuthorizePermissions([EPermissions.CreateAdmin])]
+  public async Task<IActionResult> RegisterAdminAsync([FromBody] CreateUser admin)
     => Ok(await _adminHandler.HandleCreateAsync(admin));
 
-
+  //Criar funcionário
+  //Administradores ou funcionários com permissão podem acessar.
+  //Administradores podem acessar por padrão.
   [HttpPost("employees")]
-  public async Task<IActionResult> RegisterEmployeeAsync(
-    [FromBody] CreateEmployee employee)
+  [AuthorizePermissions([EPermissions.CreateEmployee, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> RegisterEmployeeAsync([FromBody] CreateEmployee employee)
     => Ok(await _employeeHandler.HandleCreateAsync(employee));
 }

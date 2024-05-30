@@ -6,5 +6,5 @@ namespace Hotel.Domain.Entities.Interfaces;
 public interface IAdmin : IUser
 {
   bool IsRootAdmin { get; }
-  HashSet<Permission> Permissions { get; } 
+  ICollection<Permission> Permissions { get; } 
 }
