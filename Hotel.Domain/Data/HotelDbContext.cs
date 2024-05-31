@@ -17,7 +17,9 @@ using Hotel.Domain.Entities.RoomContext.ImageEntity;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
+using Hotel.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Hotel.Domain.Data.Mappings;
 
 namespace Hotel.Domain.Data;
 
@@ -40,6 +42,7 @@ public class HotelDbContext : DbContext
   public DbSet<Report> Reports { get; set; }
   public DbSet<Service> Services { get; set; }
   public DbSet<Room> Rooms { get; set; }
+  public DbSet<VerificationCode> VerificationCodes { get; set; }
 
   protected override void OnModelCreating(ModelBuilder model)
   {
@@ -57,6 +60,7 @@ public class HotelDbContext : DbContext
     model.ApplyConfiguration(new ReportMapping());
     model.ApplyConfiguration(new RoomMapping());
     model.ApplyConfiguration(new ServiceMapping());
+    model.ApplyConfiguration(new VerificationCodeMapping());
   }
 
 }

@@ -10,6 +10,7 @@
 /Data/Migrations
 /HotelSystemRoutes.txt
 /AuthenticationSystem.txt
+/EndpointsLogic.txt
 # dotenv files
 .env
 
