@@ -7,6 +7,7 @@ using Hotel.Domain.Handlers.Base.GenericUserHandler;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Hotel.Domain.Services.EmailServices.Interface;
+using Hotel.Domain.Services.Permissions;
 using Hotel.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +36,7 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, 
 
     //Criação do administrador
 
-    var defaultAdminPermission = await _repository.GetDefaultAdminPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
+    var defaultAdminPermission = DefaultAdminPermissions.DefaultPermission ?? await _repository.GetDefaultAdminPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
 
     var admin = new Admin(
       new Name(model.FirstName,model.LastName),

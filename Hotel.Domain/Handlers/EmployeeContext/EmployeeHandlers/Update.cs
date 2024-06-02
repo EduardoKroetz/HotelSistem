@@ -22,6 +22,6 @@ public partial class EmployeeHandler
     _repository.Update(employee);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Funcionário foi atualizado.",new { employee.Id });
+    return new Response(200,"Funcionário atualizado com sucesso!",new { employee.Id });
   }
 }

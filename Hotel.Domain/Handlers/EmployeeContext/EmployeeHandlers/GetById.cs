@@ -11,6 +11,6 @@ public partial class EmployeeHandler
     if (employee == null)
       throw new ArgumentException("Funcionário não encontrado.");
     
-    return new Response<GetEmployee>(200,"Funcionário encontrado.", employee);
+    return new Response<GetEmployee>(200,"Sucesso!", employee);
   }
 }
