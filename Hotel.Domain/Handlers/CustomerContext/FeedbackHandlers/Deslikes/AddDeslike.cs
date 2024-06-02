@@ -27,6 +27,6 @@ public partial class FeedbackHandler
 
     await _feedbackRepository.SaveChangesAsync();
 
-    return new Response(200,"Deslike adicionado.");
+    return new Response(200,"Deslike adicionado com sucesso!");
   }
 }

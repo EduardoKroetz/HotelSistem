@@ -31,7 +31,7 @@ public partial class FeedbackHandler : IHandler
   {
     var customer = await _customerRepository.GetEntityByIdAsync(userId);
     if (customer == null)
-      throw new ArgumentException("Usuário não encontrado ou não possui permissão.");
+      throw new ArgumentException("Usuário não encontrado.");
 
     var reservation = await _reservationRepository.GetReservationIncludesCustomers(model.ReservationId);
     if (reservation == null)

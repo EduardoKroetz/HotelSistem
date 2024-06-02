@@ -14,6 +14,6 @@ public partial class RoomHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Preço atualizado.");
+    return new Response(200, "Preço atualizado com sucesso!");
   }
 }

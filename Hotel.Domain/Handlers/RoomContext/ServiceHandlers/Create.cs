@@ -25,6 +25,6 @@ public partial class ServiceHandler : IHandler
     await _repository.CreateAsync(service);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Serviço criado.",new { service.Id });
+    return new Response(200,"Serviço criado com sucesso!",new { service.Id });
   }
 }

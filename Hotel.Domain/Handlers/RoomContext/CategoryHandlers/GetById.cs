@@ -11,6 +11,6 @@ public partial class CategoryHandler
     if (category == null)
       throw new ArgumentException("Categoria não encontrada.");
     
-    return new Response<GetCategory>(200,"Categoria encontrada.", category);
+    return new Response<GetCategory>(200, "Sucesso!", category);
   }
 }

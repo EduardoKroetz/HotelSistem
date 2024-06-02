@@ -26,6 +26,6 @@ public partial class FeedbackHandler
     
     await _feedbackRepository.SaveChangesAsync();
 
-    return new Response(200,"Like adicionado.");
+    return new Response(200,"Like adicionado com sucesso!");
   }
 }

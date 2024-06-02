@@ -15,6 +15,6 @@ public partial class GenericUserHandler<TRepository, TUser>
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Data de nascimento atualizada.");
+    return new Response(200, "Data de nascimento atualizada  com sucesso!");
   }
 }

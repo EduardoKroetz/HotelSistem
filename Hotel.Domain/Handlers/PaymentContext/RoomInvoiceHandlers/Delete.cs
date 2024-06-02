@@ -8,6 +8,6 @@ public partial class RoomInvoiceHandler
   {
     _repository.Delete(id);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Fatura deletada.", new { id });
+    return new Response(200,"Fatura deletada com sucesso!", new { id });
   }
 }

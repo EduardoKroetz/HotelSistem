@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
 
 public partial class CategoryHandler 
 {
-    public async Task<Response> HandleUpdateAsync(EditorCategory model, Guid id)
+  public async Task<Response> HandleUpdateAsync(EditorCategory model, Guid id)
   {
     var category = await _repository.GetEntityByIdAsync(id);
     if (category == null)
@@ -18,6 +18,6 @@ public partial class CategoryHandler
     _repository.Update(category);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Categoria foi atualizada.",new { category.Id });
+    return new Response(200,"Categoria atualizada com sucesso!",new { category.Id });
   }
 }

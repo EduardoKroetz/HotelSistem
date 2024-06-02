@@ -8,6 +8,6 @@ public partial class RoomHandler
   {
     _repository.Delete(id);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Hospedagem deletada.", new { id });
+    return new Response(200,"Hospedagem deletada com sucesso!", new { id });
   }
 }

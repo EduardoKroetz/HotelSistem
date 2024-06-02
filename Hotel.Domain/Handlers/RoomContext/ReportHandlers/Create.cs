@@ -29,6 +29,6 @@ public partial class ReportHandler : IHandler
     await _repository.CreateAsync(report);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Relatório criado.",new { report.Id });
+    return new Response(200,"Relatório criado com sucesso!",new { report.Id });
   }
 }

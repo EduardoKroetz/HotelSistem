@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.RoomContext.ReportHandlers;
 
 public partial class ReportHandler 
 {
-    public async Task<Response> HandleUpdateAsync(UpdateReport model, Guid id)
+  public async Task<Response> HandleUpdateAsync(UpdateReport model, Guid id)
   {
     var report = await _repository.GetEntityByIdAsync(id);
     if (report == null)
@@ -20,6 +20,6 @@ public partial class ReportHandler
     _repository.Update(report);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Relatório atualizado.",new { report.Id });
+    return new Response(200,"Relatório atualizado com sucesso!.",new { report.Id });
   }
 }

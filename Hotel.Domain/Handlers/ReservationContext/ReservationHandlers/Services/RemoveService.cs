@@ -19,6 +19,6 @@ public partial class ReservationHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Serviço removido.");
+    return new Response(200, "Serviço removido com sucesso!.");
   }
 }

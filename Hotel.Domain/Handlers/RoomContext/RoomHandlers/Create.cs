@@ -27,6 +27,6 @@ public partial class RoomHandler : IHandler
     await _repository.CreateAsync(room);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Hospedagem criada.",new { room.Id });
+    return new Response(200,"Hospedagem criada com sucesso!",new { room.Id });
   }
 }

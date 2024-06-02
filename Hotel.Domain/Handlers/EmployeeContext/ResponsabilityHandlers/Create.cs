@@ -19,6 +19,6 @@ public partial class ResponsabilityHandler : IHandler
     await _repository.CreateAsync(responsability);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Responsabilidade criada.",new { responsability.Id });
+    return new Response(200,"Responsabilidade criada com sucesso!",new { responsability.Id });
   }
 }

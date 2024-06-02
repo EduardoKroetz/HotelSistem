@@ -8,6 +8,6 @@ public partial class ServiceHandler
   {
     _repository.Delete(id);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Serviço deletado.", new { id });
+    return new Response(200,"Serviço deletado com sucesso!", new { id });
   }
 }

@@ -18,6 +18,6 @@ public partial class RoomHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Serviço adicinado.");
+    return new Response(200, "Serviço adicinado com sucesso!.");
   }
 }

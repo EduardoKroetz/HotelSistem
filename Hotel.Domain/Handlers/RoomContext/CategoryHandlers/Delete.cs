@@ -8,6 +8,6 @@ public partial class CategoryHandler
   {
     _repository.Delete(id);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Categoria deletada.", new { id });
+    return new Response(200,"Categoria deletada com sucesso!.", new { id });
   }
 }

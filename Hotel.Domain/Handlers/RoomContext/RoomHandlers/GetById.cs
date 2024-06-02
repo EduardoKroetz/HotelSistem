@@ -11,6 +11,6 @@ public partial class RoomHandler
     if (room == null)
       throw new ArgumentException("Hospedagem não encontrada.");
     
-    return new Response<GetRoom>(200,"Hospedagem encontrada.", room);
+    return new Response<GetRoom>(200, "Sucesso!", room);
   }
 }

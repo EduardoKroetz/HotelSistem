@@ -8,6 +8,6 @@ public partial class ResponsabilityHandler
   {
     _repository.Delete(id);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Responsabilide deletada.", new { id });
+    return new Response(200,"Responsabilide deletada com sucesso!", new { id });
   }
 }

@@ -8,6 +8,6 @@ public partial class ReportHandler
   {
     _repository.Delete(id);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Relatório deletado.", new { id });
+    return new Response(200,"Relatório deletado com sucesso!", new { id });
   }
 }

@@ -9,7 +9,7 @@ public partial class CustomerHandler
   {
     var permission = await _repository.GetByIdAsync(id);
     if (permission == null)
-      throw new ArgumentException("Cliente não encontrado.");
+      throw new ArgumentException("Usuário não encontrado.");
     
     return new Response<GetUser>(200,"Sucesso!", permission);
   }

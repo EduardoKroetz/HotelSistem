@@ -11,6 +11,6 @@ public partial class ReportHandler
     if (report == null)
       throw new ArgumentException("Relatório não encontrado.");
     
-    return new Response<GetReport>(200,"Relatório encontrado.", report);
+    return new Response<GetReport>(200, "Sucesso!", report);
   }
 }

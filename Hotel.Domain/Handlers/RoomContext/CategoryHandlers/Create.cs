@@ -21,6 +21,6 @@ public partial class CategoryHandler : IHandler
     await _repository.CreateAsync(category);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Categoria criada.",new { category.Id });
+    return new Response(200,"Categoria criada com sucesso!.",new { category.Id });
   }
 }

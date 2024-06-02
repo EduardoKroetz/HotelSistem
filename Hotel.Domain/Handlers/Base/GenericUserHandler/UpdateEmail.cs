@@ -24,6 +24,6 @@ public partial class GenericUserHandler<TRepository,TUser>
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Email atualizado.");
+    return new Response(200, "Email atualizado com sucesso!");
   }
 }

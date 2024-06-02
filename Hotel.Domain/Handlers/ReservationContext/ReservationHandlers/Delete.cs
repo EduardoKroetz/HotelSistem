@@ -8,6 +8,6 @@ public partial class ReservationHandler
   {
     _repository.Delete(id);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Reserva deletada.", new { id });
+    return new Response(200,"Reserva deletada com sucesso!", new { id });
   }
 }

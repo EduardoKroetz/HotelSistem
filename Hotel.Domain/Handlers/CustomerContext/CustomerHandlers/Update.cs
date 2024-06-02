@@ -10,7 +10,7 @@ public partial class CustomerHandler
   {
     var customer = await _repository.GetEntityByIdAsync(id);
     if (customer == null)
-      throw new ArgumentException("Cliente não encontrado.");
+      throw new ArgumentException("Usuário não encontrado.");
 
     customer.ChangeName(new Name(model.FirstName,model.LastName));
     customer.ChangePhone(new Phone(model.Phone));
@@ -21,6 +21,6 @@ public partial class CustomerHandler
     _repository.Update(customer);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Atualização realizada com sucesso!",new { customer.Id });
+    return new Response(200,"Usuário atualizado com sucesso!",new { customer.Id });
   }
 }

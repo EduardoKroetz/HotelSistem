@@ -29,6 +29,6 @@ public partial class RoomInvoiceHandler : IHandler
     await _repository.CreateAsync(roomInvoice);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Fatura de quarto gerada.",new { roomInvoice.Id });
+    return new Response(200,"Fatura de quarto criada com sucesso!",new { roomInvoice.Id });
   }
 }

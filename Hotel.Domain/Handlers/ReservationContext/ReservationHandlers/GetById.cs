@@ -11,6 +11,6 @@ public partial class ReservationHandler
     if (reservation == null)
       throw new ArgumentException("Reserva não encontrada.");
     
-    return new Response<GetReservation>(200,"Reserva encontrada.", reservation);
+    return new Response<GetReservation>(200, "Sucesso!", reservation);
   }
 }

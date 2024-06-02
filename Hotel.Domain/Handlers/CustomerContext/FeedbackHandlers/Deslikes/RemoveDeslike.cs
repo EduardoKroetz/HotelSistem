@@ -15,6 +15,6 @@ public partial class FeedbackHandler
 
     await _feedbackRepository.SaveChangesAsync();
 
-    return new Response(200, "Deslike removido.");
+    return new Response(200, "Deslike removido com sucesso!");
   }
 }

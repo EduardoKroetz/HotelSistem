@@ -18,6 +18,6 @@ public partial class ServiceHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Responsabilidade desatribuida.");
+    return new Response(200, "Responsabilidade desatribuida com sucesso!");
   }
 }
