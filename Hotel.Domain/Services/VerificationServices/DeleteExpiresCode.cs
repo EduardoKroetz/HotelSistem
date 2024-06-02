@@ -23,8 +23,11 @@ public partial class VerificationService
         .Where(x => x.CreatedAt < expirationTime)
       .ToListAsync();
 
-      context.VerificationCodes.RemoveRange(expiredCodes);
-      await context.SaveChangesAsync();
+      if (expiredCodes.Count > 0)
+      {
+        context.VerificationCodes.RemoveRange(expiredCodes);
+        await context.SaveChangesAsync();
+      }
     }
   }
 

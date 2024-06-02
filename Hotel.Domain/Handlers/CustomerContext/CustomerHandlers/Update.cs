@@ -6,7 +6,7 @@ namespace Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 
 public partial class CustomerHandler 
 {
-    public async Task<Response> HandleUpdateAsync(UpdateUser model, Guid id)
+  public async Task<Response> HandleUpdateAsync(UpdateUser model, Guid id)
   {
     var customer = await _repository.GetEntityByIdAsync(id);
     if (customer == null)
@@ -21,6 +21,6 @@ public partial class CustomerHandler
     _repository.Update(customer);
     await _repository.SaveChangesAsync();
 
-    return new Response(200,"Cliente atualizado com sucesso!",new { customer.Id });
+    return new Response(200,"Atualização realizada com sucesso!",new { customer.Id });
   }
 }

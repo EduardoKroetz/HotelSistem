@@ -11,6 +11,6 @@ public partial class CustomerHandler
     if (permission == null)
       throw new ArgumentException("Cliente não encontrado.");
     
-    return new Response<GetUser>(200,"Cliente encontrado com sucesso!", permission);
+    return new Response<GetUser>(200,"Sucesso!", permission);
   }
 }
