@@ -1,5 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.CategoryDTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
 
@@ -9,7 +10,7 @@ public partial class CategoryHandler
   {
     var category = await _repository.GetEntityByIdAsync(id);
     if (category == null)
-      throw new ArgumentException("Categoria não encontrada.");
+      throw new NotFoundException("Categoria não encontrada.");
 
     category.ChangeName(model.Name);
     category.ChangeDescription(model.Description);

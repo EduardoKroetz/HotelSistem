@@ -43,6 +43,6 @@ public class RegisterController : ControllerBase
   //Administradores podem acessar por padrão.
   [HttpPost("employees")]
   [AuthorizePermissions([EPermissions.CreateEmployee, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> RegisterEmployeeAsync([FromBody] CreateEmployee employee)
-    => Ok(await _employeeHandler.HandleCreateAsync(employee));
+  public async Task<IActionResult> RegisterEmployeeAsync([FromBody] CreateEmployee employee, [FromQuery] string? code)
+    => Ok(await _employeeHandler.HandleCreateAsync(employee, code));
 }

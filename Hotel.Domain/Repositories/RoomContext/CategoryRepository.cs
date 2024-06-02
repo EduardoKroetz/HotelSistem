@@ -45,4 +45,11 @@ public class CategoryRepository : GenericRepository<Category>, ICategoryReposito
         x.AveragePrice
     )).ToListAsync();
   }
+
+  public async Task<Category?> GetCategoryIncludesRooms(Guid id)
+  {
+    return await _context.Categories
+      .Include(x => x.Rooms)
+      .FirstOrDefaultAsync(x => x.Id == id);
+  }
 }

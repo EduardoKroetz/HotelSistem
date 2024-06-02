@@ -1,7 +1,5 @@
 using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.DTOs.RoomContext.CategoryDTOs;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
 using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.RoomContext;
