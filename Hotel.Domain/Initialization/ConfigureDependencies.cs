@@ -65,6 +65,9 @@ public static class ConfigureDependencies
     builder.Services.AddScoped<IReportRepository, ReportRepository>();
     builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
     builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+    builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+    builder.Services.AddScoped<IDeslikeRepository, DeslikeRepository>();
+
 
     //Services
     builder.Services.AddScoped<IEmailService, EmailService>();

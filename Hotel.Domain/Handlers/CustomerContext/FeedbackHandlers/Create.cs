@@ -10,17 +10,21 @@ namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 
 public partial class FeedbackHandler : IHandler
 {
-  private readonly IFeedbackRepository  _repository;
+  private readonly IFeedbackRepository  _feedbackRepository;
   private readonly ICustomerRepository _customerRepository;
   private readonly IReservationRepository _reservationRepository;
   private readonly IRoomRepository _roomRepository;
+  private readonly ILikeRepository _likeRepository;
+  private readonly IDeslikeRepository _deslikeRepository;
 
-  public FeedbackHandler(IFeedbackRepository repository, ICustomerRepository customerRepository, IReservationRepository reservationRepository, IRoomRepository roomRepository)
+  public FeedbackHandler(IFeedbackRepository feedbackRepository, ICustomerRepository customerRepository, IReservationRepository reservationRepository, IRoomRepository roomRepository, ILikeRepository likeRepository, IDeslikeRepository deslikeRepository)
   {
-    _repository = repository;
+    _feedbackRepository = feedbackRepository;
     _customerRepository = customerRepository;
     _reservationRepository = reservationRepository;
     _roomRepository = roomRepository;
+    _likeRepository = likeRepository;
+    _deslikeRepository = deslikeRepository;
   }
 
   public async Task<Response> HandleCreateAsync(CreateFeedback model, Guid userId)
@@ -33,17 +37,17 @@ public partial class FeedbackHandler : IHandler
     if (reservation == null)
       throw new ArgumentException("Reserva não encontrada.");
 
-    var room = await _roomRepository.GetEntityByIdAsync(model.RoomId);
+    var room = await _roomRepository.GetEntityByIdAsync(reservation.RoomId);
     if (room == null)
       throw new ArgumentException("Hospedagem não encontrada.");
 
     var feedback = new Feedback(
-      model.Comment,model.Rate,customer.Id,model.ReservationId,model.RoomId, reservation //vai validar se o cliente que está criando o feedback está na reserva
+      model.Comment,model.Rate,customer.Id,model.ReservationId,room.Id, reservation //vai validar se o cliente que está criando o feedback está na reserva
     );
 
-    await _repository.CreateAsync(feedback);
-    await _repository.SaveChangesAsync();
+    await _feedbackRepository.CreateAsync(feedback);
+    await _feedbackRepository.SaveChangesAsync();
 
-    return new Response(200,"Feedback registrado.",new { feedback.Id });
+    return new Response(200,"Feedback criado com sucesso!",new { feedback.Id });
   }
 }

@@ -1,4 +1,5 @@
 using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.CustomerContext.FeedbackContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
@@ -20,4 +21,6 @@ public partial class Customer : User, ICustomer
   public HashSet<Feedback> Feedbacks { get; private set; } = [];
   public HashSet<Reservation> Reservations { get; private set; } = [];
   public HashSet<RoomInvoice> RoomInvoices { get; private set; } = [];
+  public ICollection<Like> Likes { get; private set; } = [];
+  public ICollection<Deslike> Deslikes { get; private set; } = [];
 }

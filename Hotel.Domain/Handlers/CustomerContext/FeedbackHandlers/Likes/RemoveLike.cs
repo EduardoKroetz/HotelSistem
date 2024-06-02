@@ -1,21 +1,18 @@
 using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 
 public partial class FeedbackHandler
 {
-  public async Task<Response> HandleRemoveLikeAsync(Guid id)
+  public async Task<Response> HandleRemoveLikeAsync(Guid feedbackId, Guid customerId)
   {
-    var feedback = await _repository.GetEntityByIdAsync(id);
+    var like = await _likeRepository.GetLikeAsync(feedbackId, customerId) ?? throw new NotFoundException("Like não encontrado.");
 
-    if (feedback == null)
-      throw new ArgumentException("Feedback não encontrado.");
+    _likeRepository.RemoveLike(like);
 
-    feedback.RemoveLike();
-    
-    _repository.Update(feedback);
-    await _repository.SaveChangesAsync();
+    await _feedbackRepository.SaveChangesAsync();
 
-    return new Response(200,"Curtida removida.", new { id });
+    return new Response(200,"Like removido.");
   }
 }

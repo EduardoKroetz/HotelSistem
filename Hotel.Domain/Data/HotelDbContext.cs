@@ -20,6 +20,7 @@ using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Hotel.Domain.Data.Mappings;
+using Hotel.Domain.Entities.CustomerContext.FeedbackContext;
 
 namespace Hotel.Domain.Data;
 
@@ -43,6 +44,8 @@ public class HotelDbContext : DbContext
   public DbSet<Service> Services { get; set; }
   public DbSet<Room> Rooms { get; set; }
   public DbSet<VerificationCode> VerificationCodes { get; set; }
+  public DbSet<Like> Likes { get; set; }
+  public DbSet<Deslike> Deslikes { get; set; }
 
   protected override void OnModelCreating(ModelBuilder model)
   {
@@ -61,6 +64,8 @@ public class HotelDbContext : DbContext
     model.ApplyConfiguration(new RoomMapping());
     model.ApplyConfiguration(new ServiceMapping());
     model.ApplyConfiguration(new VerificationCodeMapping());
+    model.ApplyConfiguration(new LikeMapping());
+    model.ApplyConfiguration(new DeslikeMapping());
   }
 
 }

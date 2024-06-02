@@ -17,7 +17,7 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
       .Feedbacks
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetFeedback(x.Id, x.Comment, x.Rate, x.Likes, x.Deslikes, x.CustomerId, x.ReservationId, x.RoomId,x.UpdatedAt,x.CreatedAt))
+      .Select(x => new GetFeedback(x.Id, x.Comment, x.Rate, x.Likes.Count, x.Deslikes.Count, x.CustomerId, x.ReservationId, x.RoomId,x.UpdatedAt,x.CreatedAt))
       .FirstOrDefaultAsync();
 
 
@@ -34,10 +34,10 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
       query = query.FilterByOperator(queryParameters.RateOperator, x => x.Rate, queryParameters.Rate);
 
     if (queryParameters.Likes.HasValue)
-      query = query.FilterByOperator(queryParameters.LikesOperator, x => x.Likes, queryParameters.Likes);
+      query = query.FilterByOperator(queryParameters.LikesOperator, x => x.Likes.Count, queryParameters.Likes);
 
     if (queryParameters.Deslikes.HasValue)
-      query = query.FilterByOperator(queryParameters.DeslikesOperator, x => x.Deslikes, queryParameters.Deslikes);
+      query = query.FilterByOperator(queryParameters.DeslikesOperator, x => x.Deslikes.Count, queryParameters.Deslikes);
 
     if (queryParameters.UpdatedAt.HasValue)
       query = query.FilterByOperator(queryParameters.UpdatedAtOperator, x => x.UpdatedAt, queryParameters.UpdatedAt);
@@ -58,8 +58,8 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
       x.Id,
       x.Comment,
       x.Rate,
-      x.Likes,
-      x.Deslikes,
+      x.Likes.Count,
+      x.Deslikes.Count,
       x.CustomerId,
       x.ReservationId,
       x.RoomId, 

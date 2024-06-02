@@ -72,19 +72,33 @@ public class FeedbackController : ControllerBase
   }
 
   // Rotas para adicionar/remover likes e dislikes em um feedback
-  [HttpPatch("add-like/{Id:guid}")]
-  public async Task<IActionResult> AddLikeAsync([FromRoute] Guid id)
-    => Ok(await _handler.HandleAddLikeAsync(id));
+  [HttpPatch("add-like/{feedbackId:guid}")]
+  public async Task<IActionResult> AddLikeAsync([FromRoute] Guid feedbackId)
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleAddLikeAsync(feedbackId, customerId));
+  }
 
-  [HttpPatch("remove-like/{Id:guid}")]
-  public async Task<IActionResult> RemoveLikeAsync([FromRoute] Guid id)
-    => Ok(await _handler.HandleRemoveLikeAsync(id));
 
-  [HttpPatch("add-deslike/{Id:guid}")]
-  public async Task<IActionResult> AddDeslikeAsync([FromRoute] Guid id)
-    => Ok(await _handler.HandleAddDeslikeAsync(id));
+  [HttpPatch("remove-like/{feedbackId:guid}")]
+  public async Task<IActionResult> RemoveLikeAsync([FromRoute] Guid feedbackId)
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleRemoveLikeAsync(feedbackId, customerId));
+  }
 
-  [HttpPatch("remove-deslike/{Id:guid}")]
-  public async Task<IActionResult> RemoveDeslikeAsync([FromRoute] Guid id)
-    => Ok(await _handler.HandleRemoveDeslikeAsync(id));
+
+  [HttpPatch("add-deslike/{feedbackId:guid}")]
+  public async Task<IActionResult> AddDeslikeAsync([FromRoute] Guid feedbackId)
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleAddDeslikeAsync(feedbackId, customerId));
+  }
+
+  [HttpPatch("remove-deslike/{feedbackId:guid}")]
+  public async Task<IActionResult> RemoveDeslikeAsync([FromRoute] Guid feedbackId)
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleRemoveDeslikeAsync(feedbackId, customerId));
+  }
 }

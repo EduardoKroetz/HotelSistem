@@ -22,14 +22,6 @@ public class FeedbackMapping : EntityBaseMapping<Feedback> ,IEntityTypeConfigura
       .IsRequired()
       .HasColumnType("SMALLINT");
 
-    builder.Property(f => f.Likes)
-      .IsRequired()
-      .HasColumnType("SMALLINT");;
-
-    builder.Property(f => f.Deslikes)
-      .IsRequired()
-      .HasColumnType("SMALLINT");;
-
     builder.Property(f => f.UpdatedAt)
       .IsRequired()
       .HasColumnType("DATETIME");
