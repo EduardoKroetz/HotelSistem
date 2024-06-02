@@ -23,7 +23,7 @@ public partial class FeedbackHandler : IHandler
     _roomRepository = roomRepository;
   }
 
-  public async Task<Response<object>> HandleCreateAsync(CreateFeedback model, Guid userId)
+  public async Task<Response> HandleCreateAsync(CreateFeedback model, Guid userId)
   {
     var customer = await _customerRepository.GetEntityByIdAsync(userId);
     if (customer == null)
@@ -44,6 +44,6 @@ public partial class FeedbackHandler : IHandler
     await _repository.CreateAsync(feedback);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Feedback registrado.",new { feedback.Id });
+    return new Response(200,"Feedback registrado.",new { feedback.Id });
   }
 }

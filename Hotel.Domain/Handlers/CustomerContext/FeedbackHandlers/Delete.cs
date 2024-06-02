@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 
 public partial class FeedbackHandler
 {
-  public async Task<Response<object>> HandleDeleteAsync(Guid id, Guid customerId)
+  public async Task<Response> HandleDeleteAsync(Guid id, Guid customerId)
   {
     var feedback = await _repository.GetEntityByIdAsync(id);
     if (feedback == null)
@@ -15,6 +15,6 @@ public partial class FeedbackHandler
 
     _repository.Delete(feedback);
     await _repository.SaveChangesAsync();
-    return new Response<object>(200,"Feedback deletado com sucesso!.", new { id });
+    return new Response(200,"Feedback deletado com sucesso!.", new { id });
   }
 }

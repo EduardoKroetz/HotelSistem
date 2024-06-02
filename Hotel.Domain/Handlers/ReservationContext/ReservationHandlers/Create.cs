@@ -25,7 +25,7 @@ public partial class ReservationHandler : IHandler
   }
 
 
-  public async Task<Response<object>> HandleCreateAsync(CreateReservation model)
+  public async Task<Response> HandleCreateAsync(CreateReservation model)
   {
     var room = await _roomRepository.GetEntityByIdAsync(model.RoomId);
     if (room == null)
@@ -41,6 +41,6 @@ public partial class ReservationHandler : IHandler
     await _repository.CreateAsync(reservation);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Reserva criada.",new { reservation.Id });
+    return new Response(200,"Reserva criada.",new { reservation.Id });
   }
 }

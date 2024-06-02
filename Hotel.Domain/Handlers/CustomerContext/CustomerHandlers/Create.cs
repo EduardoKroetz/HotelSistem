@@ -14,7 +14,7 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository,Cu
   public CustomerHandler(ICustomerRepository repository) : base(repository)
   => _repository = repository;
 
-  public async Task<Response<object>> HandleCreateAsync(CreateUser model)
+  public async Task<Response> HandleCreateAsync(CreateUser model)
   {
     var customer = new Customer(
       new Name(model.FirstName,model.LastName),
@@ -29,6 +29,6 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository,Cu
     await _repository.CreateAsync(customer);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Cliente criado com sucesso!",new { customer.Id });
+    return new Response(200,"Cliente criado com sucesso!",new { customer.Id });
   }
 }

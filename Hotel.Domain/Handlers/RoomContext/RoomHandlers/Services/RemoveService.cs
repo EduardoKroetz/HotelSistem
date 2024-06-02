@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
 public partial class RoomHandler
 {
-  public async Task<Response<object>> HandleRemoveServiceAsync(Guid id, Guid serviceId)
+  public async Task<Response> HandleRemoveServiceAsync(Guid id, Guid serviceId)
   {
     var room = await _repository.GetRoomIncludeServices(id);
     if (room == null)
@@ -18,6 +18,6 @@ public partial class RoomHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Serviço removido.");
+    return new Response(200, "Serviço removido.");
   }
 }

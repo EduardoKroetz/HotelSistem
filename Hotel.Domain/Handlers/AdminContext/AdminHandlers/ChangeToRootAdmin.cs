@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
 public partial class AdminHandler
 {
-  public async Task<Response<object>> HandleChangeToRootAdminAsync(Guid rootAdminId,Guid changeToRootAdminId)
+  public async Task<Response> HandleChangeToRootAdminAsync(Guid rootAdminId,Guid changeToRootAdminId)
   {
     var rootAdmin = await _repository.GetEntityByIdAsync(rootAdminId);
     if (rootAdmin == null)
@@ -18,6 +18,6 @@ public partial class AdminHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, $"O Administrador {changeToRootAdmin.Name.FirstName} é agora um Administrador root.");
+    return new Response(200, $"O Administrador {changeToRootAdmin.Name.FirstName} é agora um Administrador root.");
   }
 }

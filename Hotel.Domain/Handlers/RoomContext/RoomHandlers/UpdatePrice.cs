@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
 public partial class RoomHandler
 {
-  public async Task<Response<object>> HandleUpdatePriceAsync(Guid id, decimal price)
+  public async Task<Response> HandleUpdatePriceAsync(Guid id, decimal price)
   {
     var room = await _repository.GetEntityByIdAsync(id);
     if (room == null)
@@ -14,6 +14,6 @@ public partial class RoomHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Preço atualizado.");
+    return new Response(200, "Preço atualizado.");
   }
 }

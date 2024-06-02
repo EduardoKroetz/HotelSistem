@@ -18,7 +18,7 @@ public partial class RoomInvoiceHandler : IHandler
   }
   
 
-  public async Task<Response<object>> HandleCreateAsync(CreateRoomInvoice model)
+  public async Task<Response> HandleCreateAsync(CreateRoomInvoice model)
   {
     var reservation = await _reservationRepository.GetReservationIncludesCustomers(model.ReservationId);
     if (reservation == null)
@@ -29,6 +29,6 @@ public partial class RoomInvoiceHandler : IHandler
     await _repository.CreateAsync(roomInvoice);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Fatura de quarto gerada.",new { roomInvoice.Id });
+    return new Response(200,"Fatura de quarto gerada.",new { roomInvoice.Id });
   }
 }

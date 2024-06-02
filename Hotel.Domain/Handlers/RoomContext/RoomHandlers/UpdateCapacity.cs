@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
 public partial class RoomHandler
 {
-  public async Task<Response<object>> HandleUpdateCapacityAsync(Guid id, int newCapacity)
+  public async Task<Response> HandleUpdateCapacityAsync(Guid id, int newCapacity)
   {
     var room = await _repository.GetEntityByIdAsync(id);
     if (room == null)
@@ -14,6 +14,6 @@ public partial class RoomHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Capacidade atualizada.");
+    return new Response(200, "Capacidade atualizada.");
   }
 }

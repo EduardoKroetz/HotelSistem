@@ -18,7 +18,7 @@ public partial class ReportHandler : IHandler
   }
 
 
-  public async Task<Response<object>> HandleCreateAsync(CreateReport model)
+  public async Task<Response> HandleCreateAsync(CreateReport model)
   {
     var employee = await _employeeRepository.GetEntityByIdAsync(model.EmployeeId);
     if (employee == null)
@@ -29,6 +29,6 @@ public partial class ReportHandler : IHandler
     await _repository.CreateAsync(report);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Relatório criado.",new { report.Id });
+    return new Response(200,"Relatório criado.",new { report.Id });
   }
 }

@@ -20,13 +20,13 @@ public partial class RoomHandler : IHandler
   }
 
 
-  public async Task<Response<object>> HandleCreateAsync(EditorRoom model)
+  public async Task<Response> HandleCreateAsync(EditorRoom model)
   {
     var room = new Room(model.Number,model.Price,model.Capacity,model.Description,model.CategoryId);  
 
     await _repository.CreateAsync(room);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Hospedagem criada.",new { room.Id });
+    return new Response(200,"Hospedagem criada.",new { room.Id });
   }
 }

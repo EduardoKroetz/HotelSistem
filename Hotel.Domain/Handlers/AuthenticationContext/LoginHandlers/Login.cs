@@ -20,7 +20,7 @@ public partial class LoginHandler : IHandler
     _employeeRepository = employeeRepository;
   }
 
-  public async Task<Response<object>> HandleLogin(string email, string password)
+  public async Task<Response> HandleLogin(string email, string password)
   {
     //Verificar se tem um cliente com o email
     var customer = await _customerRepository.GetEntityByEmailAsync(email);
@@ -42,7 +42,7 @@ public partial class LoginHandler : IHandler
         if (employee != null) 
           return LoginService.UserLogin(password ,employee);
 
-        return new Response<object>(400, "Email ou senha inválidos.");
+        return new Response(400, "Email ou senha inválidos.");
       }
     }
     

@@ -23,7 +23,7 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Em
     _permissionRepository = permissionRepository;
   }
 
-  public async Task<Response<object>> HandleCreateAsync(CreateEmployee model)
+  public async Task<Response> HandleCreateAsync(CreateEmployee model)
   {
     DefaultEmployeePermissions.DefaultPermission = DefaultEmployeePermissions.DefaultPermission ?? await _repository.GetDefaultPermission();
 
@@ -42,6 +42,6 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Em
     await _repository.CreateAsync(employee);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Funcionário foi cadastrado.",new { employee.Id });
+    return new Response(200,"Funcionário foi cadastrado.",new { employee.Id });
   }
 }

@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 
 public partial class ReservationHandler
 {
-  public async Task<Response<object>> HandleRemoveServiceAsync(Guid id, Guid serviceId)
+  public async Task<Response> HandleRemoveServiceAsync(Guid id, Guid serviceId)
   {
     //Somente admins tem acesso
     var reservation = await _repository.GetReservationIncludesServices(id);
@@ -19,6 +19,6 @@ public partial class ReservationHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Serviço removido.");
+    return new Response(200, "Serviço removido.");
   }
 }

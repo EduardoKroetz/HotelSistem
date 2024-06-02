@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 
 public partial class ServiceHandler
 {
-  public async Task<Response<object>> HandleAssignResponsabilityAsync(Guid id, Guid responsabilityId)
+  public async Task<Response> HandleAssignResponsabilityAsync(Guid id, Guid responsabilityId)
   {
     var service = await _repository.GetServiceIncludeResponsabilities(id);
     if (service == null)
@@ -18,6 +18,6 @@ public partial class ServiceHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Responsabilidade atribuida.");
+    return new Response(200, "Responsabilidade atribuida.");
   }
 }

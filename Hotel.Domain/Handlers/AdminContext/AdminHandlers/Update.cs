@@ -6,7 +6,7 @@ namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
 public partial class AdminHandler
 {
-  public async Task<Response<object>> HandleUpdateAsync(UpdateUser model, Guid adminId)
+  public async Task<Response> HandleUpdateAsync(UpdateUser model, Guid adminId)
   {
     var admin = await _repository.GetEntityByIdAsync(adminId);
     if (admin == null)
@@ -21,6 +21,6 @@ public partial class AdminHandler
     _repository.Update(admin);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Administrador atualizado com sucesso!");
+    return new Response(200,"Administrador atualizado com sucesso!");
   }
 }

@@ -4,7 +4,7 @@ namespace Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 
 public partial class ReservationHandler
 {
-  public async Task<Response<object>> HandleUpdateCheckOutAsync(Guid id, DateTime checkOut)
+  public async Task<Response> HandleUpdateCheckOutAsync(Guid id, DateTime checkOut)
   {
     var reservation = await _repository.GetEntityByIdAsync(id);
     if (reservation == null)
@@ -14,6 +14,6 @@ public partial class ReservationHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "CheckOut atualizado.");
+    return new Response(200, "CheckOut atualizado.");
   }
 }

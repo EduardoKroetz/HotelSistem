@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.Base.GenericUserHandler;
 
 public partial class GenericUserHandler<TRepository, TUser>
 {
-  public async Task<Response<object>> HandleUpdateDateOfBirthAsync(Guid userId, DateTime? dateOfBirth)
+  public async Task<Response> HandleUpdateDateOfBirthAsync(Guid userId, DateTime? dateOfBirth)
   {
     var user = await _repository.GetEntityByIdAsync(userId);
     if (user == null)
@@ -15,6 +15,6 @@ public partial class GenericUserHandler<TRepository, TUser>
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Data de nascimento atualizada.");
+    return new Response(200, "Data de nascimento atualizada.");
   }
 }

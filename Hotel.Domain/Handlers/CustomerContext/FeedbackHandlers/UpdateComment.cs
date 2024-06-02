@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 
 public partial class FeedbackHandler
 {
-  public async Task<Response<object>> HandleUpdateCommentAsync(Guid id, string comment, Guid customerId)
+  public async Task<Response> HandleUpdateCommentAsync(Guid id, string comment, Guid customerId)
   {
     var feedback = await _repository.GetEntityByIdAsync(id);
     if (feedback == null)
@@ -18,6 +18,6 @@ public partial class FeedbackHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Feedback atualizado.");
+    return new Response(200, "Feedback atualizado.");
   }
 }

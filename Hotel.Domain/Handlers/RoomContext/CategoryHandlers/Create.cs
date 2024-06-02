@@ -14,13 +14,13 @@ public partial class CategoryHandler : IHandler
   public CategoryHandler(ICategoryRepository repository)
   => _repository = repository;
 
-  public async Task<Response<object>> HandleCreateAsync(EditorCategory model)
+  public async Task<Response> HandleCreateAsync(EditorCategory model)
   {
     var category = new Category(model.Name,model.Description,model.AveragePrice);
 
     await _repository.CreateAsync(category);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Categoria criada.",new { category.Id });
+    return new Response(200,"Categoria criada.",new { category.Id });
   }
 }
