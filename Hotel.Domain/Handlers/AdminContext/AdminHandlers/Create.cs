@@ -2,6 +2,7 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.Handlers.Base.GenericUserHandler;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
@@ -34,7 +35,7 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, 
 
     //Criação do administrador
 
-    var defaultAdminPermission = await _repository.GetDefaultAdminPermission();
+    var defaultAdminPermission = await _repository.GetDefaultAdminPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
 
     var admin = new Admin(
       new Name(model.FirstName,model.LastName),

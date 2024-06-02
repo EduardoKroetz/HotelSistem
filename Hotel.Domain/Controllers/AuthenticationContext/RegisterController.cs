@@ -5,6 +5,7 @@ using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.AuthenticationContext;
@@ -27,8 +28,8 @@ public class RegisterController : ControllerBase
   //Criar cliente
   //Todos tem acesso.
   [HttpPost("customers")]
-  public async Task<IActionResult> RegisterCustomerAsync([FromBody] CreateUser customer)
-    => Ok(await _customerHandler.HandleCreateAsync(customer));
+  public async Task<IActionResult> RegisterCustomerAsync([FromBody] CreateUser customer, [FromQuery] string? code)
+    => Ok(await _customerHandler.HandleCreateAsync(customer, code));
 
   //Criar administrador
   //Administradores com permissão podem acessar.
