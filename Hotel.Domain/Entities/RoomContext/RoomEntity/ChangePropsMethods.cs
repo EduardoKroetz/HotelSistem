@@ -35,4 +35,9 @@ public partial class Room
     Capacity = capacity;
   }
 
+  public void Enable()
+  => IsActive = true;
+
+  public void Disable()
+=> IsActive = false;
 }

@@ -316,6 +316,19 @@ BEGIN
         VALUES (NEWID(), 'UpdateRoomPrice', 'Permissão para atualizar o preço de um quarto.', 1, GETDATE());
     END;
 
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EnableRoom')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'EnableRoom', 'Permissão para habilitar um quarto.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DisableRoom')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DisableRoom', 'Permissão para desabilitar um quarto.', 1, GETDATE());
+    END;
+
+
     -- Services
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetServices')
     BEGIN

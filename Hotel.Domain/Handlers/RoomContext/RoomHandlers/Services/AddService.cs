@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
@@ -6,9 +7,9 @@ public partial class RoomHandler
 {
   public async Task<Response> HandleAddServiceAsync(Guid id, Guid serviceId)
   {
-    var room = await _repository.GetRoomIncludeServices(id);
+    var room = await _repository.GetRoomIncludesServices(id);
     if (room == null)
-      throw new ArgumentException("Hospedagem não encontrada.");
+      throw new NotFoundException("Cômodo não encontrada.");
 
     var service = await _serviceRepository.GetEntityByIdAsync(serviceId);
     if (service == null)

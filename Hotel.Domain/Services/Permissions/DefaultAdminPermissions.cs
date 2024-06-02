@@ -78,7 +78,9 @@ public class DefaultAdminPermissions
     EPermissions.GetReport,
     EPermissions.EditReport,
     EPermissions.CreateReport,
-    EPermissions.FinishReport
+    EPermissions.FinishReport,
+    EPermissions.EnableRoom,
+    EPermissions.DisableRoom
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;

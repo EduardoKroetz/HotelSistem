@@ -54,7 +54,9 @@ public class DefaultEmployeePermissions
     EPermissions.CreateReport,
     EPermissions.FinishReport,
     EPermissions.CreateCategory,
-    EPermissions.EditCategory
+    EPermissions.EditCategory,
+    EPermissions.EnableRoom,
+    EPermissions.DisableRoom
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;

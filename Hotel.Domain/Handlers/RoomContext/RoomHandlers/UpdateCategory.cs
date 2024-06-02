@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
@@ -8,11 +9,11 @@ public partial class RoomHandler
   {
     var room = await _repository.GetEntityByIdAsync(id);
     if (room == null)
-      throw new ArgumentException("Hospedagem não encontrada.");
+      throw new NotFoundException("Cômodo não encontrada.");
 
     var category = await _categoryRepository.GetEntityByIdAsync(categoryId);
     if (category == null)
-      throw new ArgumentException("Categoria não encontrada.");
+      throw new NotFoundException("Categoria não encontrada.");
 
     room.ChangeCategory(categoryId);
 

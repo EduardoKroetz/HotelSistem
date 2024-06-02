@@ -71,6 +71,8 @@ public enum EPermissions
   UpdateRoomCapacity,
   UpdateRoomCategory,
   UpdateRoomPrice,
+  EnableRoom,
+  DisableRoom,
 
   //Services
   GetServices,

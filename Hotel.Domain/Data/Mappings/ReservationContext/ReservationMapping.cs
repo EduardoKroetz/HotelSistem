@@ -44,7 +44,7 @@ public class ReservationMapping : EntityBaseMapping<Reservation>, IEntityTypeCon
       .OnDelete(DeleteBehavior.SetNull);
 
     builder.HasOne(x => x.Room)
-      .WithMany()
+      .WithMany(x => x.Reservations)
       .HasForeignKey(x => x.RoomId)
       .IsRequired()
       .HasConstraintName("FK_Reservations_Room")

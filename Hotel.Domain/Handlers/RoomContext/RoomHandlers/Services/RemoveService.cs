@@ -6,7 +6,7 @@ public partial class RoomHandler
 {
   public async Task<Response> HandleRemoveServiceAsync(Guid id, Guid serviceId)
   {
-    var room = await _repository.GetRoomIncludeServices(id);
+    var room = await _repository.GetRoomIncludesServices(id);
     if (room == null)
       throw new ArgumentException("Hospedagem não encontrada.");
 
