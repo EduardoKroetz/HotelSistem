@@ -59,9 +59,6 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
     if (queryParameters.CategoryId.HasValue)
       query = query.Where(x => x.CategoryId == queryParameters.CategoryId);
 
-    if (queryParameters.IsActive.HasValue)
-      query = query.Where(x => x.IsActive == queryParameters.IsActive);
-
     query = query.BaseQuery(queryParameters);
 
     return await query.Select(x => new GetRoomCollection(
