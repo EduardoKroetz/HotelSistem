@@ -1,6 +1,6 @@
 using Hotel.Domain.DTOs.CustomerContext.FeedbackDTOs;
 using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
-using Hotel.Domain.Services.Users;
+using Hotel.Domain.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,9 +12,14 @@ namespace Hotel.Domain.Controllers.CustomerContext;
 public class FeedbackController : ControllerBase
 {
   private readonly FeedbackHandler _handler;
+  private readonly IUserService _userService;
 
-  public FeedbackController(FeedbackHandler handler)
-    => _handler = handler;
+  public FeedbackController(FeedbackHandler handler, IUserService userService)
+  {
+    _handler = handler;
+    _userService = userService;
+  }
+
 
   // Endpoint para buscar feedbacks
   [HttpGet]
@@ -30,7 +35,7 @@ public class FeedbackController : ControllerBase
   [HttpPost]
   public async Task<IActionResult> PostAsync([FromBody] CreateFeedback model)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleCreateAsync(model, userId));
   }
 
@@ -38,7 +43,7 @@ public class FeedbackController : ControllerBase
   [HttpPut("{Id:guid}")]
   public async Task<IActionResult> PutAsync([FromBody] UpdateFeedback model, [FromRoute] Guid id)
   {
-    var customerId = UserServices.GetUserIdentifier(User);
+    var customerId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAsync(model, id, customerId));
   }
 
@@ -46,7 +51,7 @@ public class FeedbackController : ControllerBase
   [HttpDelete("{Id:guid}")]
   public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
   {
-    var customerId = UserServices.GetUserIdentifier(User);
+    var customerId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleDeleteAsync(id, customerId));
   }
 
@@ -54,7 +59,7 @@ public class FeedbackController : ControllerBase
   [HttpPatch("{Id:guid}/rate/{rate:int}")]
   public async Task<IActionResult> UpdateRateAsync([FromRoute] Guid id, [FromRoute] int rate)
   {
-    var customerId = UserServices.GetUserIdentifier(User);
+    var customerId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateRateAsync(id, rate, customerId));
   }
 
@@ -62,7 +67,7 @@ public class FeedbackController : ControllerBase
   [HttpPatch("{Id:guid}/comment")]
   public async Task<IActionResult> UpdateCommentAsync([FromRoute] Guid id, [FromBody] UpdateComment updateComment)
   {
-    var customerId = UserServices.GetUserIdentifier(User);
+    var customerId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateCommentAsync(id, updateComment.Comment, customerId));
   }
 

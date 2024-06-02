@@ -2,7 +2,7 @@ using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
-using Hotel.Domain.Services.Users;
+using Hotel.Domain.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +13,13 @@ namespace Hotel.Domain.Controllers.PaymentContext;
 public class RoomInvoiceController : ControllerBase
 {
   private readonly RoomInvoiceHandler _handler;
+  private readonly IUserService _userService;
 
-  public RoomInvoiceController(RoomInvoiceHandler handler)
-    => _handler = handler;
+  public RoomInvoiceController(RoomInvoiceHandler handler, IUserService userService)
+  {
+    _handler = handler;
+    _userService = userService;
+  }
 
   //Buscar faturas de quarto. Somente administradores ou funcionários com permissão possuem acesso.
   [HttpGet]
@@ -28,7 +32,7 @@ public class RoomInvoiceController : ControllerBase
   public async Task<IActionResult> GetMyRoomInvoicesAsync(
   [FromBody] RoomInvoiceQueryParameters queryParameters)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     queryParameters.CustomerId = userId; //Vai filtrar pelo Id do cliente, ainda podendo aplicar o restante dos filtros.
     return Ok(await _handler.HandleGetAsync(queryParameters));
   }

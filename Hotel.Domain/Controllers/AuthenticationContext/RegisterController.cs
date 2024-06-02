@@ -34,8 +34,8 @@ public class RegisterController : ControllerBase
   //Administradores com permissão podem acessar.
   [HttpPost("admins")]
   [AuthorizePermissions([EPermissions.CreateAdmin])]
-  public async Task<IActionResult> RegisterAdminAsync([FromBody] CreateUser admin)
-    => Ok(await _adminHandler.HandleCreateAsync(admin));
+  public async Task<IActionResult> RegisterAdminAsync([FromBody] CreateUser admin, [FromQuery] string? code)
+    => Ok(await _adminHandler.HandleCreateAsync(admin, code));
 
   //Criar funcionário
   //Administradores ou funcionários com permissão podem acessar.
