@@ -43,12 +43,6 @@ public class RoomInvoiceController : ControllerBase
   public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleGetByIdAsync(id));
 
-  //Criar fatura de quarto. Somente os clientes tem acesso.
-  [HttpPost]
-  [Authorize(Roles = "Customer")]
-  public async Task<IActionResult> PostAsync([FromBody] CreateRoomInvoice model)
-    => Ok(await _handler.HandleCreateAsync(model));
-
   //Deletar fatura de quarto. Somente administradores ou funcionários com permissão possuem acesso.
   [HttpDelete("{Id:guid}")]
   [AuthorizePermissions([EPermissions.DeleteRoomInvoice, EPermissions.DefaultAdminPermission])]
