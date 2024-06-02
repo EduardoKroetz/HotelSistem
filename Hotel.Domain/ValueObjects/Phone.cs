@@ -16,8 +16,12 @@ public class Phone : ValueObject
   public string Number { get; private set; }
 
   public override void Validate()
-{
-    var regex = new Regex(@"^\+\d{2,3}\s\(\d{2,3}\)\s\d{5}-\d{4}$").IsMatch(Number);
+  {
+    var containPlus = new Regex(@"^\+").IsMatch(Number);
+    if (!containPlus)
+      Number = "+" + Number;
+
+    var regex = new Regex(@"^\+55\d{2}9\d{8}$").IsMatch(Number);
     if (!regex)
         throw new ValidationException("Informe o telefone em um formato válido.");
     base.Validate();
