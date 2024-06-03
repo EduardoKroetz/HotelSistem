@@ -79,5 +79,9 @@ public class ReservationController : ControllerBase
   public async Task<IActionResult> RemoveServiceAsync([FromRoute] Guid id,[FromRoute] Guid serviceId)
     => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
 
+  [HttpPatch("finish/{Id:guid}")]
+  public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)
+    => Ok(await _handler.HandleFinishReservationAsync(Id));
+
 
 }

@@ -12,6 +12,7 @@
 /AuthenticationSystem.txt
 /EndpointsLogic.txt
 /Migrations
+/wwwroot/PdfsExample
 # dotenv files
 .env
 

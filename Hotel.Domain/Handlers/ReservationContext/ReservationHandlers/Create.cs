@@ -4,6 +4,7 @@ using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Handlers.Interfaces;
+using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
 using Hotel.Domain.Repositories.Interfaces.CustomerContext;
 using Hotel.Domain.Repositories.Interfaces.ReservationContext;
 using Hotel.Domain.Repositories.Interfaces.RoomContext;
@@ -14,14 +15,16 @@ public partial class ReservationHandler : IHandler
 {
   private readonly IReservationRepository  _repository;
   private readonly IRoomRepository  _roomRepository;
-  private readonly ICustomerRepository  _customerRepository;
+  private readonly ICustomerRepository _customerRepository;
   private readonly IServiceRepository _serviceRepository;
-  public ReservationHandler(IReservationRepository repository, IRoomRepository roomRepository,ICustomerRepository customerRepository, IServiceRepository serviceRepository)
+  private readonly RoomInvoiceHandler _invoiceHandler;
+  public ReservationHandler(IReservationRepository repository, IRoomRepository roomRepository,ICustomerRepository customerRepository, IServiceRepository serviceRepository, RoomInvoiceHandler invoiceHandler)
   {
     _repository = repository;
     _roomRepository = roomRepository;
     _customerRepository = customerRepository;
     _serviceRepository = serviceRepository;
+    _invoiceHandler = invoiceHandler;
   }
 
 
