@@ -33,7 +33,7 @@ public partial class FeedbackHandler : IHandler
     if (customer == null)
       throw new ArgumentException("Usuário não encontrado.");
 
-    var reservation = await _reservationRepository.GetReservationIncludesCustomers(model.ReservationId);
+    var reservation = await _reservationRepository.GetReservationIncludesCustomer(model.ReservationId);
     if (reservation == null)
       throw new ArgumentException("Reserva não encontrada.");
 

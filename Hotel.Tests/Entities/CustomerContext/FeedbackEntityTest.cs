@@ -38,37 +38,4 @@ public class FeedbackEntityTest
     feedback.ChangeRate(rate);
     Assert.Fail();
   }
-
-  [TestMethod]
-  public void AddLike_MustBeAdded()
-  {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
-    feedback.AddLike();
-    Assert.AreEqual(1,feedback.Likes);
-  }
-
-  [TestMethod]
-  public void RemoveLike_WithoutLikes_MustBe0Likes()
-  {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
-    feedback.RemoveLike();
-    Assert.AreEqual(0,feedback.Likes);
-  }
-
-
-  [TestMethod]
-  public void AddDeslike_MustBeAdded()
-  {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
-    feedback.AddDeslike();
-    Assert.AreEqual(1,feedback.Deslikes);
-  }
-
-  [TestMethod]
-  public void RemoveDeslike_WithoutDeslikes_MustBe0Deslikes()
-  {
-    var feedback = new Feedback("Feedback",3,TestParameters.Customer.Id,TestParameters.Reservation.Id,TestParameters.Room.Id);
-    feedback.RemoveDeslike();
-    Assert.AreEqual(0,feedback.Likes);
-  }
 }

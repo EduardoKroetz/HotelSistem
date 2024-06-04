@@ -15,6 +15,9 @@ public partial class EmailService : IEmailService
     mailMessage.Body = email.Body;
     mailMessage.To.Add(email.To.Address);
 
+    if (email.AttachmentPath != null)
+      mailMessage.Attachments.Add(new Attachment(email.AttachmentPath)); 
+
     var smtpClient = new SmtpClient("smtp-mail.outlook.com", 587)
     {
       DeliveryMethod = SmtpDeliveryMethod.Network,

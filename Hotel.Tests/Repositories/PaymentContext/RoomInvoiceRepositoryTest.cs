@@ -149,14 +149,7 @@ public class RoomInvoiceRepositoryTest
 
     Assert.IsTrue(roomInvoices.Any());
     foreach (var roomInvoice in roomInvoices)
-    {
-      var hasCustomer = await BaseRepositoryTest.MockConnection.Context.RoomInvoices
-        .Where(x => x.Id == roomInvoice.Id)
-        .SelectMany(x => x.Customers)
-        .AnyAsync(x => x.Id == customerWithInvoice!.Id);
-
-      Assert.IsTrue(hasCustomer);
-    }
+      Assert.AreEqual(customerWithInvoice?.Id, roomInvoice.CustomerId);
   }
 
   [TestMethod]

@@ -23,4 +23,8 @@ public class Name : ValueObject
     
     base.Validate();
   }
+
+  public string GetFullName()
+  => $"{FirstName} {LastName}";
+  
 }

@@ -1,5 +1,4 @@
 using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 
 namespace Hotel.Tests.Entities.CustomerContext;
 

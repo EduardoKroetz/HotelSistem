@@ -2,6 +2,7 @@ using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
+using Hotel.Domain.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,13 @@ namespace Hotel.Domain.Controllers.ReservationContext;
 public class ReservationController : ControllerBase
 {
   private readonly ReservationHandler _handler;
+  private readonly IUserService _userService;
 
-  public ReservationController(ReservationHandler handler)
-    => _handler = handler;
+  public ReservationController(ReservationHandler handler, IUserService userService)
+  {
+    _handler = handler;
+    _userService = userService;
+  }
 
   //Buscar reservas.
   //Somente administradores ou funcionários com permissão possuem acesso.
@@ -36,8 +41,11 @@ public class ReservationController : ControllerBase
   [HttpPost]
   [Authorize(Roles = "Customer")]
   public async Task<IActionResult> PostAsync([FromBody] CreateReservation model)
-    => Ok(await _handler.HandleCreateAsync(model));
-
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleCreateAsync(model, customerId));
+  }
+   
   //Deletar reserva.
   //Somente administradores ou funcionários com permissão podem acessar.
   //Administradores tem acesso por padrão.
@@ -78,6 +86,10 @@ public class ReservationController : ControllerBase
   [AuthorizePermissions([EPermissions.RemoveServiceFromReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> RemoveServiceAsync([FromRoute] Guid id,[FromRoute] Guid serviceId)
     => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
+
+  [HttpPatch("finish/{Id:guid}")]
+  public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)
+    => Ok(await _handler.HandleFinishReservationAsync(Id));
 
 
 }

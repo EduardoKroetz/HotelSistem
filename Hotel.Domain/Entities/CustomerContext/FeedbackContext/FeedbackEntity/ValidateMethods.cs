@@ -10,7 +10,6 @@ public partial class Feedback
   {      
     ValidateComment(Comment);
     ValidateRate(Rate);
-    ValidateReservation(Reservation);
     
     base.Validate();
   }
@@ -27,15 +26,6 @@ public partial class Feedback
       throw new ValidationException("Informe o comentário do feedback.");
     if (comment.Length > 500)
       throw new ValidationException("Limite máximo de 500 caracteres por comentário foi atingido.");
-  }
-
-  public void ValidateReservation(Reservation? reservation)
-  {
-    if (reservation != null)
-    {
-      if (!reservation.Customers.Any(x => x.Id == CustomerId))
-        throw new ArgumentException("Você não tem autorização para criar feedback em uma reserva alheia.");
-    }
   }
 
 }

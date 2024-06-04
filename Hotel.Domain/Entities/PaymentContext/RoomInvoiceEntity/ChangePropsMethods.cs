@@ -8,7 +8,6 @@ public partial class RoomInvoice
   public void FinishInvoice()
   {
     Status = EStatus.Finish;
-    //Envio de email
   }
   
 }
