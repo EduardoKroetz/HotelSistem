@@ -5,7 +5,7 @@ namespace Hotel.Domain.DTOs.PaymentContext.RoomInvoiceDTOs;
 
 public class GetRoomInvoice : IDataTransferObject
 {
-  public GetRoomInvoice(Guid id,string number,EPaymentMethod paymentMethod, Guid reservationId,  DateTime issueDate, decimal totalAmount, EStatus status, decimal taxInformation)
+  public GetRoomInvoice(Guid id,string number,EPaymentMethod paymentMethod, Guid reservationId,  DateTime issueDate, decimal totalAmount, EStatus status, decimal taxInformation, Guid customerId)
   {
     Id = id;
     PaymentMethod = paymentMethod;
@@ -15,6 +15,7 @@ public class GetRoomInvoice : IDataTransferObject
     IssueDate = issueDate;
     TotalAmount = totalAmount;
     Status = status;
+    CustomerId = customerId;
   }
 
   public Guid? Id { get; private set; }
@@ -25,5 +26,6 @@ public class GetRoomInvoice : IDataTransferObject
   public DateTime IssueDate { get; private set; }
   public decimal TotalAmount { get; private set; }
   public EStatus Status { get; private set; }
+  public Guid CustomerId { get; private set; }
 
 }

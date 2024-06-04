@@ -5,7 +5,6 @@ using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers.AuthenticationContext;

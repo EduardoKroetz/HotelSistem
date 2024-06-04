@@ -13,15 +13,16 @@ public partial class Reservation : Entity, IReservation
 {
   internal Reservation(){}
 
-  public Reservation(Room room, DateTime checkIn, ICollection<Customer> customers ,DateTime? checkOut = null)
+  public Reservation(Room room, DateTime checkIn, Customer customer, int capacity ,DateTime? checkOut = null)
   {
     CheckIn = checkIn;
     _checkOut = checkOut;
     Status = EReservationStatus.Pending;
-    Capacity = customers.Count;
+    Capacity = capacity;
     Room = room;
     RoomId = room.Id;
-    Customers = customers;
+    Customer = customer;
+    CustomerId = customer.Id;
 
     var hostedDays = CalculeHostedDays();
     HostedDays = hostedDays == 0 ? null : hostedDays;
@@ -52,7 +53,8 @@ public partial class Reservation : Entity, IReservation
   public int Capacity { get; private set; }
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
-  public ICollection<Customer> Customers { get; private set; } = [];
+  public Guid CustomerId { get; private set; }
+  public Customer? Customer { get; private set; }
   public Guid? InvoiceId { get; private set; }
   public RoomInvoice? Invoice { get; private set; }
   public ICollection<Service> Services { get; private set; } = [];

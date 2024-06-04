@@ -47,9 +47,11 @@ public class RoomInvoiceMapping : EntityBaseMapping<RoomInvoice>, IEntityTypeCon
         .WithOne(x => x.Invoice)
         .OnDelete(DeleteBehavior.SetNull);
 
-    builder.HasMany(x => x.Customers)
+    builder.HasOne(x => x.Customer)
         .WithMany(x => x.RoomInvoices)
-        .UsingEntity(j => j.ToTable("CustomerRoomInvoices"));
+        .HasForeignKey(x => x.CustomerId)
+        .HasConstraintName("FK_RoomInvoices_Customer")
+        .OnDelete(DeleteBehavior.NoAction);
 
     builder.HasMany(x => x.Services)
         .WithMany(x => x.RoomInvoices)

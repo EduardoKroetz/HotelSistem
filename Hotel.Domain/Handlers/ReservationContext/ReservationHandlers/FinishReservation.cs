@@ -7,7 +7,7 @@ public partial class ReservationHandler
   public async Task<Response> HandleFinishReservationAsync(Guid id)
   {
     //temporário
-    var reservation = await _repository.GetReservationIncludesServices(id);
+    var reservation = await _repository.GetReservationIncludesAll(id);
     if (reservation == null)
       throw new ArgumentException("Reserva não encontrada.");
 

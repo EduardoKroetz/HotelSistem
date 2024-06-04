@@ -18,7 +18,7 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice>, IRoomInvoic
       .RoomInvoices
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetRoomInvoice(x.Id,x.Number, x.PaymentMethod, x.ReservationId, x.IssueDate, x.TotalAmount, x.Status, x.TaxInformation))
+      .Select(x => new GetRoomInvoice(x.Id,x.Number, x.PaymentMethod, x.ReservationId, x.IssueDate, x.TotalAmount, x.Status, x.TaxInformation, x.CustomerId))
       .FirstOrDefaultAsync();
 
   }
@@ -43,7 +43,7 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice>, IRoomInvoic
       query = query.Where(x => x.PaymentMethod == queryParameters.PaymentMethod);
 
     if (queryParameters.CustomerId.HasValue)
-      query = query.Where(x => x.Customers.Any(y => y.Id == queryParameters.CustomerId));
+      query = query.Where(x => x.CustomerId == queryParameters.CustomerId);
 
     if (queryParameters.ReservationId.HasValue)
       query = query.Where(x => x.ReservationId == queryParameters.ReservationId);
@@ -65,7 +65,8 @@ public class RoomInvoiceRepository : GenericRepository<RoomInvoice>, IRoomInvoic
       x.IssueDate,
       x.TotalAmount,
       x.Status,
-      x.TaxInformation
+      x.TaxInformation,
+      x.CustomerId
     )).ToListAsync();
   }
 }

@@ -3,6 +3,7 @@ using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
 using Hotel.Domain.Repositories.Interfaces.CustomerContext;
@@ -28,18 +29,16 @@ public partial class ReservationHandler : IHandler
   }
 
 
-  public async Task<Response> HandleCreateAsync(CreateReservation model)
+  public async Task<Response> HandleCreateAsync(CreateReservation model, Guid customerId)
   {
-    var room = await _roomRepository.GetEntityByIdAsync(model.RoomId);
-    if (room == null)
-      throw new ArgumentException("Hospedagem não encontrada.");
+    var room = await _roomRepository.GetEntityByIdAsync(model.RoomId)
+      ?? throw new NotFoundException("Hospedagem não encontrada.");
 
     //Buscar todos os Customers através dos IDs passados
-    var customers = new List<Customer>(
-      await _customerRepository.GetCustomersByListId(model.Customers)
-    );
+    var customer = await _customerRepository.GetEntityByIdAsync(customerId)
+      ?? throw new NotFoundException("Usuário não encontrado.");
 
-    var reservation = new Reservation(room,model.CheckIn,customers,model.CheckOut);
+    var reservation = new Reservation(room,model.CheckIn,customer, model.Capacity ,model.CheckOut);
 
     await _repository.CreateAsync(reservation);
     await _repository.SaveChangesAsync();

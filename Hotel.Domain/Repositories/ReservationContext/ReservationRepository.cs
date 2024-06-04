@@ -17,7 +17,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .Reservations
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Include(x => x.Customers)
+      .Include(x => x.Customer)
       .Include(x => x.Services)
       .Select(x => new GetReservation(x.Id,
         x.DailyRate,
@@ -27,10 +27,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
         x.Status,
         x.Capacity,
         x.RoomId,
-        new List<GetUser>(
-          x.Customers.Select(
-            c => new GetUser(c.Id, c.Name.FirstName, c.Name.LastName, c.Email.Address, c.Phone.Number, c.Gender,c.DateOfBirth, c.Address,c.CreatedAt)
-        )),
+        new GetUser(x.CustomerId ,x.Customer!.Name.FirstName, x.Customer.Name.LastName, x.Customer.Email.Address, x.Customer.Phone.Number, x.Customer.Gender, x.Customer.DateOfBirth, x.Customer.Address, x.Customer.CreatedAt),
         x.InvoiceId,
         x.Services))
       .FirstOrDefaultAsync();
@@ -60,7 +57,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       query = query.FilterByOperator(queryParameters.CapacityOperator, x => x.Capacity, queryParameters.Capacity);
 
     if (queryParameters.CustomerId.HasValue)
-      query = query.Where(x => x.Customers.Any(x => x.Id == queryParameters.CustomerId));
+      query = query.Where(x => x.CustomerId == queryParameters.CustomerId);
 
     if (queryParameters.RoomId.HasValue)
       query = query.Where(x => x.RoomId == queryParameters.RoomId);
@@ -95,10 +92,19 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .FirstOrDefaultAsync();
   }
 
-  public async Task<Reservation?> GetReservationIncludesCustomers(Guid id)
+  public async Task<Reservation?> GetReservationIncludesCustomer(Guid id)
   {
     return await _context.Reservations
-      .Include(x => x.Customers)
+      .Include(x => x.Customer)
+      .FirstOrDefaultAsync(x => x.Id == id);
+  }
+
+  public async Task<Reservation?> GetReservationIncludesAll(Guid id)
+  {
+    return await _context.Reservations
+      .Include(x => x.Customer)
+      .Include(x => x.Services)
+      .Include(x => x.Room)
       .FirstOrDefaultAsync(x => x.Id == id);
   }
 }

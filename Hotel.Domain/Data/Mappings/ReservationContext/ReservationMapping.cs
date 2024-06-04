@@ -50,10 +50,11 @@ public class ReservationMapping : EntityBaseMapping<Reservation>, IEntityTypeCon
       .HasConstraintName("FK_Reservations_Room")
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasMany(x => x.Customers)
+    builder.HasOne(x => x.Customer)
       .WithMany(x => x.Reservations)
-      .UsingEntity(j => j.ToTable("ReservationCustomers"));
-
+      .HasForeignKey(x => x.CustomerId)
+      .OnDelete(DeleteBehavior.NoAction);
+   
     builder.HasMany(x => x.Services)
       .WithMany(x => x.Reservations)
       .UsingEntity(j => j.ToTable("ReservationServices"));

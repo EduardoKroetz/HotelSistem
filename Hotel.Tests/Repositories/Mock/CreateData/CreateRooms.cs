@@ -25,7 +25,7 @@ public class CreateRooms
       new(31, 180m, 2, "Suíte Presidencial", BaseRepositoryTest.Categories[4].Id)
     };
 
-    new Reservation(rooms[0], DateTime.Now.AddDays(1), [BaseRepositoryTest.Customers[0]]);
+    new Reservation(rooms[0], DateTime.Now.AddDays(1), BaseRepositoryTest.Customers[0], 2);
 
     await BaseRepositoryTest.MockConnection.Context.Rooms.AddRangeAsync(rooms);
     await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();

@@ -1,7 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
-using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.PaymentContext;
 using Hotel.Domain.Repositories.Interfaces.ReservationContext;
@@ -9,9 +8,6 @@ using Hotel.Domain.Services.EmailServices.Interface;
 using Hotel.Domain.Services.EmailServices.Models;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
-using PdfSharp.UniversalAccessibility.Drawing;
-using System.Diagnostics;
-using System.Net;
 
 
 namespace Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
@@ -76,7 +72,7 @@ public partial class RoomInvoiceHandler : IHandler
         page.Height.Point),
       XStringFormats.TopLeft);
 
-    gfx.DrawString("Reginaldo Campos", boldFont10, XBrushes.Black, //Valor da primeira linha
+    gfx.DrawString(invoice.Customer!.Name.GetFullName(), boldFont10, XBrushes.Black, //Valor da primeira linha
       new XRect(
         valueSpacing,
         keyYSpacing + 40,
@@ -190,7 +186,7 @@ public partial class RoomInvoiceHandler : IHandler
         page.Height.Point),
       XStringFormats.TopLeft);
 
-    gfx.DrawString($"Hospedagem por {reservation.HostedDays} dias.", arialFont, XBrushes.Black,
+    gfx.DrawString($"Hospedagem", arialFont, XBrushes.Black,
       new XRect(
         marginX + 40,
         keyYSpacing + 180 + lineSpacing,
@@ -254,6 +250,14 @@ public partial class RoomInvoiceHandler : IHandler
         XStringFormats.TopLeft);
     }
 
+    gfx.DrawString($"Você tem um prazo de 15 dias para realizar o pagamento.", boldFont14, XBrushes.Black,
+     new XRect(
+       marginX,
+       300,
+       page.Width.Point,
+       page.Height.Point),
+     XStringFormats.TopLeft);
+
 
     var directoryPath = "wwwroot/PdfsExample";
     Directory.CreateDirectory(directoryPath);
@@ -263,7 +267,11 @@ public partial class RoomInvoiceHandler : IHandler
 
     document.Save(absolutePath);
 
-    Process.Start(new ProcessStartInfo(absolutePath) { UseShellExecute = true });
+    var email = new SendEmailModel(invoice.Customer.Email,"Fatura", "Muito obrigado pela preferência. Aqui está sua fatura:", absolutePath);
+    await _emailService.SendEmailAsync(email);
+
+    await _repository.CreateAsync(invoice);
+    await _repository.SaveChangesAsync();
 
     return new Response(200,"Fatura de quarto criada com sucesso!");
   }
