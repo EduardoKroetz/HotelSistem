@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 
 public partial class ReservationHandler
 {
-  public async Task<Response> HandleFinishReservationAsync(Guid id, Guid customerId)
+  public async Task<Response> HandleCancelReservationAsync(Guid id, Guid customerId)
   {
     var reservation = await _repository.GetReservationIncludesAll(id)
       ?? throw new NotFoundException("Reserva não encontrada.");
@@ -13,10 +13,10 @@ public partial class ReservationHandler
     if (reservation.CustomerId != customerId)
       throw new UnauthorizedAccessException("Você não tem permissão para cancelar reserva alheia.");
 
-    var invoice = reservation.GenerateInvoice(Enums.EPaymentMethod.Pix, 0);
+    reservation.StatusToCancelled();
 
-    await _invoiceHandler.HandleCreateAsync(invoice, reservation);
+    await _repository.SaveChangesAsync();
 
-    return new Response(200, "Sucesso!");
+    return new Response(200, "Reserva cancelada com sucesso!");
   }
 }

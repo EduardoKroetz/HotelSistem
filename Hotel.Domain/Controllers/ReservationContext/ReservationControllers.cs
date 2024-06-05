@@ -92,7 +92,17 @@ public class ReservationController : ControllerBase
 
   [HttpPatch("finish/{Id:guid}")]
   public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)
-    => Ok(await _handler.HandleFinishReservationAsync(Id));
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleFinishReservationAsync(Id,customerId));
+  }
+
+  [HttpPatch("cancel/{Id:guid}")]
+  public async Task<IActionResult> CancelReservationAsync([FromRoute] Guid Id)
+  {
+    var customerId = _userService.GetUserIdentifier(User); 
+    return Ok(await _handler.HandleCancelReservationAsync(Id, customerId));
+  }
 
   [HttpGet("total-amount")]
   public async Task<IActionResult> GetTotalAmount(GetTotalAmount totalAmountDto)
