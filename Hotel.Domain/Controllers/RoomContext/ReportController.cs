@@ -2,6 +2,7 @@ using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.RoomContext.ReportHandlers;
+using Hotel.Domain.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,14 @@ namespace Hotel.Domain.Controllers.RoomContext;
 public class ReportController : ControllerBase
 {
   private readonly ReportHandler _handler;
+  private readonly IUserService _userService;
 
-  public ReportController(ReportHandler handler)
-    => _handler = handler;
+  public ReportController(ReportHandler handler, IUserService userService)
+  {
+    _handler = handler;
+    _userService = userService;
+  }
+
 
   // Endpoint para buscar todos os relatórios
   [HttpGet]
@@ -45,8 +51,8 @@ public class ReportController : ControllerBase
   [HttpDelete("my/{Id:guid}")]
   public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
   {
-    // Implementar verificação para garantir que o usuário que criou o relatório é quem está realizando a ação
-    return Ok(await _handler.HandleDeleteAsync(id));
+    var userId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleDeleteAsync(id, userId ));
   }
 
   // Endpoint para marcar um relatório como concluído
@@ -63,4 +69,9 @@ public class ReportController : ControllerBase
   {
     return Ok(await _handler.HandleCancelAsync(id));
   }
+
+  // Endpoint para atualizar prioridade
+  [HttpPatch("{id:guid}/priority/{priority:int}")]
+  public async Task<IActionResult> CancelAsync([FromRoute] Guid id, [FromRoute] int priority)
+    => Ok(await _handler.HandleUpdatePriorityAsync((EPriority) priority, id));
 }
