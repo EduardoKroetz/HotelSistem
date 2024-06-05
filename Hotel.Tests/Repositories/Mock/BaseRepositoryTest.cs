@@ -30,6 +30,7 @@ public static class BaseRepositoryTest
   public static List<Feedback> Feedbacks { get; set; } = [];
   public static List<Responsability> Responsabilities { get; set; } = [];
   public static List<RoomInvoice> RoomInvoices { get; set; } = [];
+  public static List<Reservation> ReservationsToGenerateInvoice { get; set; } = []; 
   public static List<Report> Reports { get; set; } = [];
 
   static BaseRepositoryTest()

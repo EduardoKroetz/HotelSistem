@@ -26,9 +26,8 @@ public class ReservationController : ControllerBase
   //Somente administradores ou funcionários com permissão possuem acesso.
   //Administradores e funcionários tem acesso por padrão.
   [HttpGet]
-  [AuthorizePermissions([EPermissions.GetReservations, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> GetAsync([FromBody] ReservationQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  => Ok(await _handler.HandleGetAsync(queryParameters));
 
   //Buscar reserva pelo Id.
   //Todos os usuários possuem acesso.
@@ -52,7 +51,11 @@ public class ReservationController : ControllerBase
   [HttpDelete("{Id:guid}")]
   [AuthorizePermissions([EPermissions.DeleteReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
-    => Ok(await _handler.HandleDeleteAsync(id));
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleDeleteAsync(id, customerId));
+  } 
+    
 
   //Atualizar check out.
   //Somente administradores ou funcionários com permissão podem atualizar check out de reservas que não são suas.
@@ -89,7 +92,22 @@ public class ReservationController : ControllerBase
 
   [HttpPatch("finish/{Id:guid}")]
   public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)
-    => Ok(await _handler.HandleFinishReservationAsync(Id));
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleFinishReservationAsync(Id,customerId));
+  }
+
+  [HttpPatch("cancel/{Id:guid}")]
+  public async Task<IActionResult> CancelReservationAsync([FromRoute] Guid Id)
+  {
+    var customerId = _userService.GetUserIdentifier(User); 
+    return Ok(await _handler.HandleCancelReservationAsync(Id, customerId));
+  }
+
+  [HttpGet("total-amount")]
+  public async Task<IActionResult> GetTotalAmount(GetTotalAmount totalAmountDto)
+  => Ok(await _handler.GetTotalAmount(totalAmountDto.CheckIn, totalAmountDto.CheckOut, totalAmountDto.DailyRate, totalAmountDto.Services));
+  
 
 
 }

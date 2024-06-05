@@ -24,8 +24,7 @@ public partial class Reservation : Entity, IReservation
     Customer = customer;
     CustomerId = customer.Id;
 
-    var hostedDays = CalculeHostedDays();
-    HostedDays = hostedDays == 0 ? null : hostedDays;
+    TimeHosted = GetTimeHosted(CheckIn, checkOut);
     
     DailyRate = room.Price;
     Invoice = null;
@@ -34,7 +33,7 @@ public partial class Reservation : Entity, IReservation
     Room.ChangeStatus(ERoomStatus.Reserved);
   }
 
-  public int? HostedDays { get; private set; }
+  public TimeSpan? TimeHosted { get; private set; }
   public decimal DailyRate { get; private set; }
   public DateTime CheckIn { get; private set; }
   private DateTime? _checkOut { get; set; }
@@ -45,8 +44,8 @@ public partial class Reservation : Entity, IReservation
     }
     private set
     {
-      HostedDays = CalculeHostedDays();
       _checkOut = value;
+      TimeHosted = GetTimeHosted(CheckIn, _checkOut);
     }
   }
   public EReservationStatus Status { get; private set; }

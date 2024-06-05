@@ -31,7 +31,7 @@ partial class Reservation
 
   public void ValidateCheckInAndCheckOut(DateTime checkIn, DateTime? checkOut)
   {
-    if (checkOut != null && checkIn.Date > checkOut.Value.Date)
+    if (checkOut != null && checkIn > checkOut.Value)
       throw new ValidationException("Erro de validação: A data de check-out deve ser maior que a data de check-in.");
   }
 }

@@ -20,7 +20,7 @@ partial class Reservation
   public Reservation StatusToNoShow()
   {
     if (CheckIn.Date < DateTime.Now.Date)
-      throw new ValidationException("Erro de validação: A data de CheckIn não é a mesma da data de hoje.");
+      throw new ValidationException("A data de CheckIn deve ser a mesma da data de hoje.");
 
     Status = EReservationStatus.NoShow;
     Room?.ChangeStatus(ERoomStatus.Reserved);
@@ -29,8 +29,11 @@ partial class Reservation
 
   public Reservation StatusToCancelled()
   {
+    if (Status != EReservationStatus.Pending && Status != EReservationStatus.NoShow)
+      throw new InvalidOperationException($"Não é possível cancelar a reserva com o status {Status}");
+
     if (DateTime.Now > CheckIn)
-      throw new ValidationException("Erro de validação: A data de CheckIn já foi ultraprassada, não é possível cancelar a reserva.");
+      throw new ValidationException("A data de CheckIn já foi ultraprassada, não é possível cancelar a reserva.");
 
     Status = EReservationStatus.Cancelled;
     Room?.ChangeStatus(ERoomStatus.Available);
