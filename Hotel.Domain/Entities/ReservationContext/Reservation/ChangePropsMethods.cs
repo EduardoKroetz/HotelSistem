@@ -13,7 +13,7 @@ partial class Reservation
 
     ValidateCheckInAndCheckOut(CheckIn,checkOut);
     CheckOut = checkOut;
-    HostedDays = CalculeHostedDays();
+    TimeHosted = GetTimeHosted();
     return this;
   }
 
@@ -25,7 +25,7 @@ partial class Reservation
     ValidateCheckIn(checkIn);
     ValidateCheckInAndCheckOut(checkIn, CheckOut);
     CheckIn = checkIn;
-    HostedDays = CalculeHostedDays();
+    TimeHosted = GetTimeHosted();
     return this;
   }
 }

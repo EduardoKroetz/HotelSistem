@@ -94,5 +94,10 @@ public class ReservationController : ControllerBase
   public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)
     => Ok(await _handler.HandleFinishReservationAsync(Id));
 
+  [HttpGet("total-amount")]
+  public async Task<IActionResult> GetTotalAmount(GetTotalAmount totalAmountDto)
+  => Ok(await _handler.GetTotalAmount(totalAmountDto.CheckIn, totalAmountDto.CheckOut, totalAmountDto.DailyRate, totalAmountDto.Services));
+  
+
 
 }

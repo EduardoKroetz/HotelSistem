@@ -5,10 +5,10 @@ namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 public class ReservationQueryParameters : QueryParameters
 {
-  public ReservationQueryParameters(int? skip, int? take, int? hostedDays, string? hostedDaysOperator, decimal? dailyRate, string? dailyRateOperator, DateTime? checkIn, string? checkInOperator, DateTime? checkOut, string? checkOutOperator, EReservationStatus? status, int? capacity, string? capacityOperator, Guid? roomId, Guid? customerId, Guid? invoiceId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator) : base(skip, take, createdAt, createdAtOperator)
+  public ReservationQueryParameters(int? skip, int? take, TimeSpan? timeHosted, string? timeHostedOperator, decimal? dailyRate, string? dailyRateOperator, DateTime? checkIn, string? checkInOperator, DateTime? checkOut, string? checkOutOperator, EReservationStatus? status, int? capacity, string? capacityOperator, Guid? roomId, Guid? customerId, Guid? invoiceId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator) : base(skip, take, createdAt, createdAtOperator)
   {
-    HostedDays = hostedDays;
-    HostedDaysOperator = hostedDaysOperator;
+    TimeHosted = timeHosted;
+    TimeHostedOperator = timeHostedOperator;
     DailyRate = dailyRate;
     DailyRateOperator = dailyRateOperator;
     CheckIn = checkIn;
@@ -24,8 +24,8 @@ public class ReservationQueryParameters : QueryParameters
     ServiceId = serviceId;
   }
 
-  public int? HostedDays { get; private set; }
-  public string? HostedDaysOperator { get; private set; }
+  public TimeSpan? TimeHosted { get; private set; }
+  public string? TimeHostedOperator { get; private set; }
   public decimal? DailyRate { get; private set; }
   public string? DailyRateOperator { get; private set; }
   public DateTime? CheckIn { get; private set; }

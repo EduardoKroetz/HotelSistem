@@ -5,11 +5,11 @@ namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 public class GetReservation : IDataTransferObject
 {
-  public GetReservation(Guid id, decimal dailyRate, int? hostedDays, DateTime checkIn, DateTime? checkOut, EReservationStatus status, int capacity, Guid roomId, Guid customerId, Guid? invoiceId)
+  public GetReservation(Guid id, decimal dailyRate, TimeSpan? timeHosted, DateTime checkIn, DateTime? checkOut, EReservationStatus status, int capacity, Guid roomId, Guid customerId, Guid? invoiceId)
   {
     Id = id;
     DailyRate = dailyRate;
-    HostedDays = hostedDays;
+    TimeHosted = timeHosted;
     CheckIn = checkIn;
     CheckOut = checkOut;
     Status = status;
@@ -21,7 +21,7 @@ public class GetReservation : IDataTransferObject
 
   public Guid Id { get; private set; }
   public decimal DailyRate { get; private set; }
-  public int? HostedDays { get; private set; }
+  public TimeSpan? TimeHosted { get; private set; }
   public DateTime CheckIn { get; private set; }
   public DateTime? CheckOut { get; private set; }
   public EReservationStatus Status { get; private set; }

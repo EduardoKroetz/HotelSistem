@@ -87,4 +87,11 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
       .Include(x => x.Responsabilities)
       .FirstOrDefaultAsync();
   }
+
+  public async Task<ICollection<Service>> GetServicesByListId(ICollection<Guid> servicesIds)
+  {
+    return await _context.Services
+      .Where(x => servicesIds.Contains(x.Id))
+      .ToListAsync();
+  }
 }

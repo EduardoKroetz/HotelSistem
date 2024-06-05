@@ -22,7 +22,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .Select(x => new GetReservation(
         x.Id,
         x.DailyRate,
-        x.HostedDays,
+        x.TimeHosted,
         x.CheckIn,
         x.CheckOut,
         x.Status,
@@ -38,8 +38,8 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
   {
     var query = _context.Reservations.AsQueryable();
 
-    if (queryParameters.HostedDays.HasValue)
-      query = query.FilterByOperator(queryParameters.HostedDaysOperator,x => x.HostedDays,queryParameters.HostedDays);
+    if (queryParameters.TimeHosted.HasValue)
+      query = query.FilterByOperator(queryParameters.TimeHostedOperator,x => x.TimeHosted,queryParameters.TimeHosted);
 
     if (queryParameters.DailyRate.HasValue)
       query = query.FilterByOperator(queryParameters.DailyRateOperator, x => x.DailyRate, queryParameters.DailyRate);
@@ -74,7 +74,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     return await query.Select(x => new GetReservation(
         x.Id,
         x.DailyRate,
-        x.HostedDays,
+        x.TimeHosted,
         x.CheckIn,
         x.CheckOut,
         x.Status,
