@@ -19,7 +19,8 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .Where(x => x.Id == id)
       .Include(x => x.Customer)
       .Include(x => x.Services)
-      .Select(x => new GetReservation(x.Id,
+      .Select(x => new GetReservation(
+        x.Id,
         x.DailyRate,
         x.HostedDays,
         x.CheckIn,
@@ -27,14 +28,13 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
         x.Status,
         x.Capacity,
         x.RoomId,
-        new GetUser(x.CustomerId ,x.Customer!.Name.FirstName, x.Customer.Name.LastName, x.Customer.Email.Address, x.Customer.Phone.Number, x.Customer.Gender, x.Customer.DateOfBirth, x.Customer.Address, x.Customer.CreatedAt),
-        x.InvoiceId,
-        x.Services))
+        x.CustomerId,
+        x.InvoiceId))
       .FirstOrDefaultAsync();
 
   }
 
-  public async Task<IEnumerable<GetReservationCollection>> GetAsync(ReservationQueryParameters queryParameters)
+  public async Task<IEnumerable<GetReservation>> GetAsync(ReservationQueryParameters queryParameters)
   {
     var query = _context.Reservations.AsQueryable();
 
@@ -71,7 +71,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
 
     query = query.BaseQuery(queryParameters);
 
-    return await query.Select(x => new GetReservationCollection(
+    return await query.Select(x => new GetReservation(
         x.Id,
         x.DailyRate,
         x.HostedDays,
@@ -80,8 +80,9 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
         x.Status,
         x.Capacity,
         x.RoomId,
-        x.InvoiceId
-    )).ToListAsync();
+        x.CustomerId,
+        x.InvoiceId))
+     .ToListAsync();
   }
 
   public async Task<Reservation?> GetReservationIncludesServices(Guid id)

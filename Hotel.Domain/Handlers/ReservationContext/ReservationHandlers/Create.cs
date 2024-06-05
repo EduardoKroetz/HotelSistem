@@ -1,7 +1,5 @@
-using System.Collections.ObjectModel;
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
-using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Exceptions;
 using Hotel.Domain.Handlers.Interfaces;

@@ -1,14 +1,11 @@
-using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.Interfaces;
-using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 public class GetReservation : IDataTransferObject
 {
-  public GetReservation(Guid id, decimal dailyRate, int? hostedDays, DateTime checkIn, DateTime? checkOut, EReservationStatus status, int capacity, Guid roomId, GetUser customer, Guid? invoiceId, ICollection<Service> services)
+  public GetReservation(Guid id, decimal dailyRate, int? hostedDays, DateTime checkIn, DateTime? checkOut, EReservationStatus status, int capacity, Guid roomId, Guid customerId, Guid? invoiceId)
   {
     Id = id;
     DailyRate = dailyRate;
@@ -18,10 +15,10 @@ public class GetReservation : IDataTransferObject
     Status = status;
     Capacity = capacity;
     RoomId = roomId;
-    Customer = customer;
+    CustomerId = customerId;
     InvoiceId = invoiceId;
-    Services = services;
   }
+
   public Guid Id { get; private set; }
   public decimal DailyRate { get; private set; }
   public int? HostedDays { get; private set; }
@@ -30,7 +27,6 @@ public class GetReservation : IDataTransferObject
   public EReservationStatus Status { get; private set; }
   public int Capacity { get; private set; }
   public Guid RoomId { get; private set; }
-  public GetUser Customer { get; private set; }
+  public Guid CustomerId { get; private set; }
   public Guid? InvoiceId { get; private set; }
-  public ICollection<Service> Services { get; private set; }
 }

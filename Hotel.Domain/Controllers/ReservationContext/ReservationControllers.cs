@@ -26,9 +26,8 @@ public class ReservationController : ControllerBase
   //Somente administradores ou funcionários com permissão possuem acesso.
   //Administradores e funcionários tem acesso por padrão.
   [HttpGet]
-  [AuthorizePermissions([EPermissions.GetReservations, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> GetAsync([FromBody] ReservationQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  => Ok(await _handler.HandleGetAsync(queryParameters));
 
   //Buscar reserva pelo Id.
   //Todos os usuários possuem acesso.
@@ -52,7 +51,11 @@ public class ReservationController : ControllerBase
   [HttpDelete("{Id:guid}")]
   [AuthorizePermissions([EPermissions.DeleteReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
-    => Ok(await _handler.HandleDeleteAsync(id));
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleDeleteAsync(id, customerId));
+  } 
+    
 
   //Atualizar check out.
   //Somente administradores ou funcionários com permissão podem atualizar check out de reservas que não são suas.

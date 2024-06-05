@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 
@@ -6,10 +7,8 @@ public partial class ReservationHandler
 {
   public async Task<Response> HandleFinishReservationAsync(Guid id)
   {
-    //temporário
-    var reservation = await _repository.GetReservationIncludesAll(id);
-    if (reservation == null)
-      throw new ArgumentException("Reserva não encontrada.");
+    var reservation = await _repository.GetReservationIncludesAll(id)
+    ?? throw new NotFoundException("Reserva não encontrada.");
 
     var invoice = reservation.GenerateInvoice(Enums.EPaymentMethod.Pix, 0);
 

@@ -13,7 +13,7 @@ public interface IReservation
     int Capacity { get; }
     Guid RoomId { get; }
     Room? Room { get; }
-    Customer Customer { get; }
+    Customer? Customer { get; }
     RoomInvoice? Invoice { get; }
     ICollection<Service> Services { get; }
 }
