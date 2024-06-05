@@ -5,27 +5,15 @@ namespace Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 
 partial class Reservation
 {
-  public static TimeSpan? GetTimeHosted(DateTime checkIn, DateTime? checkOut)
-  {
-    var duration = checkOut - checkIn;
-    return duration;
-  }
-
-  public  TimeSpan? GetTimeHosted()
-  {
-    var duration = CheckOut - CheckIn;
-    return duration;
-  }
-
   public static decimal TotalAmount(decimal? dailyRate, DateTime? checkIn, DateTime? checkOut, ICollection<Service> services)
   {
     _ = 
     dailyRate is null ?
-      throw new ValidationException("Erro de validação: Valor da diária inválido.") :
+      throw new ValidationException("Valor da diária inválido.") :
     checkIn is null ?
-        throw new ValidationException("Erro de validação: CheckIn inválido.") :
+        throw new ValidationException("CheckIn inválido.") :
     checkOut is null ?
-        throw new ValidationException("Erro de validação: CheckOut inválido.") : 0;
+        throw new ValidationException("CheckOut inválido.") : 0;
 
     //Calcula o tempo que ficou hospedado
     var timeHosted = checkOut - checkIn;
@@ -40,7 +28,7 @@ partial class Reservation
     foreach (var service in services)
       price += service.Price;
 
-    return (decimal)price;
+    return (decimal) price;
   }
 
   public decimal TotalAmount()
