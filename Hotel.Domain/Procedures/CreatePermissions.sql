@@ -372,13 +372,13 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignServiceResponsability')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AssignResponsability', 'Permissão para atribuir uma responsabilidade a um serviço.', 1, GETDATE());
+        VALUES (NEWID(), 'AssignServiceResponsability', 'Permissão para atribuir uma responsabilidade a um serviço.', 1, GETDATE());
     END;
 
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignServiceResponsability')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'UnassignResponsability', 'Permissão para desatribuir uma responsabilidade de um serviço.', 1, GETDATE());
+        VALUES (NEWID(), 'UnassignServiceResponsability', 'Permissão para desatribuir uma responsabilidade de um serviço.', 1, GETDATE());
     END;
     
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AvailableRoomStatus')
