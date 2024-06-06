@@ -28,7 +28,6 @@ public class DefaultEmployeePermissions
     EPermissions.GetResponsability,
     EPermissions.GetRoomInvoices,
     EPermissions.GetRoomInvoice,
-    EPermissions.GetReservations,
     EPermissions.UpdateReservationCheckout,
     EPermissions.UpdateReservationCheckIn,
     EPermissions.AddServiceToReservation,
@@ -39,6 +38,7 @@ public class DefaultEmployeePermissions
     EPermissions.DeleteService,
     EPermissions.AssignServiceResponsability,
     EPermissions.UnassignServiceResponsability,
+
     EPermissions.EditRoom,
     EPermissions.CreateRoom,
     EPermissions.DeleteRoom,
@@ -48,6 +48,8 @@ public class DefaultEmployeePermissions
     EPermissions.UpdateRoomCapacity,
     EPermissions.UpdateRoomCategory,
     EPermissions.UpdateRoomPrice,
+    EPermissions.AvailableRoomStatus,
+
     EPermissions.GetReports,
     EPermissions.GetReport,
     EPermissions.EditReport,

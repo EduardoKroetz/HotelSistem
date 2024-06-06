@@ -50,19 +50,22 @@ public class DefaultAdminPermissions
     EPermissions.GetRoomInvoices,
     EPermissions.GetRoomInvoice,
     EPermissions.DeleteRoomInvoice,
-    EPermissions.GetReservations,
+
     EPermissions.DeleteReservation,
     EPermissions.UpdateReservationCheckout,
     EPermissions.UpdateReservationCheckIn,
     EPermissions.AddServiceToReservation,
     EPermissions.RemoveServiceFromReservation,
+
     EPermissions.GetServices,
     EPermissions.GetService,
     EPermissions.UpdateService,
     EPermissions.CreateService,
     EPermissions.DeleteService,
+
     EPermissions.AssignServiceResponsability,
     EPermissions.UnassignServiceResponsability,
+
     EPermissions.CreateRoom,
     EPermissions.DeleteRoom,
     EPermissions.AddRoomService,
@@ -71,16 +74,21 @@ public class DefaultAdminPermissions
     EPermissions.UpdateRoomCapacity,
     EPermissions.UpdateRoomCategory,
     EPermissions.UpdateRoomPrice,
+    EPermissions.AvailableRoomStatus,
+    EPermissions.EnableRoom,
+    EPermissions.DisableRoom,
+
     EPermissions.CreateCategory,
     EPermissions.EditCategory,
     EPermissions.DeleteCategory,
+
     EPermissions.GetReports,
     EPermissions.GetReport,
     EPermissions.EditReport,
     EPermissions.CreateReport,
     EPermissions.FinishReport,
-    EPermissions.EnableRoom,
-    EPermissions.DisableRoom
+
+
   ];
 
   public static Permission? DefaultPermission { get; set; } = null!;

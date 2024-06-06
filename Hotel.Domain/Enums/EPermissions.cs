@@ -42,7 +42,6 @@ public enum EPermissions
   GetRoomInvoice,
 
   //Reservations
-  GetReservations,
   DeleteReservation,
   UpdateReservationCheckout,
   UpdateReservationCheckIn,
@@ -73,6 +72,7 @@ public enum EPermissions
   UpdateRoomPrice,
   EnableRoom,
   DisableRoom,
+  AvailableRoomStatus,
 
   //Services
   GetServices,
