@@ -7,7 +7,7 @@ public partial class ReservationHandler
 {
   public async Task<Response> HandleCancelReservationAsync(Guid id, Guid customerId)
   {
-    var reservation = await _repository.GetEntityByIdAsync(id)
+    var reservation = await _repository.GetReservationIncludesAll(id)
       ?? throw new NotFoundException("Reserva não encontrada.");
 
     if (reservation.CustomerId != customerId)

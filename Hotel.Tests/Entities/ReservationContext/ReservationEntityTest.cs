@@ -81,7 +81,7 @@ public class ReservationEntityTest
     var reservation = new Reservation(TestParameters.Room,TwoDaysFromNow,TestParameters.Customer, 2);
     reservation.StatusToCancelled();
     Assert.AreEqual(EReservationStatus.Cancelled, reservation.Status);
-    Assert.AreEqual(ERoomStatus.Available, reservation?.Room?.Status);
+    Assert.AreEqual(ERoomStatus.OutOfService, reservation?.Room?.Status);
   }
 
   [TestMethod]
