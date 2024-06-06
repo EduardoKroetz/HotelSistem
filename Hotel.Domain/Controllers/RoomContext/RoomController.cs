@@ -93,4 +93,9 @@ public class RoomController : ControllerBase
   public async Task<IActionResult> DisableRoomAsync([FromRoute] Guid id)
     => Ok(await _handler.HandleDisableRoom(id));
 
+  [HttpPatch("available/{id:guid}")]
+  [AuthorizePermissions([EPermissions.AvailableRoomStatus, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> UpdateToAvailableRoomStatusAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleChangeToAvailableStatusAsync(id));
+
 }
