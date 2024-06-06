@@ -19,7 +19,11 @@ public partial class Report
   }
 
   public void ChangePriority(EPriority priority)
-  => Priority = priority;
+  {
+    ValidatePriority((int)priority);
+    Priority = priority;
+  }
+
   public void ChangeEmployee(Employee employee)
   => Employee = employee;
     
