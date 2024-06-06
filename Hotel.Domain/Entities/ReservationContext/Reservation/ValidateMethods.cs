@@ -1,3 +1,4 @@
+using Hotel.Domain.Entities.RoomContext.RoomEntity;
 using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.ReservationContext.ReservationEntity;
@@ -8,7 +9,7 @@ partial class Reservation
   {
     ValidateCapacity(Capacity);
     ValidateCheckIn(CheckIn);
-
+    ValidateRoom(Room);
     ValidateCheckInAndCheckOut(CheckIn, CheckOut);
 
     base.Validate();
@@ -17,7 +18,7 @@ partial class Reservation
   public void ValidateCapacity(int capacity)
   {
     if (capacity > Room?.Capacity)
-      throw new ValidationException("Erro de validação: Capacidade máxima de hospedades do quarto foi atingida.");
+      throw new ValidationException("Erro de validação: Capacidade máxima de hospedades do cômodo excedida.");
 
     if (capacity <= 0)
       throw new ValidationException("Erro de validação: Informe a quantidade de hóspedes de vão se hospedar.");
@@ -33,5 +34,16 @@ partial class Reservation
   {
     if (checkOut != null && checkIn > checkOut.Value)
       throw new ValidationException("Erro de validação: A data de check-out deve ser maior que a data de check-in.");
+  }
+
+  public void ValidateRoom(Room? room)
+  {
+    if (room == null)
+      throw new ArgumentException("Cômodo inválido.");
+    else if (room.IsActive is false)
+      throw new InvalidOperationException("Não é possível realizar a reserva pois o cômodo está inativo.");
+    else if (room?.Status != Enums.ERoomStatus.Available)
+      throw new InvalidOperationException("Não é possível realizar a reserva pois o cômodo está indisponível.");
+
   }
 }
