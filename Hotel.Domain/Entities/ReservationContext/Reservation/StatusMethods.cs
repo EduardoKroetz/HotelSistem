@@ -36,7 +36,7 @@ partial class Reservation
       throw new ValidationException("A data de CheckIn já foi ultraprassada, não é possível cancelar a reserva.");
 
     Status = EReservationStatus.Cancelled;
-    Room?.ChangeStatus(ERoomStatus.Available);
+    Room?.ChangeStatus(ERoomStatus.OutOfService);
     return this;
   }
   
