@@ -63,7 +63,7 @@ public class ReservationController : ControllerBase
   [HttpPatch("{Id:guid}/check-out")]
   [AuthorizePermissions([EPermissions.UpdateReservationCheckout, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
   public async Task<IActionResult> UpdateCheckoutAsync([FromRoute] Guid id,[FromBody] UpdateCheckOut updateCheckOut)
-    => Ok(await _handler.HandleUpdateCheckOutAsync(id, updateCheckOut.CheckOut));
+    => Ok(await _handler.HandleUpdateExpectedCheckOutAsync(id, updateCheckOut.CheckOut));
 
   //Atualizar check in.
   //Somente administradores ou funcionários com permissão podem atualizar check in de reservas que não são suas.
@@ -71,7 +71,7 @@ public class ReservationController : ControllerBase
   [HttpPatch("{Id:guid}/check-in")]
   [AuthorizePermissions([EPermissions.UpdateReservationCheckIn, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
   public async Task<IActionResult> UpdateCheckInAsync([FromRoute] Guid id,[FromBody] UpdateCheckIn updateCheckIn)
-    => Ok(await _handler.HandleUpdateCheckInAsync(id, updateCheckIn.CheckIn));
+    => Ok(await _handler.HandleUpdateExpectedCheckInAsync(id, updateCheckIn.CheckIn));
 
   //Adicionar um serviço a uma reserva, ou seja, o cliente
   //requisitou o serviço e o serviço é adicionado através desse endpoint.

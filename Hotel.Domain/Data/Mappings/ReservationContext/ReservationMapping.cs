@@ -14,6 +14,14 @@ public class ReservationMapping : EntityBaseMapping<Reservation>, IEntityTypeCon
 
     builder.ToTable("Reservations");
 
+    builder.Property(x => x.ExpectedCheckIn);
+
+    builder.Property(x => x.ExpectedCheckOut);
+
+    builder.Property(x => x.ExpectedTimeHosted)
+      .IsRequired(true)
+      .HasConversion(new TimeSpanToTicksConverter());
+
     builder.Property(x => x.TimeHosted)
       .IsRequired(false)
       .HasConversion(new TimeSpanToTicksConverter());

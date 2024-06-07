@@ -10,7 +10,8 @@ partial class Reservation
     ValidateCapacity(Capacity);
     ValidateCheckIn(CheckIn);
     ValidateRoom(Room);
-    ValidateCheckInAndCheckOut(CheckIn, CheckOut);
+    ValidateCheckIn(ExpectedCheckIn);
+    ValidateCheckInAndCheckOut(ExpectedCheckIn, ExpectedCheckOut);
 
     base.Validate();
   }
@@ -24,16 +25,22 @@ partial class Reservation
       throw new ValidationException("Erro de validação: Informe a quantidade de hóspedes de vão se hospedar.");
   }
 
-  public void ValidateCheckIn(DateTime checkIn)
+  public void ValidateCheckIn(DateTime? checkIn)
   {
-    if (checkIn.Date < DateTime.Now.Date)
-      throw new ValidationException("Erro de validação: A data de CheckIn não pode ser menor que a data atual.");
+    if (checkIn is not null)
+    {
+      if (checkIn is not null && checkIn?.Date < DateTime.Now.Date)
+        throw new ValidationException("Erro de validação: A data de CheckIn não pode ser menor que a data atual.");
+    }
   }
 
-  public void ValidateCheckInAndCheckOut(DateTime checkIn, DateTime? checkOut)
+  public void ValidateCheckInAndCheckOut(DateTime? checkIn, DateTime? checkOut)
   {
-    if (checkOut != null && checkIn > checkOut.Value)
-      throw new ValidationException("Erro de validação: A data de check-out deve ser maior que a data de check-in.");
+    if (checkOut is not null && checkIn is not null)
+    {
+      if (checkIn > checkOut.Value)
+        throw new ValidationException("Erro de validação: A data de check-out deve ser maior que a data de check-in.");
+    }
   }
 
   public void ValidateRoom(Room? room)

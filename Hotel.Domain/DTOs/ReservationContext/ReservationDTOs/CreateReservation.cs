@@ -4,16 +4,16 @@ namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 
 public class CreateReservation : IDataTransferObject
 {
-  public CreateReservation(DateTime checkIn, DateTime? checkOut, Guid roomId, int capacity)
+  public CreateReservation(DateTime expectedCheckIn, DateTime expectedCheckOut, Guid roomId, int capacity)
   {
-    CheckIn = checkIn;
-    CheckOut = checkOut;
+    ExpectedCheckIn= expectedCheckIn;
+    ExpectedCheckOut = expectedCheckOut;
     RoomId = roomId;
     Capacity = capacity;
   }
 
-  public DateTime CheckIn { get; private set; }
-  public DateTime? CheckOut { get; private set; }
+  public DateTime ExpectedCheckIn { get; private set; }
+  public DateTime ExpectedCheckOut { get; private set; }
   public Guid RoomId { get; private set; }
   public int Capacity { get; private set; }
 }

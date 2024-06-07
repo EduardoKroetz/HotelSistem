@@ -36,7 +36,7 @@ public partial class ReservationHandler : IHandler
     var customer = await _customerRepository.GetEntityByIdAsync(customerId)
       ?? throw new NotFoundException("Usuário não encontrado.");
 
-    var reservation = new Reservation(room,model.CheckIn,customer, model.Capacity ,model.CheckOut);
+    var reservation = new Reservation(room,model.ExpectedCheckIn, model.ExpectedCheckOut, customer, model.Capacity);
 
     await _repository.CreateAsync(reservation);
     await _repository.SaveChangesAsync();

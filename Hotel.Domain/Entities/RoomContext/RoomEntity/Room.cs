@@ -19,7 +19,7 @@ public partial class Room : Entity, IRoom
     Description = description;
     IsActive = true;
     CategoryId = categoryId;
-    Status = ERoomStatus.OutOfService;
+    Status = ERoomStatus.Available;
     Services = [];
     Images = [];
 

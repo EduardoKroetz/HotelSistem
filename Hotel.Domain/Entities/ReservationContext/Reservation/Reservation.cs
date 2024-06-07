@@ -13,10 +13,8 @@ public partial class Reservation : Entity, IReservation
 {
   internal Reservation(){}
 
-  public Reservation(Room room, DateTime checkIn, Customer customer, int capacity ,DateTime? checkOut = null)
+  public Reservation(Room room, DateTime expectedCheckIn, DateTime expectedCheckOut, Customer customer, int capacity)
   {
-    CheckIn = checkIn;
-    _checkOut = checkOut;
     Status = EReservationStatus.Pending;
     Capacity = capacity;
     Room = room;
@@ -24,7 +22,9 @@ public partial class Reservation : Entity, IReservation
     Customer = customer;
     CustomerId = customer.Id;
 
-    TimeHosted = GetTimeHosted(CheckIn, checkOut);
+    ExpectedCheckIn = expectedCheckIn;
+    ExpectedCheckOut = expectedCheckOut;
+    ExpectedTimeHosted = GetTimeHosted(ExpectedCheckIn, ExpectedCheckOut);
     
     DailyRate = room.Price;
     Invoice = null;
@@ -35,7 +35,10 @@ public partial class Reservation : Entity, IReservation
 
   public TimeSpan? TimeHosted { get; private set; }
   public decimal DailyRate { get; private set; }
-  public DateTime CheckIn { get; private set; }
+  public TimeSpan ExpectedTimeHosted { get; private set; }
+  public DateTime ExpectedCheckIn { get; private set; }
+  public DateTime ExpectedCheckOut { get; private set; }
+  public DateTime? CheckIn { get; private set; }
   private DateTime? _checkOut { get; set; }
   public DateTime? CheckOut 
   { get 

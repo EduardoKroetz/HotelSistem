@@ -36,5 +36,9 @@ partial class Reservation
     return TotalAmount(DailyRate, CheckIn, CheckOut, Services);
   }
 
+  public decimal ExpectedTotalAmount()
+  {
+    return TotalAmount(DailyRate, ExpectedCheckIn, ExpectedCheckOut, Services);
+  }
 
 }
