@@ -6,7 +6,7 @@ namespace Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 public class ReservationQueryParameters : QueryParameters
 {
 
-  public ReservationQueryParameters(int? skip, int? take, TimeSpan? timeHosted, string? timeHostedOperator, decimal? dailyRate, string? dailyRateOperator, DateTime? checkIn, string? checkInOperator, DateTime? checkOut, string? checkOutOperator, EReservationStatus? status, int? capacity, string? capacityOperator, Guid? roomId, Guid? customerId, Guid? invoiceId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator, DateTime? expectedCheckIn, string? expectedCheckInOperator, DateTime? expectedCheckOut, string? expectedCheckOutOperator) : base(skip, take, createdAt, createdAtOperator)
+  public ReservationQueryParameters(int? skip, int? take, TimeSpan? timeHosted, string? timeHostedOperator, decimal? dailyRate, string? dailyRateOperator, DateTime? checkIn, string? checkInOperator, DateTime? checkOut, string? checkOutOperator, EReservationStatus? status, int? capacity, string? capacityOperator, Guid? roomId, Guid? customerId, Guid? invoiceId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator, DateTime? expectedCheckIn, string? expectedCheckInOperator, DateTime? expectedCheckOut, string? expectedCheckOutOperator, TimeSpan? expectedTimeHosted, string? expectedTimeHostedOperator) : base(skip, take, createdAt, createdAtOperator)
   {
     TimeHosted = timeHosted;
     TimeHostedOperator = timeHostedOperator;
@@ -27,6 +27,8 @@ public class ReservationQueryParameters : QueryParameters
     ExpectedCheckInOperator = expectedCheckInOperator;
     ExpectedCheckOut = expectedCheckOut;
     ExpectedCheckOutOperator = expectedCheckOutOperator;
+    ExpectedTimeHostedOperator = expectedTimeHostedOperator;
+    ExpectedTimeHosted = expectedTimeHosted;
   }
 
   public TimeSpan? TimeHosted { get; private set; }
@@ -44,6 +46,8 @@ public class ReservationQueryParameters : QueryParameters
   public Guid? CustomerId { get; private set; }
   public Guid? InvoiceId { get; private set; }
   public Guid? ServiceId { get; private set; }
+  public TimeSpan? ExpectedTimeHosted { get; private set; }
+  public string? ExpectedTimeHostedOperator { get; private set; }
   public DateTime? ExpectedCheckIn { get; private set; }
   public string? ExpectedCheckInOperator { get; private set; }
   public DateTime? ExpectedCheckOut { get; private set; }

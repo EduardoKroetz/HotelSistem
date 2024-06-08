@@ -77,6 +77,9 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     if (queryParameters.ExpectedCheckOut.HasValue)
       query = query.FilterByOperator(queryParameters.ExpectedCheckOutOperator, x => x.ExpectedCheckOut, queryParameters.ExpectedCheckOut);
 
+    if (queryParameters.ExpectedTimeHosted.HasValue)
+      query = query.FilterByOperator(queryParameters.ExpectedTimeHostedOperator, x => x.ExpectedTimeHosted, queryParameters.ExpectedTimeHosted);
+
     query = query.BaseQuery(queryParameters);
 
     return await query.Select(x => new GetReservation(
