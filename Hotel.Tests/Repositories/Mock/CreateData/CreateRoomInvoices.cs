@@ -10,17 +10,17 @@ public class CreateRoomInvoices
 {
   public static async Task Create()
   {
-    var reservationWithService = await BaseRepositoryTest.MockConnection.Context.Reservations.FirstOrDefaultAsync(x => x.Services.Count > 0 && x.Status == EReservationStatus.Pending &&  x.CheckIn.Date == DateTime.Now.Date)
+    var reservationWithService = await BaseRepositoryTest.MockConnection.Context.Reservations.FirstOrDefaultAsync(x => x.Services.Count > 0 && x.Status == EReservationStatus.Pending &&  x.ExpectedCheckIn.Date == DateTime.Now.Date)
       ?? throw new Exception("reserva com serviço não encontrada.");
+
+    reservationWithService.ToCheckIn();
 
     var roomInvoices = new List<RoomInvoice>()
     {
-      reservationWithService.GenerateInvoice(EPaymentMethod.CreditCard),
-      BaseRepositoryTest.ReservationsToGenerateInvoice[0].GenerateInvoice(EPaymentMethod.Pix),
-      BaseRepositoryTest.ReservationsToGenerateInvoice[1].GenerateInvoice(EPaymentMethod.CreditCard,40),
-      BaseRepositoryTest.ReservationsToGenerateInvoice[2].GenerateInvoice(EPaymentMethod.Pix,10),
-      BaseRepositoryTest.ReservationsToGenerateInvoice[3].GenerateInvoice(EPaymentMethod.Pix,30),
-      BaseRepositoryTest.ReservationsToGenerateInvoice[4].GenerateInvoice(EPaymentMethod.CreditCard,16),
+      reservationWithService.Finish(EPaymentMethod.CreditCard),
+      BaseRepositoryTest.ReservationsToFinish[0].Finish(EPaymentMethod.Pix),
+      BaseRepositoryTest.ReservationsToFinish[1].Finish(EPaymentMethod.CreditCard,40),
+      BaseRepositoryTest.ReservationsToFinish[2].Finish(EPaymentMethod.Pix,10),
     };
     roomInvoices[0].FinishInvoice();
 
