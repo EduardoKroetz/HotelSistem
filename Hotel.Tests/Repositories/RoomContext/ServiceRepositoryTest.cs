@@ -242,8 +242,9 @@ public class ServiceRepositoryTest
   [TestMethod]
   public async Task GetAsync_WhereRoomId_ReturnServices()
   {
-    
-    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.Rooms[0].Id, null, null);
+    var roomWithServices = await BaseRepositoryTest.MockConnection.Context.Rooms.Where(x => x.Services.Count > 0).FirstOrDefaultAsync();
+
+    var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, roomWithServices!.Id, null, null);
     var services = await ServiceRepository.GetAsync(parameters);
 
     Assert.IsTrue(services.Any());
@@ -253,7 +254,7 @@ public class ServiceRepositoryTest
       var hasRoom = await BaseRepositoryTest.MockConnection.Context.Services
         .Where(x => x.Id == service.Id)
         .SelectMany(x => x.Rooms)
-        .AnyAsync(x => x.Id == BaseRepositoryTest.Rooms[0].Id);
+        .AnyAsync(x => x.Id == roomWithServices.Id);
 
       Assert.IsTrue(hasRoom);
     }

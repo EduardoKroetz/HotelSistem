@@ -8,7 +8,7 @@ public partial class ReservationHandler
   public async Task<Response> HandleDeleteAsync(Guid id, Guid customerId)
   {
     var reservation = await _repository.GetEntityByIdAsync(id)
-    ?? throw new NotFoundException("Reserva não encontrada.");
+      ?? throw new NotFoundException("Reserva não encontrada.");
 
     if (reservation.Status == Enums.EReservationStatus.CheckedIn)
       throw new InvalidOperationException("Não é possível deletar a reserva sem primeiro finaliza-la.");

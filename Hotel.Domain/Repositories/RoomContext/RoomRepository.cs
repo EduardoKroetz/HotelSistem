@@ -87,11 +87,4 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
       .Include(x => x.Reservations)
       .FirstOrDefaultAsync(x => x.Id == roomId);
   }
-  public async Task<Room?> GetRoomIncludesPendingReservations(Guid roomId)
-  {
-    return await _context.Rooms
-      .Include(x => x.Reservations)
-      .Where(x => x.Reservations.Any(x => x.Status == Enums.EReservationStatus.Pending))
-      .FirstOrDefaultAsync(x => x.Id == roomId);
-  }
 }

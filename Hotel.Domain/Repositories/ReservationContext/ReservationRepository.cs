@@ -22,6 +22,9 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .Select(x => new GetReservation(
         x.Id,
         x.DailyRate,
+        x.ExpectedTimeHosted,
+        x.ExpectedCheckIn,
+        x.ExpectedCheckOut,
         x.TimeHosted,
         x.CheckIn,
         x.CheckOut,
@@ -68,12 +71,23 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     if (queryParameters.ServiceId.HasValue)
       query = query.Where(x => x.Services.Any(x => x.Id == queryParameters.ServiceId));
 
+    if (queryParameters.ExpectedCheckIn.HasValue)
+      query = query.FilterByOperator(queryParameters.ExpectedCheckInOperator, x => x.ExpectedCheckIn, queryParameters.ExpectedCheckIn);
+
+    if (queryParameters.ExpectedCheckOut.HasValue)
+      query = query.FilterByOperator(queryParameters.ExpectedCheckOutOperator, x => x.ExpectedCheckOut, queryParameters.ExpectedCheckOut);
+
+    if (queryParameters.ExpectedTimeHosted.HasValue)
+      query = query.FilterByOperator(queryParameters.ExpectedTimeHostedOperator, x => x.ExpectedTimeHosted, queryParameters.ExpectedTimeHosted);
 
     query = query.BaseQuery(queryParameters);
 
     return await query.Select(x => new GetReservation(
         x.Id,
         x.DailyRate,
+        x.ExpectedTimeHosted,
+        x.ExpectedCheckIn,
+        x.ExpectedCheckOut,
         x.TimeHosted,
         x.CheckIn,
         x.CheckOut,

@@ -13,7 +13,7 @@ public partial class ReservationHandler
     if (reservation.CustomerId != customerId)
       throw new UnauthorizedAccessException("Você não tem permissão para cancelar reserva alheia.");
 
-    reservation.StatusToCancelled();
+    reservation.ToCancelled();
 
     await _repository.SaveChangesAsync();
 

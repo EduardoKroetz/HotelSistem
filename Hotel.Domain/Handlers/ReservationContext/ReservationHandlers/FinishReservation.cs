@@ -13,7 +13,7 @@ public partial class ReservationHandler
     if (reservation.CustomerId != customerId)
       throw new UnauthorizedAccessException("Você não tem permissão para cancelar reserva alheia.");
 
-    var invoice = reservation.GenerateInvoice(Enums.EPaymentMethod.Pix, 0);
+    var invoice = reservation.Finish(Enums.EPaymentMethod.Pix, 0);
 
     await _invoiceHandler.HandleCreateAsync(invoice, reservation);
 

@@ -8,12 +8,12 @@ public partial class RoomHandler
 {
   public async Task<Response> HandleUpdateAsync(EditorRoom model, Guid id)
   {
-    var room = await _repository.GetRoomIncludesPendingReservations(id);
-    if (room == null)
-      throw new NotFoundException("Cômodo não encontrado.");
+    var room = await _repository.GetRoomIncludesReservations(id)
+      ?? throw new NotFoundException("Cômodo não encontrado.");
 
-    if (room.Reservations.Count > 0 && model.Price != room.Price)
-      throw new InvalidOperationException("Não é possível atualizar o preço quando possuem reservas pendentes relacionadas ao cômodo.");
+    var pendingReservations = room.Reservations.Where(x => x.Status == Enums.EReservationStatus.Pending).ToList();
+    if (pendingReservations.Count > 0 && model.Price != room.Price)
+      throw new InvalidOperationException("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas ao cômodo.");
 
     room.ChangeNumber(model.Number);
     room.ChangeCapacity(model.Capacity);

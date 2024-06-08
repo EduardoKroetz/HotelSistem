@@ -7,5 +7,4 @@ public interface IRoomRepository : IRepository<Room>, IRepositoryQuery<GetRoom, 
 {
   Task<Room?> GetRoomIncludesServices(Guid roomId);
   Task<Room?> GetRoomIncludesReservations(Guid roomId);
-  Task<Room?> GetRoomIncludesPendingReservations(Guid roomId);
 }
