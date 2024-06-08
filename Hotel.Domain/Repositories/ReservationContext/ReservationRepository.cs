@@ -17,32 +17,32 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .Reservations
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Include(x => x.Customers)
+      .Include(x => x.Customer)
       .Include(x => x.Services)
-      .Select(x => new GetReservation(x.Id,
+      .Select(x => new GetReservation(
+        x.Id,
         x.DailyRate,
-        x.HostedDays,
+        x.ExpectedTimeHosted,
+        x.ExpectedCheckIn,
+        x.ExpectedCheckOut,
+        x.TimeHosted,
         x.CheckIn,
         x.CheckOut,
         x.Status,
         x.Capacity,
         x.RoomId,
-        new List<GetUser>(
-          x.Customers.Select(
-            c => new GetUser(c.Id, c.Name.FirstName, c.Name.LastName, c.Email.Address, c.Phone.Number, c.Gender,c.DateOfBirth, c.Address,c.CreatedAt)
-        )),
-        x.InvoiceId,
-        x.Services))
+        x.CustomerId,
+        x.InvoiceId))
       .FirstOrDefaultAsync();
 
   }
 
-  public async Task<IEnumerable<GetReservationCollection>> GetAsync(ReservationQueryParameters queryParameters)
+  public async Task<IEnumerable<GetReservation>> GetAsync(ReservationQueryParameters queryParameters)
   {
     var query = _context.Reservations.AsQueryable();
 
-    if (queryParameters.HostedDays.HasValue)
-      query = query.FilterByOperator(queryParameters.HostedDaysOperator,x => x.HostedDays,queryParameters.HostedDays);
+    if (queryParameters.TimeHosted.HasValue)
+      query = query.FilterByOperator(queryParameters.TimeHostedOperator,x => x.TimeHosted,queryParameters.TimeHosted);
 
     if (queryParameters.DailyRate.HasValue)
       query = query.FilterByOperator(queryParameters.DailyRateOperator, x => x.DailyRate, queryParameters.DailyRate);
@@ -60,7 +60,7 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       query = query.FilterByOperator(queryParameters.CapacityOperator, x => x.Capacity, queryParameters.Capacity);
 
     if (queryParameters.CustomerId.HasValue)
-      query = query.Where(x => x.Customers.Any(x => x.Id == queryParameters.CustomerId));
+      query = query.Where(x => x.CustomerId == queryParameters.CustomerId);
 
     if (queryParameters.RoomId.HasValue)
       query = query.Where(x => x.RoomId == queryParameters.RoomId);
@@ -71,20 +71,32 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
     if (queryParameters.ServiceId.HasValue)
       query = query.Where(x => x.Services.Any(x => x.Id == queryParameters.ServiceId));
 
+    if (queryParameters.ExpectedCheckIn.HasValue)
+      query = query.FilterByOperator(queryParameters.ExpectedCheckInOperator, x => x.ExpectedCheckIn, queryParameters.ExpectedCheckIn);
+
+    if (queryParameters.ExpectedCheckOut.HasValue)
+      query = query.FilterByOperator(queryParameters.ExpectedCheckOutOperator, x => x.ExpectedCheckOut, queryParameters.ExpectedCheckOut);
+
+    if (queryParameters.ExpectedTimeHosted.HasValue)
+      query = query.FilterByOperator(queryParameters.ExpectedTimeHostedOperator, x => x.ExpectedTimeHosted, queryParameters.ExpectedTimeHosted);
 
     query = query.BaseQuery(queryParameters);
 
-    return await query.Select(x => new GetReservationCollection(
+    return await query.Select(x => new GetReservation(
         x.Id,
         x.DailyRate,
-        x.HostedDays,
+        x.ExpectedTimeHosted,
+        x.ExpectedCheckIn,
+        x.ExpectedCheckOut,
+        x.TimeHosted,
         x.CheckIn,
         x.CheckOut,
         x.Status,
         x.Capacity,
         x.RoomId,
-        x.InvoiceId
-    )).ToListAsync();
+        x.CustomerId,
+        x.InvoiceId))
+     .ToListAsync();
   }
 
   public async Task<Reservation?> GetReservationIncludesServices(Guid id)
@@ -95,10 +107,19 @@ public class ReservationRepository : GenericRepository<Reservation>, IReservatio
       .FirstOrDefaultAsync();
   }
 
-  public async Task<Reservation?> GetReservationIncludesCustomers(Guid id)
+  public async Task<Reservation?> GetReservationIncludesCustomer(Guid id)
   {
     return await _context.Reservations
-      .Include(x => x.Customers)
+      .Include(x => x.Customer)
+      .FirstOrDefaultAsync(x => x.Id == id);
+  }
+
+  public async Task<Reservation?> GetReservationIncludesAll(Guid id)
+  {
+    return await _context.Reservations
+      .Include(x => x.Customer)
+      .Include(x => x.Services)
+      .Include(x => x.Room)
       .FirstOrDefaultAsync(x => x.Id == id);
   }
 }

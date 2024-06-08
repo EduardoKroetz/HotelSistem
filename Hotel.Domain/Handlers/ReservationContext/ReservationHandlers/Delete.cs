@@ -1,13 +1,23 @@
 using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 
 public partial class ReservationHandler
 {
-  public async Task<Response<object>> HandleDeleteAsync(Guid id)
+  public async Task<Response> HandleDeleteAsync(Guid id, Guid customerId)
   {
-    _repository.Delete(id);
+    var reservation = await _repository.GetEntityByIdAsync(id)
+      ?? throw new NotFoundException("Reserva não encontrada.");
+
+    if (reservation.Status == Enums.EReservationStatus.CheckedIn)
+      throw new InvalidOperationException("Não é possível deletar a reserva sem primeiro finaliza-la.");
+
+    if (reservation.CustomerId != customerId)
+      throw new UnauthorizedAccessException("Você não tem autorização para deletar essa reserva.");
+
+    _repository.Delete(reservation);
     await _repository.SaveChangesAsync();
-    return new Response<object>(200,"Reserva deletada.", new { id });
+    return new Response(200,"Reserva deletada com sucesso!", new { id });
   }
 }

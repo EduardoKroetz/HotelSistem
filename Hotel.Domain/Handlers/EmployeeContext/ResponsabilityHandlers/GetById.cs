@@ -11,6 +11,6 @@ public partial class ResponsabilityHandler
     if (reponsability == null)
       throw new ArgumentException("Responsabilidade não encontrada.");
     
-    return new Response<GetReponsability>(200,"Responsabilidade encontrada.", reponsability);
+    return new Response<GetReponsability>(200,"Responsabilidade encontrada com sucesso!.", reponsability);
   }
 }

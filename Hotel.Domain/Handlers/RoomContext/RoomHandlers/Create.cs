@@ -1,8 +1,10 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.RoomContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
@@ -20,13 +22,28 @@ public partial class RoomHandler : IHandler
   }
 
 
-  public async Task<Response<object>> HandleCreateAsync(EditorRoom model)
+  public async Task<Response> HandleCreateAsync(EditorRoom model)
   {
-    var room = new Room(model.Number,model.Price,model.Capacity,model.Description,model.CategoryId);  
+    var category = await _categoryRepository.GetEntityByIdAsync(model.CategoryId);
+    if (category == null)
+      throw new NotFoundException("Categoria não encontrada.");
 
-    await _repository.CreateAsync(room);
-    await _repository.SaveChangesAsync();
+    var room = new Room(model.Number,model.Price,model.Capacity,model.Description,model.CategoryId);
 
-    return new Response<object>(200,"Hospedagem criada.",new { room.Id });
+    try
+    {
+      await _repository.CreateAsync(room);
+      await _repository.SaveChangesAsync();
+    }
+    catch (DbUpdateException e)
+    {
+      if (e.InnerException != null && e.InnerException.ToString().Contains("Number"))
+        return new Response(400, "Esse número já foi cadastrado.");
+      else
+        return new Response(500, "Algum erro ocorreu ao salvar no banco de dados.");
+    }
+
+
+    return new Response(200,"Hospedagem criada com sucesso!",new { room.Id });
   }
 }

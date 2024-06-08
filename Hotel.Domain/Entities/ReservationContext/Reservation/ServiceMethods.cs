@@ -14,6 +14,9 @@ partial class Reservation
   }
 
   public void RemoveService(Service service)
-  => Services.Remove(service);
+  {
+    if (!Services.Remove(service))
+      throw new NotFoundException("Esse serviço não está atribuido a essa reserva.");
+  }
   
 }

@@ -16,7 +16,7 @@ public class Phone : ValueObject
   public string Number { get; private set; }
 
   public override void Validate()
-{
+  {
     var regex = new Regex(@"^\+\d{2,3}\s\(\d{2,3}\)\s\d{5}-\d{4}$").IsMatch(Number);
     if (!regex)
         throw new ValidationException("Informe o telefone em um formato válido.");

@@ -5,7 +5,23 @@ namespace Hotel.Domain.Entities.RoomContext.RoomEntity;
 public partial class Room
 {
   public void ChangeStatus(ERoomStatus status)
-  => Status = status;
+  {
+    if (status == ERoomStatus.Available)
+    {
+      AvailableStatus();
+      return;
+    }
+
+    Status = status;
+  }
+
+  private void AvailableStatus()
+  {
+    if (Status != ERoomStatus.OutOfService)
+      throw new InvalidOperationException("Só é possível alterar o status para 'Disponível' se o quarto estiver com o status 'Fora de serviço'");
+
+    Status = ERoomStatus.Available;
+  }
 
   public void ChangeCategory(Guid categoryId)
   => CategoryId = categoryId;
@@ -35,4 +51,9 @@ public partial class Room
     Capacity = capacity;
   }
 
+  public void Enable()
+  => IsActive = true;
+
+  public void Disable()
+=> IsActive = false;
 }

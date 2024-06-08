@@ -1,5 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.RoomDTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
@@ -9,8 +10,8 @@ public partial class RoomHandler
   {
     var room = await _repository.GetByIdAsync(id);
     if (room == null)
-      throw new ArgumentException("Hospedagem não encontrada.");
+      throw new NotFoundException("Cômodo não encontrado.");
     
-    return new Response<GetRoom>(200,"Hospedagem encontrada.", room);
+    return new Response<GetRoom>(200, "Sucesso!", room);
   }
 }

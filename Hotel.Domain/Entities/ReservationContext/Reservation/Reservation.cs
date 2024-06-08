@@ -13,18 +13,18 @@ public partial class Reservation : Entity, IReservation
 {
   internal Reservation(){}
 
-  public Reservation(Room room, DateTime checkIn, ICollection<Customer> customers ,DateTime? checkOut = null)
+  public Reservation(Room room, DateTime expectedCheckIn, DateTime expectedCheckOut, Customer customer, int capacity)
   {
-    CheckIn = checkIn;
-    _checkOut = checkOut;
     Status = EReservationStatus.Pending;
-    Capacity = customers.Count;
+    Capacity = capacity;
     Room = room;
     RoomId = room.Id;
-    Customers = customers;
+    Customer = customer;
+    CustomerId = customer.Id;
 
-    var hostedDays = CalculeHostedDays();
-    HostedDays = hostedDays == 0 ? null : hostedDays;
+    ExpectedCheckIn = expectedCheckIn;
+    ExpectedCheckOut = expectedCheckOut;
+    ExpectedTimeHosted = GetTimeHosted(ExpectedCheckIn, ExpectedCheckOut);
     
     DailyRate = room.Price;
     Invoice = null;
@@ -33,9 +33,12 @@ public partial class Reservation : Entity, IReservation
     Room.ChangeStatus(ERoomStatus.Reserved);
   }
 
-  public int? HostedDays { get; private set; }
+  public TimeSpan? TimeHosted { get; private set; }
   public decimal DailyRate { get; private set; }
-  public DateTime CheckIn { get; private set; }
+  public TimeSpan ExpectedTimeHosted { get; private set; }
+  public DateTime ExpectedCheckIn { get; private set; }
+  public DateTime ExpectedCheckOut { get; private set; }
+  public DateTime? CheckIn { get; private set; }
   private DateTime? _checkOut { get; set; }
   public DateTime? CheckOut 
   { get 
@@ -44,15 +47,16 @@ public partial class Reservation : Entity, IReservation
     }
     private set
     {
-      HostedDays = CalculeHostedDays();
       _checkOut = value;
+      TimeHosted = GetTimeHosted(CheckIn, _checkOut);
     }
   }
   public EReservationStatus Status { get; private set; }
   public int Capacity { get; private set; }
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
-  public ICollection<Customer> Customers { get; private set; } = [];
+  public Guid CustomerId { get; private set; }
+  public Customer? Customer { get; private set; }
   public Guid? InvoiceId { get; private set; }
   public RoomInvoice? Invoice { get; private set; }
   public ICollection<Service> Services { get; private set; } = [];

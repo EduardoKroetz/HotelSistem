@@ -20,6 +20,7 @@ public static class BaseRepositoryTest
 {
   public static ConfigMockConnection MockConnection = null!;
   public static List<Room> Rooms { get; set; } = [];
+  public static List<Room> AvailableRooms { get; set; } = [];
   public static List<Reservation> Reservations { get; set; } = [];
   public static List<Admin> Admins { get; set; } = [];
   public static List<Category> Categories { get; set; } = [];
@@ -30,6 +31,7 @@ public static class BaseRepositoryTest
   public static List<Feedback> Feedbacks { get; set; } = [];
   public static List<Responsability> Responsabilities { get; set; } = [];
   public static List<RoomInvoice> RoomInvoices { get; set; } = [];
+  public static List<Reservation> ReservationsToFinish { get; set; } = []; 
   public static List<Report> Reports { get; set; } = [];
 
   static BaseRepositoryTest()

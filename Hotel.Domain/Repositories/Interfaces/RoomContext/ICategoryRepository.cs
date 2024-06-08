@@ -5,4 +5,5 @@ namespace Hotel.Domain.Repositories.Interfaces.RoomContext;
 
 public interface ICategoryRepository : IRepository<Category>, IRepositoryQuery<GetCategory, CategoryQueryParameters>
 {
+  Task<Category?> GetCategoryIncludesRooms(Guid id);
 }

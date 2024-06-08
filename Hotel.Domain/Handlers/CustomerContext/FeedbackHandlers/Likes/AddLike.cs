@@ -1,21 +1,31 @@
 using Hotel.Domain.DTOs;
+using Hotel.Domain.Entities.CustomerContext.FeedbackContext;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 
 public partial class FeedbackHandler
 {
-  public async Task<Response<object>> HandleAddLikeAsync(Guid id)
+  public async Task<Response> HandleAddLikeAsync(Guid feedbackId, Guid customerId)
   {
-    var feedback = await _repository.GetEntityByIdAsync(id);
-
+    var feedback = await _feedbackRepository.GetEntityByIdAsync(feedbackId);
     if (feedback == null)
-      throw new ArgumentException("Feedback não encontrado.");
+      throw new NotFoundException("Feedback não encontrado.");
 
-    feedback.AddLike();
+    var customer = await _customerRepository.GetEntityByIdAsync(customerId);
+    if (customer == null)
+      throw new NotFoundException("Usuário não encontrado.");
 
-    _repository.Update(feedback);
-    await _repository.SaveChangesAsync();
+    var likeExists = await _likeRepository.GetLikeAsync(feedbackId, customerId);
+    if (likeExists != null)
+      throw new InvalidOperationException("Você já tem um like atribuido a esse feedback.");
 
-    return new Response<object>(200,"Curtida adicionada.", new { id });
+    var like = new Like(customer, feedback);
+
+    await _likeRepository.CreateLike(like);
+    
+    await _feedbackRepository.SaveChangesAsync();
+
+    return new Response(200,"Like adicionado com sucesso!");
   }
 }

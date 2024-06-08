@@ -2,6 +2,7 @@ using Hotel.Domain.Attributes;
 using Hotel.Domain.DTOs.ReservationContext.ReservationDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
+using Hotel.Domain.Services.UserServices.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,17 +14,20 @@ namespace Hotel.Domain.Controllers.ReservationContext;
 public class ReservationController : ControllerBase
 {
   private readonly ReservationHandler _handler;
+  private readonly IUserService _userService;
 
-  public ReservationController(ReservationHandler handler)
-    => _handler = handler;
+  public ReservationController(ReservationHandler handler, IUserService userService)
+  {
+    _handler = handler;
+    _userService = userService;
+  }
 
   //Buscar reservas.
   //Somente administradores ou funcionários com permissão possuem acesso.
   //Administradores e funcionários tem acesso por padrão.
   [HttpGet]
-  [AuthorizePermissions([EPermissions.GetReservations, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> GetAsync([FromBody] ReservationQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  => Ok(await _handler.HandleGetAsync(queryParameters));
 
   //Buscar reserva pelo Id.
   //Todos os usuários possuem acesso.
@@ -36,15 +40,22 @@ public class ReservationController : ControllerBase
   [HttpPost]
   [Authorize(Roles = "Customer")]
   public async Task<IActionResult> PostAsync([FromBody] CreateReservation model)
-    => Ok(await _handler.HandleCreateAsync(model));
-
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleCreateAsync(model, customerId));
+  }
+   
   //Deletar reserva.
   //Somente administradores ou funcionários com permissão podem acessar.
   //Administradores tem acesso por padrão.
   [HttpDelete("{Id:guid}")]
   [AuthorizePermissions([EPermissions.DeleteReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
-    => Ok(await _handler.HandleDeleteAsync(id));
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleDeleteAsync(id, customerId));
+  } 
+    
 
   //Atualizar check out.
   //Somente administradores ou funcionários com permissão podem atualizar check out de reservas que não são suas.
@@ -52,7 +63,7 @@ public class ReservationController : ControllerBase
   [HttpPatch("{Id:guid}/check-out")]
   [AuthorizePermissions([EPermissions.UpdateReservationCheckout, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
   public async Task<IActionResult> UpdateCheckoutAsync([FromRoute] Guid id,[FromBody] UpdateCheckOut updateCheckOut)
-    => Ok(await _handler.HandleUpdateCheckOutAsync(id, updateCheckOut.CheckOut));
+    => Ok(await _handler.HandleUpdateExpectedCheckOutAsync(id, updateCheckOut.CheckOut));
 
   //Atualizar check in.
   //Somente administradores ou funcionários com permissão podem atualizar check in de reservas que não são suas.
@@ -60,7 +71,7 @@ public class ReservationController : ControllerBase
   [HttpPatch("{Id:guid}/check-in")]
   [AuthorizePermissions([EPermissions.UpdateReservationCheckIn, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
   public async Task<IActionResult> UpdateCheckInAsync([FromRoute] Guid id,[FromBody] UpdateCheckIn updateCheckIn)
-    => Ok(await _handler.HandleUpdateCheckInAsync(id, updateCheckIn.CheckIn));
+    => Ok(await _handler.HandleUpdateExpectedCheckInAsync(id, updateCheckIn.CheckIn));
 
   //Adicionar um serviço a uma reserva, ou seja, o cliente
   //requisitou o serviço e o serviço é adicionado através desse endpoint.
@@ -78,6 +89,25 @@ public class ReservationController : ControllerBase
   [AuthorizePermissions([EPermissions.RemoveServiceFromReservation, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> RemoveServiceAsync([FromRoute] Guid id,[FromRoute] Guid serviceId)
     => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
+
+  [HttpPatch("finish/{Id:guid}")]
+  public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)
+  {
+    var customerId = _userService.GetUserIdentifier(User);
+    return Ok(await _handler.HandleFinishReservationAsync(Id,customerId));
+  }
+
+  [HttpPatch("cancel/{Id:guid}")]
+  public async Task<IActionResult> CancelReservationAsync([FromRoute] Guid Id)
+  {
+    var customerId = _userService.GetUserIdentifier(User); 
+    return Ok(await _handler.HandleCancelReservationAsync(Id, customerId));
+  }
+
+  [HttpGet("total-amount")]
+  public async Task<IActionResult> GetTotalAmount(GetTotalAmount totalAmountDto)
+  => Ok(await _handler.GetTotalAmount(totalAmountDto.CheckIn, totalAmountDto.CheckOut, totalAmountDto.DailyRate, totalAmountDto.Services));
+  
 
 
 }

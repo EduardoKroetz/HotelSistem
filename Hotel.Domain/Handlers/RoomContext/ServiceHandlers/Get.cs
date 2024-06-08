@@ -8,6 +8,6 @@ public partial class ServiceHandler
   public async Task<Response<IEnumerable<GetServiceCollection>>> HandleGetAsync(ServiceQueryParameters queryParameters)
   {
     var services = await _repository.GetAsync(queryParameters);
-    return new Response<IEnumerable<GetServiceCollection>>(200,"", services);
+    return new Response<IEnumerable<GetServiceCollection>>(200, "Sucesso!", services);
   }
 }

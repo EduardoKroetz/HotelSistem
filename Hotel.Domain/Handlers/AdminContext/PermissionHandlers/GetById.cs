@@ -11,6 +11,6 @@ public partial class PermissionHandler
     if (permission == null)
       throw new ArgumentException("Permissão não encontrada.");
     
-    return new Response<GetPermission>(200,"Permissão encontrada com sucesso!", permission);
+    return new Response<GetPermission>(200,"Sucesso!", permission);
   }
 }

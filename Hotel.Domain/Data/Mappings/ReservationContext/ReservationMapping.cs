@@ -1,8 +1,8 @@
 using Hotel.Domain.Data.Mappings.Base;
-using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Hotel.Domain.Data.Mappings.ReservationContext;
 
@@ -14,8 +14,17 @@ public class ReservationMapping : EntityBaseMapping<Reservation>, IEntityTypeCon
 
     builder.ToTable("Reservations");
 
-    builder.Property(x => x.HostedDays)
-      .IsRequired(false);
+    builder.Property(x => x.ExpectedCheckIn);
+
+    builder.Property(x => x.ExpectedCheckOut);
+
+    builder.Property(x => x.ExpectedTimeHosted)
+      .IsRequired(true)
+      .HasConversion(new TimeSpanToTicksConverter());
+
+    builder.Property(x => x.TimeHosted)
+      .IsRequired(false)
+      .HasConversion(new TimeSpanToTicksConverter());
 
     builder.Property(x => x.DailyRate)
       .IsRequired()
@@ -44,16 +53,17 @@ public class ReservationMapping : EntityBaseMapping<Reservation>, IEntityTypeCon
       .OnDelete(DeleteBehavior.SetNull);
 
     builder.HasOne(x => x.Room)
-      .WithMany()
+      .WithMany(x => x.Reservations)
       .HasForeignKey(x => x.RoomId)
       .IsRequired()
       .HasConstraintName("FK_Reservations_Room")
       .OnDelete(DeleteBehavior.Cascade);
 
-    builder.HasMany(x => x.Customers)
+    builder.HasOne(x => x.Customer)
       .WithMany(x => x.Reservations)
-      .UsingEntity(j => j.ToTable("ReservationCustomers"));
-
+      .HasForeignKey(x => x.CustomerId)
+      .OnDelete(DeleteBehavior.NoAction);
+   
     builder.HasMany(x => x.Services)
       .WithMany(x => x.Reservations)
       .UsingEntity(j => j.ToTable("ReservationServices"));

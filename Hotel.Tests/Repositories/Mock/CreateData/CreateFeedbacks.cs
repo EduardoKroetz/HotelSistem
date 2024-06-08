@@ -1,7 +1,5 @@
-﻿using Hotel.Domain.Entities.CustomerContext;
+﻿using Hotel.Domain.Entities.CustomerContext.FeedbackContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
-using Hotel.Domain.Enums;
-using Hotel.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Tests.Repositories.Mock.CreateData;
@@ -19,13 +17,34 @@ public class CreateFeedbacks
       new("Problemas com o Wi-Fi, muito lento", 2, BaseRepositoryTest.Customers[4].Id, BaseRepositoryTest.Reservations[4].Id, BaseRepositoryTest.Rooms[4].Id),
     };
 
-    for (var i = 0; i < 6; i++)
+    var likes = new List<Like>()
     {
-      feedbacks[0].AddLike();
-      feedbacks[0].AddDeslike();
-      feedbacks[4].AddLike();
-      feedbacks[2].AddDeslike();
-    }
+      new (BaseRepositoryTest.Customers[0], feedbacks[0]),
+      new (BaseRepositoryTest.Customers[1], feedbacks[1]),
+      new (BaseRepositoryTest.Customers[2], feedbacks[2]),
+      new (BaseRepositoryTest.Customers[3], feedbacks[3]),
+      new (BaseRepositoryTest.Customers[4], feedbacks[4]),
+      new (BaseRepositoryTest.Customers[3], feedbacks[0]),
+      new (BaseRepositoryTest.Customers[2], feedbacks[2]),
+      new (BaseRepositoryTest.Customers[1], feedbacks[0]),
+      new (BaseRepositoryTest.Customers[0], feedbacks[4]),
+    };
+
+    var deslikes = new List<Deslike>()
+    {
+      new (BaseRepositoryTest.Customers[0], feedbacks[0]),
+      new (BaseRepositoryTest.Customers[1], feedbacks[1]),
+      new (BaseRepositoryTest.Customers[2], feedbacks[2]),
+      new (BaseRepositoryTest.Customers[3], feedbacks[3]),
+      new (BaseRepositoryTest.Customers[4], feedbacks[4]),
+      new (BaseRepositoryTest.Customers[3], feedbacks[0]),
+      new (BaseRepositoryTest.Customers[2], feedbacks[2]),
+      new (BaseRepositoryTest.Customers[1], feedbacks[0]),
+      new (BaseRepositoryTest.Customers[0], feedbacks[4]),
+    };
+
+    await BaseRepositoryTest.MockConnection.Context.Likes.AddRangeAsync(likes);
+    await BaseRepositoryTest.MockConnection.Context.Deslikes.AddRangeAsync(deslikes);
 
     await BaseRepositoryTest.MockConnection.Context.Feedbacks.AddRangeAsync(feedbacks);
     await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();

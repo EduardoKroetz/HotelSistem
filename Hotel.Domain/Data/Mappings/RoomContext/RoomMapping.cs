@@ -20,6 +20,9 @@ public class RoomMapping : EntityBaseMapping<Room>, IEntityTypeConfiguration<Roo
     builder.HasIndex(x => x.Number)
       .IsUnique();
 
+    builder.Property(x => x.IsActive)
+      .IsRequired();
+
     builder.Property(x => x.Price)
         .IsRequired()
         .HasColumnType("DECIMAL(18,2)");

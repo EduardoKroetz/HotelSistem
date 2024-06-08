@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.Base.GenericUserHandler;
 
 public partial class GenericUserHandler<TRepository, TUser>
 {
-  public async Task<Response<object>> HandleUpdateNameAsync(Guid userId, Name name)
+  public async Task<Response> HandleUpdateNameAsync(Guid userId, Name name)
   {
     var user = await _repository.GetEntityByIdAsync(userId);
     if (user == null)
@@ -15,6 +15,6 @@ public partial class GenericUserHandler<TRepository, TUser>
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Nome atualizado.");
+    return new Response(200, "Nome atualizado com sucesso!");
   }
 }

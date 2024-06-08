@@ -80,4 +80,22 @@ public class RoomController : ControllerBase
   [AuthorizePermissions([EPermissions.UpdateRoomPrice, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> UpdatePriceAsync([FromRoute] Guid id, [FromRoute] decimal price)
     => Ok(await _handler.HandleUpdatePriceAsync(id, price));
+
+  // Endpoint para ativar um quarto
+  [HttpPatch("enable/{id:guid}")]
+  [AuthorizePermissions([EPermissions.EnableRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> EnableRoomAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleEnableRoom(id));
+
+  // Endpoint para desativar um quarto
+  [HttpPatch("disable/{id:guid}")]
+  [AuthorizePermissions([EPermissions.DisableRoom, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> DisableRoomAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleDisableRoom(id));
+
+  [HttpPatch("available/{id:guid}")]
+  [AuthorizePermissions([EPermissions.AvailableRoomStatus, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+  public async Task<IActionResult> UpdateToAvailableRoomStatusAsync([FromRoute] Guid id)
+    => Ok(await _handler.HandleChangeToAvailableStatusAsync(id));
+
 }

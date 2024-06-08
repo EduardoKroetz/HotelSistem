@@ -1,13 +1,21 @@
 using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
 
 public partial class CategoryHandler
 {
-  public async Task<Response<object>> HandleDeleteAsync(Guid id)
+  public async Task<Response> HandleDeleteAsync(Guid id)
   {
-    _repository.Delete(id);
+    var category = await _repository.GetCategoryIncludesRooms(id);
+    if (category == null)
+      throw new NotFoundException("Categoria não encontrada.");
+
+    if (category.Rooms.Count > 0)
+      throw new InvalidOperationException("Não é possível deletar a categoria pois tem cômodos associados a ela. Sugiro que troque a categoria dos quartos associados.");
+
+    _repository.Delete(category);
     await _repository.SaveChangesAsync();
-    return new Response<object>(200,"Categoria deletada.", new { id });
+    return new Response(200,"Categoria deletada com sucesso!.", new { id });
   }
 }

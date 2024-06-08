@@ -1,6 +1,7 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 using Hotel.Domain.Repositories.Interfaces.RoomContext;
@@ -18,17 +19,16 @@ public partial class ReportHandler : IHandler
   }
 
 
-  public async Task<Response<object>> HandleCreateAsync(CreateReport model)
+  public async Task<Response> HandleCreateAsync(CreateReport model)
   {
-    var employee = await _employeeRepository.GetEntityByIdAsync(model.EmployeeId);
-    if (employee == null)
-      throw new ArgumentException("Funcionário não encontrado.");
+    var employee = await _employeeRepository.GetEntityByIdAsync(model.EmployeeId)
+      ?? throw new NotFoundException("Funcionário não encontrado..");
 
     var report = new Report(model.Summary,model.Description,model.Priority,employee,model.Resolution);
 
     await _repository.CreateAsync(report);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Relatório criado.",new { report.Id });
+    return new Response(200,"Relatório criado com sucesso!",new { report.Id });
   }
 }

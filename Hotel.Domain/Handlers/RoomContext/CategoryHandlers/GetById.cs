@@ -1,5 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.CategoryDTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
 
@@ -9,8 +10,8 @@ public partial class CategoryHandler
   {
     var category = await _repository.GetByIdAsync(id);
     if (category == null)
-      throw new ArgumentException("Categoria não encontrada.");
+      throw new NotFoundException("Categoria não encontrada.");
     
-    return new Response<GetCategory>(200,"Categoria encontrada.", category);
+    return new Response<GetCategory>(200, "Sucesso!", category);
   }
 }

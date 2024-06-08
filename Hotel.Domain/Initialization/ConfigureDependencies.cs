@@ -12,9 +12,12 @@ using Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
 using Hotel.Domain.Handlers.RoomContext.ReportHandlers;
 using Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 using Hotel.Domain.Handlers.RoomContext.ServiceHandler;
+using Hotel.Domain.Handlers.Verification;
+using Hotel.Domain.Repositories;
 using Hotel.Domain.Repositories.AdminContext;
 using Hotel.Domain.Repositories.CustomerContext;
 using Hotel.Domain.Repositories.EmployeeContext;
+using Hotel.Domain.Repositories.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Hotel.Domain.Repositories.Interfaces.CustomerContext;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
@@ -24,6 +27,11 @@ using Hotel.Domain.Repositories.Interfaces.RoomContext;
 using Hotel.Domain.Repositories.PaymentContext;
 using Hotel.Domain.Repositories.ReservationContext;
 using Hotel.Domain.Repositories.RoomContext;
+using Hotel.Domain.Services.EmailServices;
+using Hotel.Domain.Services.EmailServices.Interface;
+using Hotel.Domain.Services.UserServices;
+using Hotel.Domain.Services.UserServices.Interfaces;
+using Hotel.Domain.Services.VerificationServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Initialization;
@@ -32,6 +40,12 @@ public static class ConfigureDependencies
 {
   public static void Configure(WebApplicationBuilder builder)
   {
+    var options = new DbContextOptionsBuilder<HotelDbContext>()
+      .UseSqlServer(Configuration.Configuration.ConnectionString)
+      .Options;
+
+    builder.Services.AddSingleton(options);
+
     builder.Services.AddDbContext<HotelDbContext>(opt =>
     {
       opt.UseSqlServer(Configuration.Configuration.ConnectionString);
@@ -50,6 +64,15 @@ public static class ConfigureDependencies
     builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
     builder.Services.AddScoped<IReportRepository, ReportRepository>();
     builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+    builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+    builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+    builder.Services.AddScoped<IDeslikeRepository, DeslikeRepository>();
+
+
+    //Services
+    builder.Services.AddScoped<IEmailService, EmailService>();
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddSingleton<VerificationService>();
 
     //Configurar handlers
     builder.Services.AddScoped<AdminHandler>();
@@ -65,7 +88,7 @@ public static class ConfigureDependencies
     builder.Services.AddScoped<ReportHandler>();
     builder.Services.AddScoped<ServiceHandler>();
     builder.Services.AddScoped<LoginHandler>();
-
+    builder.Services.AddScoped<VerificationHandler>();
 
   }
 }

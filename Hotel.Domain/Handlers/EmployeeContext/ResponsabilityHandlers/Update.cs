@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
 
 public partial class ResponsabilityHandler 
 {
-    public async Task<Response<object>> HandleUpdateAsync(EditorResponsability model, Guid id)
+  public async Task<Response> HandleUpdateAsync(EditorResponsability model, Guid id)
   {
     var responsability = await _repository.GetEntityByIdAsync(id);
     if (responsability == null)
@@ -18,6 +18,6 @@ public partial class ResponsabilityHandler
     _repository.Update(responsability);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Responsabilidade foi atualizada.",new { responsability.Id });
+    return new Response(200,"Responsabilidade atualizado com sucesso!",new { responsability.Id });
   }
 }

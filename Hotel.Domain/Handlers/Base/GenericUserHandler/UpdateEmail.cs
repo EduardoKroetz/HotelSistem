@@ -14,7 +14,7 @@ public partial class GenericUserHandler<TRepository,TUser>
   public GenericUserHandler(TRepository repository)
   => _repository = repository;
   
-  public async Task<Response<object>> HandleUpdateEmailAsync(Guid userId, Email email)
+  public async Task<Response> HandleUpdateEmailAsync(Guid userId, Email email)
   {
     var user = await _repository.GetEntityByIdAsync(userId);
     if (user == null)
@@ -24,6 +24,6 @@ public partial class GenericUserHandler<TRepository,TUser>
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Email atualizado.");
+    return new Response(200, "Email atualizado com sucesso!");
   }
 }

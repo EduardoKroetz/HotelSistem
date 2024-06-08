@@ -19,14 +19,14 @@ public partial class RoomInvoice : Entity, IRoomInvoice
     Status = EStatus.Pending;
     PaymentMethod = paymentMethod;
     TaxInformation = taxInformation;
-    Customers = reservation.Customers;
+    CustomerId = reservation.CustomerId;
+    Customer = reservation.Customer;
     Reservation = reservation;
     ReservationId = reservation.Id;
     Services = reservation.Services;
 
     Validate();
 
-    //Envio de email
   }
 
   public string Number { get; private set; } = string.Empty;
@@ -35,7 +35,8 @@ public partial class RoomInvoice : Entity, IRoomInvoice
   public EStatus Status { get; private set; }
   public EPaymentMethod PaymentMethod { get; private set; }
   public decimal TaxInformation { get; private set; }
-  public ICollection<Customer> Customers { get; private set; } = [];
+  public Guid CustomerId { get; private set; }
+  public Customer? Customer { get; private set; }
   public Guid ReservationId { get; private set; }
   public Reservation? Reservation { get; private set; }
   public ICollection<Service> Services { get; private set; } = [];

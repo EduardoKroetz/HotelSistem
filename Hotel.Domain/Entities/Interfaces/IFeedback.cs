@@ -9,8 +9,6 @@ public interface IFeedback : IEntity
 {
   string Comment { get; }
   int Rate { get; }
-  int Likes { get; }
-  int Deslikes { get; }
   DateTime UpdatedAt { get; }
   Guid CustomerId { get; }
   Customer? Customer { get; }

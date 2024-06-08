@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.Base.GenericUserHandler;
 
 public partial class GenericUserHandler<TRepository, TUser>
 {
-  public async Task<Response<object>> HandleUpdatePhoneAsync(Guid userId, Phone phone)
+  public async Task<Response> HandleUpdatePhoneAsync(Guid userId, Phone phone)
   {
     var user = await _repository.GetEntityByIdAsync(userId);
     if (user == null)
@@ -15,6 +15,6 @@ public partial class GenericUserHandler<TRepository, TUser>
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "O número de telefone foi atualizado.");
+    return new Response(200, "Telefone atualizado com sucesso!");
   }
 }

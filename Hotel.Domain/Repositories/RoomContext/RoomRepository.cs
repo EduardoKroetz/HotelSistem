@@ -73,11 +73,18 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
     )).ToListAsync();
   }
 
-  public async Task<Room?> GetRoomIncludeServices(Guid roomId)
+  public async Task<Room?> GetRoomIncludesServices(Guid roomId)
   {
     return await _context.Rooms
       .Where(x => x.Id == roomId)
       .Include(x => x.Services)
       .FirstOrDefaultAsync();
+  }
+
+  public async Task<Room?> GetRoomIncludesReservations(Guid roomId)
+  {
+    return await _context.Rooms
+      .Include(x => x.Reservations)
+      .FirstOrDefaultAsync(x => x.Id == roomId);
   }
 }

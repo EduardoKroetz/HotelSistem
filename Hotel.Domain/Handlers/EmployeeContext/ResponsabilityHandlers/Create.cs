@@ -12,13 +12,13 @@ public partial class ResponsabilityHandler : IHandler
   public ResponsabilityHandler(IResponsabilityRepository repository)
   => _repository = repository;
 
-  public async Task<Response<object>> HandleCreateAsync(EditorResponsability model)
+  public async Task<Response> HandleCreateAsync(EditorResponsability model)
   {
     var responsability = new Responsability(model.Name,model.Description,model.Priority);
 
     await _repository.CreateAsync(responsability);
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200,"Responsabilidade criada.",new { responsability.Id });
+    return new Response(200,"Responsabilidade criada com sucesso!",new { responsability.Id });
   }
 }

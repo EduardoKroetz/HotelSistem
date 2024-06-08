@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.Base.GenericUserHandler;
 
 public partial class GenericUserHandler<TRepository, TUser>
 {
-  public async Task<Response<object>> HandleUpdateGenderAsync(Guid userId, EGender gender)
+  public async Task<Response> HandleUpdateGenderAsync(Guid userId, EGender gender)
   {
     var user = await _repository.GetEntityByIdAsync(userId);
     if (user == null)
@@ -15,6 +15,6 @@ public partial class GenericUserHandler<TRepository, TUser>
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Gênero atualizado.");
+    return new Response(200, "Gênero atualizado com sucesso!");
   }
 }

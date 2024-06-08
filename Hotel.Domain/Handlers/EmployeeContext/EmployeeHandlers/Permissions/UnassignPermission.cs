@@ -5,7 +5,7 @@ namespace Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 
 partial class EmployeeHandler
 {
-  public async Task<Response<object>> HandleUnassignPermission(Guid employeeId, Guid permissionId)
+  public async Task<Response> HandleUnassignPermission(Guid employeeId, Guid permissionId)
   {
     var employee = await _repository.GetEmployeeIncludesPermissions(employeeId);
     if (employee == null)
@@ -24,6 +24,6 @@ partial class EmployeeHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response<object>(200, "Permissão removida! Faça login novamente para aplicar as alterações.", null!);
+    return new Response(200, "Permissão removida! Faça login novamente para aplicar as alterações.", null!);
   }
 }

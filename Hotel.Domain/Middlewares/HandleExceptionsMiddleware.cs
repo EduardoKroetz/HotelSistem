@@ -31,6 +31,13 @@ public class HandleExceptionMiddleware
         new Response<string>(400,[e.Message])
       );
     }
+    catch(NotFoundException e)
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+      await context.Response.WriteAsJsonAsync(
+        new Response<string>(404, [e.Message])
+      );
+    }
     catch (InvalidOperationException e)
     {
       context.Response.StatusCode = (int)HttpStatusCode.BadRequest;

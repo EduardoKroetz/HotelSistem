@@ -8,6 +8,6 @@ public partial class CustomerHandler
   public async Task<Response<IEnumerable<GetUser>>> HandleGetAsync(UserQueryParameters queryParameters)
   {
     var customers = await _repository.GetAsync(queryParameters);
-    return new Response<IEnumerable<GetUser>>(200,"", customers);
+    return new Response<IEnumerable<GetUser>>(200,"Sucesso!", customers);
   }
 }

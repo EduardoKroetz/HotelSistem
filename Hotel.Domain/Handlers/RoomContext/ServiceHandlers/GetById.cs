@@ -11,6 +11,6 @@ public partial class ServiceHandler
     if (service == null)
       throw new ArgumentException("Serviço não encontrado.");
     
-    return new Response<GetService>(200,"Serviço encontrado.", service);
+    return new Response<GetService>(200, "Sucesso!", service);
   }
 }

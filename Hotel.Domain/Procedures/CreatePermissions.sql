@@ -2,6 +2,9 @@ CREATE PROCEDURE CreatePermissions
 AS
 BEGIN
     -- Verifica se a permissão já existe antes de adicioná-la para evitar duplicatas
+
+    --Admins
+
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetAdmins')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
@@ -44,6 +47,8 @@ BEGIN
         VALUES (NEWID(), 'DefaultAdminPermission', 'Todas as permissões padrão de um administrador', 1, GETDATE());
     END;
 
+    --Customer
+
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditCustomer')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
@@ -61,6 +66,8 @@ BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'CreateAdmin', 'Permissão para criar um administrador.', 1, GETDATE());
     END;
+
+    --Employee
 
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DefaultEmployeePermission')
     BEGIN
@@ -122,6 +129,8 @@ BEGIN
         VALUES (NEWID(), 'UnassignEmployeePermission', 'Permissão para desatribuir permissões de um funcionário.', 1, GETDATE());
     END;
 
+    --Responsabilities
+
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetResponsabilities')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
@@ -157,6 +166,8 @@ BEGIN
         VALUES (NEWID(), 'DeleteRoomInvoice', 'Permissão para deletar uma fatura de quarto.', 1, GETDATE());
     END;
 
+    --Room invoices
+
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetRoomInvoices')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
@@ -169,11 +180,9 @@ BEGIN
         VALUES (NEWID(), 'GetRoomInvoice', 'Permissão para visualizar uma fatura de quarto.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetReservations')
-    BEGIN
-        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'GetReservations', 'Permissão para visualizar todas as reservas.', 1, GETDATE());
-    END;
+
+
+    --Reservations
 
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateReservation')
     BEGIN
@@ -316,6 +325,19 @@ BEGIN
         VALUES (NEWID(), 'UpdateRoomPrice', 'Permissão para atualizar o preço de um quarto.', 1, GETDATE());
     END;
 
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EnableRoom')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'EnableRoom', 'Permissão para habilitar um quarto.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DisableRoom')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'DisableRoom', 'Permissão para desabilitar um quarto.', 1, GETDATE());
+    END;
+
+
     -- Services
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetServices')
     BEGIN
@@ -350,15 +372,20 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignServiceResponsability')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AssignResponsability', 'Permissão para atribuir uma responsabilidade a um serviço.', 1, GETDATE());
+        VALUES (NEWID(), 'AssignServiceResponsability', 'Permissão para atribuir uma responsabilidade a um serviço.', 1, GETDATE());
     END;
 
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignServiceResponsability')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'UnassignResponsability', 'Permissão para desatribuir uma responsabilidade de um serviço.', 1, GETDATE());
+        VALUES (NEWID(), 'UnassignServiceResponsability', 'Permissão para desatribuir uma responsabilidade de um serviço.', 1, GETDATE());
     END;
     
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AvailableRoomStatus')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'AvailableRoomStatus', 'Permissão para alterar o status de um cômodo para disponível.', 1, GETDATE());
+    END;
     
 END;
 

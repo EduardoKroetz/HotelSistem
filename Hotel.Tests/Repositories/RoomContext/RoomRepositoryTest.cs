@@ -32,19 +32,21 @@ public class RoomRepositoryTest
   [TestMethod]
   public async Task GetAsync_ReturnWithCorrectParameters()
   {
-    var parameters = new RoomQueryParameters(0, 100, BaseRepositoryTest.Rooms[0].Number, null, BaseRepositoryTest.Rooms[0].Price, null, BaseRepositoryTest.Rooms[0].Status, null, null, null, null, null, null);
+    var anyRoom = BaseRepositoryTest.Rooms[0];
+
+    var parameters = new RoomQueryParameters(0, 100, anyRoom.Number, "eq", anyRoom.Price, "eq", anyRoom.Status, null, null, null, null, null, null);
     var rooms = await RoomRepository.GetAsync(parameters);
 
     var room = rooms.ToList()[0];
 
     Assert.IsNotNull(room);
-    Assert.AreEqual(BaseRepositoryTest.Rooms[0].Id, room.Id);
-    Assert.AreEqual(BaseRepositoryTest.Rooms[0].Number, room.Number);
-    Assert.AreEqual(BaseRepositoryTest.Rooms[0].Description, room.Description);
-    Assert.AreEqual(BaseRepositoryTest.Rooms[0].Price, room.Price);
-    Assert.AreEqual(BaseRepositoryTest.Rooms[0].Status, room.Status);
-    Assert.AreEqual(BaseRepositoryTest.Rooms[0].Capacity, room.Capacity);
-    Assert.AreEqual(BaseRepositoryTest.Rooms[0].Description, room.Description);
+    Assert.AreEqual(anyRoom.Id, room.Id);
+    Assert.AreEqual(anyRoom.Number, room.Number);
+    Assert.AreEqual(anyRoom.Description, room.Description);
+    Assert.AreEqual(anyRoom.Price, room.Price);
+    Assert.AreEqual(anyRoom.Status, room.Status);
+    Assert.AreEqual(anyRoom.Capacity, room.Capacity);
+    Assert.AreEqual(anyRoom.Description, room.Description);
   }
 
 

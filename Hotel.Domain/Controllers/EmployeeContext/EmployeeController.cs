@@ -3,7 +3,7 @@ using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
-using Hotel.Domain.Services.Users;
+using Hotel.Domain.Services.UserServices.Interfaces;
 using Hotel.Domain.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +15,14 @@ namespace Hotel.Domain.Controllers.EmployeeContext;
 public class EmployeeController : ControllerBase
 {
   private readonly EmployeeHandler _handler;
+  private readonly IUserService _userService;
 
-  public EmployeeController(EmployeeHandler handler)
-  => _handler = handler;
+  public EmployeeController(EmployeeHandler handler, IUserService userService)
+  {
+    _handler = handler;
+    _userService = userService;
+  }
+
 
   //Buscar todos os funcionários
   [HttpGet]
@@ -71,7 +76,7 @@ public class EmployeeController : ControllerBase
   [HttpDelete]
   public async Task<IActionResult> DeleteAsync()
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleDeleteAsync(userId));
   }
 
@@ -79,7 +84,7 @@ public class EmployeeController : ControllerBase
   [HttpPut]
   public async Task<IActionResult> EditAsync([FromBody] UpdateEmployee model)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAsync(model, userId));
   }
 
@@ -88,42 +93,42 @@ public class EmployeeController : ControllerBase
   [HttpPatch("name")]
   public async Task<IActionResult> UpdateNameAsync([FromBody] Name name)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateNameAsync(userId, name));
   }
 
   [HttpPatch("email")]
   public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateEmailAsync(userId, email));
   }
 
   [HttpPatch("phone")]
   public async Task<IActionResult> UpdatePhoneAsync([FromBody] Phone phone)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdatePhoneAsync(userId, phone));
   }
 
   [HttpPatch("address")]
   public async Task<IActionResult> UpdateAddressAsync([FromBody] Address address)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAddressAsync(userId, address));
   }
 
   [HttpPatch("gender/{gender:int}")]
   public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateGenderAsync(userId, (EGender)gender));
     }
 
   [HttpPatch("date-of-birth")]
   public async Task<IActionResult> UpdateDateOfBirthAsync([FromBody] UpdateDateOfBirth newDateOfBirth)
   {
-    var userId = UserServices.GetUserIdentifier(User);
+    var userId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateDateOfBirthAsync(userId, newDateOfBirth.DateOfBirth));
   }
 }

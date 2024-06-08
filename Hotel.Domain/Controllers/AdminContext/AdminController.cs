@@ -3,7 +3,7 @@ using Hotel.Domain.DTOs.AdminContext.AdminDTOs;
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.AdminContext.AdminHandlers;
-using Hotel.Domain.Services.Users;
+using Hotel.Domain.Services.UserServices.Interfaces;
 using Hotel.Domain.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +15,14 @@ namespace Hotel.Domain.Controllers.AdminContext;
 public class AdminController : ControllerBase
 {
   private readonly AdminHandler _handler;
+  private readonly IUserService _userService;
 
-  public AdminController(AdminHandler handler)
-  => _handler = handler;
+  public AdminController(AdminHandler handler, IUserService userService)
+  {
+    _handler = handler;
+    _userService = userService;
+  }
+
 
   //Buscar os administradores
   //Administradores com permissão podem acessar.
@@ -69,7 +74,7 @@ public class AdminController : ControllerBase
   [Authorize(Roles = "RootAdmin")]
   public async Task<IActionResult> ChangeToRootAdminAsync( [FromRoute] Guid toRootAdminId)
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleChangeToRootAdminAsync(adminId, toRootAdminId));
   }
 
@@ -78,7 +83,7 @@ public class AdminController : ControllerBase
   [HttpDelete]
   public async Task<IActionResult> DeleteAsync()
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleDeleteAsync(adminId));
   }
 
@@ -87,7 +92,7 @@ public class AdminController : ControllerBase
   [HttpPut]
   public async Task<IActionResult> PutAsync([FromBody] UpdateUser model)
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAsync(model, adminId));
   }
 
@@ -96,7 +101,7 @@ public class AdminController : ControllerBase
   [HttpPatch("name")]
   public async Task<IActionResult> UpdateNameAsync([FromBody] Name name)
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateNameAsync(adminId, name));
   }
 
@@ -105,7 +110,7 @@ public class AdminController : ControllerBase
   [HttpPatch("email")]
   public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateEmailAsync(adminId, email));
   }
 
@@ -114,7 +119,7 @@ public class AdminController : ControllerBase
   [HttpPatch("phone")]
   public async Task<IActionResult> UpdatePhoneAsync([FromBody] Phone phone)
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdatePhoneAsync(adminId, phone));
   }
 
@@ -123,7 +128,7 @@ public class AdminController : ControllerBase
   [HttpPatch("address")]
   public async Task<IActionResult> UpdateAddressAsync([FromBody] Address address) 
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateAddressAsync(adminId, address));
   }
 
@@ -132,7 +137,7 @@ public class AdminController : ControllerBase
   [HttpPatch("gender/{gender:int}")]
   public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateGenderAsync(adminId, (EGender)gender));
   }
 
@@ -141,7 +146,7 @@ public class AdminController : ControllerBase
   [HttpPatch("date-of-birth")]
   public async Task<IActionResult> UpdateDateOfBirthAsync([FromBody] UpdateDateOfBirth newDateOfBirth)
   {
-    var adminId = UserServices.GetUserIdentifier(User);
+    var adminId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleUpdateDateOfBirthAsync(adminId, newDateOfBirth.DateOfBirth));
   }  
 }
