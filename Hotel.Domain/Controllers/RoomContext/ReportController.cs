@@ -26,8 +26,24 @@ public class ReportController : ControllerBase
   // Endpoint para buscar todos os relatórios
   [HttpGet]
   [AuthorizePermissions([EPermissions.GetReports, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> GetAsync([FromBody] ReportQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? summary,
+    [FromQuery] EStatus? status,
+    [FromQuery] EPriority? priority,
+    [FromQuery] Guid? employeeId,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator
+  )
+  {
+    var queryParameters = new ReportQueryParameters(
+        skip, take, summary, status, priority, employeeId, createdAt, createdAtOperator
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   // Endpoint para buscar um relatório por ID
   [HttpGet("{Id:guid}")]

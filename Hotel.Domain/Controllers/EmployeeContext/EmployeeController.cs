@@ -27,8 +27,29 @@ public class EmployeeController : ControllerBase
   //Buscar todos os funcionários
   [HttpGet]
   [AuthorizePermissions([EPermissions.GetEmployees, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> GetAsync([FromBody] EmployeeQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? name,
+    [FromQuery] string? email,
+    [FromQuery] string? phone,
+    [FromQuery] EGender? gender,
+    [FromQuery] DateTime? dateOfBirth,
+    [FromQuery] string? dateOfBirthOperator,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator,
+    [FromQuery] decimal? salary,
+    [FromQuery] string? salaryOperator
+  )
+  {
+    var queryParameters = new EmployeeQueryParameters(
+        skip, take, name, email, phone, gender, dateOfBirth,
+        dateOfBirthOperator, createdAt, createdAtOperator, salary, salaryOperator
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   //Buscar funcionário por Id
   [HttpGet("{id:guid}")]
