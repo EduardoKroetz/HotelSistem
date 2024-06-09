@@ -25,8 +25,27 @@ public class CustomerController : ControllerBase
 
   // Endpoint para buscar clientes
   [HttpGet]
-  public async Task<IActionResult> GetAsync([FromBody] UserQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? name,
+    [FromQuery] string? email,
+    [FromQuery] string? phone,
+    [FromQuery] EGender? gender,
+    [FromQuery] DateTime? dateOfBirth,
+    [FromQuery] string? dateOfBirthOperator,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator
+  )
+  {
+    var queryParameters = new UserQueryParameters(
+      skip, take, name, email, phone, gender, dateOfBirth,
+      dateOfBirthOperator, createdAt, createdAtOperator
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   // Endpoint para buscar cliente por ID
   [HttpGet("{Id:guid}")]

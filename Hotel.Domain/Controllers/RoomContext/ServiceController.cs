@@ -20,8 +20,33 @@ public class ServiceController : ControllerBase
   // Endpoint para buscar todos os serviços (com permissão)
   [HttpGet]
   [AuthorizePermissions([EPermissions.GetServices, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> GetAsync([FromBody] ServiceQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? name,
+    [FromQuery] decimal? price,
+    [FromQuery] string? priceOperator,
+    [FromQuery] EPriority? priority,
+    [FromQuery] bool? isActive,
+    [FromQuery] int? timeInMinutes,
+    [FromQuery] string? timeInMinutesOperator,
+    [FromQuery] Guid? responsabilityId,
+    [FromQuery] Guid? reservationId,
+    [FromQuery] Guid? roomInvoiceId,
+    [FromQuery] Guid? roomId,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator
+  )
+  {
+    var queryParameters = new ServiceQueryParameters(
+        skip, take, name, price, priceOperator, priority, isActive,
+        timeInMinutes, timeInMinutesOperator, responsabilityId, reservationId,
+        roomInvoiceId, roomId, createdAt, createdAtOperator
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   // Endpoint para buscar um serviço por ID (com permissão)
   [HttpGet("{Id:guid}")]

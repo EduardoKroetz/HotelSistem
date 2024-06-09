@@ -24,8 +24,32 @@ public class RoomInvoiceController : ControllerBase
   //Buscar faturas de quarto. Somente administradores ou funcionários com permissão possuem acesso.
   [HttpGet]
   [AuthorizePermissions([EPermissions.GetRoomInvoices, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> GetAsync([FromBody] RoomInvoiceQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? number,
+    [FromQuery] EPaymentMethod? paymentMethod,
+    [FromQuery] decimal? totalAmount,
+    [FromQuery] string? totalAmountOperator,
+    [FromQuery] EStatus? status,
+    [FromQuery] Guid? customerId,
+    [FromQuery] Guid? reservationId,
+    [FromQuery] Guid? serviceId,
+    [FromQuery] decimal? taxInformation,
+    [FromQuery] string? taxInformationOperator,
+    [FromQuery] DateTime? issueDate,
+    [FromQuery] string? issueDateOperator
+  )
+  {
+    var queryParameters = new RoomInvoiceQueryParameters(
+        skip, take, number, paymentMethod, totalAmount, totalAmountOperator, status,
+        customerId, reservationId, serviceId, taxInformation, taxInformationOperator,
+        issueDate, issueDateOperator
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   //Buscar minhas faturas de quarto. Qualquer usuário tem acesso, apesar de que somente clientes podem criar faturas.
   [HttpGet("my")]

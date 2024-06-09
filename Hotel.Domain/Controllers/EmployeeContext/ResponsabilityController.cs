@@ -19,9 +19,25 @@ public class ResponsabilityController : ControllerBase
 
   //Buscar responsabilidades
   [HttpGet]
-  [AuthorizePermissions([EPermissions.GetResponsabilities,EPermissions.DefaultEmployeePermission,EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> GetAsync([FromBody] ResponsabilityQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  [AuthorizePermissions([EPermissions.GetResponsabilities, EPermissions.DefaultEmployeePermission, EPermissions.DefaultAdminPermission])]
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? name,
+    [FromQuery] EPriority? priority,
+    [FromQuery] Guid? employeeId,
+    [FromQuery] Guid? serviceId,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator
+  )
+  {
+    var queryParameters = new ResponsabilityQueryParameters(
+        skip, take, name, priority, employeeId, serviceId, createdAt, createdAtOperator
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   //Buscar responsabilidade pelo Id
   [HttpGet("{Id:guid}")]
