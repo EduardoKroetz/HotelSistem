@@ -9,11 +9,11 @@ using System.Security.Claims;
 using System.Text;
 
 
-namespace Hotel.Domain.Services.Authentication;
+namespace Hotel.Domain.Services.TokenServices;
 
-public static partial class Authentication
+public class TokenService
 {
-  public static string GenerateToken(Admin admin)
+  public string GenerateToken(Admin admin)
   {
     var claims = new List<Claim>()
     {
@@ -23,9 +23,9 @@ public static partial class Authentication
 
     //Se for admin ou rootAdmin
     if (admin.IsRootAdmin) // Possui todo acesso
-      claims.Add(new(ClaimTypes.Role, nameof(ERoles.RootAdmin)));
+        claims.Add(new(ClaimTypes.Role, nameof(ERoles.RootAdmin)));
     else
-      claims.Add(new(ClaimTypes.Role, nameof(ERoles.Admin)));
+        claims.Add(new(ClaimTypes.Role, nameof(ERoles.Admin)));
 
     var permissions = admin.Permissions.Select(x => (int)AuthorizationService.ConvertToPermission(x.Name)).ToList(); //Pega todos os enumeradores das permissõs dos administradores
     claims.Add(new("permissions", string.Join(",", permissions))); //separa todas as permissões por vírgula
@@ -36,14 +36,14 @@ public static partial class Authentication
     {
       Subject = new ClaimsIdentity(claims),
       Expires = DateTime.UtcNow.AddDays(2),
-      SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+      SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
     };
 
     //criar token
     return new JwtSecurityTokenHandler().CreateEncodedJwt(tokenDescriptor);
   }
 
-  public static string GenerateToken(Customer customer)
+  public string GenerateToken(Customer customer)
   {
     var key = Encoding.ASCII.GetBytes(Configuration.Configuration.JwtKey);
     var claims = new List<Claim>()
@@ -63,7 +63,7 @@ public static partial class Authentication
 
   }
 
-  public static string GenerateToken(Employee employee)
+  public string GenerateToken(Employee employee)
   {
     var key = Encoding.ASCII.GetBytes(Configuration.Configuration.JwtKey);
     var claims = new List<Claim>()

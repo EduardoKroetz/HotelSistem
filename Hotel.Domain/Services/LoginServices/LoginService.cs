@@ -2,17 +2,25 @@
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
+using Hotel.Domain.Services.TokenServices;
 
-namespace Hotel.Domain.Services.Authentication;
+namespace Hotel.Domain.Services.LoginServices;
 
-public static class LoginService
+public class LoginService
 {
+  private readonly TokenService _tokenService;
+
+  public LoginService(TokenService tokenService)
+  {
+    _tokenService = tokenService;
+  }
+
   //Login com cliente
-  public static Response UserLogin(string password, Customer customer)
+  public Response UserLogin(string password, Customer customer)
   {
     if (PasswordHasher.VerifyPassword(password, customer.PasswordHash))
     {
-      var token = Authentication.GenerateToken(customer);
+      var token = _tokenService.GenerateToken(customer);
       return new Response(200, "Login efetuado com sucesso!", new { Token = token });
     }
     else
@@ -20,11 +28,11 @@ public static class LoginService
   }
 
   //Login com administrador
-  public static Response UserLogin(string password, Admin admin)
+  public Response UserLogin(string password, Admin admin)
   {
     if (PasswordHasher.VerifyPassword(password, admin.PasswordHash))
     {
-      var token = Authentication.GenerateToken(admin);
+      var token = _tokenService.GenerateToken(admin);
       return new Response(200, "Login efetuado com sucesso!", new { Token = token });
     }
     else
@@ -32,11 +40,11 @@ public static class LoginService
   }
 
   //Login com funcionário
-  public static Response UserLogin(string password, Employee employee)
+  public Response UserLogin(string password, Employee employee)
   {
     if (PasswordHasher.VerifyPassword(password, employee.PasswordHash))
     {
-      var token = Authentication.GenerateToken(employee);
+      var token = _tokenService.GenerateToken(employee);
       return new Response(200, "Login efetuado com sucesso!", new { Token = token });
     }
     else

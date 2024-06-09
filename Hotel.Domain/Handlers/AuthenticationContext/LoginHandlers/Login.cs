@@ -3,7 +3,7 @@ using Hotel.Domain.Handlers.Interfaces;
 using Hotel.Domain.Repositories.Interfaces.AdminContext;
 using Hotel.Domain.Repositories.Interfaces.CustomerContext;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
-using Hotel.Domain.Services.Authentication;
+using Hotel.Domain.Services.LoginServices;
 
 namespace Hotel.Domain.Handlers.AuthenticationContext.LoginHandlers;
 
@@ -12,12 +12,15 @@ public partial class LoginHandler : IHandler
   private readonly IAdminRepository _adminRepository;
   private readonly ICustomerRepository _customerRepository;
   private readonly IEmployeeRepository _employeeRepository;
+  private readonly LoginService _loginService;
 
-  public LoginHandler(IAdminRepository adminRepository, ICustomerRepository customerRepository, IEmployeeRepository employeeRepository)
+
+  public LoginHandler(IAdminRepository adminRepository, ICustomerRepository customerRepository, IEmployeeRepository employeeRepository, LoginService loginService)
   {
     _adminRepository = adminRepository;
     _customerRepository = customerRepository;
     _employeeRepository = employeeRepository;
+    _loginService = loginService;
   }
 
   public async Task<Response> HandleLogin(string email, string password)
@@ -25,14 +28,14 @@ public partial class LoginHandler : IHandler
     //Verificar se tem um cliente com o email
     var customer = await _customerRepository.GetEntityByEmailAsync(email);
     if (customer != null)
-      return LoginService.UserLogin(password, customer);
+      return _loginService.UserLogin(password, customer);
     
     else
     {
       //Verificar se tem um admininistrador com o email
       var admin = await _adminRepository.GetEntityByEmailAsync(email);
       if (admin != null) 
-        return LoginService.UserLogin(password, admin);
+        return _loginService.UserLogin(password, admin);
       
 
       //Verificar se tem um funcionário com o email
@@ -40,7 +43,7 @@ public partial class LoginHandler : IHandler
       {
         var employee = await _employeeRepository.GetEntityByEmailAsync(email);
         if (employee != null) 
-          return LoginService.UserLogin(password ,employee);
+          return _loginService.UserLogin(password ,employee);
 
         return new Response(400, "Email ou senha inválidos.");
       }

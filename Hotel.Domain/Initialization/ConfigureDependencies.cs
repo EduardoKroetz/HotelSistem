@@ -29,6 +29,8 @@ using Hotel.Domain.Repositories.ReservationContext;
 using Hotel.Domain.Repositories.RoomContext;
 using Hotel.Domain.Services.EmailServices;
 using Hotel.Domain.Services.EmailServices.Interface;
+using Hotel.Domain.Services.LoginServices;
+using Hotel.Domain.Services.TokenServices;
 using Hotel.Domain.Services.UserServices;
 using Hotel.Domain.Services.UserServices.Interfaces;
 using Hotel.Domain.Services.VerificationServices;
@@ -40,16 +42,20 @@ public static class ConfigureDependencies
 {
   public static void Configure(WebApplicationBuilder builder)
   {
-    var options = new DbContextOptionsBuilder<HotelDbContext>()
-      .UseSqlServer(Configuration.Configuration.ConnectionString)
-      .Options;
-
-    builder.Services.AddSingleton(options);
-
-    builder.Services.AddDbContext<HotelDbContext>(opt =>
+    if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction())
     {
-      opt.UseSqlServer(Configuration.Configuration.ConnectionString);
-    });
+      var options = new DbContextOptionsBuilder<HotelDbContext>()
+        .UseSqlServer(Configuration.Configuration.ConnectionString)
+        .Options;
+
+      builder.Services.AddSingleton(options);
+
+      builder.Services.AddDbContext<HotelDbContext>(opt =>
+      {
+        opt.UseSqlServer(Configuration.Configuration.ConnectionString);
+      });
+    }
+
 
     //Configurar repositórios
     builder.Services.AddScoped<IAdminRepository, AdminRepository>();
@@ -70,6 +76,8 @@ public static class ConfigureDependencies
 
 
     //Services
+    builder.Services.AddSingleton<TokenService>();
+    builder.Services.AddSingleton<LoginService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddSingleton<VerificationService>();
