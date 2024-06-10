@@ -1,5 +1,7 @@
+using Hotel.Domain.Data;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Initialization;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

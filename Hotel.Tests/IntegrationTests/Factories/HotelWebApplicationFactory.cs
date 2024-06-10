@@ -16,8 +16,8 @@ public class HotelWebApplicationFactory : WebApplicationFactory<Startup>
   public HotelWebApplicationFactory()
   {
     _tokenService = new TokenService();
+    DbFixture = new DbFixture();
   }
-
 
   protected override void ConfigureWebHost(IWebHostBuilder builder)
   {
@@ -27,8 +27,7 @@ public class HotelWebApplicationFactory : WebApplicationFactory<Startup>
 
     builder.ConfigureServices(services =>
     {
-      DbFixture = new DbFixture(services);
-
+      services.AddSingleton(DbFixture.DbContext);
       services.AddSingleton<TokenService>();
     });
   }
@@ -36,8 +35,8 @@ public class HotelWebApplicationFactory : WebApplicationFactory<Startup>
   public async Task<string> LoginFullAccess()
   {
     var dbContext = Services.GetRequiredService<HotelDbContext>();
+    DbFixture.InsertRootAdmin(dbContext);
     var admin = await dbContext.Admins.FirstOrDefaultAsync(x => x.Email.Address == "leonardoDiCaprio199@gmail.com");
-
     var token = _tokenService.GenerateToken(admin!);
     return token;
   }  

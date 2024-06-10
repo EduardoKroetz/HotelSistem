@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
@@ -6,13 +7,11 @@ public partial class AdminHandler
 {
   public async Task<Response> HandleChangeToRootAdminAsync(Guid rootAdminId,Guid changeToRootAdminId)
   {
-    var rootAdmin = await _repository.GetEntityByIdAsync(rootAdminId);
-    if (rootAdmin == null)
-      throw new ArgumentException("Administrador root não encontrado.");
+    var changeToRootAdmin = await _repository.GetEntityByIdAsync(changeToRootAdminId)
+        ?? throw new NotFoundException("Administrador não encontrado.");
 
-    var changeToRootAdmin = await _repository.GetEntityByIdAsync(changeToRootAdminId);
-    if (changeToRootAdmin == null)
-      throw new ArgumentException("Administrador não encontrado.");
+    var rootAdmin = await _repository.GetEntityByIdAsync(rootAdminId)
+        ?? throw new NotFoundException("Administrador root não encontrado.");
 
     changeToRootAdmin.ChangeToRootAdmin(rootAdmin);
 

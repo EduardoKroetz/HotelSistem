@@ -25,9 +25,10 @@ public class AdminControllerTests
   public static void ClassInitialize(TestContext context)
   {
     _factory = new HotelWebApplicationFactory();
+    _client = _factory.CreateClient();
     _dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
     _tokenService = _factory.Services.GetRequiredService<TokenService>();
-    _client = _factory.CreateClient();
+
     var token = _factory.LoginFullAccess().Result;
     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
   }
@@ -189,44 +190,71 @@ public class AdminControllerTests
     Assert.AreEqual(adminWithPermissions.Permissions.First().Id, permission.Id);
   }
 
+  [TestMethod]
+  public async Task RemoveAdminPermission_ShouldReturn_OK()
+  {
+    var permission = new Permission("GetAdmin", "Allows get admin by id");
+
+    //Arrange
+    var admin = new Admin
+    (
+      new Name("Mariana", "Lima"),
+      new Email("marianaLima@gmail.com"),
+      new Phone("+55 (11) 91234-4678"),
+      "password1",
+      EGender.Feminine,
+      DateTime.Now.AddYears(-25),
+      new Address("Brazil", "São Paulo", "SP-101", 101),
+      [permission]
+    );
+
+    await _dbContext.Permissions.AddAsync(permission);
+    await _dbContext.Admins.AddAsync(admin);
+    await _dbContext.SaveChangesAsync();
+
+    //Act
+    var response = await _client.DeleteAsync($"{_baseUrl}/{admin.Id}/permissions/{permission.Id}");
+
+    //Assert
+    var adminWithPermissions = await _dbContext.Admins
+      .Where(x => x.Id == admin.Id)
+      .Include(x => x.Permissions)
+      .FirstOrDefaultAsync();
+
+    Assert.IsNotNull(response);
+    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    Assert.AreEqual(adminWithPermissions!.Id, admin.Id);
+    Assert.AreEqual(adminWithPermissions.Permissions.Count, 0);
+  }
+
   //[TestMethod]
-  //public async Task RemoveAdminPermission_ShouldReturn_OK()
+  //public async Task UpdateToRootAdmin_ShouldReturn_OK()
   //{
-  //  var permission = new Permission("GetAdmin", "Allows get admin by id");
-
-  //  await _dbContext.Permissions.AddAsync(permission);
-  //  await _dbContext.SaveChangesAsync();
-
-  //  permission = await _dbContext.Permissions.FirstOrDefaultAsync(x => x.Id == permission.Id);
-
   //  //Arrange
   //  var admin = new Admin
   //  (
-  //    new Name("Mariana", "Lima"),
-  //    new Email("marianaLima@gmail.com"),
-  //    new Phone("+55 (11) 91234-4678"),
-  //    "password1",
+  //    new Name("Beatriz", "Santos"),
+  //    new Email("beatrizSantos@gmail.com"),
+  //    new Phone("+55 (31) 99876-5432"),
+  //    "password3",
   //    EGender.Feminine,
-  //    DateTime.Now.AddYears(-25),
-  //    new Address("Brazil", "São Paulo", "SP-101", 101),
-  //    [permission]
+  //    DateTime.Now.AddYears(-27),
+  //    new Address("Brazil", "Belo Horizonte", "MG-303", 303)
   //  );
 
   //  await _dbContext.Admins.AddAsync(admin);
   //  await _dbContext.SaveChangesAsync();
 
+  //  var adminRoot = await _dbContext.Admins.ToListAsync();
+
   //  //Act
-  //  var response = await _client.DeleteAsync($"{_baseUrl}/{admin.Id}/permissions/{permission.Id}");
+  //  var response = await _client.PostAsync($"{_baseUrl}/to-root-admin/{admin.Id}", null);
 
   //  //Assert
-  //  var adminWithPermissions = await _dbContext.Admins
-  //    .Where(x => x.Id == admin.Id)
-  //    .Include(x => x.Permissions)
-  //    .FirstOrDefaultAsync();
-
+  //  var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
+      
   //  Assert.IsNotNull(response);
   //  Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-  //  Assert.AreEqual(adminWithPermissions!.Id, admin.Id);
-  //  Assert.AreEqual(adminWithPermissions.Permissions.Count, 0);
+  //  Assert.IsTrue(updatedAdmin!.IsRootAdmin);
   //}
 }

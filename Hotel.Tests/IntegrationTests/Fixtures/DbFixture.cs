@@ -7,17 +7,15 @@ namespace Hotel.Tests.IntegrationTests.Fixtures;
 
 public class DbFixture : IDisposable
 {
-  private HotelDbContext _dbContext;
+  public HotelDbContext DbContext;
   private SqliteConnection _connection;
 
-  public DbFixture(IServiceCollection services)
+  public DbFixture()
   {
     _connection = new SqliteConnection("DataSource=:memory:");
     _connection.Open();
 
-    var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<HotelDbContext>));
-    if (descriptor != null)
-      services.Remove(descriptor);
+    var services = new ServiceCollection();
 
     services.AddDbContext<HotelDbContext>(opt =>
     {
@@ -26,25 +24,24 @@ public class DbFixture : IDisposable
 
     var serviceProvider = services.BuildServiceProvider();
 
-    var scope = serviceProvider.CreateScope();
-    _dbContext = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
+    DbContext = serviceProvider.GetRequiredService<HotelDbContext>();
 
-    _dbContext.Database.EnsureCreated();
+    DbContext.Database.EnsureCreated();
 
-    InsertRootAdmin(_dbContext);
   }
 
   public void Dispose()
   {
-    _dbContext.Database.EnsureDeleted();
-    _dbContext.Dispose();
+    DbContext.Database.EnsureDeleted();
+    DbContext.Dispose();
     _connection.Dispose();
   }
 
-  public void InsertRootAdmin(HotelDbContext dbContext)
+  public async Task InsertRootAdmin(HotelDbContext dbContext)
   {
     var hashedPassword = PasswordHasher.HashPassword("123");
-    var insertRootAdmin = $"INSERT INTO [Admins]([Id],[FirstName],[LastName],[Email],[Phone],[PasswordHash],[IsRootAdmin],[IncompleteProfile],[CreatedAt]) VALUES ('{Guid.NewGuid()}','Leonardo','Dicaprio','leonardoDiCaprio199@gmail.com','+55 (11) 99391-0312','{hashedPassword}',1,1,'{DateTime.Now}')";
-    dbContext.Database.ExecuteSqlRaw(insertRootAdmin);
+    var insertRootAdmin = $"INSERT INTO [Admins]([Id],[FirstName],[LastName],[Email],[Phone],[PasswordHash],[IsRootAdmin],[IncompleteProfile],[CreatedAt]) VALUES ('b69f06d9-0dda-40f5-8fcb-797029d36e26','Leonardo','Dicaprio','leonardoDiCaprio199@gmail.com','+55 (11) 99391-0312','{hashedPassword}',1,1,'{DateTime.Now}')";
+    await dbContext.Database.ExecuteSqlRawAsync(insertRootAdmin);
+    await dbContext.SaveChangesAsync();
   }
 }
