@@ -7,7 +7,7 @@ namespace Hotel.Tests.IntegrationTests.Fixtures;
 
 public class DbFixture : IDisposable
 {
-  public HotelDbContext DbContext;
+  private HotelDbContext _dbContext;
   private SqliteConnection _connection;
 
   public DbFixture(IServiceCollection services)
@@ -27,17 +27,17 @@ public class DbFixture : IDisposable
     var serviceProvider = services.BuildServiceProvider();
 
     var scope = serviceProvider.CreateScope();
-    DbContext = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
+    _dbContext = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
 
-    DbContext.Database.EnsureCreated();
+    _dbContext.Database.EnsureCreated();
 
-    InsertRootAdmin(DbContext);
+    InsertRootAdmin(_dbContext);
   }
 
   public void Dispose()
   {
-    DbContext.Database.EnsureDeleted();
-    DbContext.Dispose();
+    _dbContext.Database.EnsureDeleted();
+    _dbContext.Dispose();
     _connection.Dispose();
   }
 

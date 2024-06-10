@@ -56,7 +56,6 @@ public static class ConfigureDependencies
       });
     }
 
-
     //Configurar repositórios
     builder.Services.AddScoped<IAdminRepository, AdminRepository>();
     builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();

@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 partial class AdminHandler
@@ -6,14 +7,12 @@ partial class AdminHandler
   public async Task<Response> HandleAddPermission(Guid adminId, Guid permissionId)
   {
     //Buscar admin
-    var admin = await _repository.GetAdminIncludePermissions(adminId);
-    if (admin == null)
-      throw new ArgumentException("Administrador não encontrado.");
+    var admin = await _repository.GetAdminIncludePermissions(adminId)
+      ?? throw new NotFoundException("Administrador não encontrado.");
 
     //Buscar permissão
-    var permission = await _permissionRepository.GetEntityByIdAsync(permissionId);
-    if (permission == null)
-      throw new ArgumentException("Permissão não encontrada.");
+    var permission = await _permissionRepository.GetEntityByIdAsync(permissionId)
+      ?? throw new NotFoundException("Permissão não encontrada.");
 
     admin.AddPermission(permission);
  

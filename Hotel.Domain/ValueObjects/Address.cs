@@ -5,6 +5,7 @@ namespace Hotel.Domain.ValueObjects;
 
 public class Address : ValueObject
 {
+  private Address() { }
   public Address(string? country, string? city, string? street, int? number)
   {
     Country = country;

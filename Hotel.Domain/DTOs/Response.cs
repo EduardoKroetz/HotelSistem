@@ -1,9 +1,19 @@
 using Hotel.Domain.DTOs.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Hotel.Domain.DTOs;
 
 public class Response<T> : IDataTransferObject
 {
+  [JsonConstructor]
+  private Response(int status, string message, T? data, List<string> errors)
+  {
+    Status = status;
+    Message = message;
+    Data = data;
+    Errors = errors;
+  }
+
   public Response(int status, string message, T data)
   {
     Status = status;
@@ -31,6 +41,8 @@ public class Response<T> : IDataTransferObject
 
 public class Response : IDataTransferObject
 {
+  private Response() { }
+
   public Response(int status, string message, object data)
   {
     Status = status;

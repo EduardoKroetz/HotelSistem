@@ -1,4 +1,5 @@
 using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
 
@@ -6,8 +7,12 @@ public partial class AdminHandler
 {
   public async Task<Response> HandleDeleteAsync(Guid adminId)
   {
-    _repository.Delete(adminId);
+    var admin = await _repository.GetEntityByIdAsync(adminId) 
+      ?? throw new NotFoundException("Administrador não encontrado.");
+    
+    _repository.Delete(admin);
     await _repository.SaveChangesAsync();
+
     return new Response(200,"Administrador deletado com sucesso!");
   }
 }
