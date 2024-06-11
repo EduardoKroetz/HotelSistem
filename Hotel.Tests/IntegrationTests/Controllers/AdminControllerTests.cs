@@ -553,4 +553,46 @@ public class AdminControllerTests
     Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
     Assert.AreEqual(body.DateOfBirth, updatedAdmin!.DateOfBirth);
   }
+
+
+
+  //
+  //TESTES DE PERMISSÂO
+  //
+
+  [TestMethod]
+  public async Task AdminWithoutPermissionToGet_ShouldReturn_OK()
+  {
+    //Arrange
+    var admin = new Admin
+    (
+      new Name("Gabriel", "Souza"),
+      new Email("gabriSouza@gmail.com"),
+      new Phone("+55 (27) 93153-7810"),
+      "password10",
+      EGender.Masculine,
+      DateTime.Now.AddYears(-33),
+      new Address("Brazil", "Vitória", "ES-1011", 1011)
+    );
+
+    await _dbContext.Admins.AddAsync(admin);
+    await _dbContext.SaveChangesAsync();
+
+    var token = _tokenService.GenerateToken(admin);
+    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+    var body = new UpdateDateOfBirth(DateTime.Now.AddYears(-35));
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/date-of-birth", body);
+
+    //Assert
+    var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
+
+    Assert.IsNotNull(response);
+    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    Assert.AreEqual(body.DateOfBirth, updatedAdmin!.DateOfBirth);
+  }
+
+
 }

@@ -386,7 +386,7 @@ BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'AvailableRoomStatus', 'Permissão para alterar o status de um cômodo para disponível.', 1, GETDATE());
     END;
-    
+  
 END;
 
 
