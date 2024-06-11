@@ -35,7 +35,7 @@ public class HotelWebApplicationFactory : WebApplicationFactory<Startup>
   public async Task<string> LoginFullAccess()
   {
     var dbContext = Services.GetRequiredService<HotelDbContext>();
-    DbFixture.InsertRootAdmin(dbContext);
+    await DbFixture.InsertRootAdmin();
     var admin = await dbContext.Admins.FirstOrDefaultAsync(x => x.Email.Address == "leonardoDiCaprio199@gmail.com");
     var token = _tokenService.GenerateToken(admin!);
     return token;

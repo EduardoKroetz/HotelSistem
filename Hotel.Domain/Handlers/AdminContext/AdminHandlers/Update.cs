@@ -1,5 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.Base.User;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Domain.Handlers.AdminContext.AdminHandlers;
@@ -8,9 +9,8 @@ public partial class AdminHandler
 {
   public async Task<Response> HandleUpdateAsync(UpdateUser model, Guid adminId)
   {
-    var admin = await _repository.GetEntityByIdAsync(adminId);
-    if (admin == null)
-      throw new ArgumentException("Administrador não encontrado.");
+    var admin = await _repository.GetEntityByIdAsync(adminId)
+      ?? throw new NotFoundException("Administrador não encontrado.");
     
     admin.ChangeName(new Name(model.FirstName,model.LastName));
     admin.ChangePhone(new Phone(model.Phone));

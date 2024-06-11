@@ -10,6 +10,7 @@ public partial class AdminHandler
     var changeToRootAdmin = await _repository.GetEntityByIdAsync(changeToRootAdminId)
         ?? throw new NotFoundException("Administrador não encontrado.");
 
+    var typeId = typeof(Guid) == rootAdminId.GetType();
     var rootAdmin = await _repository.GetEntityByIdAsync(rootAdminId)
         ?? throw new NotFoundException("Administrador root não encontrado.");
 
