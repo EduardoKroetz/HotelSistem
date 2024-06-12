@@ -14,7 +14,7 @@ public class ResponsibilityRepository : GenericRepository<Responsibility>, IResp
   public async Task<GetResponsibility?> GetByIdAsync(Guid id)
   {
     return await _context
-      .Responsabilities
+      .Responsibilities
       .AsNoTracking()
       .Where(x => x.Id == id)
       .Select(x => new GetResponsibility(x.Id, x.Name, x.Description, x.Priority, x.CreatedAt))
@@ -23,7 +23,7 @@ public class ResponsibilityRepository : GenericRepository<Responsibility>, IResp
   }
   public async Task<IEnumerable<GetResponsibility>> GetAsync(ResponsibilityQueryParameters queryParameters)
   {
-    var query = _context.Responsabilities.AsQueryable();
+    var query = _context.Responsibilities.AsQueryable();
 
     if (queryParameters.Name != null)
       query = query.Where(x => x.Name.Contains(queryParameters.Name));

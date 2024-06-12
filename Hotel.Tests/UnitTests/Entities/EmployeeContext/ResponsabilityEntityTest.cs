@@ -1,7 +1,6 @@
 using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
-using Hotel.Tests.UnitTests.Entities;
 
 
 namespace Hotel.Tests.UnitTests.Entities.EmployeeContext;

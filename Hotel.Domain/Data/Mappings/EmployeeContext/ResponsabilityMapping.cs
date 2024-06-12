@@ -10,7 +10,7 @@ public class ResponsibilityMapping : EntityBaseMapping<Responsibility>, IEntityT
   {
     BaseMapping(builder);
 
-    builder.ToTable("Responsabilities");
+    builder.ToTable("Responsibilities");
 
     builder.Property(r => r.Name)
       .IsRequired()

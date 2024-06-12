@@ -7,7 +7,7 @@ namespace Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 
 public interface IEmployeeRepository : IRepository<Employee>, IUserRepository<Employee>, IRepositoryQuery<GetEmployee, EmployeeQueryParameters>
 {
-  Task<Employee?> GetEmployeeIncludesResponsabilities(Guid id);
+  Task<Employee?> GetEmployeeIncludesResponsibilities(Guid id);
   Task<IEnumerable<Permission>> GetAllDefaultPermissions();
   Task<Permission?> GetDefaultPermission();
   Task<Employee?> GetEmployeeIncludesPermissions(Guid id);

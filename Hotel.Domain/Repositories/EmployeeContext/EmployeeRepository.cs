@@ -61,11 +61,11 @@ public class EmployeeRepository : UserRepository<Employee>, IEmployeeRepository
     )).ToListAsync();
   }
 
-  public async Task<Employee?> GetEmployeeIncludesResponsabilities(Guid id)
+  public async Task<Employee?> GetEmployeeIncludesResponsibilities(Guid id)
   {
     return await _context.Employees
       .Where(x => x.Id == id)
-      .Include(x => x.Responsabilities)
+      .Include(x => x.Responsibilities)
       .FirstOrDefaultAsync();
   }
 

@@ -33,9 +33,9 @@ public class ServiceMapping : EntityBaseMapping<Service>, IEntityTypeConfigurati
     builder.Property(x => x.TimeInMinutes)
       .IsRequired();
 
-    builder.HasMany(x => x.Responsabilities)
+    builder.HasMany(x => x.Responsibilities)
       .WithMany(x => x.Services)
-      .UsingEntity(j => j.ToTable("ServiceResponsabilities"));
+      .UsingEntity(j => j.ToTable("ServiceResponsibilities"));
   }
 }
 

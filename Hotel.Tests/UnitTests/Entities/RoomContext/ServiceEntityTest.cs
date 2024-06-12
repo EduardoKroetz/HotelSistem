@@ -39,13 +39,13 @@ public class ServiceEntityTest
     }
 
     [TestMethod]
-    public void AddResponsabilitiesToServices_MustBeAdded()
+    public void AddResponsibilitiesToServices_MustBeAdded()
     {
         var service = new Service("Preparar e servir o almoço", 25m, EPriority.Medium, 55);
         var responsibility = new Responsibility("Varrer o chão", "Varrer", EPriority.Trivial);
         service.AddResponsibility(responsibility);
         service.AddResponsibility(TestParameters.Responsibility);
-        Assert.AreEqual(2, service.Responsabilities.Count);
+        Assert.AreEqual(2, service.Responsibilities.Count);
     }
 
     [TestMethod]
@@ -54,7 +54,7 @@ public class ServiceEntityTest
         var service = new Service("Preparar e servir o almoço", 25m, EPriority.Medium, 55);
         service.AddResponsibility(TestParameters.Responsibility);
         service.RemoveResponsibility(TestParameters.Responsibility);
-        Assert.AreEqual(0, service.Responsabilities.Count);
+        Assert.AreEqual(0, service.Responsibilities.Count);
     }
 
     [TestMethod]

@@ -27,22 +27,22 @@ public class EmployeeMapping : UserBaseMapping<Employee>, IEntityTypeConfigurati
       .WithMany(x => x.Employees)
       .UsingEntity(x => x.ToTable("EmployeePermissions"));
 
-    builder.HasMany(e => e.Responsabilities)
+    builder.HasMany(e => e.Responsibilities)
       .WithMany(x => x.Employees)
       .UsingEntity<Dictionary<string,object>>
       (
-        "EmployeeResponsabilities",
+        "EmployeeResponsibilities",
         j => j
           .HasOne<Responsibility>()
           .WithMany()
           .HasForeignKey("ResponsibilityId")
-          .HasConstraintName("FK_EmployeeResponsabilities_Responsibility")
+          .HasConstraintName("FK_EmployeeResponsibilities_Responsibility")
           .OnDelete(DeleteBehavior.Cascade),
         j => j
           .HasOne<Employee>()
           .WithMany()
           .HasForeignKey("EmployeeId")
-          .HasConstraintName("FK_EmployeeResponsabilities_Employee")
+          .HasConstraintName("FK_EmployeeResponsibilities_Employee")
           .OnDelete(DeleteBehavior.Cascade)
       );
       

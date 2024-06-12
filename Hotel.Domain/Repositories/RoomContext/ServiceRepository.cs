@@ -18,7 +18,7 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
       .Services
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Include(x => x.Responsabilities)
+      .Include(x => x.Responsibilities)
       .Select(x => new GetService(
         x.Id,
         x.Name,
@@ -27,7 +27,7 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         x.IsActive,
         x.TimeInMinutes,
         new List<GetResponsibility>(
-          x.Responsabilities.Select(
+          x.Responsibilities.Select(
             r => new GetResponsibility(r.Id, r.Name, r.Description, r.Priority, r.CreatedAt)
         )),
         x.CreatedAt
@@ -56,7 +56,7 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
       query = query.FilterByOperator(queryParameters.TimeInMinutesOperator, x => x.TimeInMinutes, queryParameters.TimeInMinutes);
 
     if (queryParameters.ResponsibilityId.HasValue)
-      query = query.Where(x => x.Responsabilities.Any(y => y.Id == queryParameters.ResponsibilityId));
+      query = query.Where(x => x.Responsibilities.Any(y => y.Id == queryParameters.ResponsibilityId));
 
     if (queryParameters.ReservationId.HasValue)
       query = query.Where(x => x.Reservations.Any(y => y.Id == queryParameters.ReservationId));
@@ -80,11 +80,11 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
     )).ToListAsync();
   }
 
-  public async Task<Service?> GetServiceIncludeResponsabilities(Guid serviceId)
+  public async Task<Service?> GetServiceIncludeResponsibilities(Guid serviceId)
   {
     return await _context.Services
       .Where(x => x.Id == serviceId)
-      .Include(x => x.Responsabilities)
+      .Include(x => x.Responsibilities)
       .FirstOrDefaultAsync();
   }
 

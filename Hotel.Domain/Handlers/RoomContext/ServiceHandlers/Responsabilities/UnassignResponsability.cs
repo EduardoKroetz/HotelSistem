@@ -6,7 +6,7 @@ public partial class ServiceHandler
 {
   public async Task<Response> HandleUnassignResponsibilityAsync(Guid id, Guid responsibilityId)
   {
-    var service = await _repository.GetServiceIncludeResponsabilities(id);
+    var service = await _repository.GetServiceIncludeResponsibilities(id);
     if (service == null)
       throw new ArgumentException("Serviço não encontrado.");
 

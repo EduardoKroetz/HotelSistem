@@ -129,7 +129,7 @@ BEGIN
         VALUES (NEWID(), 'UnassignEmployeePermission', 'Permissão para desatribuir permissões de um funcionário.', 1, GETDATE());
     END;
 
-    --Responsabilities
+    --Responsibilities
 
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetResponsibilities')
     BEGIN

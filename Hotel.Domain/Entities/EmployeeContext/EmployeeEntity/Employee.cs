@@ -20,7 +20,7 @@ public partial class Employee : User, IEmployee
   }
   
   public decimal? Salary { get; private set; }
-  public HashSet<Responsibility> Responsabilities { get; private set; } = [];
+  public HashSet<Responsibility> Responsibilities { get; private set; } = [];
   public HashSet<Report> Reports { get; private set; } = [];
   public ICollection<Permission> Permissions { get; private set; } = [];
 }

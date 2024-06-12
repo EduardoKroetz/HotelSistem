@@ -35,7 +35,7 @@ public class HotelDbContext : DbContext
   public DbSet<Customer> Customers { get; set; }
   public DbSet<Feedback> Feedbacks { get; set; }
   public DbSet<Employee> Employees { get; set; }
-  public DbSet<Responsibility> Responsabilities { get; set; }
+  public DbSet<Responsibility> Responsibilities { get; set; }
   public DbSet<RoomInvoice> RoomInvoices { get; set; }
   public DbSet<Reservation> Reservations { get; set; }
   public DbSet<Category> Categories { get; set; }

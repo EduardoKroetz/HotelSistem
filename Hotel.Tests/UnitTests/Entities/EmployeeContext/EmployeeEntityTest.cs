@@ -40,7 +40,7 @@ public class EmployeeEntityTest
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         employee.AddResponsibility(Responsibility);
-        Assert.AreEqual(1, employee.Responsabilities.Count);
+        Assert.AreEqual(1, employee.Responsibilities.Count);
     }
 
     [TestMethod]
@@ -59,7 +59,7 @@ public class EmployeeEntityTest
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         employee.AddResponsibility(Responsibility);
         employee.RemoveResponsibility(Responsibility);
-        Assert.AreEqual(0, employee.Responsabilities.Count);
+        Assert.AreEqual(0, employee.Responsibilities.Count);
     }
 
     [TestMethod]

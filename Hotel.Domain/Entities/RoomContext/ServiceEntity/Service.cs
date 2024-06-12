@@ -18,7 +18,7 @@ public partial class Service : Entity, IService
     IsActive = true;
     Priority = priority;
     TimeInMinutes = timeInMinutes;
-    Responsabilities = [];
+    Responsibilities = [];
 
     Validate();
   }
@@ -28,7 +28,7 @@ public partial class Service : Entity, IService
   public bool IsActive { get; private set; }
   public EPriority Priority { get; private set; }
   public int TimeInMinutes { get; private set; }
-  public ICollection<Responsibility> Responsabilities { get; private set; } = [];
+  public ICollection<Responsibility> Responsibilities { get; private set; } = [];
   public ICollection<Reservation> Reservations { get; private set; }  = [];
   public ICollection<RoomInvoice> RoomInvoices { get; private set; } = [];
   public ICollection<Room> Rooms { get; private set; } = [];

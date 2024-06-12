@@ -3,21 +3,21 @@ using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 
 namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 
-public partial class Employee : IResponsabilitiesMethods
+public partial class Employee : IResponsibilitiesMethods
 {
   public void AddResponsibility(Responsibility responsibility)
   {
-    if (Responsabilities.Contains(responsibility))
+    if (Responsibilities.Contains(responsibility))
       throw new ArgumentException("Essa responsabilidade já está atribuida.");
-    Responsabilities.Add(responsibility);
+    Responsibilities.Add(responsibility);
   }
  
   
   public void RemoveResponsibility(Responsibility responsibility)
   {
-    if (!Responsabilities.Contains(responsibility))
+    if (!Responsibilities.Contains(responsibility))
       throw new ArgumentException("Essa responsabilidade não está atribuida.");
-    Responsabilities.Remove(responsibility);
+    Responsibilities.Remove(responsibility);
   }
 
   

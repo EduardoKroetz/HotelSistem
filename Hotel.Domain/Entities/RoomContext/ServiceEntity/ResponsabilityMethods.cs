@@ -4,20 +4,20 @@ using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.RoomContext.ServiceEntity;
 
-public partial class Service : IResponsabilitiesMethods
+public partial class Service : IResponsibilitiesMethods
 {
   public void AddResponsibility(Responsibility responsibility)
   {
-    if (Responsabilities.Contains(responsibility))
+    if (Responsibilities.Contains(responsibility))
       throw new ValidationException("Erro de validação: Essa responsabilidade já foi atribuida.");
-    Responsabilities.Add(responsibility);
+    Responsibilities.Add(responsibility);
   }
 
   
 
   public void RemoveResponsibility(Responsibility responsibility)
   {
-    if (!Responsabilities.Remove(responsibility))
+    if (!Responsibilities.Remove(responsibility))
       throw new ValidationException("Erro de validação: Essa responsabilidade não está atribuida.");
   }
   

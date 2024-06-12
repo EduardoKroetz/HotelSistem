@@ -7,7 +7,7 @@ public partial class EmployeeHandler : IHandler
 {
   public async Task<Response> HandleUnassignResponsibilityAsync(Guid id, Guid responsibilityId)
   {
-    var employee = await _repository.GetEmployeeIncludesResponsabilities(id);
+    var employee = await _repository.GetEmployeeIncludesResponsibilities(id);
     if (employee == null)
       throw new ArgumentException("Funcionário não encontrado.");
 

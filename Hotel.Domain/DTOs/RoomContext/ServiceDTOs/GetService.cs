@@ -14,7 +14,7 @@ public class GetService : IDataTransferObject
     Priority = priority;
     TimeInMinutes = timeInMinutes;
     IsActive = isActive;
-    Responsabilities = responsibilities;
+    Responsibilities = responsibilities;
     CreatedAt = createdAt;
   }
 
@@ -24,7 +24,7 @@ public class GetService : IDataTransferObject
   public EPriority Priority { get; private set; }
   public bool IsActive { get; private set; }
   public int TimeInMinutes { get; private set; }
-  public ICollection<GetResponsibility> Responsabilities { get; private set; } = [];
+  public ICollection<GetResponsibility> Responsibilities { get; private set; } = [];
   public DateTime CreatedAt { get; private set; }
 }
 
