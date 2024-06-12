@@ -3,6 +3,7 @@ using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Enums;
+using Hotel.Domain.Services.Permissions;
 using Hotel.Domain.Services.TokenServices;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.IntegrationTests.Factories;
@@ -23,6 +24,9 @@ public class AdminControllerTests
   private static HotelDbContext _dbContext = null!;
   private static string _rootAdminToken = null!;
   private const string _baseUrl = "v1/admins";
+  private static Permission _defaultAdminPermission = null!;
+  private static List<Permission> _defaultAdminPermissions = null!;
+  private static List<Permission> _permissions = null!;
 
   [ClassInitialize]
   public static void ClassInitialize(TestContext context)
@@ -34,6 +38,10 @@ public class AdminControllerTests
 
     _rootAdminToken = _factory.LoginFullAccess().Result;
     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+    
+    _defaultAdminPermission = _dbContext.Permissions.AsTracking().First(x => x.Name.Contains("DefaultAdminPermission"));
+    _permissions = _dbContext.Permissions.ToListAsync().Result;
+    _defaultAdminPermissions = _permissions.Where(x => DefaultAdminPermissions.PermissionsName.Any(y => y.ToString() == x.Name)).ToList();
   }
 
   [ClassCleanup]
@@ -166,6 +174,8 @@ public class AdminControllerTests
   [TestMethod]
   public async Task AddAdminPermission_ShouldReturn_OK()
   {
+    var permission = await _dbContext.Permissions.FirstOrDefaultAsync(x => x.Name.Contains("CreateAdmin"));
+
     //Arrange
     var admin = new Admin
     (
@@ -178,14 +188,11 @@ public class AdminControllerTests
       new Address("Brazil", "Rio de Janeiro", "BR-789", 123)
     );
 
-    var permission = new Permission("GetAdmin", "Allows get admin by id");
-
     await _dbContext.Admins.AddAsync(admin);
-    await _dbContext.Permissions.AddAsync(permission);
     await _dbContext.SaveChangesAsync();
 
     //Act
-    var response = await _client.PostAsync($"{_baseUrl}/{admin.Id}/permissions/{permission.Id}", null);
+    var response = await _client.PostAsync($"{_baseUrl}/{admin.Id}/permissions/{permission!.Id}", null);
 
     //Assert
     var adminWithPermissions = await _dbContext.Admins
@@ -201,7 +208,7 @@ public class AdminControllerTests
   [TestMethod]
   public async Task RemoveAdminPermission_ShouldReturn_OK()
   {
-    var permission = new Permission("CreateAdmin", "Allows create admin");
+    var permission = await _dbContext.Permissions.FirstOrDefaultAsync(x => x.Name.Contains("CreateAdmin"));
 
     //Arrange
     var admin = new Admin
@@ -216,12 +223,11 @@ public class AdminControllerTests
       [permission]
     );
 
-    await _dbContext.Permissions.AddAsync(permission);
     await _dbContext.Admins.AddAsync(admin);
     await _dbContext.SaveChangesAsync();
 
     //Act
-    var response = await _client.DeleteAsync($"{_baseUrl}/{admin.Id}/permissions/{permission.Id}");
+    var response = await _client.DeleteAsync($"{_baseUrl}/{admin.Id}/permissions/{permission!.Id}");
 
     //Assert
     var adminWithPermissions = await _dbContext.Admins
@@ -389,9 +395,9 @@ public class AdminControllerTests
     //Arrange
     var admin = new Admin
     (
-      new Name("Fernanda", "Ribeiro"),
-      new Email("fernandaRibeiro@gmail.com"),
-      new Phone("+55 (51) 91234-5678"),
+      new Name("Fernanda", "River"),
+      new Email("fernandaRiver@gmail.com"),
+      new Phone("+55 (51) 91219-5678"),
       "password7",
       EGender.Feminine,
       DateTime.Now.AddYears(-26),
@@ -423,8 +429,8 @@ public class AdminControllerTests
     //Arrange
     var admin = new Admin
     (
-      new Name("Pedro", "Silva"),
-      new Email("pedroSilvaa100@gmail.com"),
+      new Name("Michele", "Silva"),
+      new Email("micheleSilvaa100@gmail.com"),
       new Phone("+55 (62) 99846-1432"),
       "password8",
       EGender.Masculine,
@@ -457,9 +463,9 @@ public class AdminControllerTests
     //Arrange
     var admin = new Admin
     (
-      new Name("Pedro", "Silva"),
-      new Email("pedroSilva999@gmail.com"),
-      new Phone("+55 (62) 99876-3432"),
+      new Name("Vinicius", "Silva"),
+      new Email("viniSilva@gmail.com"),
+      new Phone("+55 (62) 91876-3432"),
       "password8",
       EGender.Masculine,
       DateTime.Now.AddYears(-31),
@@ -526,9 +532,9 @@ public class AdminControllerTests
     //Arrange
     var admin = new Admin
     (
-      new Name("Gabriel", "Souza"),
-      new Email("gabriSouza@gmail.com"),
-      new Phone("+55 (27) 93153-7810"),
+      new Name("Geovane", "Silva"),
+      new Email("geoSilv@gmail.com"),
+      new Phone("+55 (27) 93113-7859"),
       "password10",
       EGender.Masculine,
       DateTime.Now.AddYears(-33),
@@ -561,37 +567,110 @@ public class AdminControllerTests
   //
 
   [TestMethod]
-  public async Task AdminWithoutPermissionToGet_ShouldReturn_OK()
+  [DataRow("GetAdmins", "v1/admins", "GET")]
+  [DataRow("GetAdmin", "v1/admins/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
+  [DataRow("EditAdmin", "v1/admins/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("DeleteAdmin", "v1/admins/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("AdminAssignPermission", "v1/admins/f6c5e02b-a0ae-429e-beb3-d433d51ad414/permissions/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "POST")]
+  [DataRow("AdminUnassignPermission", "v1/admins/f6c5e02b-a0ae-429e-beb3-d433d51ad414/permissions/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("EditCustomer", "v1/customers/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("DeleteCustomer", "v1/customers/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("CreateAdmin", "v1/register/admins", "POST")]
+  [DataRow("GetEmployee", "v1/employees/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
+  [DataRow("GetEmployees", "v1/employees", "GET")]
+  [DataRow("DeleteEmployee", "v1/employees/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("EditEmployee", "v1/employees/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("CreateEmployee", "v1/register/employees", "POST")]
+  [DataRow("AssignEmployeeResponsibility", "v1/employees/f6c5e02b-a0ae-429e-beb3-d433d51ad414/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "POST")]
+  [DataRow("UnassignEmployeeResponsibility", "v1/employees/f6c5e02b-a0ae-429e-beb3-d433d51ad414/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("AssignEmployeePermission", "v1/employees/f6c5e02b-a0ae-429e-beb3-d433d51ad414/permissions/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "POST")]
+  [DataRow("UnassignEmployeePermission", "v1/employees/f6c5e02b-a0ae-429e-beb3-d433d51ad414/permissions/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("GetResponsibilities", "v1/responsibilities", "GET")]
+  [DataRow("GetResponsibility", "v1/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
+  [DataRow("CreateResponsibility", "v1/responsibilities", "POST")]
+  [DataRow("EditResponsibility", "v1/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("DeleteResponsibility", "v1/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("DeleteRoomInvoice", "v1/room-invoices/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("GetRoomInvoices", "v1/room-invoices", "GET")]
+  [DataRow("GetRoomInvoice", "v1/room-invoices/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
+  [DataRow("DeleteReservation", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("UpdateReservationCheckout", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/check-out", "PATCH")]
+  [DataRow("UpdateReservationCheckIn", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/check-in", "PATCH")]
+  [DataRow("AddServiceToReservation", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/e3347565-8ec7-4a3b-be3a-951317bb53dc", "POST")]
+  [DataRow("RemoveServiceFromReservation", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("CreateCategory", "v1/categories", "POST")]
+  [DataRow("EditCategory", "v1/categories/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("DeleteCategory", "v1/categories/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("GetReports", "v1/reports", "GET")]
+  [DataRow("GetReport", "v1/reports/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
+  [DataRow("EditReport", "v1/reports/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("CreateReport", "v1/reports", "POST")]
+  [DataRow("FinishReport", "v1/reports/finish/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+  [DataRow("CreateRoom", "v1/rooms", "POST")]
+  [DataRow("EditRoom", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("DeleteRoom", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("AddRoomService", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/e3347565-8ec7-4a3b-be3a-951317bb53dc", "POST")]
+  [DataRow("RemoveRoomService", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("UpdateRoomNumber", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/number/1", "PATCH")]
+  [DataRow("UpdateRoomCapacity", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/capacity/2", "PATCH")]
+  [DataRow("UpdateRoomCategory", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/categories/62eb01d1-a7ba-4c09-ae5b-5ec6b5071577", "PATCH")]
+  [DataRow("UpdateRoomPrice", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/price/10", "PATCH")]
+  [DataRow("EnableRoom", "v1/rooms/enable/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+  [DataRow("DisableRoom", "v1/rooms/disable/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+  [DataRow("GetServices", "v1/services", "GET")]
+  [DataRow("GetService", "v1/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
+  [DataRow("UpdateService", "v1/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
+  [DataRow("CreateService", "v1/services", "POST")]
+  [DataRow("DeleteService", "v1/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("AssignServiceResponsibility", "v1/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "POST")]
+  [DataRow("UnassignServiceResponsibility", "v1/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+  [DataRow("AvailableRoomStatus", "v1/rooms/available/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+  public void AccessEndpointsWithOutPermission_ShouldReturn_FORBIDDEN(string permissionName, string endpoint, string method)
   {
+    var permissions = _permissions.Where(x => x.Name != "DefaultAdminPermission" && x.Name != "DefaultEmployeePermission").ToList();
+    
     //Arrange
     var admin = new Admin
     (
-      new Name("Gabriel", "Souza"),
-      new Email("gabriSouza@gmail.com"),
-      new Phone("+55 (27) 93153-7810"),
+      new Name("Gabriel", "Souz"),
+      new Email("gabriSouz@gmail.com"),
+      new Phone("+55 (27) 93123-7810"),
       "password10",
       EGender.Masculine,
       DateTime.Now.AddYears(-33),
-      new Address("Brazil", "Vitória", "ES-1011", 1011)
+      new Address("Brazil", "Vitória", "ES-1011", 1011),
+      permissions
     );
+    try
+    {
 
-    await _dbContext.Admins.AddAsync(admin);
-    await _dbContext.SaveChangesAsync();
+      _dbContext.Admins.Add(admin);
+      _dbContext.SaveChanges();
 
-    var token = _tokenService.GenerateToken(admin);
-    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+      var permission = _dbContext.Permissions.FirstOrDefault(x => x.Name.Equals(permissionName));
+      admin.RemovePermission(permission!);
 
-    var body = new UpdateDateOfBirth(DateTime.Now.AddYears(-35));
+      var token = _tokenService.GenerateToken(admin);
+      _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-    //Act
-    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/date-of-birth", body);
+      //Act
+      var response = method switch
+      {
+        "POST" => _client.PostAsJsonAsync(endpoint, new { }).Result,
+        "PUT" => _client.PutAsJsonAsync(endpoint, new { }).Result,
+        "GET" => _client.GetAsync(endpoint).Result,
+        "DELETE" => _client.DeleteAsync(endpoint).Result,
+        "PATCH" => _client.PatchAsync(endpoint, null).Result,
+        _ => null!
+      };
 
-    //Assert
-    var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
-
-    Assert.IsNotNull(response);
-    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-    Assert.AreEqual(body.DateOfBirth, updatedAdmin!.DateOfBirth);
+      //Assert
+      Assert.AreEqual(HttpStatusCode.Forbidden, response!.StatusCode);
+    }finally
+    {
+      _dbContext.Admins.Remove(admin!);
+      _dbContext.SaveChanges();
+    }
   }
 
 
