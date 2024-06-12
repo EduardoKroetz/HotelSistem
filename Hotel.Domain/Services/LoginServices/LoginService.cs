@@ -24,7 +24,7 @@ public class LoginService
       return new Response(200, "Login efetuado com sucesso!", new { Token = token });
     }
     else
-      return new Response(400, "Email ou senha inválidos.");
+      throw new ArgumentException("Email ou senha inválidos.");
   }
 
   //Login com administrador
@@ -36,7 +36,7 @@ public class LoginService
       return new Response(200, "Login efetuado com sucesso!", new { Token = token });
     }
     else
-      return new Response(400, "Email ou senha inválidos.");
+      throw new ArgumentException("Email ou senha inválidos.");
   }
 
   //Login com funcionário
@@ -48,6 +48,6 @@ public class LoginService
       return new Response(200, "Login efetuado com sucesso!", new { Token = token });
     }
     else
-      return new Response(400, "Email ou senha inválidos.");
+      throw new ArgumentException("Email ou senha inválidos.");
   }
 }

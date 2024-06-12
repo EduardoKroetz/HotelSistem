@@ -45,7 +45,7 @@ public partial class LoginHandler : IHandler
         if (employee != null) 
           return _loginService.UserLogin(password ,employee);
 
-        return new Response(400, "Email ou senha inválidos.");
+        throw new ArgumentException("Email ou senha inválidos.");
       }
     }
     
