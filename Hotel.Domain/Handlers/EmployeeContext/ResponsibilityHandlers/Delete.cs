@@ -1,8 +1,8 @@
 using Hotel.Domain.DTOs;
 
-namespace Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
+namespace Hotel.Domain.Handlers.EmployeeContexty.ResponsibilityHandlers;
 
-public partial class ResponsabilityHandler
+public partial class ResponsibilityHandler
 {
   public async Task<Response> HandleDeleteAsync(Guid id)
   {

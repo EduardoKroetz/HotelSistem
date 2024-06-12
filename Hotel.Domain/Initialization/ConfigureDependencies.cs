@@ -5,7 +5,7 @@ using Hotel.Domain.Handlers.AuthenticationContext.LoginHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
-using Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
+using Hotel.Domain.Handlers.EmployeeContexty.ResponsibilityHandlers;
 using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 using Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
@@ -62,7 +62,7 @@ public static class ConfigureDependencies
     builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
     builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
     builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-    builder.Services.AddScoped<IResponsabilityRepository, ResponsabilityRepository>();
+    builder.Services.AddScoped<IResponsibilityRepository, ResponsibilityRepository>();
     builder.Services.AddScoped<IRoomInvoiceRepository, RoomInvoiceRepository>();
     builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
     builder.Services.AddScoped<IRoomRepository, RoomRepository>();
@@ -87,7 +87,7 @@ public static class ConfigureDependencies
     builder.Services.AddScoped<CustomerHandler>();
     builder.Services.AddScoped<FeedbackHandler>();
     builder.Services.AddScoped<EmployeeHandler>();
-    builder.Services.AddScoped<ResponsabilityHandler>();
+    builder.Services.AddScoped<ResponsibilityHandler>();
     builder.Services.AddScoped<RoomInvoiceHandler>();
     builder.Services.AddScoped<ReservationHandler>();
     builder.Services.AddScoped<RoomHandler>();

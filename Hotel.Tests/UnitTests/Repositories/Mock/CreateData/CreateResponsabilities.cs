@@ -1,4 +1,4 @@
-﻿using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+﻿using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Tests.UnitTests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,7 @@ public class CreateResponsabilities
 {
     public static async Task Create()
     {
-        var responsabilities = new List<Responsability>()
+        var responsabilities = new List<Responsibility>()
     {
       new("Secretária","Secretária",EPriority.Medium),
       new("Atender a chamadas de serviço","Atender a chamadas de serviço",EPriority.High),

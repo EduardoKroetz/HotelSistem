@@ -1,5 +1,5 @@
 using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
+using Hotel.Domain.DTOs.EmployeeContext.ResponsibilityDTOs;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Extensions;
@@ -26,9 +26,9 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         x.Priority,
         x.IsActive,
         x.TimeInMinutes,
-        new List<GetReponsability>(
+        new List<GetResponsibility>(
           x.Responsabilities.Select(
-            r => new GetReponsability(r.Id, r.Name, r.Description, r.Priority, r.CreatedAt)
+            r => new GetResponsibility(r.Id, r.Name, r.Description, r.Priority, r.CreatedAt)
         )),
         x.CreatedAt
       ))
@@ -55,8 +55,8 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
     if (queryParameters.TimeInMinutes.HasValue)
       query = query.FilterByOperator(queryParameters.TimeInMinutesOperator, x => x.TimeInMinutes, queryParameters.TimeInMinutes);
 
-    if (queryParameters.ResponsabilityId.HasValue)
-      query = query.Where(x => x.Responsabilities.Any(y => y.Id == queryParameters.ResponsabilityId));
+    if (queryParameters.ResponsibilityId.HasValue)
+      query = query.Where(x => x.Responsabilities.Any(y => y.Id == queryParameters.ResponsibilityId));
 
     if (queryParameters.ReservationId.HasValue)
       query = query.Where(x => x.Reservations.Any(y => y.Id == queryParameters.ReservationId));

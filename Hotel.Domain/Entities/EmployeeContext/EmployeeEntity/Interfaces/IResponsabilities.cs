@@ -1,9 +1,9 @@
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 
 namespace Hotel.Domain.Entities.EmployeeContext.EmployeeEntity.Interfaces;
 
 public interface IResponsabilitiesMethods
 {
-  public void AddResponsability(Responsability responsability);
-  public void RemoveResponsability(Responsability responsability);
+  public void AddResponsibility(Responsibility responsibility);
+  public void RemoveResponsibility(Responsibility responsibility);
 }

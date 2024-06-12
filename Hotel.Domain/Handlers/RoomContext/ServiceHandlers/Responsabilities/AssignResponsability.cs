@@ -4,17 +4,17 @@ namespace Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 
 public partial class ServiceHandler
 {
-  public async Task<Response> HandleAssignResponsabilityAsync(Guid id, Guid responsabilityId)
+  public async Task<Response> HandleAssignResponsibilityAsync(Guid id, Guid responsibilityId)
   {
     var service = await _repository.GetServiceIncludeResponsabilities(id);
     if (service == null)
       throw new ArgumentException("Serviço não encontrado.");
 
-    var responsability = await _responsabilityRepository.GetEntityByIdAsync(responsabilityId);
-    if (responsability == null)
+    var responsibility = await _responsibilityRepository.GetEntityByIdAsync(responsibilityId);
+    if (responsibility == null)
       throw new ArgumentException("Responsabilidade não encontrada.");
 
-    service.AddResponsability(responsability);
+    service.AddResponsibility(responsibility);
 
     await _repository.SaveChangesAsync();
 

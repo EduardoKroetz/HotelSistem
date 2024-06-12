@@ -11,11 +11,11 @@ namespace Hotel.Domain.Handlers.RoomContext.ServiceHandler;
 public partial class ServiceHandler : IHandler
 {
   private readonly IServiceRepository  _repository;
-  private readonly IResponsabilityRepository _responsabilityRepository;
-  public ServiceHandler(IServiceRepository repository, IResponsabilityRepository responsabilityRepository)
+  private readonly IResponsibilityRepository _responsibilityRepository;
+  public ServiceHandler(IServiceRepository repository, IResponsibilityRepository responsibilityRepository)
   {
     _repository = repository;
-    _responsabilityRepository = responsabilityRepository;
+    _responsibilityRepository = responsibilityRepository;
   }
 
 

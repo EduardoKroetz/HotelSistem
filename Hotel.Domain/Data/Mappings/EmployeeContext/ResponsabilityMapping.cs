@@ -1,12 +1,12 @@
 using Hotel.Domain.Data.Mappings.Base;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Hotel.Domain.Data.Mappings.EmployeeContext;
-public class ResponsabilityMapping : EntityBaseMapping<Responsability>, IEntityTypeConfiguration<Responsability>
+public class ResponsibilityMapping : EntityBaseMapping<Responsibility>, IEntityTypeConfiguration<Responsibility>
 {
-  public void Configure(EntityTypeBuilder<Responsability> builder)
+  public void Configure(EntityTypeBuilder<Responsibility> builder)
   {
     BaseMapping(builder);
 

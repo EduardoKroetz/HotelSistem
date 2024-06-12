@@ -1,11 +1,11 @@
 using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
+namespace Hotel.Domain.DTOs.EmployeeContext.ResponsibilityDTOs;
 
-public class GetReponsability : IDataTransferObject
+public class GetResponsibility : IDataTransferObject
 {
-  public GetReponsability(Guid id,string name, string description, EPriority priority, DateTime createdAt)
+  public GetResponsibility(Guid id,string name, string description, EPriority priority, DateTime createdAt)
   {
     Id = id;
     Name = name;

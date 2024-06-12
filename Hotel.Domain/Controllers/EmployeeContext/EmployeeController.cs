@@ -64,20 +64,20 @@ public class EmployeeController : ControllerBase
     => Ok(await _handler.HandleUpdateAsync(model, id));
 
   //atribuir responsabilidade a um funcionário
-  [HttpPost("{id:guid}/responsabilities/{resId:guid}")]
-  [AuthorizePermissions([EPermissions.AssignEmployeeResponsability, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
+  [HttpPost("{id:guid}/responsibilities/{resId:guid}")]
+  [AuthorizePermissions([EPermissions.AssignEmployeeResponsibility, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
   public async Task<IActionResult> AssignResponsibilityAsync([FromRoute] Guid id,[FromRoute] Guid resId)
-    => Ok(await _handler.HandleAssignResponsabilityAsync(id, resId));
+    => Ok(await _handler.HandleAssignResponsibilityAsync(id, resId));
 
   //desatribuir responsabilidade de um funcionário
-  [HttpDelete("{id:guid}/responsabilities/{resId:guid}")]
-  [AuthorizePermissions([EPermissions.UnassignEmployeeResponsability, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
+  [HttpDelete("{id:guid}/responsibilities/{resId:guid}")]
+  [AuthorizePermissions([EPermissions.UnassignEmployeeResponsibility, EPermissions.DefaultAdminPermission])] //Admin padrão tem acesso
   public async Task<IActionResult> UnassignResponsibilityAsync([FromRoute] Guid id,[FromRoute] Guid resId)
-    => Ok(await _handler.HandleUnassignResponsabilityAsync(id, resId));
+    => Ok(await _handler.HandleUnassignResponsibilityAsync(id, resId));
 
   //Atribuir permissão a um funcionário
   [HttpPost("{employeeId:guid}/permissions/{permissionId:guid}")]
-  [AuthorizePermissions([EPermissions.AdminAssignPermission, EPermissions.DefaultAdminPermission])]
+  [AuthorizePermissions([EPermissions.AssignEmployeePermission, EPermissions.DefaultAdminPermission])]
   public async Task<IActionResult> AssignPermissionAsync([FromRoute] Guid employeeId,[FromRoute] Guid permissionId)
     => Ok(await _handler.HandleAssignPermission(employeeId, permissionId));
 

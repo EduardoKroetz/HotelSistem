@@ -1,9 +1,9 @@
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 
-namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+namespace Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 
-public partial class Responsability 
+public partial class Responsibility 
 {
   public override void Validate()
   { 

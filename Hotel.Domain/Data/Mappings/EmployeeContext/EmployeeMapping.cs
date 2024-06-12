@@ -1,6 +1,6 @@
 using Hotel.Domain.Data.Mappings.Base;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -33,10 +33,10 @@ public class EmployeeMapping : UserBaseMapping<Employee>, IEntityTypeConfigurati
       (
         "EmployeeResponsabilities",
         j => j
-          .HasOne<Responsability>()
+          .HasOne<Responsibility>()
           .WithMany()
-          .HasForeignKey("ResponsabilityId")
-          .HasConstraintName("FK_EmployeeResponsabilities_Responsability")
+          .HasForeignKey("ResponsibilityId")
+          .HasConstraintName("FK_EmployeeResponsabilities_Responsibility")
           .OnDelete(DeleteBehavior.Cascade),
         j => j
           .HasOne<Employee>()

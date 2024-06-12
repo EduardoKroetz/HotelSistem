@@ -4,12 +4,12 @@ using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+namespace Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 
-public partial class Responsability : Entity, IResponsability
+public partial class Responsibility : Entity, IResponsibility
 {
-  internal Responsability() {}
-  public Responsability(string name, string description, EPriority priority)
+  internal Responsibility() {}
+  public Responsibility(string name, string description, EPriority priority)
   {
     Name = name;
     Description = description;

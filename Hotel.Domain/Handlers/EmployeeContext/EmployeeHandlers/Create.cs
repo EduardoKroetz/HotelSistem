@@ -18,14 +18,14 @@ namespace Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Employee> ,IHandler
 {
   private readonly IEmployeeRepository  _repository;
-  private readonly IResponsabilityRepository _responsabilityRepository;
+  private readonly IResponsibilityRepository _responsibilityRepository;
   private readonly IPermissionRepository _permissionRepository;
   private readonly IEmailService _emailService;
 
-  public EmployeeHandler(IEmployeeRepository repository, IResponsabilityRepository responsabilityRepository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository)
+  public EmployeeHandler(IEmployeeRepository repository, IResponsibilityRepository responsibilityRepository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository)
   {
     _repository = repository;
-    _responsabilityRepository = responsabilityRepository;
+    _responsibilityRepository = responsibilityRepository;
     _permissionRepository = permissionRepository;
     _emailService = emailService;
   }

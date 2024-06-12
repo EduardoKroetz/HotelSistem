@@ -1,5 +1,5 @@
 using Hotel.Domain.Entities.Base;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
@@ -28,7 +28,7 @@ public partial class Service : Entity, IService
   public bool IsActive { get; private set; }
   public EPriority Priority { get; private set; }
   public int TimeInMinutes { get; private set; }
-  public ICollection<Responsability> Responsabilities { get; private set; } = [];
+  public ICollection<Responsibility> Responsabilities { get; private set; } = [];
   public ICollection<Reservation> Reservations { get; private set; }  = [];
   public ICollection<RoomInvoice> RoomInvoices { get; private set; } = [];
   public ICollection<Room> Rooms { get; private set; } = [];

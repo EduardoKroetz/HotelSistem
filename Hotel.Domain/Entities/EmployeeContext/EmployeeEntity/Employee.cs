@@ -1,6 +1,6 @@
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.Base;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
 using Hotel.Domain.Enums;
@@ -20,7 +20,7 @@ public partial class Employee : User, IEmployee
   }
   
   public decimal? Salary { get; private set; }
-  public HashSet<Responsability> Responsabilities { get; private set; } = [];
+  public HashSet<Responsibility> Responsabilities { get; private set; } = [];
   public HashSet<Report> Reports { get; private set; } = [];
   public ICollection<Permission> Permissions { get; private set; } = [];
 }

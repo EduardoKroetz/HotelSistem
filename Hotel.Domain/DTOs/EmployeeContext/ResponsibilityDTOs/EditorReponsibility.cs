@@ -1,11 +1,11 @@
 using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
+namespace Hotel.Domain.DTOs.EmployeeContext.ResponsibilityDTOs;
 
-public class EditorResponsability : IDataTransferObject
+public class EditorResponsibility : IDataTransferObject
 {
-  public EditorResponsability(string name, string description, EPriority priority)
+  public EditorResponsibility(string name, string description, EPriority priority)
   {
     Name = name;
     Description = description;

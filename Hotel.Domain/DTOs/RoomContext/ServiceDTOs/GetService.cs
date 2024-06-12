@@ -1,4 +1,4 @@
-using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
+using Hotel.Domain.DTOs.EmployeeContext.ResponsibilityDTOs;
 using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
@@ -6,7 +6,7 @@ namespace Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 
 public class GetService : IDataTransferObject
 {
-  public GetService(Guid id ,string name, decimal price, EPriority priority, bool isActive, int timeInMinutes, ICollection<GetReponsability> responsabilities, DateTime createdAt)
+  public GetService(Guid id ,string name, decimal price, EPriority priority, bool isActive, int timeInMinutes, ICollection<GetResponsibility> responsibilities, DateTime createdAt)
   {
     Id = id;
     Name = name;
@@ -14,7 +14,7 @@ public class GetService : IDataTransferObject
     Priority = priority;
     TimeInMinutes = timeInMinutes;
     IsActive = isActive;
-    Responsabilities = responsabilities;
+    Responsabilities = responsibilities;
     CreatedAt = createdAt;
   }
 
@@ -24,7 +24,7 @@ public class GetService : IDataTransferObject
   public EPriority Priority { get; private set; }
   public bool IsActive { get; private set; }
   public int TimeInMinutes { get; private set; }
-  public ICollection<GetReponsability> Responsabilities { get; private set; } = [];
+  public ICollection<GetResponsibility> Responsabilities { get; private set; } = [];
   public DateTime CreatedAt { get; private set; }
 }
 

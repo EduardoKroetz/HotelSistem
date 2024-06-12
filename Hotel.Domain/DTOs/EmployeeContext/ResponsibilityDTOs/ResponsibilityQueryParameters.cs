@@ -1,11 +1,11 @@
 ﻿using Hotel.Domain.DTOs.Base;
 using Hotel.Domain.Enums;
 
-namespace Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
+namespace Hotel.Domain.DTOs.EmployeeContext.ResponsibilityDTOs;
 
-public class ResponsabilityQueryParameters : QueryParameters
+public class ResponsibilityQueryParameters : QueryParameters
 {
-  public ResponsabilityQueryParameters(int? skip, int? take, string? name,  EPriority? priority, Guid? employeeId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator) : base(skip,take,createdAt,createdAtOperator)
+  public ResponsibilityQueryParameters(int? skip, int? take, string? name,  EPriority? priority, Guid? employeeId, Guid? serviceId, DateTime? createdAt, string? createdAtOperator) : base(skip,take,createdAt,createdAtOperator)
   {
     Name = name;
     Priority = priority;

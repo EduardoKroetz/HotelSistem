@@ -3,7 +3,7 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.Interfaces;
 
-public interface IResponsability : IEntity
+public interface IResponsibility : IEntity
 {
   string Name { get; }
   string Description { get; }

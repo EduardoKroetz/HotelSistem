@@ -1,4 +1,4 @@
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
@@ -30,11 +30,11 @@ public class ServiceEntityTest
 
     [TestMethod]
     [ExpectedException(typeof(ValidationException))]
-    public void AddSameResponsabilityToService_DontAdd()
+    public void AddSameResponsibilityToService_DontAdd()
     {
         var service = new Service("Preparar e servir o almoço", 25m, EPriority.Medium, 55);
-        service.AddResponsability(TestParameters.Responsability);
-        service.AddResponsability(TestParameters.Responsability);
+        service.AddResponsibility(TestParameters.Responsibility);
+        service.AddResponsibility(TestParameters.Responsibility);
         Assert.Fail();
     }
 
@@ -42,27 +42,27 @@ public class ServiceEntityTest
     public void AddResponsabilitiesToServices_MustBeAdded()
     {
         var service = new Service("Preparar e servir o almoço", 25m, EPriority.Medium, 55);
-        var responsability = new Responsability("Varrer o chão", "Varrer", EPriority.Trivial);
-        service.AddResponsability(responsability);
-        service.AddResponsability(TestParameters.Responsability);
+        var responsibility = new Responsibility("Varrer o chão", "Varrer", EPriority.Trivial);
+        service.AddResponsibility(responsibility);
+        service.AddResponsibility(TestParameters.Responsibility);
         Assert.AreEqual(2, service.Responsabilities.Count);
     }
 
     [TestMethod]
-    public void RemoveResponsabilityFromService_MustBeRemoved()
+    public void RemoveResponsibilityFromService_MustBeRemoved()
     {
         var service = new Service("Preparar e servir o almoço", 25m, EPriority.Medium, 55);
-        service.AddResponsability(TestParameters.Responsability);
-        service.RemoveResponsability(TestParameters.Responsability);
+        service.AddResponsibility(TestParameters.Responsibility);
+        service.RemoveResponsibility(TestParameters.Responsibility);
         Assert.AreEqual(0, service.Responsabilities.Count);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ValidationException))]
-    public void RemoveNoneExistsResponsabilityFromService_ExpectedException()
+    public void RemoveNoneExistsResponsibilityFromService_ExpectedException()
     {
         var service = new Service("Preparar e servir o almoço", 25m, EPriority.Medium, 55);
-        service.RemoveResponsability(TestParameters.Responsability);
+        service.RemoveResponsibility(TestParameters.Responsibility);
         Assert.Fail();
     }
 

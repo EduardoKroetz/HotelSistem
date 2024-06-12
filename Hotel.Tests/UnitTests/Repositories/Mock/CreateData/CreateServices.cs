@@ -24,7 +24,7 @@ public class CreateServices
       new("Spa", 50.00m, EPriority.Critical, 90),
     };
 
-        services[0].AddResponsability(BaseRepositoryTest.Responsabilities[0]);
+        services[0].AddResponsibility(BaseRepositoryTest.Responsabilities[0]);
 
         await BaseRepositoryTest.MockConnection.Context.Services.AddRangeAsync(services);
         await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();

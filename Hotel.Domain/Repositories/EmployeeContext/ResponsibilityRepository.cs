@@ -1,27 +1,27 @@
 using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.DTOs.EmployeeContext.ResponsibilityDTOs;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Repositories.Interfaces.EmployeeContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Repositories.EmployeeContext;
 
-public class ResponsabilityRepository : GenericRepository<Responsability>, IResponsabilityRepository
+public class ResponsibilityRepository : GenericRepository<Responsibility>, IResponsibilityRepository
 {
-  public ResponsabilityRepository(HotelDbContext context) : base(context) { }
+  public ResponsibilityRepository(HotelDbContext context) : base(context) { }
 
-  public async Task<GetReponsability?> GetByIdAsync(Guid id)
+  public async Task<GetResponsibility?> GetByIdAsync(Guid id)
   {
     return await _context
       .Responsabilities
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetReponsability(x.Id, x.Name, x.Description, x.Priority, x.CreatedAt))
+      .Select(x => new GetResponsibility(x.Id, x.Name, x.Description, x.Priority, x.CreatedAt))
       .FirstOrDefaultAsync();
 
   }
-  public async Task<IEnumerable<GetReponsability>> GetAsync(ResponsabilityQueryParameters queryParameters)
+  public async Task<IEnumerable<GetResponsibility>> GetAsync(ResponsibilityQueryParameters queryParameters)
   {
     var query = _context.Responsabilities.AsQueryable();
 
@@ -39,7 +39,7 @@ public class ResponsabilityRepository : GenericRepository<Responsability>, IResp
 
     query = query.BaseQuery(queryParameters);
 
-    return await query.Select(x => new GetReponsability
+    return await query.Select(x => new GetResponsibility
     (
       x.Id,
       x.Name,
