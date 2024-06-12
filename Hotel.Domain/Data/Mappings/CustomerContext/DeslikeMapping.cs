@@ -12,12 +12,12 @@ public class DeslikeMapping : EntityBaseMapping<Deslike>, IEntityTypeConfigurati
     BaseMapping(builder);
 
     builder.HasOne(x => x.Customer)
-      .WithMany(x => x.Deslikes)
+      .WithMany(x => x.Dislikes)
       .HasForeignKey(x => x.CustomerId)
       .OnDelete(DeleteBehavior.Restrict);
 
     builder.HasOne(x => x.Feedback)
-      .WithMany(x => x.Deslikes)
+      .WithMany(x => x.Dislikes)
       .HasForeignKey(x => x.FeedbackId)
       .OnDelete(DeleteBehavior.Restrict);
 

@@ -33,8 +33,8 @@ public class FeedbackController : ControllerBase
     [FromQuery] string? rateOperator,
     [FromQuery] int? likes,
     [FromQuery] string? likesOperator,
-    [FromQuery] int? deslikes,
-    [FromQuery] string? deslikesOperator,
+    [FromQuery] int? dislikes,
+    [FromQuery] string? dislikesOperator,
     [FromQuery] DateTime? updatedAt,
     [FromQuery] string? updatedAtOperator,
     [FromQuery] Guid? customerId,
@@ -44,7 +44,7 @@ public class FeedbackController : ControllerBase
   {
     var queryParameters = new FeedbackQueryParameters(
       skip, take, createdAt, createdAtOperator, comment, rate,
-      rateOperator, likes, likesOperator, deslikes, deslikesOperator,
+      rateOperator, likes, likesOperator, dislikes, dislikesOperator,
       updatedAt, updatedAtOperator, customerId, reservationId, roomId
     );
 
@@ -114,14 +114,14 @@ public class FeedbackController : ControllerBase
   }
 
 
-  [HttpPatch("add-deslike/{feedbackId:guid}")]
+  [HttpPatch("add-dislike/{feedbackId:guid}")]
   public async Task<IActionResult> AddDeslikeAsync([FromRoute] Guid feedbackId)
   {
     var customerId = _userService.GetUserIdentifier(User);
     return Ok(await _handler.HandleAddDeslikeAsync(feedbackId, customerId));
   }
 
-  [HttpPatch("remove-deslike/{feedbackId:guid}")]
+  [HttpPatch("remove-dislike/{feedbackId:guid}")]
   public async Task<IActionResult> RemoveDeslikeAsync([FromRoute] Guid feedbackId)
   {
     var customerId = _userService.GetUserIdentifier(User);

@@ -34,5 +34,5 @@ public partial class Feedback : Entity, IFeedback
   public Guid RoomId { get; private set; }
   public Room? Room { get; private set; }
   public ICollection<Like> Likes { get; private set; } = [];
-  public ICollection<Deslike> Deslikes { get; private set; } = [];
+  public ICollection<Deslike> Dislikes { get; private set; } = [];
 }

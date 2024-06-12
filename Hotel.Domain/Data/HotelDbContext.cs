@@ -45,7 +45,7 @@ public class HotelDbContext : DbContext
   public DbSet<Room> Rooms { get; set; }
   public DbSet<VerificationCode> VerificationCodes { get; set; }
   public DbSet<Like> Likes { get; set; }
-  public DbSet<Deslike> Deslikes { get; set; }
+  public DbSet<Deslike> Dislikes { get; set; }
 
   protected override void OnModelCreating(ModelBuilder model)
   {

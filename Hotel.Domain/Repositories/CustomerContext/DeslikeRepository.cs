@@ -11,15 +11,15 @@ public class DeslikeRepository : IDeslikeRepository
   public DeslikeRepository(HotelDbContext context)
   => _context = context;
 
-  public void RemoveDeslike(Deslike deslike)
-  => _context.Deslikes.Remove(deslike);
+  public void RemoveDeslike(Deslike dislike)
+  => _context.Dislikes.Remove(dislike);
 
-  public async Task CreateDeslike(Deslike deslike)
-  => await _context.Deslikes.AddAsync(deslike);
+  public async Task CreateDeslike(Deslike dislike)
+  => await _context.Dislikes.AddAsync(dislike);
 
   public async Task<Deslike?> GetDeslikeAsync(Guid feedbackId, Guid customerId)
   {
-    return await _context.Deslikes
+    return await _context.Dislikes
       .FirstOrDefaultAsync(x => x.FeedbackId == feedbackId && x.CustomerId == customerId);
   }
 }

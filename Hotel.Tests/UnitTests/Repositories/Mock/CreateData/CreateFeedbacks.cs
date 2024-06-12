@@ -45,7 +45,7 @@ public class CreateFeedbacks
     };
 
         await BaseRepositoryTest.MockConnection.Context.Likes.AddRangeAsync(likes);
-        await BaseRepositoryTest.MockConnection.Context.Deslikes.AddRangeAsync(deslikes);
+        await BaseRepositoryTest.MockConnection.Context.Dislikes.AddRangeAsync(deslikes);
 
         await BaseRepositoryTest.MockConnection.Context.Feedbacks.AddRangeAsync(feedbacks);
         await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
