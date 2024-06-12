@@ -45,13 +45,13 @@ public class PermissionControllerTests
   public async Task GetPermissions_ShouldReturn_OK()
   {
     //Arrange
-    var permission = new Permission("CreateService", "Allows create an service");
+    var permission = new Permission("PermissionEx", "Allows access");
 
     await _dbContext.Permissions.AddAsync(permission);
     await _dbContext.SaveChangesAsync();
 
     //Act
-    var response = await _client.GetAsync($"{_baseUrl}?take=1");
+    var response = await _client.GetAsync($"{_baseUrl}?take=1&name=permission");
 
     //Assert
     Assert.IsNotNull(response);
