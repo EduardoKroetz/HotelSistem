@@ -11,10 +11,7 @@ public partial class ReservationHandler
       ?? throw new NotFoundException("Reserva não encontrada.");
 
     if (reservation.Status == Enums.EReservationStatus.CheckedIn)
-      throw new InvalidOperationException("Não é possível deletar a reserva sem primeiro finaliza-la.");
-
-    if (reservation.CustomerId != customerId)
-      throw new UnauthorizedAccessException("Você não tem autorização para deletar essa reserva.");
+      throw new InvalidOperationException("Não é possível deletar a reserva sem antes finaliza-la.");
 
     _repository.Delete(reservation);
     await _repository.SaveChangesAsync();

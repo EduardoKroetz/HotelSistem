@@ -39,5 +39,14 @@ public class HotelWebApplicationFactory : WebApplicationFactory<Startup>
     var admin = await dbContext.Admins.FirstOrDefaultAsync(x => x.Email.Address == "leonardoDiCaprio199@gmail.com");
     var token = _tokenService.GenerateToken(admin!);
     return token;
-  }  
+  }
+
+  public async Task<string> LoginCustomer()
+  {
+    var dbContext = Services.GetRequiredService<HotelDbContext>();
+    var customerId = await DbFixture.InsertCustomer();
+    var customer = await dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customerId);
+    var token = _tokenService.GenerateToken(customer!);
+    return token;
+  }
 }
