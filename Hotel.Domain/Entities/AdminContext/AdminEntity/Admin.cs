@@ -27,7 +27,7 @@ public partial class Admin : User, IAdmin
     if (RootAdmin.IsRootAdmin)
       IsRootAdmin = true;
     else
-      throw new ValidationException("Erro de validação: Esse administrador não é um administrador raiz. Informe um administrador raiz para mudar o status.");
+      throw new ValidationException("Esse administrador não é um administrador raiz. Informe um administrador raiz para mudar o status.");
   }
 
 

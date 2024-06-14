@@ -9,11 +9,11 @@ public partial class Employee
   public void AssignPermission(Permission permission)
   {
     if (Permissions.Contains(permission))
-      throw new ValidationException("Erro de validação: Essa permissão já foi associada a esse funcionário.");
+      throw new ValidationException("Essa permissão já foi associada a esse funcionário.");
     if (permission.IsActive)
       Permissions.Add(permission);
     else
-      throw new ValidationException("Erro de validação: Essa permissão não está ativa.");
+      throw new ValidationException("Essa permissão não está ativa.");
 
   }
 
@@ -22,7 +22,7 @@ public partial class Employee
     if (Permissions.Contains(permission))
       Permissions.Remove(permission);
     else
-      throw new ValidationException("Erro de validação: Essa permissão não está associada a esse funcionário.");
+      throw new ValidationException("Essa permissão não está associada a esse funcionário.");
   }
 
 }

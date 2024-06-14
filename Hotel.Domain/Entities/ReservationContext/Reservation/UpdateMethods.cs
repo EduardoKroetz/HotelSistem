@@ -9,7 +9,7 @@ partial class Reservation
   public Reservation UpdateExpectedCheckOut(DateTime expectedCheckOut)
   {
     if (Status == EReservationStatus.CheckedOut || Status == EReservationStatus.Cancelled)
-      throw new ValidationException($"Erro de validação: Não é possível alterar o CheckOut esperado com o status da reserva {Status}.");
+      throw new ValidationException($"Não é possível alterar o CheckOut esperado com o status da reserva {Status}.");
 
     ValidateCheckInAndCheckOut(CheckIn,expectedCheckOut);
     ExpectedCheckOut = expectedCheckOut;
@@ -32,7 +32,7 @@ partial class Reservation
   private Reservation UpdateCheckOut(DateTime checkOut)
   {
     if (Status == EReservationStatus.CheckedOut || Status == EReservationStatus.Cancelled)
-      throw new ValidationException($"Erro de validação: Não é possível alterar o CheckOut esperado com o status da reserva {Status}.");
+      throw new ValidationException($"Não é possível alterar o CheckOut esperado com o status da reserva {Status}.");
 
     ValidateCheckInAndCheckOut(CheckIn, checkOut);
     CheckOut = checkOut;
@@ -43,7 +43,7 @@ partial class Reservation
   private Reservation UpdateCheckIn(DateTime checkIn)
   {
     if (Status == EReservationStatus.Cancelled || Status == EReservationStatus.CheckedIn || Status == EReservationStatus.CheckedOut)
-      throw new ValidationException($"Erro de validação: Não é possível alterar o CheckIn com o status da reserva {Status}.");
+      throw new ValidationException($"Não é possível alterar o CheckIn com o status da reserva {Status}.");
 
     ValidateCheckIn(checkIn);
     ValidateCheckInAndCheckOut(checkIn, CheckOut);

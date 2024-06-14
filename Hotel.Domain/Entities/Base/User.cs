@@ -67,7 +67,7 @@ public abstract class User : Entity, IUser
   {
     //Verifica se é nulo e se é 1 ou 2 - Masculino/Feminino
     if (gender != null && ( (int)gender > 2 || (int)gender < 1) )
-      throw new ValidationException("Erro de validação: Gênero inválido.");
+      throw new ValidationException("Gênero inválido.");
   }
 
 }

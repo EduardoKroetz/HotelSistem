@@ -9,7 +9,7 @@ public partial class Service : IResponsibilitiesMethods
   public void AddResponsibility(Responsibility responsibility)
   {
     if (Responsibilities.Contains(responsibility))
-      throw new ValidationException("Erro de validação: Essa responsabilidade já foi atribuida.");
+      throw new ValidationException("Essa responsabilidade já foi atribuida.");
     Responsibilities.Add(responsibility);
   }
 
@@ -18,7 +18,7 @@ public partial class Service : IResponsibilitiesMethods
   public void RemoveResponsibility(Responsibility responsibility)
   {
     if (!Responsibilities.Remove(responsibility))
-      throw new ValidationException("Erro de validação: Essa responsabilidade não está atribuida.");
+      throw new ValidationException("Essa responsabilidade não está atribuida.");
   }
   
 
