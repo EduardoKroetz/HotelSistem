@@ -5,14 +5,6 @@ namespace Hotel.Domain.DTOs;
 
 public class Response<T> : IDataTransferObject
 {
-  [JsonConstructor]
-  private Response(int status, string message, T? data, List<string> errors)
-  {
-    Status = status;
-    Message = message;
-    Data = data;
-    Errors = errors;
-  }
 
   public Response(int status, string message, T data)
   {

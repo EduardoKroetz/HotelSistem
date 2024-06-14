@@ -5,6 +5,7 @@ using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Entities.RoomContext.RoomEntity;
+using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Services.TokenServices;
 using Hotel.Domain.ValueObjects;
@@ -376,30 +377,76 @@ public class ReservationControllerTests
   }
 
   [TestMethod]
-  public async Task DeleteReservation_WithoutPermission_ShouldReturn_UNAUTHORIZED()
+  public async Task DeleteReservation_WithoutPermission_ShouldReturn_FORBIDDEN()
   {
-    Assert.Fail();
+    //Act
+    var response = await _client.DeleteAsync($"{_baseUrl}/{Guid.NewGuid()}");
+
+    //Assert
+    Assert.IsNotNull(response);
+    Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+
+    Assert.AreEqual(403, content!.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Você não tem acesso a esse serviço.")));
   }
 
 
   [TestMethod]
   public async Task DeleteReservation_WithNonexistReservation_ShouldReturn_NOT_FOUND()
   {
-    Assert.Fail();
+    //Arange
+    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+
+    //Act
+    var response = await _client.DeleteAsync($"{_baseUrl}/{Guid.NewGuid()}");
+
+    //Assert
+    Assert.IsNotNull(response);
+    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+
+    Assert.AreEqual(404, content!.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Reserva não encontrada.")));
   }
 
   [TestMethod]
   public async Task DeleteReservation_WithCheckedInReservationStatus_ShouldReturn_BAD_REQUEST()
   {
-    Assert.Fail();
-  }
+    //Arange
+    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+    var customer = new Customer(
+      new Name("Rafael", "Oliveira"),
+      new Email("rafaelOliveira@gmail.com"),
+      new Phone("+55 (41) 97654-3210"),
+      "password4",
+      EGender.Masculine,
+      DateTime.Now.AddYears(-32),
+      new Address("Brazil", "Curitiba", "PR-404", 404)
+    );
+    var room = new Room(10, 70, 5, "Quarto 2", _category.Id);
+    var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
+    reservation.ToCheckIn(); // check in and change status
 
-  [TestMethod]
-  public async Task DeleteReservation_WithDifferentCustomerId_ShouldReturn_UNAUTHORIZED()
-  {
-    Assert.Fail();
-  }
+    await _dbContext.Customers.AddAsync(customer);
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.Reservations.AddAsync(reservation);
+    await _dbContext.SaveChangesAsync();
 
+    //Act
+    var response = await _client.DeleteAsync($"{_baseUrl}/{reservation.Id}");
+
+    //Assert
+    Assert.IsNotNull(response);
+    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+
+    Assert.AreEqual(400, content!.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Não é possível deletar a reserva sem antes finaliza-la.")));
+  }
 
   [TestMethod]
   public async Task UpdateExpectedCheckOut_ShouldReturn_OK()
