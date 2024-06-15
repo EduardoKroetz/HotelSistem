@@ -1,10 +1,15 @@
 ﻿using Hotel.Domain.Data;
+using Hotel.Domain.Entities.AdminContext.AdminEntity;
+using Hotel.Domain.Entities.Base;
+using Hotel.Domain.Entities.CustomerContext;
+using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
 using Hotel.Domain.Services.TokenServices;
 using Hotel.Tests.IntegrationTests.Fixtures;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Headers;
 
 namespace Hotel.Tests.IntegrationTests.Factories;
 
@@ -49,4 +54,26 @@ public class HotelWebApplicationFactory : WebApplicationFactory<Startup>
     var token = _tokenService.GenerateToken(customer!);
     return token;
   }
+
+  public void Login(HttpClient client, Admin admin)
+  {
+    var token = _tokenService.GenerateToken(admin);
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+  }
+  public void Login(HttpClient client, Customer customer)
+  {
+    var token = _tokenService.GenerateToken(customer);
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+  }
+  public void Login(HttpClient client, Employee employee)
+  {
+    var token = _tokenService.GenerateToken(employee);
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+  }
+
+  public void Login(HttpClient client, string token)
+  {
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+  }
+
 }
