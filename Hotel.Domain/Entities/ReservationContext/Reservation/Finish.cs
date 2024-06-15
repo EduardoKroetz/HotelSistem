@@ -11,7 +11,7 @@ public partial class Reservation
     if (CheckIn == null)
       throw new ArgumentNullException("Não foi possível finalizar a reserva pois o CheckIn ainda não foi realizado.");
 
-    if (DateTime.Now.Date < ExpectedCheckIn.Date)
+    if (DateTime.Now.Date < CheckIn.Value.Date)
       throw new ValidationException("Não é possível gerar a fatura pois a data de CheckIn é maior que a data atual.");
 
     //Troca o CheckOut para a data atual, já que está finalizando

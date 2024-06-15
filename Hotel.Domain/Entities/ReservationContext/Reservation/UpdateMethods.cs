@@ -20,7 +20,7 @@ partial class Reservation
   public Reservation UpdateExpectedCheckIn(DateTime checkIn)
   {
     if (Status == EReservationStatus.Cancelled || Status == EReservationStatus.CheckedIn || Status == EReservationStatus.CheckedOut)
-      throw new ValidationException($"Só é possível alterar o CheckIn esperado se o status for 'Pendente' ou 'Não apareceu'.");
+      throw new ValidationException("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.");
 
     ValidateCheckIn(checkIn);
     ValidateCheckInAndCheckOut(checkIn, ExpectedCheckOut);

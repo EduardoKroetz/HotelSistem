@@ -15,6 +15,8 @@ partial class Reservation
     checkOut is null ?
         throw new ValidationException("CheckOut inválido.") : 0;
 
+    ValidateCheckInAndCheckOut(checkIn, checkOut);
+
     //Calcula o tempo que ficou hospedado
     var timeHosted = checkOut - checkIn;
 

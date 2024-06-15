@@ -23,6 +23,6 @@ public partial class ReservationHandler
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Serviço adicionado com sucesso!.");
+    return new Response(200, "Serviço adicionado com sucesso!");
   }
 }

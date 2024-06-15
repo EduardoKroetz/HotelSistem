@@ -34,7 +34,7 @@ partial class Reservation
     }
   }
 
-  public void ValidateCheckInAndCheckOut(DateTime? checkIn, DateTime? checkOut)
+  public static void ValidateCheckInAndCheckOut(DateTime? checkIn, DateTime? checkOut)
   {
     if (checkOut is not null && checkIn is not null)
     {
