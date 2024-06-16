@@ -12,7 +12,7 @@ public partial class RoomHandler
 
     var pendingReservations = room.Reservations.Where(x => x.Status == Enums.EReservationStatus.Pending).ToList();
     if (pendingReservations.Count > 0)
-      throw new InvalidOperationException("Não foi possível desabilitar o cômodo pois tem reservas pendentes relacionadas.");
+      throw new InvalidOperationException("Não foi possível desativar o cômodo pois tem reservas pendentes relacionadas.");
 
     room.Disable();
 

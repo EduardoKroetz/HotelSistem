@@ -388,7 +388,7 @@ public class RoomReportControllerTests
   {
     //Arange
     var room = new Room(13, 53, 4, "Quarto padrão", _standardCategory.Id);
-    var service = new Service("Breakfast Delivery", 20.00m, EPriority.High, 30);
+    var service = new Service("Laundry Service", 25.00m, EPriority.Medium, 120);
     room.AddService(service);
     await _dbContext.Rooms.AddAsync(room);
     await _dbContext.Services.AddAsync(service);
@@ -529,48 +529,271 @@ public class RoomReportControllerTests
   [TestMethod]
   public async Task UpdateRoomPrice_ShouldReturn_OK()
   {
-    Assert.Fail();
+    //Arange
+    var room = new Room(19, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.SaveChangesAsync();
+
+    var newPrice = new UpdatePriceDTO(146.00m);
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/price", newPrice);
+
+    //Assert
+    response.EnsureSuccessStatusCode();
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
+
+    Assert.AreEqual(200, content.Status);
+    Assert.AreEqual("Preço atualizado com sucesso!", content.Message);
+    Assert.AreEqual(0, content.Errors.Count);
+
+    Assert.AreEqual(room.Id, updatedRoom.Id);
+    Assert.AreEqual(room.Number, updatedRoom.Number);
+    Assert.AreEqual(newPrice.Price, updatedRoom.Price);
+    Assert.AreEqual(room.Capacity, updatedRoom.Capacity);
+    Assert.AreEqual(room.Description, updatedRoom.Description);
+    Assert.AreEqual(room.CategoryId, updatedRoom.CategoryId);
+    Assert.AreEqual(room.Images.Count, updatedRoom.Images.Count);
+    Assert.AreEqual(room.Status, updatedRoom.Status);
+    Assert.AreEqual(room.CreatedAt, updatedRoom.CreatedAt);
   }
 
   [TestMethod]
   public async Task UpdateRoomPrice_WithPendingReservationAssociated_ShouldReturn_BAD_REQUEST()
   {
-    Assert.Fail();
+    //Arange
+    var customer = new Customer
+    (
+      new Name("Camila", "Lopes"),
+      new Email("camilaLopes@gmail.com"),
+      new Phone("+55 (69) 93456-7890"),
+      "password30",
+      EGender.Feminine,
+      DateTime.Now.AddYears(-28),
+      new Address("Brazil", "Porto Velho", "RO-3030", 3030)
+    );
+
+    var room = new Room(20, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
+    var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.Reservations.AddAsync(reservation);
+    await _dbContext.SaveChangesAsync();
+
+    var newPrice = new UpdatePriceDTO(196.00m);
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/price", newPrice);
+
+    //Assert
+    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+    Assert.AreEqual(400, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas ao cômodo.")));
   }
 
   [TestMethod]
   public async Task UpdateRoomPrice_WithAssociatedNonPendingReservation_ShouldReturn_OK()
   {
-    Assert.Fail();
+    //Arange
+    var customer = new Customer
+    (
+      new Name("Paulo", "Moura"),
+      new Email("pauloMoura@gmail.com"),
+      new Phone("+55 (88) 97654-3210"),
+      "password29",
+      EGender.Masculine,
+      DateTime.Now.AddYears(-34),
+      new Address("Brazil", "Sobral", "CE-2929", 2929)
+    );
+
+    var room = new Room(21, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
+    var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
+    reservation.ToCheckIn();
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.Reservations.AddAsync(reservation);
+    await _dbContext.SaveChangesAsync();
+
+    var newPrice = new UpdatePriceDTO(196.00m);
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/price", newPrice);
+
+    //Assert
+    response.EnsureSuccessStatusCode();
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
+
+    Assert.AreEqual(200, content.Status);
+    Assert.AreEqual("Preço atualizado com sucesso!", content.Message);
+    Assert.AreEqual(0, content.Errors.Count);
+
+    Assert.AreEqual(room.Id, updatedRoom.Id);
+    Assert.AreEqual(room.Number, updatedRoom.Number);
+    Assert.AreEqual(newPrice.Price, updatedRoom.Price);
+    Assert.AreEqual(room.Capacity, updatedRoom.Capacity);
+    Assert.AreEqual(room.Description, updatedRoom.Description);
+    Assert.AreEqual(room.CategoryId, updatedRoom.CategoryId);
+    Assert.AreEqual(room.Images.Count, updatedRoom.Images.Count);
+    Assert.AreEqual(room.Status, updatedRoom.Status);
+    Assert.AreEqual(room.CreatedAt, updatedRoom.CreatedAt);
   }
 
   [TestMethod]
   public async Task UpdateRoomCapacity_ShouldReturn_OK()
   {
-    Assert.Fail();
+    //Arange
+    var room = new Room(22, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.SaveChangesAsync();
+
+    var newCapacity = 5;
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/capacity/{newCapacity}", new { });
+
+    //Assert
+    response.EnsureSuccessStatusCode();
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
+
+    Assert.AreEqual(200, content.Status);
+    Assert.AreEqual("Capacidade atualizada com sucesso!", content.Message);
+    Assert.AreEqual(0, content.Errors.Count);
+
+    Assert.AreEqual(room.Id, updatedRoom.Id);
+    Assert.AreEqual(room.Number, updatedRoom.Number);
+    Assert.AreEqual(room.Price, updatedRoom.Price);
+    Assert.AreEqual(newCapacity, updatedRoom.Capacity);
+    Assert.AreEqual(room.Description, updatedRoom.Description);
+    Assert.AreEqual(room.CategoryId, updatedRoom.CategoryId);
+    Assert.AreEqual(room.Images.Count, updatedRoom.Images.Count);
+    Assert.AreEqual(room.Status, updatedRoom.Status);
+    Assert.AreEqual(room.CreatedAt, updatedRoom.CreatedAt);
   }
 
   [TestMethod]
   public async Task EnableRoom_ShouldReturn_OK()
   {
-    Assert.Fail();
+    //Arange
+    var room = new Room(23, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+    room.Disable();
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.SaveChangesAsync();
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/enable/{room.Id}", new { });
+
+    //Assert
+    response.EnsureSuccessStatusCode();
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
+
+    Assert.AreEqual(200, content.Status);
+    Assert.AreEqual("Cômodo ativado com sucesso!", content.Message);
+    Assert.AreEqual(0, content.Errors.Count);
+
+    Assert.IsTrue(updatedRoom.IsActive);
   }
 
   [TestMethod]
   public async Task DisableRoom_ShouldReturn_OK()
   {
-    Assert.Fail();
+    //Arange
+    var room = new Room(25, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.SaveChangesAsync();
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/disable/{room.Id}", new { });
+
+    //Assert
+    response.EnsureSuccessStatusCode();
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
+
+    Assert.AreEqual(200, content.Status);
+    Assert.AreEqual("Cômodo desativado com sucesso!", content.Message);
+    Assert.AreEqual(0, content.Errors.Count);
+
+    Assert.IsFalse(updatedRoom.IsActive);
   }
 
   [TestMethod]
   public async Task DisableRoom_WithAssociatedPendingReservations_ShouldReturn_BAD_REQUEST()
   {
-    Assert.Fail();
+    //Arange
+    var customer = new Customer
+    (
+      new Name("Ricardo", "Melo"),
+      new Email("ricardoMelo@gmail.com"),
+      new Phone("+55 (82) 92345-6789"),
+      "password15",
+      EGender.Masculine,
+      DateTime.Now.AddYears(-32),
+      new Address("Brazil", "Maceió", "AL-1515", 1515)
+    );
+
+    var room = new Room(30, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
+    var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.Reservations.AddAsync(reservation);
+    await _dbContext.SaveChangesAsync();
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/disable/{room.Id}", new { });
+
+    //Assert
+    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
+
+    Assert.AreEqual(400, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Não foi possível desativar o cômodo pois tem reservas pendentes relacionadas.")));
+
+    Assert.IsTrue(updatedRoom.IsActive);
   }
 
   [TestMethod]
   public async Task UpdateToAvailableStatus_ShouldReturn_OK()
   {
-    Assert.Fail();
+    //Arange
+    var room = new Room(31, 60, 6, "Quarto deluxe", _standardCategory.Id);
+    room.ChangeStatus(ERoomStatus.OutOfService);
+    await _dbContext.Rooms.AddAsync(room);
+    await _dbContext.SaveChangesAsync();
+
+    //Act
+    var response = await _client.PatchAsJsonAsync($"{_baseUrl}/available/{room.Id}", new { });
+
+    //Assert
+    response.EnsureSuccessStatusCode();
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
+
+    Assert.AreEqual(200, content.Status);
+    Assert.AreEqual("Status atualizado com sucesso!", content.Message);
+    Assert.AreEqual(0, content.Errors.Count);
+
+    Assert.AreEqual(ERoomStatus.Available, updatedRoom.Status);
+
+    Assert.AreEqual(room.Id, updatedRoom.Id);
+    Assert.AreEqual(room.Number, updatedRoom.Number);
+    Assert.AreEqual(room.Price, updatedRoom.Price);
+    Assert.AreEqual(room.Capacity, updatedRoom.Capacity);
+    Assert.AreEqual(room.Description, updatedRoom.Description);
+    Assert.AreEqual(room.CategoryId, updatedRoom.CategoryId);
+    Assert.AreEqual(room.Images.Count, updatedRoom.Images.Count);
+    Assert.AreEqual(room.Status, updatedRoom.Status);
+    Assert.AreEqual(room.CreatedAt, updatedRoom.CreatedAt);
   }
 }
