@@ -1,9 +1,6 @@
 ﻿using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.RoomContext.CategoryDTOs;
 using Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
-using Hotel.Domain.Entities.Interfaces;
-using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Entities.RoomContext.ReportEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
