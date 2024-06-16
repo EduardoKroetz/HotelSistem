@@ -8,9 +8,8 @@ public partial class CategoryHandler
 {
   public async Task<Response> HandleUpdateAsync(EditorCategory model, Guid id)
   {
-    var category = await _repository.GetEntityByIdAsync(id);
-    if (category == null)
-      throw new NotFoundException("Categoria não encontrada.");
+    var category = await _repository.GetEntityByIdAsync(id) 
+      ?? throw new NotFoundException("Categoria não encontrada.");
 
     category.ChangeName(model.Name);
     category.ChangeDescription(model.Description);
