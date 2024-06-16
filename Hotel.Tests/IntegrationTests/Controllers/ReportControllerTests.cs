@@ -24,7 +24,7 @@ public class ReportControllerTests
   private const string _baseUrl = "v1/reports";
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();

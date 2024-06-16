@@ -30,7 +30,7 @@ public class FeedbackControllerTests
   private static string _customerToken = null!;
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();

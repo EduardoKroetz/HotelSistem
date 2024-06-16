@@ -21,7 +21,7 @@ public class ResponsibilityControllerTests
   private const string _baseUrl = "v1/responsibilities";
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();

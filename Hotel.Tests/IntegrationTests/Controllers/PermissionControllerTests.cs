@@ -17,7 +17,7 @@ public class PermissionControllerTests
   private const string _baseUrl = "v1/permissions";
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();

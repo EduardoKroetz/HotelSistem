@@ -1,7 +1,5 @@
 ﻿using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
-using Hotel.Domain.Entities.RoomContext.CategoryEntity;
-using Hotel.Domain.Entities.RoomContext.RoomEntity;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Enums;
 using Hotel.Tests.IntegrationTests.Factories;
@@ -24,7 +22,7 @@ public class ServiceControllerTests
   private const string _baseUrl = "v1/services";
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();

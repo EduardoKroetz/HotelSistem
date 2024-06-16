@@ -24,7 +24,7 @@ public class CustomerControllerTests
   private static TokenService _tokenService = null!;
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();

@@ -32,7 +32,7 @@ public class EmployeeControllerTests
   private static List<Permission> _permissions = null!;
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();

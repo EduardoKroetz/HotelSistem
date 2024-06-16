@@ -32,7 +32,7 @@ public class ReservationControllerTests
   private static Category _category = null!;
 
   [ClassInitialize]
-  public static void ClassInitialize(TestContext context)
+  public static void ClassInitialize(TestContext? context)
   {
     _factory = new HotelWebApplicationFactory();
     _client = _factory.CreateClient();
