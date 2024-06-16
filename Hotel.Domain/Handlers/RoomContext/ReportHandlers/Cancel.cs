@@ -13,6 +13,6 @@ public partial class ReportHandler
     report.Cancel();
 
     await _repository.SaveChangesAsync();
-    return new Response(200, "Relatório cancelado com sucesso!.");
+    return new Response(200, "Relatório cancelado com sucesso!", new { report.Id });
   }
 }

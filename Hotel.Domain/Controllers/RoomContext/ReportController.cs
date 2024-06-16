@@ -54,13 +54,13 @@ public class ReportController : ControllerBase
   // Endpoint para atualizar um relatório
   [HttpPut("{Id:guid}")]
   [AuthorizePermissions([EPermissions.EditReport, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> PutAsync([FromBody] UpdateReport model, [FromRoute] Guid id)
+  public async Task<IActionResult> PutAsync([FromBody] EditorReport model, [FromRoute] Guid id)
     => Ok(await _handler.HandleUpdateAsync(model, id));
 
   // Endpoint para criar um novo relatório
   [HttpPost]
   [AuthorizePermissions([EPermissions.CreateReport, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> PostAsync([FromBody] CreateReport model)
+  public async Task<IActionResult> PostAsync([FromBody] EditorReport model)
     => Ok(await _handler.HandleCreateAsync(model));
 
   // Endpoint para deletar um relatório criado pelo usuário autenticado

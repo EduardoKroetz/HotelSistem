@@ -13,6 +13,6 @@ public partial class ReportHandler
     report.Finish();
 
     await _repository.SaveChangesAsync();
-    return new Response(200, "Relatório finalizado com sucesso!");
+    return new Response(200, "Relatório finalizado com sucesso!", new { report.Id });
   }
 }

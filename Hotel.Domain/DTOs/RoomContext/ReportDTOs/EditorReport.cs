@@ -3,9 +3,9 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.RoomContext.ReportDTOs;
 
-public class CreateReport : IDataTransferObject 
+public class EditorReport : IDataTransferObject 
 {
-  public CreateReport(string summary, string description, EPriority priority, string resolution, Guid employeeId)
+  public EditorReport(string summary, string description, EPriority priority, Guid employeeId, string resolution = "")
   {
     Summary = summary;
     Description = description;
