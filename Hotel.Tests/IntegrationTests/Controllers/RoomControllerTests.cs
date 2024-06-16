@@ -87,27 +87,35 @@ public class RoomControllerTests
     Assert.AreEqual(body.CategoryId, room.CategoryId);
   }
 
-  //[TestMethod]
-  //public async Task CreateRoom_WithNumberAlreadyRegistered_ShouldReturn_BAD_REQUEST()
-  //{
-  //  //Arange
-  //  var room = new Room(2, 35, 2, "Quarto básico 2", _basicCategory.Id);
-  //  await _dbContext.Rooms.AddAsync(room);
-  //  await _dbContext.SaveChangesAsync();
+  [TestMethod]
+  public async Task CreateRoom_WithNumberAlreadyRegistered_ShouldReturn_BAD_REQUEST()
+  {
+    //Arange
+    var factory = new HotelWebApplicationFactory();
+    var client = factory.CreateClient();
+    var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+    factory.Login(client, _rootAdminToken);
 
-  //  var body = new EditorRoom(2, 40, 3, "Quarto básico 2", _basicCategory.Id);
+    var category = new Category("Basic", "Cômodos básicos", 40);
+    var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
 
-  //  //Act
-  //  var response = await _client.PostAsJsonAsync(_baseUrl, body);
+    await dbContext.Categories.AddAsync(category);
+    await dbContext.Rooms.AddAsync(room);
+    await dbContext.SaveChangesAsync();
 
-  //  //Assert
-  //  Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    var body = new EditorRoom(2, 40, 3, "Quarto básico 2", category.Id);
 
-  //  var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    //Act
+    var response = await client.PostAsJsonAsync(_baseUrl, body);
 
-  //  Assert.AreEqual(400, content.Status);
-  //  Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
-  //}
+    //Assert
+    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+    Assert.AreEqual(400, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
+  }
 
   [TestMethod]
   public async Task UpdateRoom_ShouldReturn_OK()
@@ -139,31 +147,39 @@ public class RoomControllerTests
     Assert.AreEqual(body.CategoryId, updatedRoom.CategoryId);
   }
 
-  //[TestMethod]
-  //public async Task UpdateRoom_WithNumberAlreadyRegistered_ShouldReturn_BAD_REQUEST()
-  //{
-  //  //Arange
-  //  var room = new Room(4, 35, 2, "Quarto básico 2", _basicCategory.Id);
-  //  await _dbContext.Rooms.AddRangeAsync(
-  //  [
-  //    new Room(5, 43, 2, "Quarto básico 4", _basicCategory.Id),
-  //    room
-  //  ]);
-  //  await _dbContext.SaveChangesAsync();
+  [TestMethod]
+  public async Task UpdateRoom_WithNumberAlreadyExists_ShouldReturn_BAD_REQUEST()
+  {
+    //Arange
+    var factory = new HotelWebApplicationFactory();
+    var client = factory.CreateClient();
+    var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+    _factory.Login(client, _rootAdminToken);
 
-  //  var body = new EditorRoom(5, 40, 4, "Quarto básico 4", _basicCategory.Id);
+    var category = new Category("Basic", "Cômodos básicos", 40);
+    var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
 
-  //  //Act
-  //  var response = await _client.PutAsJsonAsync($"{_baseUrl}/{room.Id}", body);
+    await dbContext.Categories.AddAsync(category);
+    await dbContext.Rooms.AddRangeAsync(
+    [
+      new Room(5, 43, 2, "Quarto básico 4",category.Id),
+      room
+    ]);
+    await dbContext.SaveChangesAsync();
 
-  //  //Assert
-  //  Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    var body = new EditorRoom(5, 40, 4, "Quarto básico 4",category.Id);
 
-  //  var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+    //Act
+    var response = await client.PutAsJsonAsync($"{_baseUrl}/{room.Id}", body);
 
-  //  Assert.AreEqual(400, content.Status);
-  //  Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
-  //}
+    //Assert
+    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+    Assert.AreEqual(400, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
+  }
 
   [TestMethod]
   public async Task UpdateRoom_WithUpdatedPriceAndAssociatedPendingReservations_ShouldReturn_BAD_REQUEST()
@@ -468,6 +484,38 @@ public class RoomControllerTests
     Assert.AreEqual(room.Images.Count, updatedRoom.Images.Count);
     Assert.AreEqual(room.Status, updatedRoom.Status);
     Assert.AreEqual(room.CreatedAt, updatedRoom.CreatedAt);
+  }
+
+  [TestMethod]
+  public async Task UpdateRoomNumber_WithNumberAlreadyExists_ShouldReturn_BAD_REQUEST()
+  {
+    //Arange
+    var factory = new HotelWebApplicationFactory();
+    var client = factory.CreateClient();
+    var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+    _factory.Login(client, _rootAdminToken);
+
+    var category = new Category("Basic", "Cômodos básicos", 40);
+    var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
+
+    await dbContext.Categories.AddAsync(category);
+    await dbContext.Rooms.AddRangeAsync(
+    [
+      new Room(5, 43, 2, "Quarto básico 4",category.Id),
+      room
+    ]);
+    await dbContext.SaveChangesAsync();
+
+    //Act
+    var response = await client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/number/5", new { });
+
+    //Assert
+    Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+    Assert.AreEqual(400, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
   }
 
   [TestMethod]
