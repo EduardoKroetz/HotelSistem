@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
@@ -7,7 +8,7 @@ public partial class RoomHandler
   public async Task<Response> HandleUpdatePriceAsync(Guid id, decimal price)
   {
     var room = await _repository.GetRoomIncludesReservations(id)
-      ?? throw new ArgumentException("Cômodo não encontrado.");
+      ?? throw new NotFoundException("Cômodo não encontrado.");
 
     var pendingReservations = room.Reservations.Where(x => x.Status == Enums.EReservationStatus.Pending).ToList();
     if (pendingReservations.Count > 0 && price != room.Price)

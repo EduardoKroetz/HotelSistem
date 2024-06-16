@@ -1,5 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
+using Hotel.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Handlers.RoomContext.ServiceHandler;
@@ -8,9 +9,8 @@ public partial class  ServiceHandler
 {
   public async Task<Response> HandleUpdateAsync(EditorService model, Guid id)
   {
-    var service = await _repository.GetEntityByIdAsync(id);
-    if (service == null)
-      throw new ArgumentException("Serviço não encontrado.");
+    var service = await _repository.GetEntityByIdAsync(id)
+    ?? throw new NotFoundException("Serviço não encontrado.");
 
     service.ChangeName(model.Name);
     service.ChangePriority(model.Priority);

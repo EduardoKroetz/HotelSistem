@@ -8,7 +8,7 @@ public partial class RoomHandler
   public async Task<Response> HandleAddServiceAsync(Guid id, Guid serviceId)
   {
     var room = await _repository.GetRoomIncludesServices(id)
-      ?? throw new NotFoundException("Cômodo não encontrada.");
+      ?? throw new NotFoundException("Cômodo não encontrado.");
 
     var service = await _serviceRepository.GetEntityByIdAsync(serviceId)
       ?? throw new NotFoundException("Serviço não encontrado.");

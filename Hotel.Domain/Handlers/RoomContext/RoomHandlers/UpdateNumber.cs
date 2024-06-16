@@ -9,7 +9,7 @@ public partial class RoomHandler
   public async Task<Response> HandleUpdateNumberAsync(Guid id, int newNumber)
   {
     var room = await _repository.GetEntityByIdAsync(id)
-      ?? throw new NotFoundException("Cômodo não encontrada.");
+      ?? throw new NotFoundException("Cômodo não encontrado.");
 
     room.ChangeNumber(newNumber);
 

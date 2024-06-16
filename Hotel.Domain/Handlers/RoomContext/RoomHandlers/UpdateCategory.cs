@@ -8,7 +8,7 @@ public partial class RoomHandler
   public async Task<Response> HandleUpdateCategoryAsync(Guid id, Guid categoryId)
   {
     var room = await _repository.GetEntityByIdAsync(id)
-     ?? throw new NotFoundException("Cômodo não encontrada.");
+     ?? throw new NotFoundException("Cômodo não encontrado.");
 
     var category = await _categoryRepository.GetEntityByIdAsync(categoryId)
       ?? throw new NotFoundException("Categoria não encontrada.");

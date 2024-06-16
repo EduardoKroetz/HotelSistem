@@ -796,4 +796,70 @@ public class RoomReportControllerTests
     Assert.AreEqual(room.Status, updatedRoom.Status);
     Assert.AreEqual(room.CreatedAt, updatedRoom.CreatedAt);
   }
+
+  [TestMethod]
+  [DataRow("GET", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("DELETE", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("GET", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("POST", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e/services/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("DELETE", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e/services/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("PATCH", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e/number/2")]
+  [DataRow("PATCH", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e/category/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("PATCH", "v1/rooms/2a7065e6-804f-473f-8a0d-64688238b94e/capacity/4")]
+  [DataRow("PATCH", "v1/rooms/enable/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("PATCH", "v1/rooms/disable/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  [DataRow("PATCH", "v1/rooms/available/2a7065e6-804f-473f-8a0d-64688238b94e")]
+  public async Task NonexistsReservation_ShouldReturn_NOT_FOUND(string method, string endpoint)
+  {
+    var response = method switch
+    {
+      "POST" => await _client.PostAsJsonAsync(endpoint, new { }),
+      "PUT" => await _client.PutAsJsonAsync(endpoint, new { }),
+      "DELETE" => await _client.DeleteAsync(endpoint),
+      "GET" => await _client.GetAsync(endpoint),
+      "PATCH" => await _client.PatchAsJsonAsync(endpoint, new { }),
+      _ => null!
+    };
+
+    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+    Assert.AreEqual(404, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Cômodo não encontrado.")));
+  }
+
+  [TestMethod]
+  public async Task UpdateRoom_WithNonexistsReservation_ShouldReturn_NOT_FOUND()
+  {
+    //Arange
+    var body = new EditorRoom(1, 1, 1, "abcd", _standardCategory.Id);
+    //Act
+    var response = await _client.PutAsJsonAsync($"v1/rooms/{Guid.NewGuid()}", body);
+
+    //Assert
+    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+    Assert.AreEqual(404, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Cômodo não encontrado.")));
+  }
+
+  [TestMethod]
+  public async Task UpdatePrice_WithNonexistsReservation_ShouldReturn_NOT_FOUND()
+  {
+    //Arange
+    var body = new UpdatePriceDTO(30);
+    //Act
+    var response = await _client.PatchAsJsonAsync($"v1/rooms/{Guid.NewGuid()}/price", body);
+    
+    //Assert
+    Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+
+    var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+    Assert.AreEqual(404, content.Status);
+    Assert.IsTrue(content.Errors.Any(x => x.Equals("Cômodo não encontrado.")));
+  }
 }
