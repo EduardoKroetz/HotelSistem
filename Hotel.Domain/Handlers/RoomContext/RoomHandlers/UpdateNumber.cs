@@ -1,5 +1,6 @@
 ﻿using Hotel.Domain.DTOs;
 using Hotel.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
@@ -7,13 +8,22 @@ public partial class RoomHandler
 {
   public async Task<Response> HandleUpdateNumberAsync(Guid id, int newNumber)
   {
-    var room = await _repository.GetEntityByIdAsync(id);
-    if (room == null)
-      throw new NotFoundException("Cômodo não encontrada.");
+    var room = await _repository.GetEntityByIdAsync(id)
+      ?? throw new NotFoundException("Cômodo não encontrada.");
 
     room.ChangeNumber(newNumber);
 
-    await _repository.SaveChangesAsync();
+    try
+    {
+      await _repository.SaveChangesAsync();
+    }
+    catch (DbUpdateException e)
+    {
+      if (e.InnerException != null && e.InnerException.ToString().Contains("Number"))
+        throw new ArgumentException("Esse número do cômodo já foi cadastrado.");
+      else
+        throw new Exception();
+    }
 
     return new Response(200, "Número atualizado com sucesso!");
   }

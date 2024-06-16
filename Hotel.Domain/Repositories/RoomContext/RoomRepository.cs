@@ -29,7 +29,7 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
         x.Capacity,
         x.Description,
         x.Services,
-        new GetCategory(x.CategoryId, x.Category!.Name, x.Category!.Description, x.Category!.AveragePrice),
+        x.CategoryId,
         x.Images,
         x.CreatedAt))
       .FirstOrDefaultAsync();

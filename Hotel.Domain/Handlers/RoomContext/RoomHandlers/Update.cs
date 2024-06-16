@@ -1,6 +1,7 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomContext.RoomDTOs;
 using Hotel.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Handlers.RoomContext.RoomHandlers;
 
@@ -21,8 +22,19 @@ public partial class RoomHandler
     room.ChangeDescription(model.Description);
     room.ChangeCategory(model.CategoryId);
 
-    _repository.Update(room);
-    await _repository.SaveChangesAsync();
+    try
+    {
+      _repository.Update(room);
+      await _repository.SaveChangesAsync();
+    }
+    catch (DbUpdateException e)
+    {
+      if (e.InnerException != null && e.InnerException.ToString().Contains("Number"))
+        throw new ArgumentException("Esse número do cômodo já foi cadastrado.");
+      else
+        throw new Exception();
+    }
+
 
     return new Response(200,"Cômodo atualizado com sucesso!",new { room.Id });
   }

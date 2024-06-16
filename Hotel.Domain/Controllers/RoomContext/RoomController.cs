@@ -92,7 +92,7 @@ public class RoomController : ControllerBase
     => Ok(await _handler.HandleUpdateCapacityAsync(id, capacity));
 
   // Endpoint para atualizar a categoria de um quarto (com permissão)
-  [HttpPatch("{id:guid}/categories/{categoryId:guid}")]
+  [HttpPatch("{id:guid}/category/{categoryId:guid}")]
   [AuthorizePermissions([EPermissions.UpdateRoomCategory, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> UpdateCategoryAsync([FromRoute] Guid id, [FromRoute] Guid categoryId)
     => Ok(await _handler.HandleUpdateCategoryAsync(id, categoryId));
