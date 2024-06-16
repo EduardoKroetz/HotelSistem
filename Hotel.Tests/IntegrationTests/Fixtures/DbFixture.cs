@@ -60,6 +60,6 @@ public class DbFixture : IDisposable
 
   public async Task SeedDatabase()
   {
-    await new SeedPermissions(DbContext).ExecutePermissionsProcedureAsync();
+    await new SeedPermissions(DbContext).CreatePermissionsAsync();
   }
 }

@@ -10,7 +10,7 @@ public class SeedPermissions
     _context = context;
   }
 
-  public async Task ExecutePermissionsProcedureAsync()
+  public async Task CreatePermissionsAsync()
   {
     var permissionsToAdd = new List<Permission>
     {

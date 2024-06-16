@@ -1221,7 +1221,7 @@ public class ReservationControllerTests
     );
     var room = new Room(25, 90, 5, "Quarto 25", _category.Id);
     var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-    var service = new Service("Dinner Reservation", 1.00m, EPriority.Medium, 10);
+    var service = new Service("Jet Ski Rental", 90.00m, EPriority.High, 60);
 
     room.AddService(service);
 
@@ -1475,8 +1475,8 @@ public class ReservationControllerTests
     //Arange
     var services = new List<Service>()
     {
-     new ("Airport Shuttle", 60m, EPriority.High, 45),
-     new ("Dinner Reservation", 1m, EPriority.Medium, 10)
+      new Service("Tennis Lesson", 50.00m, EPriority.Medium, 60),
+      new Service("Personal Shopping", 60.00m, EPriority.Medium, 90)
     };
 
     await _dbContext.Services.AddRangeAsync(services);
@@ -1495,7 +1495,7 @@ public class ReservationControllerTests
 
     Assert.AreEqual(200, content!.Status);
     Assert.AreEqual("Sucesso!", content.Message);
-    Assert.AreEqual(211, Math.Ceiling(content.Data.TotalAmount));
+    Assert.AreEqual(260, Math.Ceiling(content.Data.TotalAmount));
   }
 
   [TestMethod]

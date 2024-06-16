@@ -1,6 +1,5 @@
 ﻿using Hotel.Domain.Data;
 using Hotel.Domain.Entities.AdminContext.PermissionEntity;
-using Hotel.Domain.Services.TokenServices;
 using Hotel.Tests.IntegrationTests.Factories;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;

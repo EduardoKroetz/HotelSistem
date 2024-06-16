@@ -34,7 +34,7 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, 
 
     //Criação do administrador
 
-    var defaultAdminPermission = DefaultAdminPermissions.DefaultPermission ?? await _repository.GetDefaultAdminPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
+    var defaultAdminPermission = await _repository.GetDefaultAdminPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
 
     var admin = new Admin(
       new Name(model.FirstName,model.LastName),

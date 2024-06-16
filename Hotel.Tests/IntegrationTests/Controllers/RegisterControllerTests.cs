@@ -2,14 +2,11 @@
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.DTOs.EmployeeContext.EmployeeDTOs;
 using Hotel.Domain.Entities;
-using Hotel.Domain.Entities.AdminContext.AdminEntity;
-using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.IntegrationTests.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;

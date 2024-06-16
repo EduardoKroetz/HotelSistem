@@ -35,7 +35,7 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Em
     var email = new Email(model.Email);
     await _emailService.VerifyEmailCodeAsync(email ,code);
 
-    DefaultEmployeePermissions.DefaultPermission = DefaultEmployeePermissions.DefaultPermission ?? await _repository.GetDefaultPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
+    DefaultEmployeePermissions.DefaultPermission = await _repository.GetDefaultPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
 
     var employee = new Employee(
       new Name(model.FirstName,model.LastName),
