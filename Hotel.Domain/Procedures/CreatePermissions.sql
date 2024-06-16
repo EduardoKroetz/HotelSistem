@@ -384,7 +384,7 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AvailableRoomStatus')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AvailableRoomStatus', 'Permissão para alterar o status de um cômodo para disponível.', 1, GETDATE());
+        VALUES (NEWID(), 'AvailableRoomStatus', 'Permissão para alterar o status de um hospedagem para disponível.', 1, GETDATE());
     END;
   
 END;

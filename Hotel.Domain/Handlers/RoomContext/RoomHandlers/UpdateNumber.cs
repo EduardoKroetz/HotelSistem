@@ -9,7 +9,7 @@ public partial class RoomHandler
   public async Task<Response> HandleUpdateNumberAsync(Guid id, int newNumber)
   {
     var room = await _repository.GetEntityByIdAsync(id)
-      ?? throw new NotFoundException("Cômodo não encontrado.");
+      ?? throw new NotFoundException("Hospedagem não encontrada.");
 
     room.ChangeNumber(newNumber);
 
@@ -20,7 +20,7 @@ public partial class RoomHandler
     catch (DbUpdateException e)
     {
       if (e.InnerException != null && e.InnerException.ToString().Contains("Number"))
-        throw new ArgumentException("Esse número do cômodo já foi cadastrado.");
+        throw new ArgumentException("Esse número da hospedagem já foi cadastrado.");
       else
         throw new Exception();
     }

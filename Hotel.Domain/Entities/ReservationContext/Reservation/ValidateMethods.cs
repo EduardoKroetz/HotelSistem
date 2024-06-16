@@ -19,7 +19,7 @@ partial class Reservation
   public void ValidateCapacity(int capacity)
   {
     if (capacity > Room?.Capacity)
-      throw new ValidationException("Capacidade máxima de hospedades do cômodo excedida.");
+      throw new ValidationException("Capacidade máxima de hospedades da hospedagem excedida.");
 
     if (capacity <= 0)
       throw new ValidationException("Informe a quantidade de hóspedes de vão se hospedar.");
@@ -46,11 +46,11 @@ partial class Reservation
   public void ValidateRoom(Room? room)
   {
     if (room == null)
-      throw new ArgumentException("Cômodo inválido.");
+      throw new ArgumentException("Hospedagem  inválido.");
     else if (room.IsActive is false)
-      throw new InvalidOperationException("Não é possível realizar a reserva pois o cômodo está inativo.");
+      throw new InvalidOperationException("Não é possível realizar a reserva pois a hospedagem está inativo.");
     else if (room?.Status != Enums.ERoomStatus.Available)
-      throw new InvalidOperationException("Não é possível realizar a reserva pois o cômodo está indisponível.");
+      throw new InvalidOperationException("Não é possível realizar a reserva pois a hospedagem está indisponível.");
 
   }
 }

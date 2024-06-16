@@ -9,7 +9,7 @@ public partial class RoomHandler
   {
     var room = await _repository.GetEntityByIdAsync(id);
     if (room == null)
-      throw new NotFoundException("Cômodo não encontrado.");
+      throw new NotFoundException("Hospedagem não encontrada.");
 
     room.ChangeCapacity(newCapacity);
 

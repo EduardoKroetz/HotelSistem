@@ -8,15 +8,15 @@ public partial class RoomHandler
   public async Task<Response> HandleDisableRoom(Guid id)
   {
     var room = await _repository.GetRoomIncludesReservations(id)
-      ?? throw new NotFoundException("Cômodo não encontrado.");
+      ?? throw new NotFoundException("Hospedagem não encontrada.");
 
     var pendingReservations = room.Reservations.Where(x => x.Status == Enums.EReservationStatus.Pending).ToList();
     if (pendingReservations.Count > 0)
-      throw new InvalidOperationException("Não foi possível desativar o cômodo pois tem reservas pendentes relacionadas.");
+      throw new InvalidOperationException("Não foi possível desativar a hospedagem pois tem reservas pendentes relacionadas.");
 
     room.Disable();
 
     await _repository.SaveChangesAsync();
-    return new Response(200, "Cômodo desativado com sucesso!");
+    return new Response(200, "Hospedagem desativada com sucesso!");
   }
 }

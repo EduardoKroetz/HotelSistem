@@ -62,8 +62,9 @@ public class HandleExceptionMiddleware
     catch(Exception e)
     {
       context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+      Console.WriteLine(e.Message);
       await context.Response.WriteAsJsonAsync(
-        new Response(500,[e.Message])
+        new Response(500,[$"{e.Message} --{e.HelpLink}-{e.HResult}-{e.StackTrace}- {e.Source}"])
       );
     }
   }

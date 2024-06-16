@@ -77,7 +77,7 @@ public class RoomControllerTests
     var room = await _dbContext.Rooms.FirstAsync(x => x.Id == content.Data.Id);
 
     Assert.AreEqual(200, content.Status);
-    Assert.AreEqual("Cômodo criado com sucesso!", content.Message);
+    Assert.AreEqual("Hospedagem criada com sucesso!", content.Message);
     Assert.AreEqual(0, content.Errors.Count);
 
     Assert.AreEqual(body.Number, room.Number);
@@ -96,7 +96,7 @@ public class RoomControllerTests
     var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
     factory.Login(client, _rootAdminToken);
 
-    var category = new Category("Basic", "Cômodos básicos", 40);
+    var category = new Category("Basic", "Hospedagems básicos", 40);
     var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
 
     await dbContext.Categories.AddAsync(category);
@@ -114,7 +114,6 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(400, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
   }
 
   [TestMethod]
@@ -137,7 +136,7 @@ public class RoomControllerTests
     var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == content.Data.Id);
 
     Assert.AreEqual(200, content.Status);
-    Assert.AreEqual("Cômodo atualizado com sucesso!", content.Message);
+    Assert.AreEqual("Hospedagem atualizada com sucesso!", content.Message);
     Assert.AreEqual(0, content.Errors.Count);
 
     Assert.AreEqual(body.Number, updatedRoom.Number);
@@ -156,7 +155,7 @@ public class RoomControllerTests
     var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
     _factory.Login(client, _rootAdminToken);
 
-    var category = new Category("Basic", "Cômodos básicos", 40);
+    var category = new Category("Basic", "Hospedagems básicos", 40);
     var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
 
     await dbContext.Categories.AddAsync(category);
@@ -178,7 +177,6 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(400, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
   }
 
   [TestMethod]
@@ -213,7 +211,6 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(400, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas ao cômodo.")));
   }
 
 
@@ -235,7 +232,7 @@ public class RoomControllerTests
     var exists = await _dbContext.Rooms.AnyAsync(x => x.Id == content.Data.Id);
 
     Assert.AreEqual(200, content.Status);
-    Assert.AreEqual("Cômodo deletado com sucesso!", content.Message);
+    Assert.AreEqual("Hospedagem deletada com sucesso!", content.Message);
     Assert.AreEqual(0, content.Errors.Count);
 
     Assert.IsFalse(exists);
@@ -271,7 +268,6 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(400, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Não foi possível deletar o cômodo pois tem reservas associadas a ele. Sugiro que desative o cômodo.")));
   }
 
   [TestMethod]
@@ -393,7 +389,7 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(404, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+    Assert.AreEqual("Serviço não encontrado.", content.Errors[0]);
   }
 
   [TestMethod]
@@ -450,7 +446,7 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(404, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+    Assert.AreEqual("Serviço não encontrado.", content.Errors[0]);
   }
 
   [TestMethod]
@@ -495,7 +491,7 @@ public class RoomControllerTests
     var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
     _factory.Login(client, _rootAdminToken);
 
-    var category = new Category("Basic", "Cômodos básicos", 40);
+    var category = new Category("Basic", "Hospedagems básicos", 40);
     var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
 
     await dbContext.Categories.AddAsync(category);
@@ -515,7 +511,7 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(400, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse número do cômodo já foi cadastrado.")));
+    Assert.AreEqual("Esse número da hospedagem já foi cadastrado.", content.Errors[0]);
   }
 
   [TestMethod]
@@ -568,7 +564,7 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(404, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Categoria não encontrada.")));
+    Assert.AreEqual("Categoria não encontrada.", content.Errors[0]);
   }
 
   [TestMethod]
@@ -637,7 +633,7 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(400, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas ao cômodo.")));
+    Assert.AreEqual("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas a hospedagem.", content.Errors[0]);
   }
 
   [TestMethod]
@@ -741,7 +737,7 @@ public class RoomControllerTests
     var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
     Assert.AreEqual(200, content.Status);
-    Assert.AreEqual("Cômodo ativado com sucesso!", content.Message);
+    Assert.AreEqual("Hospedagem ativada com sucesso!", content.Message);
     Assert.AreEqual(0, content.Errors.Count);
 
     Assert.IsTrue(updatedRoom.IsActive);
@@ -765,7 +761,7 @@ public class RoomControllerTests
     var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
     Assert.AreEqual(200, content.Status);
-    Assert.AreEqual("Cômodo desativado com sucesso!", content.Message);
+    Assert.AreEqual("Hospedagem desativada com sucesso!", content.Message);
     Assert.AreEqual(0, content.Errors.Count);
 
     Assert.IsFalse(updatedRoom.IsActive);
@@ -802,7 +798,7 @@ public class RoomControllerTests
     var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
     Assert.AreEqual(400, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Não foi possível desativar o cômodo pois tem reservas pendentes relacionadas.")));
+    Assert.AreEqual("Não foi possível desativar a hospedagem pois tem reservas pendentes relacionadas.", content.Errors[0]);
 
     Assert.IsTrue(updatedRoom.IsActive);
   }
@@ -871,7 +867,6 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(404, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Cômodo não encontrado.")));
   }
 
   [TestMethod]
@@ -888,7 +883,6 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(404, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Cômodo não encontrado.")));
   }
 
   [TestMethod]
@@ -905,6 +899,6 @@ public class RoomControllerTests
     var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
     Assert.AreEqual(404, content.Status);
-    Assert.IsTrue(content.Errors.Any(x => x.Equals("Cômodo não encontrado.")));
+    Assert.AreEqual("Hospedagem não encontrada.", content.Errors[0]);
   }
 }

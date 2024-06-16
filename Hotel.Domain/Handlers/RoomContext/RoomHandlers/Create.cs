@@ -38,12 +38,12 @@ public partial class RoomHandler : IHandler
     catch (DbUpdateException e)
     {
       if (e.InnerException != null && e.InnerException.ToString().Contains("Number"))
-        throw new ArgumentException("Esse número do cômodo já foi cadastrado.");
+        throw new ArgumentException("Esse número da hospedagem já foi cadastrado.");
       else
         throw new Exception();
     }
 
 
-    return new Response(200,"Cômodo criado com sucesso!",new { room.Id });
+    return new Response(200,"Hospedagem criada com sucesso!",new { room.Id });
   }
 }

@@ -1,13 +1,17 @@
-using Hotel.Domain.Data;
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Initialization;
-using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
+
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+Console.OutputEncoding = Encoding.UTF8;
+
+builder.Configuration.AddEnvironmentVariables();
 
 LoadConfigurationClass.Configure(builder);
 ConfigureDependencies.Configure(builder);
