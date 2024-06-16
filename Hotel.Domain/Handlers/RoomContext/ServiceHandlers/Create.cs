@@ -30,10 +30,10 @@ public partial class ServiceHandler : IHandler
     }
     catch (DbUpdateException e)
     {
-      if (e.InnerException != null && e.InnerException.ToString().Contains(model.Name))
-        return new Response(400, "Esse nome já está cadastrado.");
+      if (e.InnerException != null && e.InnerException.ToString().Contains("Name"))
+        throw new ArgumentException("Esse nome já está cadastrado.");
       else
-        return new Response(500, "Algum erro ocorreu ao salvar no banco de dados.");
+        throw new Exception("Algum erro ocorreu ao salvar no banco de dados.");
     }
 
     return new Response(200,"Serviço criado com sucesso!",new { service.Id });

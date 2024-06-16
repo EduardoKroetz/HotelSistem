@@ -1,5 +1,4 @@
 using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.EmployeeContext.ResponsibilityDTOs;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Extensions;
@@ -26,17 +25,13 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         x.Priority,
         x.IsActive,
         x.TimeInMinutes,
-        new List<GetResponsibility>(
-          x.Responsibilities.Select(
-            r => new GetResponsibility(r.Id, r.Name, r.Description, r.Priority, r.CreatedAt)
-        )),
         x.CreatedAt
       ))
       .FirstOrDefaultAsync();
 
   }
 
-  public async Task<IEnumerable<GetServiceCollection>> GetAsync(ServiceQueryParameters queryParameters)
+  public async Task<IEnumerable<GetService>> GetAsync(ServiceQueryParameters queryParameters)
   {
     var query = _context.Services.AsQueryable();
 
@@ -69,7 +64,7 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
 
     query = query.BaseQuery(queryParameters);
 
-    return await query.Select(x => new GetServiceCollection(
+    return await query.Select(x => new GetService(
         x.Id,
         x.Name,
         x.Price,
