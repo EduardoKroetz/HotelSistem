@@ -9,20 +9,17 @@ using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.IntegrationTests.Factories;
 using Hotel.Tests.IntegrationTests.Utilities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Json;
-using static PdfSharp.Capabilities.Features;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
 [TestClass]
-public class RoomReportControllerTests
+public class RoomControllerTests
 {
   private static HotelWebApplicationFactory _factory = null!;
   private static HttpClient _client = null!;
