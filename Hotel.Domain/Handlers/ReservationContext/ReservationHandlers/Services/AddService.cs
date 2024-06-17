@@ -14,15 +14,15 @@ public partial class ReservationHandler
       ?? throw new NotFoundException("Serviço não encontrado.");
 
     var room = await _roomRepository.GetRoomIncludesServices(reservation.RoomId)
-      ?? throw new NotFoundException("O quarto relacionado a reserva não foi encontrado.");
+      ?? throw new NotFoundException("A hospedagem relacionada a reserva não foi encontrado.");
 
     if (room.Services.Contains(service) is false)
-      throw new ArgumentException("Esse serviço não está dísponível nesse cômodo.");
+      throw new ArgumentException("Esse serviço não está dísponível nessa hospedagem.");
 
     reservation.AddService(service);
 
     await _repository.SaveChangesAsync();
 
-    return new Response(200, "Serviço adicionado com sucesso!.");
+    return new Response(200, "Serviço adicionado com sucesso!");
   }
 }

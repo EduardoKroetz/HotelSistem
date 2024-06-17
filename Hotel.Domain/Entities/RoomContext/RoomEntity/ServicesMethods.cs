@@ -8,14 +8,14 @@ public partial class Room
   public void AddService(Service service)
   {
     if (Services.Contains(service))
-      throw new ValidationException("Erro de validação: Esse serviço já foi adicionado.");
+      throw new ValidationException("Esse serviço já foi adicionado.");
     Services.Add(service);
   }
   
   public void RemoveService(Service service)
   {
     if (!Services.Remove(service))
-      throw new ValidationException("Erro de validação: Esse serviço não está associado a essa hospedagem.");
+      throw new ValidationException("Esse serviço não está associado a essa hospedagem.");
   } 
 
 

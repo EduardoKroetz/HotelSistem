@@ -1,24 +1,24 @@
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity.Interfaces;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.RoomContext.ServiceEntity;
 
-public partial class Service : IResponsabilitiesMethods
+public partial class Service : IResponsibilitiesMethods
 {
-  public void AddResponsability(Responsability responsability)
+  public void AddResponsibility(Responsibility responsibility)
   {
-    if (Responsabilities.Contains(responsability))
-      throw new ValidationException("Erro de validação: Essa responsabilidade já foi atribuida.");
-    Responsabilities.Add(responsability);
+    if (Responsibilities.Contains(responsibility))
+      throw new ValidationException("Essa responsabilidade já foi atribuida.");
+    Responsibilities.Add(responsibility);
   }
 
   
 
-  public void RemoveResponsability(Responsability responsability)
+  public void RemoveResponsibility(Responsibility responsibility)
   {
-    if (!Responsabilities.Remove(responsability))
-      throw new ValidationException("Erro de validação: Essa responsabilidade não está atribuida.");
+    if (!Responsibilities.Remove(responsibility))
+      throw new ValidationException("Essa responsabilidade não está atribuida.");
   }
   
 

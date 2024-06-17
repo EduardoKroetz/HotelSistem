@@ -9,7 +9,7 @@ public partial class RoomHandler
   public async Task<Response> HandleChangeToAvailableStatusAsync(Guid id)
   {
     var room = await _repository.GetEntityByIdAsync(id)
-      ??  throw new NotFoundException("Cômodo não encontrado.");
+      ??  throw new NotFoundException("Hospedagem não encontrada.");
 
     room.ChangeStatus(ERoomStatus.Available);
 

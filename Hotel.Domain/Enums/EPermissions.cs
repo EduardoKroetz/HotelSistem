@@ -24,17 +24,17 @@ public enum EPermissions
   DeleteEmployee,
   EditEmployee,
   CreateEmployee,
-  AssignEmployeeResponsability,
-  UnassignEmployeeResponsability,
+  AssignEmployeeResponsibility,
+  UnassignEmployeeResponsibility,
   AssignEmployeePermission,
   UnassignEmployeePermission,
 
-  //Responsabilities
-  GetResponsabilities,
-  GetResponsability,
-  CreateResponsability,
-  EditResponsability,
-  DeleteResponsability,
+  //Responsibilities
+  GetResponsibilities,
+  GetResponsibility,
+  CreateResponsibility,
+  EditResponsibility,
+  DeleteResponsibility,
 
   //RoomInvoices
   DeleteRoomInvoice,
@@ -80,7 +80,7 @@ public enum EPermissions
   UpdateService,
   CreateService,
   DeleteService,
-  AssignServiceResponsability,
-  UnassignServiceResponsability,
+  AssignServiceResponsibility,
+  UnassignServiceResponsibility,
 }
 

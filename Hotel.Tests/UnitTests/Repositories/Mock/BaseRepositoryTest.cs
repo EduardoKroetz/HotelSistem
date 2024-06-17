@@ -3,7 +3,7 @@ using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Entities.RoomContext.CategoryEntity;
@@ -30,7 +30,7 @@ public static class BaseRepositoryTest
     public static List<Service> Services { get; set; } = [];
     public static List<Permission> Permissions { get; set; } = [];
     public static List<Feedback> Feedbacks { get; set; } = [];
-    public static List<Responsability> Responsabilities { get; set; } = [];
+    public static List<Responsibility> Responsibilities { get; set; } = [];
     public static List<RoomInvoice> RoomInvoices { get; set; } = [];
     public static List<Reservation> ReservationsToFinish { get; set; } = [];
     public static List<Report> Reports { get; set; } = [];
@@ -46,7 +46,7 @@ public static class BaseRepositoryTest
         await CreatePermissions.Create();
         await CreateCustomers.Create();
         await CreateEmployees.Create();
-        await CreateResponsabilities.Create();
+        await CreateResponsibilities.Create();
 
         await CreateCategories.Create();
         await CreateReports.Create();
@@ -68,7 +68,7 @@ public static class BaseRepositoryTest
         MockConnection.Context.Reservations.RemoveRange(await MockConnection.Context.Reservations.ToListAsync());
         MockConnection.Context.Customers.RemoveRange(await MockConnection.Context.Customers.ToListAsync());
         MockConnection.Context.Services.RemoveRange(await MockConnection.Context.Services.ToListAsync());
-        MockConnection.Context.Responsabilities.RemoveRange(await MockConnection.Context.Responsabilities.ToListAsync());
+        MockConnection.Context.Responsibilities.RemoveRange(await MockConnection.Context.Responsibilities.ToListAsync());
         MockConnection.Context.Feedbacks.RemoveRange(await MockConnection.Context.Feedbacks.ToListAsync());
         MockConnection.Context.Permissions.RemoveRange(await MockConnection.Context.Permissions.ToListAsync());
         MockConnection.Context.Rooms.RemoveRange(await MockConnection.Context.Rooms.ToListAsync());

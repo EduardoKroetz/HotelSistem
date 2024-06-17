@@ -142,8 +142,8 @@ public class ReservationController : ControllerBase
   }
 
   [HttpGet("total-amount")]
-  public async Task<IActionResult> GetTotalAmount(GetTotalAmount totalAmountDto)
-  => Ok(await _handler.GetTotalAmount(totalAmountDto.CheckIn, totalAmountDto.CheckOut, totalAmountDto.DailyRate, totalAmountDto.Services));
+  public async Task<IActionResult> GetTotalAmount([FromQuery] DateTime checkIn, [FromQuery] DateTime checkOut, [FromQuery] decimal dailyRate, [FromQuery]string? servicesIds )
+  => Ok(await _handler.GetTotalAmount(checkIn, checkOut, dailyRate, servicesIds));
   
 
 

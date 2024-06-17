@@ -1,5 +1,4 @@
 using Hotel.Domain.Data;
-using Hotel.Domain.DTOs.EmployeeContext.ResponsabilityDTOs;
 using Hotel.Domain.DTOs.RoomContext.ServiceDTOs;
 using Hotel.Domain.Entities.RoomContext.ServiceEntity;
 using Hotel.Domain.Extensions;
@@ -18,7 +17,7 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
       .Services
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Include(x => x.Responsabilities)
+      .Include(x => x.Responsibilities)
       .Select(x => new GetService(
         x.Id,
         x.Name,
@@ -26,17 +25,13 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
         x.Priority,
         x.IsActive,
         x.TimeInMinutes,
-        new List<GetReponsability>(
-          x.Responsabilities.Select(
-            r => new GetReponsability(r.Id, r.Name, r.Description, r.Priority, r.CreatedAt)
-        )),
         x.CreatedAt
       ))
       .FirstOrDefaultAsync();
 
   }
 
-  public async Task<IEnumerable<GetServiceCollection>> GetAsync(ServiceQueryParameters queryParameters)
+  public async Task<IEnumerable<GetService>> GetAsync(ServiceQueryParameters queryParameters)
   {
     var query = _context.Services.AsQueryable();
 
@@ -55,8 +50,8 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
     if (queryParameters.TimeInMinutes.HasValue)
       query = query.FilterByOperator(queryParameters.TimeInMinutesOperator, x => x.TimeInMinutes, queryParameters.TimeInMinutes);
 
-    if (queryParameters.ResponsabilityId.HasValue)
-      query = query.Where(x => x.Responsabilities.Any(y => y.Id == queryParameters.ResponsabilityId));
+    if (queryParameters.ResponsibilityId.HasValue)
+      query = query.Where(x => x.Responsibilities.Any(y => y.Id == queryParameters.ResponsibilityId));
 
     if (queryParameters.ReservationId.HasValue)
       query = query.Where(x => x.Reservations.Any(y => y.Id == queryParameters.ReservationId));
@@ -69,7 +64,7 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
 
     query = query.BaseQuery(queryParameters);
 
-    return await query.Select(x => new GetServiceCollection(
+    return await query.Select(x => new GetService(
         x.Id,
         x.Name,
         x.Price,
@@ -80,11 +75,11 @@ public class ServiceRepository : GenericRepository<Service>, IServiceRepository
     )).ToListAsync();
   }
 
-  public async Task<Service?> GetServiceIncludeResponsabilities(Guid serviceId)
+  public async Task<Service?> GetServiceIncludeResponsibilities(Guid serviceId)
   {
     return await _context.Services
       .Where(x => x.Id == serviceId)
-      .Include(x => x.Responsabilities)
+      .Include(x => x.Responsibilities)
       .FirstOrDefaultAsync();
   }
 

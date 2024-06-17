@@ -7,15 +7,14 @@ public partial class RoomHandler
 {
   public async Task<Response> HandleDeleteAsync(Guid id)
   {
-    var room = await _repository.GetRoomIncludesReservations(id);
-    if (room == null)
-      throw new NotFoundException("Cômodo não encontrado.");
+    var room = await _repository.GetRoomIncludesReservations(id)
+      ?? throw new NotFoundException("Hospedagem não encontrada.");
 
     if (room.Reservations.Count > 0)
-      throw new InvalidOperationException("Não foi possível deletar o cômodo pois tem reservas associadas a ele. Sugiro que desative o cômodo.");
+      throw new InvalidOperationException("Não foi possível deletar a hospedagem pois tem reservas associadas a ela. Sugiro que desative a hospedagem.");
 
     _repository.Delete(room);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Cômodo deletado com sucesso!", new { id });
+    return new Response(200,"Hospedagem deletada com sucesso!", new { id });
   }
 }

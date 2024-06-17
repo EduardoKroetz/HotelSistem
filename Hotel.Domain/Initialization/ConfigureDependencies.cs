@@ -5,7 +5,7 @@ using Hotel.Domain.Handlers.AuthenticationContext.LoginHandlers;
 using Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 using Hotel.Domain.Handlers.CustomerContext.FeedbackHandlers;
 using Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
-using Hotel.Domain.Handlers.EmployeeContexty.ResponsabilityHandlers;
+using Hotel.Domain.Handlers.EmployeeContexty.ResponsibilityHandlers;
 using Hotel.Domain.Handlers.PaymentContext.RoomInvoiceHandlers;
 using Hotel.Domain.Handlers.ReservationContext.ReservationHandlers;
 using Hotel.Domain.Handlers.RoomContext.CategoryHandlers;
@@ -29,6 +29,8 @@ using Hotel.Domain.Repositories.ReservationContext;
 using Hotel.Domain.Repositories.RoomContext;
 using Hotel.Domain.Services.EmailServices;
 using Hotel.Domain.Services.EmailServices.Interface;
+using Hotel.Domain.Services.LoginServices;
+using Hotel.Domain.Services.TokenServices;
 using Hotel.Domain.Services.UserServices;
 using Hotel.Domain.Services.UserServices.Interfaces;
 using Hotel.Domain.Services.VerificationServices;
@@ -40,16 +42,19 @@ public static class ConfigureDependencies
 {
   public static void Configure(WebApplicationBuilder builder)
   {
-    var options = new DbContextOptionsBuilder<HotelDbContext>()
-      .UseSqlServer(Configuration.Configuration.ConnectionString)
-      .Options;
-
-    builder.Services.AddSingleton(options);
-
-    builder.Services.AddDbContext<HotelDbContext>(opt =>
+    if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction())
     {
-      opt.UseSqlServer(Configuration.Configuration.ConnectionString);
-    });
+      var options = new DbContextOptionsBuilder<HotelDbContext>()
+        .UseSqlServer(Configuration.Configuration.ConnectionString)
+        .Options;
+
+      builder.Services.AddSingleton(options);
+
+      builder.Services.AddDbContext<HotelDbContext>(opt =>
+      {
+        opt.UseSqlServer(Configuration.Configuration.ConnectionString);
+      });
+    }
 
     //Configurar repositórios
     builder.Services.AddScoped<IAdminRepository, AdminRepository>();
@@ -57,7 +62,7 @@ public static class ConfigureDependencies
     builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
     builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
     builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-    builder.Services.AddScoped<IResponsabilityRepository, ResponsabilityRepository>();
+    builder.Services.AddScoped<IResponsibilityRepository, ResponsibilityRepository>();
     builder.Services.AddScoped<IRoomInvoiceRepository, RoomInvoiceRepository>();
     builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
     builder.Services.AddScoped<IRoomRepository, RoomRepository>();
@@ -70,6 +75,8 @@ public static class ConfigureDependencies
 
 
     //Services
+    builder.Services.AddSingleton<TokenService>();
+    builder.Services.AddSingleton<LoginService>();
     builder.Services.AddScoped<IEmailService, EmailService>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddSingleton<VerificationService>();
@@ -80,7 +87,7 @@ public static class ConfigureDependencies
     builder.Services.AddScoped<CustomerHandler>();
     builder.Services.AddScoped<FeedbackHandler>();
     builder.Services.AddScoped<EmployeeHandler>();
-    builder.Services.AddScoped<ResponsabilityHandler>();
+    builder.Services.AddScoped<ResponsibilityHandler>();
     builder.Services.AddScoped<RoomInvoiceHandler>();
     builder.Services.AddScoped<ReservationHandler>();
     builder.Services.AddScoped<RoomHandler>();

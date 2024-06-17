@@ -1,20 +1,19 @@
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
-using Hotel.Tests.UnitTests.Entities;
 
 
 namespace Hotel.Tests.UnitTests.Entities.EmployeeContext;
 
 [TestClass]
-public class ResponsabilityEntityTest
+public class ResponsibilityEntityTest
 {
 
     [TestMethod]
-    public void ValidResponsability_MustBeValid()
+    public void ValidResponsibility_MustBeValid()
     {
-        var responsability = new Responsability("Limpar os quartos", "Limpar", EPriority.Low);
-        Assert.AreEqual(true, responsability.IsValid);
+        var responsibility = new Responsibility("Limpar os quartos", "Limpar", EPriority.Low);
+        Assert.AreEqual(true, responsibility.IsValid);
     }
 
     [TestMethod]
@@ -23,9 +22,9 @@ public class ResponsabilityEntityTest
     [DataRow("res", "")]
     [DataRow("", "res")]
     [DataRow("res", TestParameters.DescriptionMaxCaracteres)]
-    public void InvalidResponsability_ExpectedException(string name, string description)
+    public void InvalidResponsibility_ExpectedException(string name, string description)
     {
-        new Responsability(name, description, EPriority.Low);
+        new Responsibility(name, description, EPriority.Low);
         Assert.Fail();
     }
 
@@ -33,28 +32,28 @@ public class ResponsabilityEntityTest
     [ExpectedException(typeof(ValidationException))]
     [DataRow("")]
     [DataRow(TestParameters.DescriptionMaxCaracteres)]
-    public void ChangeToInvalidResponsabilityDescription_ExpectedException(string description)
+    public void ChangeToInvalidResponsibilityDescription_ExpectedException(string description)
     {
-        var responsability = new Responsability("Responsability", description, EPriority.Low);
-        responsability.ChangeDescription(description);
+        var responsibility = new Responsibility("Responsibility", description, EPriority.Low);
+        responsibility.ChangeDescription(description);
         Assert.Fail();
     }
 
     [TestMethod]
     [ExpectedException(typeof(ValidationException))]
-    public void ChangeToInvalidResponsabilityName_ExpectedException()
+    public void ChangeToInvalidResponsibilityName_ExpectedException()
     {
-        var responsability = new Responsability("Responsability", "Responsability", EPriority.Low);
-        responsability.ChangeName("");
+        var responsibility = new Responsibility("Responsibility", "Responsibility", EPriority.Low);
+        responsibility.ChangeName("");
         Assert.Fail();
     }
 
     [TestMethod]
     public void ChangePriorityToMedium_PriorityShouldBeMedium()
     {
-        var responsability = new Responsability("Responsability", "Responsability", EPriority.Low);
-        responsability.ChangePriority(EPriority.Medium);
-        Assert.AreEqual(EPriority.Medium, responsability.Priority);
+        var responsibility = new Responsibility("Responsibility", "Responsibility", EPriority.Low);
+        responsibility.ChangePriority(EPriority.Medium);
+        Assert.AreEqual(EPriority.Medium, responsibility.Priority);
     }
 
 

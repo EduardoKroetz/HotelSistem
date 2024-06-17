@@ -10,7 +10,7 @@ public partial class RoomHandler
   {
     var room = await _repository.GetByIdAsync(id);
     if (room == null)
-      throw new NotFoundException("Cômodo não encontrado.");
+      throw new NotFoundException("Hospedagem não encontrada.");
     
     return new Response<GetRoom>(200, "Sucesso!", room);
   }

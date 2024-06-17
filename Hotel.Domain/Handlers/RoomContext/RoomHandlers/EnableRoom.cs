@@ -9,11 +9,11 @@ public partial class RoomHandler
   {
     var room = await _repository.GetEntityByIdAsync(id);
     if (room == null)
-      throw new NotFoundException("Cômodo não encontrado.");
+      throw new NotFoundException("Hospedagem não encontrada.");
 
     room.Enable();
 
     await _repository.SaveChangesAsync();
-    return new Response(200, "Cômodo ativado com sucesso!");
+    return new Response(200, "Hospedagem ativada com sucesso!");
   }
 }

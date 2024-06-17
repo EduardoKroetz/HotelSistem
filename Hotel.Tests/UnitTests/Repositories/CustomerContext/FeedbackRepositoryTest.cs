@@ -23,7 +23,7 @@ public class FeedbackRepositoryTest
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Comment, feedback.Comment);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Rate, feedback.Rate);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Likes.Count, feedback.Likes);
-        Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Deslikes.Count, feedback.Deslikes);
+        Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Dislikes.Count, feedback.Dislikes);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].CustomerId, feedback.CustomerId);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].ReservationId, feedback.ReservationId);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].RoomId, feedback.RoomId);
@@ -42,7 +42,7 @@ public class FeedbackRepositoryTest
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Comment, feedback.Comment);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Rate, feedback.Rate);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Likes.Count, feedback.Likes);
-        Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Deslikes.Count, feedback.Deslikes);
+        Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].Dislikes.Count, feedback.Dislikes);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].CustomerId, feedback.CustomerId);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].ReservationId, feedback.ReservationId);
         Assert.AreEqual(BaseRepositoryTest.Feedbacks[0].RoomId, feedback.RoomId);
@@ -134,7 +134,7 @@ public class FeedbackRepositoryTest
     }
 
     [TestMethod]
-    public async Task GetAsync_WhereDeslikesGratherThan2_ReturnsFeedbacks()
+    public async Task GetAsync_WhereDislikesGratherThan2_ReturnsFeedbacks()
     {
 
         var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, 2, "gt", null, null, null, null, null);
@@ -142,31 +142,31 @@ public class FeedbackRepositoryTest
 
         Assert.IsTrue(feedbacks.Any());
         foreach (var feedback in feedbacks)
-            Assert.IsTrue(2 < feedback.Deslikes);
+            Assert.IsTrue(2 < feedback.Dislikes);
 
     }
 
     [TestMethod]
-    public async Task GetAsync_WhereDeslikesLessThan2_ReturnsFeedbacks()
+    public async Task GetAsync_WhereDislikesLessThan2_ReturnsFeedbacks()
     {
         var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, 2, "lt", null, null, null, null, null);
         var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
         Assert.IsTrue(feedbacks.Any());
         foreach (var feedback in feedbacks)
-            Assert.IsTrue(2 > feedback.Deslikes);
+            Assert.IsTrue(2 > feedback.Dislikes);
 
     }
 
     [TestMethod]
-    public async Task GetAsync_WhereDeslikesEquals1_ReturnsFeedbacks()
+    public async Task GetAsync_WhereDislikesEquals1_ReturnsFeedbacks()
     {
         var parameters = new FeedbackQueryParameters(0, 100, null, null, null, null, null, null, null, 1, "eq", null, null, null, null, null);
         var feedbacks = await FeedbackRepository.GetAsync(parameters);
 
         Assert.IsTrue(feedbacks.Any());
         foreach (var feedback in feedbacks)
-            Assert.AreEqual(1, feedback.Deslikes);
+            Assert.AreEqual(1, feedback.Dislikes);
 
     }
 

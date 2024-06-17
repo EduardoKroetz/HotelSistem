@@ -3,7 +3,7 @@ using Hotel.Domain.Entities.AdminContext.PermissionEntity;
 using Hotel.Domain.Entities.CustomerContext;
 using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
 using Hotel.Domain.Entities.RoomContext.CategoryEntity;
 using Hotel.Domain.Entities.RoomContext.ImageEntity;
@@ -28,7 +28,7 @@ public static class TestParameters
     public static readonly Reservation Reservation = new(Room, DateTime.Now.AddDays(3), DateTime.Now.AddDays(4), Customer, 2);
     public static readonly Feedback Feedback = new("Muito bom.", 10, Customer.Id, Reservation.Id, Room.Id);
     public static readonly Admin Admin = new(Name, Email, Phone, Password, EGender.Masculine, DateTime.Now.AddYears(-18), Address);
-    public static readonly Responsability Responsability = new("Responder serviços", "Responder serviços de quarto", EPriority.Medium);
+    public static readonly Responsibility Responsibility = new("Responder serviços", "Responder serviços de quarto", EPriority.Medium);
     public static readonly Employee Employee = new(Name, Email, Phone, Password, EGender.Masculine, DateTime.Now.AddYears(-18), Address, 1500m);
     public static readonly Service Service = new("Servico de quarto", 30m, EPriority.Medium, 30);
     public static readonly Image Image = new("http://:", Room.Id);

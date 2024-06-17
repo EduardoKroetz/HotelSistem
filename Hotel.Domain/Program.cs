@@ -1,11 +1,17 @@
 using Hotel.Domain.Extensions;
 using Hotel.Domain.Initialization;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
+
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+Console.OutputEncoding = Encoding.UTF8;
+
+builder.Configuration.AddEnvironmentVariables();
 
 LoadConfigurationClass.Configure(builder);
 ConfigureDependencies.Configure(builder);
@@ -19,7 +25,9 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+  app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseHandleExceptions();
 app.UseSwagger();
@@ -30,3 +38,4 @@ app.MapControllers();
 
 app.Run();
 
+public partial class Startup {}

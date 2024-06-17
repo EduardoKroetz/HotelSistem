@@ -17,13 +17,13 @@ public partial class FeedbackHandler
     if (customer == null)
       throw new NotFoundException("Usuário não encontrado.");
 
-    var deslikeExists = await _deslikeRepository.GetDeslikeAsync(feedbackId, customerId);
-    if (deslikeExists != null)
-      throw new InvalidOperationException("Você já tem um deslike atribuido a esse feedback.");
+    var dislikeExists = await _dislikeRepository.GetDeslikeAsync(feedbackId, customerId);
+    if (dislikeExists != null)
+      throw new InvalidOperationException("Você já tem um dislike atribuido a esse feedback.");
 
-    var deslike = new Deslike(customer,feedback);
+    var dislike = new Deslike(customer,feedback);
 
-    await _deslikeRepository.CreateDeslike(deslike);
+    await _dislikeRepository.CreateDeslike(dislike);
 
     await _feedbackRepository.SaveChangesAsync();
 

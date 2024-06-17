@@ -21,49 +21,50 @@ public class HandleExceptionMiddleware
     {
       context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
       await context.Response.WriteAsJsonAsync(
-        new Response<string>(400,[e.Message])
+        new Response(400,[e.Message])
       );
     }
     catch(ArgumentException e)
     {
       context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
       await context.Response.WriteAsJsonAsync(
-        new Response<string>(400,[e.Message])
+        new Response(400,[e.Message])
       );
     }
     catch(NotFoundException e)
     {
       context.Response.StatusCode = (int)HttpStatusCode.NotFound;
       await context.Response.WriteAsJsonAsync(
-        new Response<string>(404, [e.Message])
+        new Response(404, [e.Message])
       );
     }
     catch (InvalidOperationException e)
     {
       context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
       await context.Response.WriteAsJsonAsync(
-        new Response<string>(400,[e.Message])
+        new Response(400,[e.Message])
       );
     }
     catch (UnauthorizedAccessException e)
     {
-      context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+      context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
       await context.Response.WriteAsJsonAsync(
-        new Response<string>(403, [e.Message])
+        new Response(403, [e.Message])
       );
     }
     catch (DbUpdateException)
     {
       context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
       await context.Response.WriteAsJsonAsync(
-        new Response<string>(500,[$"Não foi possível atualizar no banco de dados."])
+        new Response(500,[$"Não foi possível atualizar no banco de dados."])
       );
     }
     catch(Exception e)
     {
       context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+      Console.WriteLine(e.Message);
       await context.Response.WriteAsJsonAsync(
-        new Response<string>(500,[e.Message])
+        new Response(500,[$"{e.Message} --{e.HelpLink}-{e.HResult}-{e.StackTrace}- {e.Source}"])
       );
     }
   }

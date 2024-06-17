@@ -38,9 +38,9 @@ public partial class RoomHandler : IHandler
     catch (DbUpdateException e)
     {
       if (e.InnerException != null && e.InnerException.ToString().Contains("Number"))
-        return new Response(400, "Esse número já foi cadastrado.");
+        throw new ArgumentException("Esse número da hospedagem já foi cadastrado.");
       else
-        return new Response(500, "Algum erro ocorreu ao salvar no banco de dados.");
+        throw new Exception();
     }
 
 

@@ -1,6 +1,8 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.Base.User;
+using Hotel.Domain.Entities.AdminContext.AdminEntity;
 using Hotel.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Handlers.CustomerContext.CustomerHandlers;
 
@@ -18,8 +20,26 @@ public partial class CustomerHandler
     customer.ChangeDateOfBirth(model.DateOfBirth);
     customer.ChangeAddress(new Address(model.Country,model.City,model.Street,model.Number));
 
-    _repository.Update(customer);
-    await _repository.SaveChangesAsync();
+    try
+    {
+      _repository.Update(customer);
+      await _repository.SaveChangesAsync();
+    }
+    catch (DbUpdateException e)
+    {
+      var innerException = e.InnerException?.Message;
+
+      if (innerException != null)
+      {
+
+        if (innerException.Contains("Email"))
+          return new Response(400, "Esse email já está cadastrado.");
+
+        if (innerException.Contains("Phone"))
+          return new Response(400, "Esse telefone já está cadastrado.");
+      }
+    }
+
 
     return new Response(200,"Usuário atualizado com sucesso!",new { customer.Id });
   }

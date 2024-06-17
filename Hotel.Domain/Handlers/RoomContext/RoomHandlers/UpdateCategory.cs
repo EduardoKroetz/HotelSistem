@@ -7,13 +7,11 @@ public partial class RoomHandler
 {
   public async Task<Response> HandleUpdateCategoryAsync(Guid id, Guid categoryId)
   {
-    var room = await _repository.GetEntityByIdAsync(id);
-    if (room == null)
-      throw new NotFoundException("Cômodo não encontrada.");
+    var room = await _repository.GetEntityByIdAsync(id)
+     ?? throw new NotFoundException("Hospedagem não encontrada.");
 
-    var category = await _categoryRepository.GetEntityByIdAsync(categoryId);
-    if (category == null)
-      throw new NotFoundException("Categoria não encontrada.");
+    var category = await _categoryRepository.GetEntityByIdAsync(categoryId)
+      ?? throw new NotFoundException("Categoria não encontrada.");
 
     room.ChangeCategory(categoryId);
 

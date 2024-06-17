@@ -7,11 +7,11 @@ public partial class FeedbackHandler
 {
   public async Task<Response> HandleRemoveDeslikeAsync(Guid feedbackId, Guid customerId)
   {
-    var deslike = await _deslikeRepository.GetDeslikeAsync(feedbackId, customerId);
-    if (deslike == null)
+    var dislike = await _dislikeRepository.GetDeslikeAsync(feedbackId, customerId);
+    if (dislike == null)
       throw new NotFoundException("Deslike não encontrado.");
 
-    _deslikeRepository.RemoveDeslike(deslike);
+    _dislikeRepository.RemoveDeslike(dislike);
 
     await _feedbackRepository.SaveChangesAsync();
 

@@ -12,10 +12,10 @@ public partial class CategoryHandler
       throw new NotFoundException("Categoria não encontrada.");
 
     if (category.Rooms.Count > 0)
-      throw new InvalidOperationException("Não é possível deletar a categoria pois tem cômodos associados a ela. Sugiro que troque a categoria dos quartos associados.");
+      throw new InvalidOperationException("Não é possível deletar a categoria pois tem hospedagems associados a ela. Sugiro que troque a categoria dos quartos associados.");
 
     _repository.Delete(category);
     await _repository.SaveChangesAsync();
-    return new Response(200,"Categoria deletada com sucesso!.", new { id });
+    return new Response(200,"Categoria deletada com sucesso!", new { id });
   }
 }

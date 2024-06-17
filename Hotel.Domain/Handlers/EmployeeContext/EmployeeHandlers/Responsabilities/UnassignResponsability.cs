@@ -5,17 +5,17 @@ namespace Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 
 public partial class EmployeeHandler : IHandler
 {
-  public async Task<Response> HandleUnassignResponsabilityAsync(Guid id, Guid responsabilityId)
+  public async Task<Response> HandleUnassignResponsibilityAsync(Guid id, Guid responsibilityId)
   {
-    var employee = await _repository.GetEmployeeIncludesResponsabilities(id);
+    var employee = await _repository.GetEmployeeIncludesResponsibilities(id);
     if (employee == null)
       throw new ArgumentException("Funcionário não encontrado.");
 
-    var responsability = await _responsabilityRepository.GetEntityByIdAsync(responsabilityId);
-    if (responsability == null)
+    var responsibility = await _responsibilityRepository.GetEntityByIdAsync(responsibilityId);
+    if (responsibility == null)
       throw new ArgumentException("Responsabilidade não encontrada.");
 
-    employee.RemoveResponsability(responsability);
+    employee.RemoveResponsibility(responsibility);
 
     await _repository.SaveChangesAsync();
 

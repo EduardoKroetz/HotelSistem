@@ -92,16 +92,16 @@ public class RoomController : ControllerBase
     => Ok(await _handler.HandleUpdateCapacityAsync(id, capacity));
 
   // Endpoint para atualizar a categoria de um quarto (com permissão)
-  [HttpPatch("{id:guid}/categories/{categoryId:guid}")]
+  [HttpPatch("{id:guid}/category/{categoryId:guid}")]
   [AuthorizePermissions([EPermissions.UpdateRoomCategory, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
   public async Task<IActionResult> UpdateCategoryAsync([FromRoute] Guid id, [FromRoute] Guid categoryId)
     => Ok(await _handler.HandleUpdateCategoryAsync(id, categoryId));
 
   // Endpoint para atualizar o preço de um quarto (com permissão)
-  [HttpPatch("{id:guid}/price/{price:decimal}")]
+  [HttpPatch("{id:guid}/price")]
   [AuthorizePermissions([EPermissions.UpdateRoomPrice, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-  public async Task<IActionResult> UpdatePriceAsync([FromRoute] Guid id, [FromRoute] decimal price)
-    => Ok(await _handler.HandleUpdatePriceAsync(id, price));
+  public async Task<IActionResult> UpdatePriceAsync([FromRoute] Guid id, [FromBody] UpdatePriceDTO update)
+    => Ok(await _handler.HandleUpdatePriceAsync(id, update.Price));
 
   // Endpoint para ativar um quarto
   [HttpPatch("enable/{id:guid}")]

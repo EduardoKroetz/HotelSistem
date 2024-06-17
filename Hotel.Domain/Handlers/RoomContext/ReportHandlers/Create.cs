@@ -19,10 +19,10 @@ public partial class ReportHandler : IHandler
   }
 
 
-  public async Task<Response> HandleCreateAsync(CreateReport model)
+  public async Task<Response> HandleCreateAsync(EditorReport model)
   {
     var employee = await _employeeRepository.GetEntityByIdAsync(model.EmployeeId)
-      ?? throw new NotFoundException("Funcionário não encontrado..");
+      ?? throw new NotFoundException("Funcionário não encontrado.");
 
     var report = new Report(model.Summary,model.Description,model.Priority,employee,model.Resolution);
 

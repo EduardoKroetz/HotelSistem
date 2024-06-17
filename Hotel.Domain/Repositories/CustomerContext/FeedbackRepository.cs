@@ -17,7 +17,7 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
       .Feedbacks
       .AsNoTracking()
       .Where(x => x.Id == id)
-      .Select(x => new GetFeedback(x.Id, x.Comment, x.Rate, x.Likes.Count, x.Deslikes.Count, x.CustomerId, x.ReservationId, x.RoomId,x.UpdatedAt,x.CreatedAt))
+      .Select(x => new GetFeedback(x.Id, x.Comment, x.Rate, x.Likes.Count, x.Dislikes.Count, x.CustomerId, x.ReservationId, x.RoomId,x.UpdatedAt,x.CreatedAt))
       .FirstOrDefaultAsync();
 
 
@@ -36,8 +36,8 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
     if (queryParameters.Likes.HasValue)
       query = query.FilterByOperator(queryParameters.LikesOperator, x => x.Likes.Count, queryParameters.Likes);
 
-    if (queryParameters.Deslikes.HasValue)
-      query = query.FilterByOperator(queryParameters.DeslikesOperator, x => x.Deslikes.Count, queryParameters.Deslikes);
+    if (queryParameters.Dislikes.HasValue)
+      query = query.FilterByOperator(queryParameters.DislikesOperator, x => x.Dislikes.Count, queryParameters.Dislikes);
 
     if (queryParameters.UpdatedAt.HasValue)
       query = query.FilterByOperator(queryParameters.UpdatedAtOperator, x => x.UpdatedAt, queryParameters.UpdatedAt);
@@ -59,7 +59,7 @@ public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackReposito
       x.Comment,
       x.Rate,
       x.Likes.Count,
-      x.Deslikes.Count,
+      x.Dislikes.Count,
       x.CustomerId,
       x.ReservationId,
       x.RoomId, 

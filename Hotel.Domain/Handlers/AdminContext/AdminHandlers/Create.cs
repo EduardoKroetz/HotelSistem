@@ -30,13 +30,11 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, 
   {
     //Validação do código
     var email = new Email(model.Email);
-    var response = await _emailService.VerifyEmailCodeAsync(email, code);
-    if (response.Status != 200)
-      return response;
+    await _emailService.VerifyEmailCodeAsync(email, code);
 
     //Criação do administrador
 
-    var defaultAdminPermission = DefaultAdminPermissions.DefaultPermission ?? await _repository.GetDefaultAdminPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
+    var defaultAdminPermission = await _repository.GetDefaultAdminPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
 
     var admin = new Admin(
       new Name(model.FirstName,model.LastName),
@@ -63,10 +61,10 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository,Admin>, 
       {
 
         if (innerException.Contains("Email"))
-          return new Response(400,"Esse email já está cadastrado.");
+          throw new ArgumentException("Esse email já está cadastrado.");
 
         if (innerException.Contains("Phone"))
-          return new Response(400,"Esse telefone já está cadastrado.");
+          throw new ArgumentException("Esse telefone já está cadastrado.");
       }
     }
  

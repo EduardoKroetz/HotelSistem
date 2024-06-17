@@ -177,22 +177,22 @@ public class ServiceRepositoryTest
 
 
     [TestMethod]
-    public async Task GetAsync_WhereResponsabilityId_ReturnServices()
+    public async Task GetAsync_WhereResponsibilityId_ReturnServices()
     {
 
-        var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, BaseRepositoryTest.Responsabilities[0].Id, null, null, null, null, null);
+        var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, BaseRepositoryTest.Responsibilities[0].Id, null, null, null, null, null);
         var services = await ServiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(services.Any());
 
         foreach (var service in services)
         {
-            var hasResponsability = await BaseRepositoryTest.MockConnection.Context.Services
+            var hasResponsibility = await BaseRepositoryTest.MockConnection.Context.Services
               .Where(x => x.Id == service.Id)
-              .SelectMany(x => x.Responsabilities)
-              .AnyAsync(x => x.Id == BaseRepositoryTest.Responsabilities[0].Id);
+              .SelectMany(x => x.Responsibilities)
+              .AnyAsync(x => x.Id == BaseRepositoryTest.Responsibilities[0].Id);
 
-            Assert.IsTrue(hasResponsability);
+            Assert.IsTrue(hasResponsibility);
         }
     }
 

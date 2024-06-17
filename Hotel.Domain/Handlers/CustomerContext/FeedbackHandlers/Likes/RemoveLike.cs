@@ -7,7 +7,7 @@ public partial class FeedbackHandler
 {
   public async Task<Response> HandleRemoveLikeAsync(Guid feedbackId, Guid customerId)
   {
-    var like = await _likeRepository.GetLikeAsync(feedbackId, customerId) ?? throw new NotFoundException("Like não encontrado.");
+    var like = await _likeRepository.GetLikeAsync(feedbackId, customerId) ?? throw new NotFoundException("Não foi possível encontrar o registro no banco de dados.");
 
     _likeRepository.RemoveLike(like);
 

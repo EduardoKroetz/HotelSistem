@@ -18,14 +18,14 @@ namespace Hotel.Domain.Handlers.EmployeeContext.EmployeeHandlers;
 public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Employee> ,IHandler
 {
   private readonly IEmployeeRepository  _repository;
-  private readonly IResponsabilityRepository _responsabilityRepository;
+  private readonly IResponsibilityRepository _responsibilityRepository;
   private readonly IPermissionRepository _permissionRepository;
   private readonly IEmailService _emailService;
 
-  public EmployeeHandler(IEmployeeRepository repository, IResponsabilityRepository responsabilityRepository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository)
+  public EmployeeHandler(IEmployeeRepository repository, IResponsibilityRepository responsibilityRepository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository)
   {
     _repository = repository;
-    _responsabilityRepository = responsabilityRepository;
+    _responsibilityRepository = responsibilityRepository;
     _permissionRepository = permissionRepository;
     _emailService = emailService;
   }
@@ -33,11 +33,9 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Em
   public async Task<Response> HandleCreateAsync(CreateEmployee model, string? code)
   {
     var email = new Email(model.Email);
-    var response = await _emailService.VerifyEmailCodeAsync(email ,code);
-    if (response.Status != 200)
-      return response;
+    await _emailService.VerifyEmailCodeAsync(email ,code);
 
-    DefaultEmployeePermissions.DefaultPermission = DefaultEmployeePermissions.DefaultPermission ?? await _repository.GetDefaultPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
+    DefaultEmployeePermissions.DefaultPermission = await _repository.GetDefaultPermission() ?? throw new NotFoundException("Permissão padrão não encontrada.");
 
     var employee = new Employee(
       new Name(model.FirstName,model.LastName),
@@ -62,12 +60,11 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository,Em
 
       if (innerException != null)
       {
-
         if (innerException.Contains("Email"))
-          return new Response(400, "Esse email já está cadastrado.");
+          throw new ArgumentException("Esse email já está cadastrado.");
 
         if (innerException.Contains("Phone"))
-          return new Response(400, "Esse telefone já está cadastrado.");
+          throw new ArgumentException("Esse telefone já está cadastrado.");
       }
     }
 

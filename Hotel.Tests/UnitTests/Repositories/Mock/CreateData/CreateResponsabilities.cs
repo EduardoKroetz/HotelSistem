@@ -1,15 +1,15 @@
-﻿using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+﻿using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Tests.UnitTests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Tests.UnitTests.Repositories.Mock.CreateData;
 
-public class CreateResponsabilities
+public class CreateResponsibilities
 {
-    public static async Task Create()
-    {
-        var responsabilities = new List<Responsability>()
+  public static async Task Create()
+  {
+    var responsabilities = new List<Responsibility>()
     {
       new("Secretária","Secretária",EPriority.Medium),
       new("Atender a chamadas de serviço","Atender a chamadas de serviço",EPriority.High),
@@ -33,9 +33,9 @@ public class CreateResponsabilities
       new("Organizar reuniões de equipe", "Organizar reuniões de equipe", EPriority.Medium)
     };
 
-        await BaseRepositoryTest.MockConnection.Context.Responsabilities.AddRangeAsync(responsabilities);
-        await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
+    await BaseRepositoryTest.MockConnection.Context.Responsibilities.AddRangeAsync(responsabilities);
+    await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
 
-        BaseRepositoryTest.Responsabilities = await BaseRepositoryTest.MockConnection.Context.Responsabilities.ToListAsync();
-    }
+    BaseRepositoryTest.Responsibilities = await BaseRepositoryTest.MockConnection.Context.Responsibilities.ToListAsync();
+  }
 }

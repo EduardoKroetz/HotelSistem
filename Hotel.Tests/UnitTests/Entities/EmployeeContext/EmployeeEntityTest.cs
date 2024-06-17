@@ -1,5 +1,5 @@
 using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
-using Hotel.Domain.Entities.EmployeeContext.ResponsabilityEntity;
+using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Exceptions;
 using Hotel.Tests.UnitTests.Entities;
@@ -9,7 +9,7 @@ namespace Hotel.Tests.UnitTests.Entities.EmployeeContext;
 [TestClass]
 public class EmployeeEntityTest
 {
-    private readonly Responsability Responsability = new("Limpar os quartos", "Limpar", EPriority.Low);
+    private readonly Responsibility Responsibility = new("Limpar os quartos", "Limpar", EPriority.Low);
 
     [TestMethod]
     public void ValidEmployee_MustBeValid()
@@ -36,38 +36,38 @@ public class EmployeeEntityTest
     }
 
     [TestMethod]
-    public void AddResponsability_MustBeAdded()
+    public void AddResponsibility_MustBeAdded()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
-        employee.AddResponsability(Responsability);
-        Assert.AreEqual(1, employee.Responsabilities.Count);
+        employee.AddResponsibility(Responsibility);
+        Assert.AreEqual(1, employee.Responsibilities.Count);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
-    public void AddSameResponsability_ExpectedException()
+    public void AddSameResponsibility_ExpectedException()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
-        employee.AddResponsability(Responsability);
-        employee.AddResponsability(Responsability);
+        employee.AddResponsibility(Responsibility);
+        employee.AddResponsibility(Responsibility);
         Assert.Fail();
     }
 
     [TestMethod]
-    public void RemoveResponsability_MustBeRemoved()
+    public void RemoveResponsibility_MustBeRemoved()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
-        employee.AddResponsability(Responsability);
-        employee.RemoveResponsability(Responsability);
-        Assert.AreEqual(0, employee.Responsabilities.Count);
+        employee.AddResponsibility(Responsibility);
+        employee.RemoveResponsibility(Responsibility);
+        Assert.AreEqual(0, employee.Responsibilities.Count);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
-    public void RemoveNonExistingResponsability_ExpectedException()
+    public void RemoveNonExistingResponsibility_ExpectedException()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
-        employee.RemoveResponsability(Responsability);
+        employee.RemoveResponsibility(Responsibility);
         Assert.Fail();
     }
 

@@ -105,16 +105,16 @@ BEGIN
         VALUES (NEWID(), 'CreateEmployee', 'Permissão para criar um funcionário.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignEmployeeResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignEmployeeResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AssignEmployeeResponsability', 'Permissão para atribuir responsabilidades a um funcionário.', 1, GETDATE());
+        VALUES (NEWID(), 'AssignEmployeeResponsibility', 'Permissão para atribuir responsabilidades a um funcionário.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignEmployeeResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignEmployeeResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'UnassignEmployeeResponsability', 'Permissão para desatribuir responsabilidades de um funcionário.', 1, GETDATE());
+        VALUES (NEWID(), 'UnassignEmployeeResponsibility', 'Permissão para desatribuir responsabilidades de um funcionário.', 1, GETDATE());
     END;
 
         IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignEmployeePermission')
@@ -129,36 +129,36 @@ BEGIN
         VALUES (NEWID(), 'UnassignEmployeePermission', 'Permissão para desatribuir permissões de um funcionário.', 1, GETDATE());
     END;
 
-    --Responsabilities
+    --Responsibilities
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetResponsabilities')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetResponsibilities')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'GetResponsabilities', 'Permissão para visualizar todas as responsabilidades.', 1, GETDATE());
+        VALUES (NEWID(), 'GetResponsibilities', 'Permissão para visualizar todas as responsabilidades.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'GetResponsability', 'Permissão para visualizar uma responsabilidade específica.', 1, GETDATE());
+        VALUES (NEWID(), 'GetResponsibility', 'Permissão para visualizar uma responsabilidade específica.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'CreateResponsability', 'Permissão para criar uma nova responsabilidade.', 1, GETDATE());
+        VALUES (NEWID(), 'CreateResponsibility', 'Permissão para criar uma nova responsabilidade.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'EditResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'EditResponsability', 'Permissão para editar uma responsabilidade existente.', 1, GETDATE());
+        VALUES (NEWID(), 'EditResponsibility', 'Permissão para editar uma responsabilidade existente.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'DeleteResponsability', 'Permissão para deletar uma responsabilidade.', 1, GETDATE());
+        VALUES (NEWID(), 'DeleteResponsibility', 'Permissão para deletar uma responsabilidade.', 1, GETDATE());
     END;
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteRoomInvoice')
     BEGIN
@@ -369,24 +369,24 @@ BEGIN
         VALUES (NEWID(), 'DeleteService', 'Permissão para deletar um serviço.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignServiceResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AssignServiceResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AssignServiceResponsability', 'Permissão para atribuir uma responsabilidade a um serviço.', 1, GETDATE());
+        VALUES (NEWID(), 'AssignServiceResponsibility', 'Permissão para atribuir uma responsabilidade a um serviço.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignServiceResponsability')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UnassignServiceResponsibility')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'UnassignServiceResponsability', 'Permissão para desatribuir uma responsabilidade de um serviço.', 1, GETDATE());
+        VALUES (NEWID(), 'UnassignServiceResponsibility', 'Permissão para desatribuir uma responsabilidade de um serviço.', 1, GETDATE());
     END;
     
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'AvailableRoomStatus')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'AvailableRoomStatus', 'Permissão para alterar o status de um cômodo para disponível.', 1, GETDATE());
+        VALUES (NEWID(), 'AvailableRoomStatus', 'Permissão para alterar o status de um hospedagem para disponível.', 1, GETDATE());
     END;
-    
+  
 END;
 
 

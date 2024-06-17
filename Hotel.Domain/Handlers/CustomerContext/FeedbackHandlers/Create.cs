@@ -15,16 +15,16 @@ public partial class FeedbackHandler : IHandler
   private readonly IReservationRepository _reservationRepository;
   private readonly IRoomRepository _roomRepository;
   private readonly ILikeRepository _likeRepository;
-  private readonly IDeslikeRepository _deslikeRepository;
+  private readonly IDeslikeRepository _dislikeRepository;
 
-  public FeedbackHandler(IFeedbackRepository feedbackRepository, ICustomerRepository customerRepository, IReservationRepository reservationRepository, IRoomRepository roomRepository, ILikeRepository likeRepository, IDeslikeRepository deslikeRepository)
+  public FeedbackHandler(IFeedbackRepository feedbackRepository, ICustomerRepository customerRepository, IReservationRepository reservationRepository, IRoomRepository roomRepository, ILikeRepository likeRepository, IDeslikeRepository dislikeRepository)
   {
     _feedbackRepository = feedbackRepository;
     _customerRepository = customerRepository;
     _reservationRepository = reservationRepository;
     _roomRepository = roomRepository;
     _likeRepository = likeRepository;
-    _deslikeRepository = deslikeRepository;
+    _dislikeRepository = dislikeRepository;
   }
 
   public async Task<Response> HandleCreateAsync(CreateFeedback model, Guid userId)
