@@ -20,8 +20,21 @@ public class CategoryController : ControllerBase
   // Endpoint para buscar as categorias
   [HttpGet]
   public async Task<IActionResult> GetAsync(
-    [FromBody] CategoryQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? name,
+    [FromQuery] decimal? averagePrice,
+    [FromQuery] string? averagePriceOperator,
+    [FromQuery] Guid? roomId
+  )
+  {
+    var queryParameters = new CategoryQueryParameters(
+        skip, take, name, averagePrice, averagePriceOperator, roomId
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   // Endpoint para buscar uma categoria por ID
   [HttpGet("{Id:guid}")]

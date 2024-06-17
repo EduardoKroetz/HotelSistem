@@ -23,8 +23,34 @@ public class FeedbackController : ControllerBase
 
   // Endpoint para buscar feedbacks
   [HttpGet]
-  public async Task<IActionResult> GetAsync([FromBody] FeedbackQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator,
+    [FromQuery] string? comment,
+    [FromQuery] int? rate,
+    [FromQuery] string? rateOperator,
+    [FromQuery] int? likes,
+    [FromQuery] string? likesOperator,
+    [FromQuery] int? deslikes,
+    [FromQuery] string? deslikesOperator,
+    [FromQuery] DateTime? updatedAt,
+    [FromQuery] string? updatedAtOperator,
+    [FromQuery] Guid? customerId,
+    [FromQuery] Guid? reservationId,
+    [FromQuery] Guid? roomId
+  )
+  {
+    var queryParameters = new FeedbackQueryParameters(
+      skip, take, createdAt, createdAtOperator, comment, rate,
+      rateOperator, likes, likesOperator, deslikes, deslikesOperator,
+      updatedAt, updatedAtOperator, customerId, reservationId, roomId
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   // Endpoint para buscar feedback por ID
   [HttpGet("{Id:guid}")]

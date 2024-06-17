@@ -26,8 +26,45 @@ public class ReservationController : ControllerBase
   //Somente administradores ou funcionários com permissão possuem acesso.
   //Administradores e funcionários tem acesso por padrão.
   [HttpGet]
-  public async Task<IActionResult> GetAsync([FromBody] ReservationQueryParameters queryParameters)
-  => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] TimeSpan? timeHosted,
+    [FromQuery] string? timeHostedOperator,
+    [FromQuery] decimal? dailyRate,
+    [FromQuery] string? dailyRateOperator,
+    [FromQuery] DateTime? checkIn,
+    [FromQuery] string? checkInOperator,
+    [FromQuery] DateTime? checkOut,
+    [FromQuery] string? checkOutOperator,
+    [FromQuery] EReservationStatus? status,
+    [FromQuery] int? capacity,
+    [FromQuery] string? capacityOperator,
+    [FromQuery] Guid? roomId,
+    [FromQuery] Guid? customerId,
+    [FromQuery] Guid? invoiceId,
+    [FromQuery] Guid? serviceId,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator,
+    [FromQuery] DateTime? expectedCheckIn,
+    [FromQuery] string? expectedCheckInOperator,
+    [FromQuery] DateTime? expectedCheckOut,
+    [FromQuery] string? expectedCheckOutOperator,
+    [FromQuery] TimeSpan? expectedTimeHosted,
+    [FromQuery] string? expectedTimeHostedOperator
+  )
+  {
+    var queryParameters = new ReservationQueryParameters(
+        skip, take, timeHosted, timeHostedOperator, dailyRate, dailyRateOperator,
+        checkIn, checkInOperator, checkOut, checkOutOperator, status, capacity,
+        capacityOperator, roomId, customerId, invoiceId, serviceId, createdAt,
+        createdAtOperator, expectedCheckIn, expectedCheckInOperator, expectedCheckOut,
+        expectedCheckOutOperator, expectedTimeHosted, expectedTimeHostedOperator
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
+
 
   //Buscar reserva pelo Id.
   //Todos os usuários possuem acesso.

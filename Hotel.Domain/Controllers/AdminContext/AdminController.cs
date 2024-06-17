@@ -29,8 +29,28 @@ public class AdminController : ControllerBase
   //Administradores podem acessar por padrão.
   [HttpGet]
   [AuthorizePermissions([EPermissions.GetAdmins, EPermissions.DefaultAdminPermission])]
-  public async Task<IActionResult> GetAsync([FromBody]AdminQueryParameters queryParameters)
-    => Ok(await _handler.HandleGetAsync(queryParameters));
+  public async Task<IActionResult> GetAsync(
+    [FromQuery] int? skip,
+    [FromQuery] int? take,
+    [FromQuery] string? name,
+    [FromQuery] string? email,
+    [FromQuery] string? phone,
+    [FromQuery] EGender? gender,
+    [FromQuery] DateTime? dateOfBirth,
+    [FromQuery] string? dateOfBirthOperator,
+    [FromQuery] DateTime? createdAt,
+    [FromQuery] string? createdAtOperator,
+    [FromQuery] bool? isRootAdmin,
+    [FromQuery] Guid? permissionId
+  )
+  {
+    var queryParameters = new AdminQueryParameters(
+        skip, take, name, email, phone, gender, dateOfBirth,
+        dateOfBirthOperator, createdAt, createdAtOperator, isRootAdmin, permissionId
+    );
+
+    return Ok(await _handler.HandleGetAsync(queryParameters));
+  }
 
   //Buscar o administrador pelo id.
   //Administradores com permissão podem acessar.
