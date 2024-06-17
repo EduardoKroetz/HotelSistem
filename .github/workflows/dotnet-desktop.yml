@@ -25,6 +25,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Set up locale
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y locales
+        sudo locale-gen pt_BR.UTF-8
+        sudo update-locale LANG=pt_BR.UTF-8
+
     - name: Restore dependencies
       run: dotnet restore 
 
@@ -40,3 +47,7 @@ jobs:
  
     - name: Build the application
       run: dotnet build HotelSistem.sln -c Release
+
+    - name: Check file encoding
+      run: |
+        find . -type f -name '*.cs' -exec file -i {} \;
