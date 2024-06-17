@@ -24,6 +24,7 @@ jobs:
       EmailToSendEmail: ${{ secrets.EMAIL_TO_SEND_EMAIL }}
       JwtKey: ${{ secrets.JWT_KEY }}
 
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
