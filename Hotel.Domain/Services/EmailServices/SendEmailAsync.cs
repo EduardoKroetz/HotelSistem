@@ -1,37 +1,38 @@
-﻿using System.Net.Mail;
-using System.Net;
+﻿using Hotel.Domain.Services.EmailServices.Interfaces;
 using Hotel.Domain.Services.EmailServices.Models;
-using Hotel.Domain.Services.EmailServices.Interface;
+using System.Net;
+using System.Net.Mail;
 
 namespace Hotel.Domain.Services.EmailServices;
 
 public partial class EmailService : IEmailService
 {
-  public async Task SendEmailAsync(SendEmailModel email)
-  {
-    var mailMessage = new MailMessage();
-    mailMessage.From = new MailAddress(Configuration.Configuration.EmailToSendEmail);
-    mailMessage.Subject = email.Subject;
-    mailMessage.Body = email.Body;
-    mailMessage.To.Add(email.To.Address);
-
-    if (email.AttachmentPath != null)
-      mailMessage.Attachments.Add(new Attachment(email.AttachmentPath)); 
-
-    var smtpClient = new SmtpClient("smtp-mail.outlook.com", 587)
+    public async Task SendEmailAsync(SendEmailModel email)
     {
-      DeliveryMethod = SmtpDeliveryMethod.Network,
-      EnableSsl = true,
-      Credentials = new NetworkCredential(Configuration.Configuration.EmailToSendEmail, Configuration.Configuration.PasswordToSendEmail)
-    };
+        var mailMessage = new MailMessage();
+        mailMessage.From = new MailAddress(Configuration.EmailToSendEmail);
+        mailMessage.Subject = email.Subject;
+        mailMessage.Body = email.Body;
+        mailMessage.To.Add(email.To.Address);
 
-    try
-    {
-      await smtpClient.SendMailAsync(mailMessage);
-      Console.WriteLine("Email enviado com sucesso!");
-    }catch (Exception ex)
-    {
-      Console.WriteLine("Ocorreu um erro ao enviar o e-mail: " + ex.Message);
+        if (email.AttachmentPath != null)
+            mailMessage.Attachments.Add(new Attachment(email.AttachmentPath));
+
+        var smtpClient = new SmtpClient("smtp-mail.outlook.com", 587)
+        {
+            DeliveryMethod = SmtpDeliveryMethod.Network,
+            EnableSsl = true,
+            Credentials = new NetworkCredential(Configuration.EmailToSendEmail, Configuration.PasswordToSendEmail)
+        };
+
+        try
+        {
+            await smtpClient.SendMailAsync(mailMessage);
+            Console.WriteLine("Email enviado com sucesso!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ocorreu um erro ao enviar o e-mail: " + ex.Message);
+        }
     }
-  }
 }

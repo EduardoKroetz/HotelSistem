@@ -5,26 +5,26 @@ namespace Hotel.Domain.ValueObjects;
 
 public class Name : ValueObject
 {
-  public Name(string firstName, string lastName)
-  {
-    FirstName = firstName;
-    LastName = lastName;
+    public Name(string firstName, string lastName)
+    {
+        FirstName = firstName;
+        LastName = lastName;
 
-    Validate();
-  }
+        Validate();
+    }
 
-  public string FirstName { get; private set; }
-  public string LastName { get; private set;}
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
 
-  public override void Validate()
-  {
-    if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName))
-      throw new ValidationException("Informe o primeiro e o segundo nome.");
-    
-    base.Validate();
-  }
+    public override void Validate()
+    {
+        if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName))
+            throw new ValidationException("Informe o primeiro e o segundo nome.");
 
-  public string GetFullName()
-  => $"{FirstName} {LastName}";
-  
+        base.Validate();
+    }
+
+    public string GetFullName()
+    => $"{FirstName} {LastName}";
+
 }

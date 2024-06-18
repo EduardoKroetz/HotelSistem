@@ -1,14 +1,14 @@
-using Hotel.Domain.Entities.AdminContext.AdminEntity;
-using Hotel.Domain.Entities.AdminContext.PermissionEntity;
-using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
-using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
-using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
-using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
-using Hotel.Domain.Entities.RoomContext.CategoryEntity;
-using Hotel.Domain.Entities.RoomContext.ImageEntity;
-using Hotel.Domain.Entities.RoomContext.RoomEntity;
-using Hotel.Domain.Entities.RoomContext.ServiceEntity;
+using Hotel.Domain.Entities.AdminEntity;
+using Hotel.Domain.Entities.CustomerEntity;
+using Hotel.Domain.Entities.FeedbackEntity;
+using Hotel.Domain.Entities.EmployeeEntity;
+using Hotel.Domain.Entities.ResponsibilityEntity;
+using Hotel.Domain.Entities.ImageEntity;
+using Hotel.Domain.Entities.PermissionEntity;
+using Hotel.Domain.Entities.ReservationEntity;
+using Hotel.Domain.Entities.CategoryEntity;
+using Hotel.Domain.Entities.RoomEntity;
+using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
 

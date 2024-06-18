@@ -1,18 +1,17 @@
-﻿using Hotel.Domain.Entities.AdminContext.AdminEntity;
-using Hotel.Domain.Entities.AdminContext.PermissionEntity;
-using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Entities.CustomerContext.FeedbackEntity;
-using Hotel.Domain.Entities.EmployeeContext.EmployeeEntity;
-using Hotel.Domain.Entities.EmployeeContext.ResponsibilityEntity;
-using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
-using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
-using Hotel.Domain.Entities.RoomContext.CategoryEntity;
-using Hotel.Domain.Entities.RoomContext.ReportEntity;
-using Hotel.Domain.Entities.RoomContext.RoomEntity;
-using Hotel.Domain.Entities.RoomContext.ServiceEntity;
-using Hotel.Tests.UnitTests.Repositories;
+﻿using Hotel.Domain.Entities.AdminEntity;
+using Hotel.Domain.Entities.CustomerEntity;
+using Hotel.Domain.Entities.FeedbackEntity;
+using Hotel.Domain.Entities.EmployeeEntity;
+using Hotel.Domain.Entities.ResponsibilityEntity;
+using Hotel.Domain.Entities.PermissionEntity;
+using Hotel.Domain.Entities.ReservationEntity;
+using Hotel.Domain.Entities.CategoryEntity;
+using Hotel.Domain.Entities.ReportEntity;
+using Hotel.Domain.Entities.RoomEntity;
+using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Tests.UnitTests.Repositories.Mock.CreateData;
 using Microsoft.EntityFrameworkCore;
+using Hotel.Domain.Entities.InvoiceEntity;
 
 
 namespace Hotel.Tests.UnitTests.Repositories.Mock;
@@ -31,7 +30,7 @@ public static class BaseRepositoryTest
     public static List<Permission> Permissions { get; set; } = [];
     public static List<Feedback> Feedbacks { get; set; } = [];
     public static List<Responsibility> Responsibilities { get; set; } = [];
-    public static List<RoomInvoice> RoomInvoices { get; set; } = [];
+    public static List<Invoice> Invoices { get; set; } = [];
     public static List<Reservation> ReservationsToFinish { get; set; } = [];
     public static List<Report> Reports { get; set; } = [];
 
@@ -54,7 +53,7 @@ public static class BaseRepositoryTest
 
         await CreateRooms.Create();
         await CreateReservations.Create();
-        await CreateRoomInvoices.Create();
+        await CreateInvoices.Create();
 
         await CreateFeedbacks.Create();
     }
@@ -64,7 +63,7 @@ public static class BaseRepositoryTest
         MockConnection.Context.Admins.RemoveRange(await MockConnection.Context.Admins.ToListAsync());
         MockConnection.Context.Employees.RemoveRange(await MockConnection.Context.Employees.ToListAsync());
         MockConnection.Context.Reports.RemoveRange(await MockConnection.Context.Reports.ToListAsync());
-        MockConnection.Context.RoomInvoices.RemoveRange(await MockConnection.Context.RoomInvoices.ToListAsync());
+        MockConnection.Context.Invoices.RemoveRange(await MockConnection.Context.Invoices.ToListAsync());
         MockConnection.Context.Reservations.RemoveRange(await MockConnection.Context.Reservations.ToListAsync());
         MockConnection.Context.Customers.RemoveRange(await MockConnection.Context.Customers.ToListAsync());
         MockConnection.Context.Services.RemoveRange(await MockConnection.Context.Services.ToListAsync());

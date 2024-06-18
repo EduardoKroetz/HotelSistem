@@ -1,6 +1,4 @@
-﻿using Hotel.Domain.DTOs.Interfaces;
-
-namespace Hotel.Domain.DTOs.Base.User;
+﻿namespace Hotel.Domain.DTOs.Base.User;
 
 public record UpdateDateOfBirth(DateTime? DateOfBirth) : IDataTransferObject;
 
