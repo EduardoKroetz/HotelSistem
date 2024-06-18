@@ -26,16 +26,17 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, C
         var email = new Email(model.Email);
         await _emailService.VerifyEmailCodeAsync(email, code);
 
+        var name = new Name(model.FirstName, model.LastName);
+
         var customer = new Customer(
-          new Name(model.FirstName, model.LastName),
-          new Email(model.Email),
+          name,
+          email,
           new Phone(model.Phone),
           model.Password,
           model.Gender,
           model.DateOfBirth,
           new Address(model.Country, model.City, model.Street, model.Number)
         );
-
 
         try
         {

@@ -12,7 +12,11 @@ public class CustomerMapping : UserBaseMapping<Customer>, IEntityTypeConfigurati
     {
         BaseMapping(builder);
 
+
         builder.ToTable("Customers");
+
+        builder.Property(x => x.StripeCustomerId)
+            .HasColumnType("NVARCHAR(120)");
 
         builder.HasMany(c => c.Feedbacks)
           .WithOne(f => f.Customer)

@@ -8,6 +8,11 @@ public static class LoadConfigurationClass
         Configuration.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
         Configuration.EmailToSendEmail = builder.Configuration.GetValue<string>("EmailToSendEmail")!;
         Configuration.PasswordToSendEmail = builder.Configuration.GetValue<string>("PasswordToSendEmail")!;
+        
+        var stripe = builder.Configuration.GetSection("Stripe")!;
+
+        Configuration.Stripe.SecretKey = stripe.GetValue<string>("SecretKey")!;
+        Configuration.Stripe.PublishableKey = stripe.GetValue<string>("PublishableKey")!;
     }
 
 }
