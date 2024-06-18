@@ -10,37 +10,37 @@ namespace Hotel.Domain.Attributes;
 /// </summary>
 public class AuthorizePermissions : Attribute, IAuthorizationFilter
 {
-  
-  private readonly ERoles[] _roles;
-  private readonly EPermissions[] _permissions;
-  public AuthorizePermissions(EPermissions[] permissions, ERoles[]? roles = null)
-  {
-    _roles = roles ?? [];
-    _permissions = permissions;
-  }
 
-  public void OnAuthorization(AuthorizationFilterContext context)
-  {
-    var user = context.HttpContext.User;
-    if (!user.Identity!.IsAuthenticated)
+    private readonly ERoles[] _roles;
+    private readonly EPermissions[] _permissions;
+    public AuthorizePermissions(EPermissions[] permissions, ERoles[]? roles = null)
     {
-      context.Result = new UnauthorizedResult();
-      return;
+        _roles = roles ?? [];
+        _permissions = permissions;
     }
 
-    var role = AuthorizationService.GetUserRole(user);
-    if (role == ERoles.RootAdmin)
-      return;
+    public void OnAuthorization(AuthorizationFilterContext context)
+    {
+        var user = context.HttpContext.User;
+        if (!user.Identity!.IsAuthenticated)
+        {
+            context.Result = new UnauthorizedResult();
+            return;
+        }
 
-    var hasRole = _roles.Any(x => x == role);
-    if (hasRole)
-      return;
+        var role = AuthorizationService.GetUserRole(user);
+        if (role == ERoles.RootAdmin)
+            return;
 
-    var permissions = AuthorizationService.GetUserPermissions(user);
+        var hasRole = _roles.Any(x => x == role);
+        if (hasRole)
+            return;
 
-    var hasPermission = _permissions.Any(permission => permissions!.Contains(permission));
+        var permissions = AuthorizationService.GetUserPermissions(user);
 
-    if (!hasRole && !hasPermission) 
-      context.Result = new ForbidResult();
-  }
+        var hasPermission = _permissions.Any(permission => permissions!.Contains(permission));
+
+        if (!hasRole && !hasPermission)
+            context.Result = new ForbidResult();
+    }
 }

@@ -1,18 +1,18 @@
 ﻿using Hotel.Domain.Data;
-using Hotel.Domain.Entities.AdminContext.PermissionEntity;
+using Hotel.Domain.Entities.PermissionEntity;
 
 public class SeedPermissions
 {
-  private readonly HotelDbContext _context;
+    private readonly HotelDbContext _context;
 
-  public SeedPermissions(HotelDbContext context)
-  {
-    _context = context;
-  }
+    public SeedPermissions(HotelDbContext context)
+    {
+        _context = context;
+    }
 
-  public async Task CreatePermissionsAsync()
-  {
-    var permissionsToAdd = new List<Permission>
+    public async Task CreatePermissionsAsync()
+    {
+        var permissionsToAdd = new List<Permission>
     {
       new Permission("GetAdmins", "Permissão para obter informações sobre administradores"),
       new Permission("GetAdmin", "Permissão para obter informações sobre um administrador específico"),
@@ -39,9 +39,9 @@ public class SeedPermissions
       new Permission("CreateResponsibility", "Permissão para criar uma nova responsabilidade"),
       new Permission("EditResponsibility", "Permissão para editar uma responsabilidade existente"),
       new Permission("DeleteResponsibility", "Permissão para deletar uma responsabilidade"),
-      new Permission("DeleteRoomInvoice", "Permissão para deletar uma fatura de quarto"),
-      new Permission("GetRoomInvoices", "Permissão para visualizar faturas de quarto"),
-      new Permission("GetRoomInvoice", "Permissão para visualizar uma fatura de quarto"),
+      new Permission("DeleteInvoice", "Permissão para deletar uma fatura de quarto"),
+      new Permission("GetInvoices", "Permissão para visualizar faturas de quarto"),
+      new Permission("GetInvoice", "Permissão para visualizar uma fatura de quarto"),
       new Permission("DeleteReservation", "Permissão para deletar uma reserva"),
       new Permission("UpdateReservationCheckout", "Permissão para atualizar o checkout de uma reserva"),
       new Permission("UpdateReservationCheckIn", "Permissão para atualizar o check-in de uma reserva"),
@@ -76,17 +76,17 @@ public class SeedPermissions
       new Permission("AvailableRoomStatus", "Permissão para alterar o status de um cômodo para disponível"),
     };
 
-    foreach (var permission in permissionsToAdd)
-    {
-      if (!_context.Permissions.Any(p => p.Name == permission.Name))
-      {
-        await _context.Permissions.AddAsync(permission);
-      }
+        foreach (var permission in permissionsToAdd)
+        {
+            if (!_context.Permissions.Any(p => p.Name == permission.Name))
+            {
+                await _context.Permissions.AddAsync(permission);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        var permissions = _context.Permissions.ToList();
     }
-
-    await _context.SaveChangesAsync();
-
-    var permissions = _context.Permissions.ToList();
-  }
 
 }

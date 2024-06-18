@@ -2,8 +2,8 @@
 
 public enum ERoles
 {
-  Admin = 1,
-  RootAdmin,
-  Employee,
-  Customer
+    Admin = 1,
+    RootAdmin,
+    Employee,
+    Customer
 }

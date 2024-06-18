@@ -1,6 +1,6 @@
-﻿using Hotel.Domain.Entities.AdminContext.AdminEntity;
+﻿using Hotel.Domain.Entities.AdminEntity;
 using Hotel.Domain.Enums;
-using Hotel.Domain.Repositories.AdminContext;
+using Hotel.Domain.Repositories;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.UnitTests.Repositories.Mock;
 

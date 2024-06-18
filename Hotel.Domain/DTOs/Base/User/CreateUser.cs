@@ -1,4 +1,3 @@
-using Hotel.Domain.DTOs.Interfaces;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.DTOs.Base.User;

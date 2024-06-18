@@ -26,7 +26,7 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
-  app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
 app.UseRouting();
 app.UseHandleExceptions();
@@ -38,4 +38,4 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Startup {}
+public partial class Startup { }

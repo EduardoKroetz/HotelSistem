@@ -160,24 +160,24 @@ BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
         VALUES (NEWID(), 'DeleteResponsibility', 'Permissão para deletar uma responsabilidade.', 1, GETDATE());
     END;
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteRoomInvoice')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'DeleteInvoice')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'DeleteRoomInvoice', 'Permissão para deletar uma fatura de quarto.', 1, GETDATE());
+        VALUES (NEWID(), 'DeleteInvoice', 'Permissão para deletar uma fatura de quarto.', 1, GETDATE());
     END;
 
     --Room invoices
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetRoomInvoices')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetInvoices')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'GetRoomInvoices', 'Permissão para visualizar faturas de quarto.', 1, GETDATE());
+        VALUES (NEWID(), 'GetInvoices', 'Permissão para visualizar faturas de quarto.', 1, GETDATE());
     END;
 
-    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetRoomInvoice')
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'GetInvoice')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
-        VALUES (NEWID(), 'GetRoomInvoice', 'Permissão para visualizar uma fatura de quarto.', 1, GETDATE());
+        VALUES (NEWID(), 'GetInvoice', 'Permissão para visualizar uma fatura de quarto.', 1, GETDATE());
     END;
 
 

@@ -4,10 +4,10 @@ namespace Hotel.Domain.ValueObjects.Base;
 
 public class ValueObject : IValueObject
 {
-  public bool IsValid { get; private set;}
+    public bool IsValid { get; private set; }
 
-  public virtual void Validate()
-  {
-    IsValid = true;
-  }
+    public virtual void Validate()
+    {
+        IsValid = true;
+    }
 }

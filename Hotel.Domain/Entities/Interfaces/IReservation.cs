@@ -1,8 +1,8 @@
 
-using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Entities.PaymentContext.InvoiceRoomEntity;
-using Hotel.Domain.Entities.RoomContext.RoomEntity;
-using Hotel.Domain.Entities.RoomContext.ServiceEntity;
+using Hotel.Domain.Entities.CustomerEntity;
+using Hotel.Domain.Entities.InvoiceEntity;
+using Hotel.Domain.Entities.RoomEntity;
+using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.Interfaces;
@@ -15,6 +15,6 @@ public interface IReservation
     Guid RoomId { get; }
     Room? Room { get; }
     Customer? Customer { get; }
-    RoomInvoice? Invoice { get; }
+    Invoice? Invoice { get; }
     ICollection<Service> Services { get; }
 }
