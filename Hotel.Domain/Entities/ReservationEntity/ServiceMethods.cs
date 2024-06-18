@@ -1,0 +1,22 @@
+using Hotel.Domain.Entities.ServiceEntity;
+using Hotel.Domain.Exceptions;
+
+namespace Hotel.Domain.Entities.ReservationEntity;
+
+partial class Reservation
+{
+    public void AddService(Service service)
+    {
+        if (service.IsActive)
+            Services.Add(service);
+        else
+            throw new ValidationException("Esse serviço está desativado.");
+    }
+
+    public void RemoveService(Service service)
+    {
+        if (!Services.Remove(service))
+            throw new ArgumentException("Esse serviço não está atribuido a essa reserva.");
+    }
+
+}

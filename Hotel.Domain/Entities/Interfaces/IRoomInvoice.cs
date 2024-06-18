@@ -1,12 +1,12 @@
 using Hotel.Domain.Entities.Base.Interfaces;
-using Hotel.Domain.Entities.CustomerContext;
-using Hotel.Domain.Entities.ReservationContext.ReservationEntity;
-using Hotel.Domain.Entities.RoomContext.ServiceEntity;
+using Hotel.Domain.Entities.CustomerEntity;
+using Hotel.Domain.Entities.ReservationEntity;
+using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.Interfaces;
 
-public interface IRoomInvoice : IEntity
+public interface IInvoice : IEntity
 {
     string Number { get; }
     DateTime IssueDate { get; }
