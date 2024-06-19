@@ -16,6 +16,7 @@ public partial class RoomHandler
         if (pendingReservations.Count > 0 && model.Price != room.Price)
             throw new InvalidOperationException("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas a hospedagem.");
 
+        room.ChangeName(model.Name);
         room.ChangeNumber(model.Number);
         room.ChangeCapacity(model.Capacity);
         room.ChangePrice(model.Price);

@@ -20,23 +20,24 @@ public class RoomController : ControllerBase
     // Endpoint para buscar todos os quartos
     [HttpGet]
     public async Task<IActionResult> GetAsync(
-      [FromQuery] int? skip,
-      [FromQuery] int? take,
-      [FromQuery] int? number,
-      [FromQuery] string? numberOperator,
-      [FromQuery] decimal? price,
-      [FromQuery] string? priceOperator,
-      [FromQuery] ERoomStatus? status,
-      [FromQuery] int? capacity,
-      [FromQuery] string? capacityOperator,
-      [FromQuery] Guid? serviceId,
-      [FromQuery] Guid? categoryId,
-      [FromQuery] DateTime? createdAt,
-      [FromQuery] string? createdAtOperator
+        [FromQuery] int? skip,
+        [FromQuery] int? take,
+        [FromQuery] string? name,
+        [FromQuery] int? number,
+        [FromQuery] string? numberOperator,
+        [FromQuery] decimal? price,
+        [FromQuery] string? priceOperator,
+        [FromQuery] ERoomStatus? status,
+        [FromQuery] int? capacity,
+        [FromQuery] string? capacityOperator,
+        [FromQuery] Guid? serviceId,
+        [FromQuery] Guid? categoryId,
+        [FromQuery] DateTime? createdAt,
+        [FromQuery] string? createdAtOperator
     )
     {
         var queryParameters = new RoomQueryParameters(
-            skip, take, number, numberOperator, price, priceOperator, status,
+            skip, take, name, number, numberOperator, price, priceOperator, status,
             capacity, capacityOperator, serviceId, categoryId, createdAt, createdAtOperator
         );
 

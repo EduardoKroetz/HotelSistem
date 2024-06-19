@@ -48,7 +48,7 @@ public class ServiceControllerTests
     public async Task CreateService_ShouldReturn_OK()
     {
         //Arange
-        var body = new EditorService("Room Cleaning", 30.00m, EPriority.Medium, 60);
+        var body = new EditorService("Room Cleaning", "Room Cleaning", 30.00m, EPriority.Medium, 60);
 
         //Act
         var response = await _client.PostAsJsonAsync(_baseUrl, body);
@@ -79,11 +79,11 @@ public class ServiceControllerTests
         var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
         factory.Login(client, _rootAdminToken);
 
-        var seed = new Service("Breakfast Delivery", 20.00m, EPriority.High, 30);
+        var seed = new Service("Breakfast Delivery","Breakfast Delivery", 20.00m, EPriority.High, 30);
         await dbContext.Services.AddAsync(seed);
         await dbContext.SaveChangesAsync();
 
-        var body = new EditorService("Breakfast Delivery", 30.00m, EPriority.High, 30);
+        var body = new EditorService("Breakfast Delivery","Breakfast Delivery", 30.00m, EPriority.High, 30);
         //Act
         var response = await client.PostAsJsonAsync(_baseUrl, body);
 
@@ -100,11 +100,11 @@ public class ServiceControllerTests
     public async Task UpdateService_ShouldReturn_OK()
     {
         //Arange
-        var seed = new Service("Laundry Service", 25.00m, EPriority.Medium, 120);
+        var seed = new Service("Laundry Service", "Laundry Service", 25.00m, EPriority.Medium, 120);
         await _dbContext.Services.AddAsync(seed);
         await _dbContext.SaveChangesAsync();
 
-        var body = new EditorService("Laundry Service", 27.01m, EPriority.Low, 50);
+        var body = new EditorService("Laundry Service", "Laundry", 27.01m, EPriority.Low, 50);
 
         //Act
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{seed.Id}", body);
@@ -120,6 +120,7 @@ public class ServiceControllerTests
         Assert.AreEqual("Serviço atualizado com sucesso!", content.Message);
 
         Assert.AreEqual(body.Name, service.Name);
+        Assert.AreEqual(body.Description, service.Description);
         Assert.AreEqual(body.Price, service.Price);
         Assert.AreEqual(body.Priority, service.Priority);
         Assert.AreEqual(body.TimeInMinutes, service.TimeInMinutes);
@@ -130,7 +131,7 @@ public class ServiceControllerTests
     public async Task UpdateNonexistService_ShouldReturn_NOT_FOUND()
     {
         //Arange
-        var body = new EditorService("Laundry Service", 27.01m, EPriority.Low, 50);
+        var body = new EditorService("Laundry Service", "Laundry Service", 27.01m, EPriority.Low, 50);
 
         //Act
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}", body);
@@ -153,12 +154,12 @@ public class ServiceControllerTests
         var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
         factory.Login(client, _rootAdminToken);
 
-        var updateSeed = new Service("Medical Assistance", 50.00m, EPriority.High, 30);
-        var seed = new Service("Cooking Class", 55.00m, EPriority.Medium, 90);
+        var updateSeed = new Service("Medical Assistance","Medical Assistance", 50.00m, EPriority.High, 30);
+        var seed = new Service("Cooking Class", "Cooking Class", 55.00m, EPriority.Medium, 90);
         await dbContext.Services.AddRangeAsync([updateSeed, seed]);
         await dbContext.SaveChangesAsync();
 
-        var body = new EditorService(seed.Name, 30.00m, EPriority.High, 30);
+        var body = new EditorService(seed.Name,"Cooking", 30.00m, EPriority.High, 30);
         //Act
         var response = await client.PutAsJsonAsync($"{_baseUrl}/{updateSeed.Id}", body);
 
@@ -175,7 +176,7 @@ public class ServiceControllerTests
     public async Task DeleteService_ShouldReturn_OK()
     {
         //Arange
-        var seed = new Service("Party Planning", 200.00m, EPriority.Medium, 180);
+        var seed = new Service("Party Planning","Party Planning", 200.00m, EPriority.Medium, 180);
         await _dbContext.Services.AddAsync(seed);
         await _dbContext.SaveChangesAsync();
 
@@ -214,7 +215,7 @@ public class ServiceControllerTests
     public async Task GetServices_ShouldReturn_OK()
     {
         //Assert
-        var seed = new Service("Fishing Trip", 120.00m, EPriority.Low, 180);
+        var seed = new Service("Fishing Trip","Fishing Trip", 120.00m, EPriority.Low, 180);
         await _dbContext.Services.AddAsync(seed);
         await _dbContext.SaveChangesAsync();
 
@@ -247,7 +248,7 @@ public class ServiceControllerTests
     public async Task GetServiceById_ShouldReturn_OK()
     {
         //Assert
-        var service = new Service("Premium Wifi", 10.00m, EPriority.Medium, 9999);
+        var service = new Service("Premium Wifi","Premium Wifi", 10.00m, EPriority.Medium, 9999);
         await _dbContext.Services.AddAsync(service);
         await _dbContext.SaveChangesAsync();
 

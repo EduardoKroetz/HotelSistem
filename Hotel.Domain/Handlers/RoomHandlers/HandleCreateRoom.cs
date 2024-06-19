@@ -28,7 +28,7 @@ public partial class RoomHandler : IHandler
         if (category == null)
             throw new NotFoundException("Categoria não encontrada.");
 
-        var room = new Room(model.Number, model.Price, model.Capacity, model.Description, model.CategoryId);
+        var room = new Room(model.Name ,model.Number, model.Price, model.Capacity, model.Description, category);
 
         try
         {

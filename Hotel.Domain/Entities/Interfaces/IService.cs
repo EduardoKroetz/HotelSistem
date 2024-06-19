@@ -8,9 +8,11 @@ namespace Hotel.Domain.Entities.Interfaces;
 public interface IService : IEntity
 {
     string Name { get; }
+    string Description {  get; }
     decimal Price { get; }
     bool IsActive { get; }
     EPriority Priority { get; }
     int TimeInMinutes { get; }
+    string StripeProductId {  get; }
     ICollection<Responsibility> Responsibilities { get; }
 }

@@ -63,7 +63,7 @@ public class ReservationControllerTests
     public async Task CreateReservation_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(2, 50, 2, "Quarto padrão", _category.Id);
+        var room = new Room("Quarto 2",2, 50, 2, "Quarto padrão", _category);
 
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
@@ -108,7 +108,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-24),
           new Address("Brazil", "Florianópolis", "SC-909", 909)
         );
-        var room = new Room(3, 80, 2, "Quarto de luxo nível 1", _category.Id);
+        var room = new Room("Quarto 3",3, 80, 2, "Quarto de luxo nível 1", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -137,7 +137,7 @@ public class ReservationControllerTests
     public async Task CreateReservation_WithDisabledRoom_ShouldReturn_BAD_REQUEST()
     {
         //Arange
-        var room = new Room(4, 110, 2, "Quarto de luxo nível 2", _category.Id);
+        var room = new Room("Quarto 4", 4, 110, 2, "Quarto de luxo nível 2", _category);
         room.Disable();
 
         await _dbContext.Rooms.AddAsync(room);
@@ -164,7 +164,7 @@ public class ReservationControllerTests
     public async Task CreateReservation_WithRoomGuestsLimitExceeded_ShouldReturn_BAD_REQUEST()
     {
         //Arange
-        var room = new Room(5, 150, 2, "Quarto de luxo nível 3", _category.Id);
+        var room = new Room("Quarto 5",5, 150, 2, "Quarto de luxo nível 3", _category);
 
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
@@ -199,7 +199,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-31),
           new Address("Brazil", "Goiânia", "GO-808", 808)
         );
-        var room = new Room(6, 190, 2, "Quarto de luxo nível 4", _category.Id);
+        var room = new Room("Quarto 6",6, 190, 2, "Quarto de luxo nível 4", _category);
 
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
@@ -256,7 +256,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-26),
           new Address("Brazil", "Porto Alegre", "RS-707", 707)
         );
-        var room = new Room(7, 240, 2, "Quarto de luxo nível 5", _category.Id);
+        var room = new Room("Quarto 7",7, 240, 2, "Quarto de luxo nível 5", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -300,7 +300,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-28),
           new Address("Brazil", "Brasília", "DF-606", 606)
         );
-        var room = new Room(8, 70, 5, "Quarto de luxo básico", _category.Id);
+        var room = new Room("Quarto 8",8, 70, 5, "Quarto de luxo básico", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -349,7 +349,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-29),
           new Address("Brazil", "Salvador", "BA-505", 505)
         );
-        var room = new Room(9, 70, 5, "Quarto 1", _category.Id);
+        var room = new Room("Quarto 9",9, 70, 5, "Quarto 1", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -423,7 +423,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-32),
           new Address("Brazil", "Curitiba", "PR-404", 404)
         );
-        var room = new Room(10, 70, 5, "Quarto 2", _category.Id);
+        var room = new Room("1Quarto 0",10, 70, 5, "Quarto 2", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
         reservation.ToCheckIn(); // check in and change status
 
@@ -458,7 +458,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-27),
           new Address("Brazil", "Belo Horizonte", "MG-303", 303)
         );
-        var room = new Room(11, 70, 5, "Quarto 3", _category.Id);
+        var room = new Room("1Quarto 1",11, 70, 5, "Quarto 3", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -530,7 +530,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-29),
           new Address("Brazil", "Campinas", "SP-1111", 1111)
         );
-        var room = new Room(12, 90, 5, "Quarto 12", _category.Id);
+        var room = new Room("1Quarto 2",12, 90, 5, "Quarto 12", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
 
         reservation.ToCheckIn();
@@ -585,7 +585,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-27),
           new Address("Brazil", "Fortaleza", "CE-1212", 1212)
         );
-        var room = new Room(13, 90, 5, "Quarto 13", _category.Id);
+        var room = new Room("1Quarto 3",13, 90, 5, "Quarto 13", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
 
         reservation.ToCancelled();
@@ -639,7 +639,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-30),
           new Address("Brazil", "Santos", "SP-1313", 1313)
         );
-        var room = new Room(14, 90, 5, "Quarto 14", _category.Id);
+        var room = new Room("1Quarto 4",14, 90, 5, "Quarto 14", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(9), customer, 3);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -712,7 +712,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-26),
           new Address("Brazil", "Ribeirão Preto", "SP-1414", 1414)
         );
-        var room = new Room(15, 90, 5, "Quarto 15", _category.Id);
+        var room = new Room("1Quarto 5",15, 90, 5, "Quarto 15", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         reservation.ToCheckIn();
@@ -766,7 +766,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-32),
           new Address("Brazil", "Maceió", "AL-1515", 1515)
         );
-        var room = new Room(16, 90, 5, "Quarto 16", _category.Id);
+        var room = new Room("1Quarto 6",16, 90, 5, "Quarto 16", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         reservation.ToCancelled();
@@ -819,7 +819,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-28),
           new Address("Brazil", "Belém", "PA-1616", 1616)
         );
-        var room = new Room(17, 90, 5, "Quarto 17", _category.Id);
+        var room = new Room("1Quarto 7",17, 90, 5, "Quarto 17", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         reservation.ToCheckIn();
@@ -872,9 +872,9 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-31),
           new Address("Brazil", "Caxias do Sul", "RS-1717", 1717)
         );
-        var room = new Room(18, 90, 5, "Quarto 18", _category.Id);
+        var room = new Room("1Quarto 8",18, 90, 5, "Quarto 18", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-        var service = new Service("Room Cleaning", 30.00m, EPriority.Medium, 60);
+        var service = new Service("Room Cleaning", "Room Cleaning", 30.00m, EPriority.Medium, 60);
 
         room.AddService(service);
 
@@ -922,7 +922,7 @@ public class ReservationControllerTests
     {
         //Arange
         var ramdomId = Guid.NewGuid();
-        var service = new Service("Breakfast Delivery", 20.00m, EPriority.High, 30);
+        var service = new Service("Breakfast Delivery", "Breakfast Delivery", 20.00m, EPriority.High, 30);
 
         await _dbContext.Services.AddAsync(service);
         await _dbContext.SaveChangesAsync();
@@ -956,7 +956,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-25),
           new Address("Brazil", "São Bernardo do Campo", "SP-1818", 1818)
         );
-        var room = new Room(19, 90, 5, "Quarto 19", _category.Id);
+        var room = new Room("1Quarto 9",19, 90, 5, "Quarto 19", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -994,9 +994,9 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-34),
           new Address("Brazil", "Niterói", "RJ-1919", 1919)
         );
-        var room = new Room(20, 90, 5, "Quarto 20", _category.Id);
+        var room = new Room("2Quarto 0",20, 90, 5, "Quarto 20", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-        var service = new Service("Spa Treatment", 50.00m, EPriority.Low, 90);
+        var service = new Service("Spa Treatment", "Spa Treatment", 50.00m, EPriority.Low, 90);
 
         await _dbContext.Customers.AddAsync(customer);
         await _dbContext.Rooms.AddAsync(room);
@@ -1037,9 +1037,9 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-24),
           new Address("Brazil", "Taguatinga", "DF-2020", 2020)
         );
-        var room = new Room(21, 90, 5, "Quarto 21", _category.Id);
+        var room = new Room("2Quarto 1",21, 90, 5, "Quarto 21", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-        var service = new Service("Wake-Up Call", 1.00m, EPriority.High, 5);
+        var service = new Service("Wake-Up Call", "Wake-Up Call", 1.00m, EPriority.High, 5);
 
         service.Disable();
         room.AddService(service);
@@ -1083,9 +1083,9 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-29),
           new Address("Brazil", "João Pessoa", "PB-2121", 2121)
         );
-        var room = new Room(22, 90, 5, "Quarto 22", _category.Id);
+        var room = new Room("2Quarto 2",22, 90, 5, "Quarto 22", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-        var service = new Service("Minibar Restock", 15.00m, EPriority.Low, 20);
+        var service = new Service("Minibar Restock", "Minibar Restock", 15.00m, EPriority.Low, 20);
 
         room.AddService(service);
         reservation.AddService(service);
@@ -1142,8 +1142,8 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-28),
           new Address("Brazil", "Anápolis", "GO-2222", 2222)
         );
-        var room = new Room(23, 90, 5, "Quarto 23", _category.Id);
-        var service = new Service("Airport Shuttle", 60.00m, EPriority.High, 45);
+        var room = new Room("2Quarto 3",23, 90, 5, "Quarto 23", _category);
+        var service = new Service("Airport Shuttle", "Airport Shuttle", 60.00m, EPriority.High, 45);
 
         room.AddService(service);
 
@@ -1181,7 +1181,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-31),
           new Address("Brazil", "Joinville", "SC-2323", 2323)
         );
-        var room = new Room(24, 90, 5, "Quarto 24", _category.Id);
+        var room = new Room("2Quarto 4",24, 90, 5, "Quarto 24", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -1218,9 +1218,9 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-33),
           new Address("Brazil", "Boa Vista", "RR-2525", 2525)
         );
-        var room = new Room(25, 90, 5, "Quarto 25", _category.Id);
+        var room = new Room("2Quarto 5",25, 90, 5, "Quarto 25", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-        var service = new Service("Jet Ski Rental", 90.00m, EPriority.High, 60);
+        var service = new Service("Jet Ski Rental", "Jet Ski Rental", 90.00m, EPriority.High, 60);
 
         room.AddService(service);
 
@@ -1259,7 +1259,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-27),
           new Address("Brazil", "Manaus", "AM-2626", 2626)
         );
-        var room = new Room(26, 90, 5, "Quarto 26", _category.Id);
+        var room = new Room("2Quarto 6",26, 90, 5, "Quarto 26", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         reservation.ToCheckIn();
@@ -1331,7 +1331,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-32),
           new Address("Brazil", "São Luís", "MA-2727", 2727)
         );
-        var room = new Room(27, 90, 5, "Quarto 27", _category.Id);
+        var room = new Room("2Quarto 7",27, 90, 5, "Quarto 27", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         reservation.ToCheckIn();
@@ -1372,7 +1372,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-25),
           new Address("Brazil", "Feira de Santana", "BA-2828", 2828)
         );
-        var room = new Room(28, 90, 5, "Quarto 28", _category.Id);
+        var room = new Room("2Quarto 8",28, 90, 5, "Quarto 28", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -1442,7 +1442,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-34),
           new Address("Brazil", "Sobral", "CE-2929", 2929)
         );
-        var room = new Room(29, 90, 5, "Quarto 29", _category.Id);
+        var room = new Room("2Quarto 9",29, 90, 5, "Quarto 29", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(3), customer, 2);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -1473,10 +1473,10 @@ public class ReservationControllerTests
     {
         //Arange
         var services = new List<Service>()
-    {
-      new Service("Tennis Lesson", 50.00m, EPriority.Medium, 60),
-      new Service("Personal Shopping", 60.00m, EPriority.Medium, 90)
-    };
+        {
+            new Service("Tennis Lesson","Tennis Lesson", 50.00m, EPriority.Medium, 60),
+            new Service("Personal Shopping","Personal Shopping", 60.00m, EPriority.Medium, 90)
+        };
 
         await _dbContext.Services.AddRangeAsync(services);
         await _dbContext.SaveChangesAsync();

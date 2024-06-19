@@ -65,7 +65,7 @@ public class RoomControllerTests
     public async Task CreateRoom_ShouldReturn_OK()
     {
         //Arange
-        var body = new EditorRoom(1, 35, 2, "Quarto básico 1", _basicCategory.Id);
+        var body = new EditorRoom("Quarto 1", 1, 35, 2, "Quarto básico 1", _basicCategory.Id);
 
         //Act
         var response = await _client.PostAsJsonAsync(_baseUrl, body);
@@ -97,13 +97,13 @@ public class RoomControllerTests
         factory.Login(client, _rootAdminToken);
 
         var category = new Category("Basic", "Hospedagems básicos", 40);
-        var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
+        var room = new Room("Quarto 2", 2, 35, 2, "Quarto básico 2", category);
 
         await dbContext.Categories.AddAsync(category);
         await dbContext.Rooms.AddAsync(room);
         await dbContext.SaveChangesAsync();
 
-        var body = new EditorRoom(2, 40, 3, "Quarto básico 2", category.Id);
+        var body = new EditorRoom("Quarto 2", 2, 40, 3, "Quarto básico 2", category.Id);
 
         //Act
         var response = await client.PostAsJsonAsync(_baseUrl, body);
@@ -120,11 +120,11 @@ public class RoomControllerTests
     public async Task UpdateRoom_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(3, 35, 2, "Quarto básico 2", _basicCategory.Id);
+        var room = new Room("Quarto 3",3, 35, 2, "Quarto básico 2", _basicCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
-        var body = new EditorRoom(3, 40, 4, "Quarto básico 3", _basicCategory.Id);
+        var body = new EditorRoom("Quarto 999",999, 40, 4, "Quarto básico 999", _basicCategory.Id);
 
         //Act
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{room.Id}", body);
@@ -139,6 +139,7 @@ public class RoomControllerTests
         Assert.AreEqual("Hospedagem atualizada com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
+        Assert.AreEqual(body.Name, updatedRoom.Name);
         Assert.AreEqual(body.Number, updatedRoom.Number);
         Assert.AreEqual(body.Price, updatedRoom.Price);
         Assert.AreEqual(body.Capacity, updatedRoom.Capacity);
@@ -156,17 +157,17 @@ public class RoomControllerTests
         _factory.Login(client, _rootAdminToken);
 
         var category = new Category("Basic", "Hospedagems básicos", 40);
-        var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
+        var room = new Room("Quarto 2",2, 35, 2, "Quarto básico 2", category);
 
         await dbContext.Categories.AddAsync(category);
         await dbContext.Rooms.AddRangeAsync(
         [
-          new Room(5, 43, 2, "Quarto básico 4",category.Id),
+          new Room("Quarto 5",5, 43, 2, "Quarto básico 4",category),
       room
         ]);
         await dbContext.SaveChangesAsync();
 
-        var body = new EditorRoom(5, 40, 4, "Quarto básico 4", category.Id);
+        var body = new EditorRoom("Quarto 5",5, 40, 4, "Quarto básico 4", category.Id);
 
         //Act
         var response = await client.PutAsJsonAsync($"{_baseUrl}/{room.Id}", body);
@@ -194,13 +195,13 @@ public class RoomControllerTests
           new Address("Brazil", "Campo Grande", "MS-2424", 2424)
         );
 
-        var room = new Room(6, 45, 2, "Quarto padrão", _standardCategory.Id);
+        var room = new Room("Quarto 6",6, 45, 2, "Quarto padrão", _standardCategory);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.Reservations.AddAsync(reservation);
         await _dbContext.SaveChangesAsync();
 
-        var body = new EditorRoom(6, 53, 4, "Quarto padrão", _standardCategory.Id);
+        var body = new EditorRoom("Quarto 6",6, 53, 4, "Quarto padrão", _standardCategory.Id);
 
         //Act
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{room.Id}", body);
@@ -218,7 +219,7 @@ public class RoomControllerTests
     public async Task DeleteRoom_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(7, 45, 2, "Quarto padrão", _standardCategory.Id);
+        var room = new Room("Quarto 7",7, 45, 2, "Quarto padrão", _standardCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -253,7 +254,7 @@ public class RoomControllerTests
           new Address("Brazil", "Manaus", "AM-2626", 2626)
         );
 
-        var room = new Room(8, 45, 2, "Quarto padrão", _standardCategory.Id);
+        var room = new Room("Quarto 8",8, 45, 2, "Quarto padrão", _standardCategory);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.Reservations.AddAsync(reservation);
@@ -274,7 +275,7 @@ public class RoomControllerTests
     public async Task GetRooms_ShouldReturn_OK()
     {
         //Arange
-        var createdRoom = new Room(9, 55, 4, "Quarto padrão", _standardCategory.Id);
+        var createdRoom = new Room("Quarto 9",9, 55, 4, "Quarto padrão", _standardCategory);
         await _dbContext.Rooms.AddAsync(createdRoom);
         await _dbContext.SaveChangesAsync();
 
@@ -284,7 +285,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<List<GetRoomCollection>>>(await response.Content.ReadAsStringAsync())!;
+        var content = JsonConvert.DeserializeObject<Response<List<GetRoom>>>(await response.Content.ReadAsStringAsync())!;
 
         
         Assert.AreEqual("Sucesso!", content.Message);
@@ -309,7 +310,7 @@ public class RoomControllerTests
     public async Task GetRoomById_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(10, 55, 4, "Quarto padrão", _standardCategory.Id);
+        var room = new Room("Quarto 10",10, 55, 4, "Quarto padrão", _standardCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -340,8 +341,8 @@ public class RoomControllerTests
     public async Task AddService_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(11, 53, 4, "Quarto padrão", _standardCategory.Id);
-        var service = new Service("Breakfast Delivery", 20.00m, EPriority.High, 30);
+        var room = new Room("Quarto 11",11, 53, 4, "Quarto padrão", _standardCategory);
+        var service = new Service("Breakfast Delivery", "Breakfast Delivery", 20.00m, EPriority.High, 30);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.Services.AddAsync(service);
         await _dbContext.SaveChangesAsync();
@@ -376,7 +377,7 @@ public class RoomControllerTests
     public async Task AddNonexistService_ShouldReturn_NOT_FOUND()
     {
         //Arange
-        var room = new Room(12, 53, 4, "Quarto padrão", _standardCategory.Id);
+        var room = new Room("Quarto 12",12, 53, 4, "Quarto padrão", _standardCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -396,8 +397,8 @@ public class RoomControllerTests
     public async Task RemoveService_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(13, 53, 4, "Quarto padrão", _standardCategory.Id);
-        var service = new Service("Laundry Service", 25.00m, EPriority.Medium, 120);
+        var room = new Room("Quarto 13",13, 53, 4, "Quarto padrão", _standardCategory);
+        var service = new Service("Laundry Service", "Laundry Service", 25.00m, EPriority.Medium, 120);
         room.AddService(service);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.Services.AddAsync(service);
@@ -433,7 +434,7 @@ public class RoomControllerTests
     public async Task RemoveNonexistService_ShouldReturn_NOT_FOUND()
     {
         //Arange
-        var room = new Room(14, 53, 4, "Quarto padrão", _standardCategory.Id);
+        var room = new Room("Quarto 14",14, 53, 4, "Quarto padrão", _standardCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -453,7 +454,7 @@ public class RoomControllerTests
     public async Task UpdateRoomNumber_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(15, 53, 4, "Quarto padrão", _standardCategory.Id);
+        var room = new Room("Quarto 15",15, 53, 4, "Quarto padrão", _standardCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -492,12 +493,12 @@ public class RoomControllerTests
         _factory.Login(client, _rootAdminToken);
 
         var category = new Category("Basic", "Hospedagems básicos", 40);
-        var room = new Room(2, 35, 2, "Quarto básico 2", category.Id);
+        var room = new Room("Quarto 2",2, 35, 2, "Quarto básico 2", category);
 
         await dbContext.Categories.AddAsync(category);
         await dbContext.Rooms.AddRangeAsync(
         [
-          new Room(5, 43, 2, "Quarto básico 4",category.Id),
+          new Room("Quarto 5",5, 43, 2, "Quarto básico 4",category),
       room
         ]);
         await dbContext.SaveChangesAsync();
@@ -518,7 +519,7 @@ public class RoomControllerTests
     public async Task UpdateRoomCategory_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(17, 199, 10, "Quarto deluxe", _standardCategory.Id);
+        var room = new Room("Quarto 17",17, 199, 10, "Quarto deluxe", _standardCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -551,7 +552,7 @@ public class RoomControllerTests
     public async Task UpdateRoomCategory_WithNonexistCategory_ShouldReturn_NOT_FOUND()
     {
         //Arange
-        var room = new Room(18, 199, 10, "Quarto deluxe", _standardCategory.Id);
+        var room = new Room("Quarto 18",18, 199, 10, "Quarto deluxe", _standardCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -571,7 +572,7 @@ public class RoomControllerTests
     public async Task UpdateRoomPrice_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(19, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+        var room = new Room("Quarto 19",19, 130, 6, "Quarto deluxe", _deluxeCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -616,7 +617,7 @@ public class RoomControllerTests
           new Address("Brazil", "Porto Velho", "RO-3030", 3030)
         );
 
-        var room = new Room(20, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
+        var room = new Room("Quarto 20",20, 43, 13, "Quarto deluxe", _deluxeCategory);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.Reservations.AddAsync(reservation);
@@ -651,7 +652,7 @@ public class RoomControllerTests
           new Address("Brazil", "Sobral", "CE-2929", 2929)
         );
 
-        var room = new Room(21, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
+        var room = new Room("Quarto 21",21, 43, 13, "Quarto deluxe", _deluxeCategory);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
         reservation.ToCheckIn();
         await _dbContext.Rooms.AddAsync(room);
@@ -688,7 +689,7 @@ public class RoomControllerTests
     public async Task UpdateRoomCapacity_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(22, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+        var room = new Room("Quarto 22",22, 130, 6, "Quarto deluxe", _deluxeCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -722,7 +723,7 @@ public class RoomControllerTests
     public async Task EnableRoom_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(23, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+        var room = new Room("Quarto 23",23, 130, 6, "Quarto deluxe", _deluxeCategory);
         room.Disable();
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
@@ -747,7 +748,7 @@ public class RoomControllerTests
     public async Task DisableRoom_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(25, 130, 6, "Quarto deluxe", _deluxeCategory.Id);
+        var room = new Room("Quarto 25",25, 130, 6, "Quarto deluxe", _deluxeCategory);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
@@ -782,7 +783,7 @@ public class RoomControllerTests
           new Address("Brazil", "Maceió", "AL-1515", 1515)
         );
 
-        var room = new Room(30, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
+        var room = new Room("Quarto 30",30, 43, 13, "Quarto deluxe", _deluxeCategory);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.Reservations.AddAsync(reservation);
@@ -807,7 +808,7 @@ public class RoomControllerTests
     public async Task UpdateToAvailableStatus_ShouldReturn_OK()
     {
         //Arange
-        var room = new Room(31, 60, 6, "Quarto deluxe", _standardCategory.Id);
+        var room = new Room("Quarto 31",31, 60, 6, "Quarto deluxe", _standardCategory);
         room.ChangeStatus(ERoomStatus.OutOfService);
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
@@ -873,7 +874,7 @@ public class RoomControllerTests
     public async Task UpdateRoom_WithNonexistsReservation_ShouldReturn_NOT_FOUND()
     {
         //Arange
-        var body = new EditorRoom(1, 1, 1, "abcd", _standardCategory.Id);
+        var body = new EditorRoom("Quarto 1",1, 1, 1, "abcd", _standardCategory.Id);
         //Act
         var response = await _client.PutAsJsonAsync($"v1/rooms/{Guid.NewGuid()}", body);
 

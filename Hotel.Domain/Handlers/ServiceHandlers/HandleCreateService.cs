@@ -20,7 +20,7 @@ public partial class ServiceHandler : IHandler
 
     public async Task<Response> HandleCreateAsync(EditorService model)
     {
-        var service = new Service(model.Name, model.Price, model.Priority, model.TimeInMinutes);
+        var service = new Service(model.Name, model.Description, model.Price, model.Priority, model.TimeInMinutes);
 
         try
         {

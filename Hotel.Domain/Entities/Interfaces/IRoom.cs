@@ -8,11 +8,14 @@ namespace Hotel.Domain.Entities.Interfaces;
 
 public interface IRoom
 {
+    string Name { get; }    
     int Number { get; }
     decimal Price { get; }
     ERoomStatus Status { get; }
     int Capacity { get; }
     string Description { get; }
+    bool IsActive { get; }  
+    string StripeProductId { get; }
     ICollection<Service> Services { get; }
     Guid CategoryId { get; }
     Category? Category { get; }

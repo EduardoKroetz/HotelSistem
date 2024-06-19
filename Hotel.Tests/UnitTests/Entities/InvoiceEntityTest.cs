@@ -14,7 +14,7 @@ public class InvoiceEntityTest
     [TestMethod]
     public void ValidInvoice_MustBeValid()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, DateTime.Now.Date, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
 
         reservation.ToCheckIn();
@@ -26,7 +26,7 @@ public class InvoiceEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void InvalidInvoice_ExpectedException()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, DateTime.Now.Date, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
         reservation.ToCheckIn();
         reservation.Finish(EPaymentMethod.Pix, -1);
@@ -37,7 +37,7 @@ public class InvoiceEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void InvoiceWithoutCheckOutStatusReservation_ExpectedException()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, DateTime.Now.Date, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
         reservation.ToCheckIn();
 
@@ -48,7 +48,7 @@ public class InvoiceEntityTest
     [TestMethod]
     public void InvoiceWithTax_MustBeAddedToTotalAmount()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, DateTime.Now.Date, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
         reservation.ToCheckIn();
 
@@ -59,7 +59,7 @@ public class InvoiceEntityTest
     [TestMethod]
     public void TheCustomersInReservation_MustBeSameOnInvoice()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, DateTime.Now.Date, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
         reservation.ToCheckIn();
 
@@ -70,7 +70,7 @@ public class InvoiceEntityTest
     [TestMethod]
     public void ChangeToFinishInvoiceStatus_MustBeFinishStatus()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, DateTime.Now.Date, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
         reservation.ToCheckIn();
 

@@ -68,7 +68,7 @@ public class FeedbackControllerTests
           new Address("United States", "Los Angeles", "US-456", 789)
         );
         var category = new Category("Quartos standard", "Quartos padrões", 40);
-        var room = new Room(1, 36, 3, "Quarto padrão", category.Id);
+        var room = new Room("Quarto padrão 1",1, 36, 3, "Quarto padrão", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(3), DateTime.Now.AddDays(6), customer, 2);
         var feedback = new Feedback("Gostei muito do quarto!", 9, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -100,7 +100,7 @@ public class FeedbackControllerTests
         );
 
         var category = new Category("Suíte de Luxo", "Suítes elegantes", 180);
-        var room = new Room(201, 180, 3, "Suíte de Luxo", category.Id);
+        var room = new Room("Suite de luxo 201",201, 180, 3, "Suíte de Luxo", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(8), DateTime.Now.AddDays(12), customer, 2);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -164,7 +164,7 @@ public class FeedbackControllerTests
           new Address("United States", "Los Angeles", "US-456", 789)
         );
         var category = new Category("Quarto de luxo", "Quartos de luxo", 80);
-        var room = new Room(5, 89, 3, "Quarto de luxo", category.Id);
+        var room = new Room("Quarto de luxo 5" ,5, 89, 3, "Quarto de luxo", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(3), DateTime.Now.AddDays(6), customer, 2);
         var feedback = new Feedback("Gostei muito do quarto!", 9, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -205,7 +205,7 @@ public class FeedbackControllerTests
         );
 
         var category = new Category("Suíte Relux", "Suítes de luxo", 150);
-        var room = new Room(8, 150, 5, "Suíte Relux", category.Id);
+        var room = new Room("Suite relux 8",8, 150, 5, "Suíte Relux", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(7), DateTime.Now.AddDays(10), customer, 4);
         var feedback = new Feedback("Legal, recomendo!", 10, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -249,7 +249,7 @@ public class FeedbackControllerTests
           new Address("Brazil", "Rio de Janeiro", "BR-789", 321)
         );
         var category = new Category("Apartamento Executivo", "Apartamentos executivos", 120);
-        var room = new Room(22, 120, 10, "Apartamento Executivo", category.Id);
+        var room = new Room("Apartamento Executivo", 22, 120, 10, "Apartamento Executivo", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(15), DateTime.Now.AddDays(20), customer, 1);
         var feedback = new Feedback("Serviço de qualidade, apartamento confortável.", 8, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -304,7 +304,7 @@ public class FeedbackControllerTests
           new Address("Brazil", "Belo Horizonte", "BR-321", 654)
         );
         var category = new Category("Suíte Master", "Suítes de alta classe", 200);
-        var room = new Room(45, 200, 12, "Suíte Master", category.Id);
+        var room = new Room("Suíte Master", 45, 200, 12, "Suíte Master", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(10), DateTime.Now.AddDays(14), customer, 5);
         var feedback = new Feedback("Excelente suíte, recomendo fortemente.", 10, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -343,7 +343,7 @@ public class FeedbackControllerTests
           new Address("Brazil", "Curitiba", "BR-654", 987)
         );
         var category = new Category("Cabana de Luxo", "Cabanas exclusivas", 250);
-        var room = new Room(101, 250, 4, "Cabana de Luxo", category.Id);
+        var room = new Room("Cabana de Luxo", 101, 250, 4, "Cabana de Luxo", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(5), DateTime.Now.AddDays(9), customer, 3);
         var feedback = new Feedback("Lugar maravilhoso e tranquilo.", 9, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -386,7 +386,7 @@ public class FeedbackControllerTests
         );
 
         var category = new Category("Villa Privativa", "Villas exclusivas", 300);
-        var room = new Room(303, 300, 6, "Villa Privativa", category.Id);
+        var room = new Room("Villa Privativa", 303, 300, 6, "Villa Privativa", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(12), DateTime.Now.AddDays(17), customer, 4);
         var feedback = new Feedback("Experiência fantástica, altamente recomendado!", 10, customer.Id, reservation.Id, room.Id, reservation);
         var like = new Like(customer, feedback);
@@ -425,7 +425,7 @@ public class FeedbackControllerTests
             new Address("Brazil", "São Paulo", "BR-123", 456)
         );
         var category = new Category("Quarto Executivo", "Quartos de luxo", 300);
-        var room = new Room(20, 300, 10, "Quarto Executivo", category.Id);
+        var room = new Room("Quarto Executivo 20",20, 300, 10, "Quarto Executivo", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(7), DateTime.Now.AddDays(12), customer, 2);
         var feedback = new Feedback("Ótimo serviço, mas o café da manhã pode melhorar.", 4, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -464,7 +464,7 @@ public class FeedbackControllerTests
           new Address("Brazil", "Porto Alegre", "BR-654", 321)
         );
         var category = new Category("Suíte Presidencial", "Suítes de alto padrão", 500);
-        var room = new Room(30, 500, 8, "Suíte Presidencial", category.Id);
+        var room = new Room("Suíte Presidencial 30",30, 500, 8, "Suíte Presidencial", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(14), DateTime.Now.AddDays(20), customer, 3);
         var feedback = new Feedback("Atendimento impecável e vista deslumbrante.", 10, customer.Id, reservation.Id, room.Id, reservation);
 
@@ -507,7 +507,7 @@ public class FeedbackControllerTests
           new Address("Brazil", "São Paulo", "BR-123", 456)
         );
         var category = new Category("Views suites", "Suítes com vistas elegantes", 180);
-        var room = new Room(19, 180, 3, "Suite média", category.Id);
+        var room = new Room("Suite média 19",19, 180, 3, "Suite média", category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(8), DateTime.Now.AddDays(12), customer, 2);
         var feedback = new Feedback("Estadia perfeita, serviço impecável!", 10, customer.Id, reservation.Id, room.Id, reservation);
 

@@ -13,6 +13,7 @@ public partial class ServiceHandler
         ?? throw new NotFoundException("Serviço não encontrado.");
 
         service.ChangeName(model.Name);
+        service.ChangeDescription(model.Description);
         service.ChangePriority(model.Priority);
         service.ChangeTime(model.TimeInMinutes);
         service.ChangePrice(model.Price);

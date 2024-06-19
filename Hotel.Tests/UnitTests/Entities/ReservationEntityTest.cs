@@ -19,7 +19,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void ValidReservation_MustBeValid()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, TwoDaysFromNow, ThreeDaysFromNow, TestParameters.Customer, 3);
         Assert.IsTrue(reservation.IsValid);
     }
@@ -28,7 +28,7 @@ public class ReservationEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void InvalidExpectedCheckIn_ExpectedException()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         new Reservation(room, CurrentDate.AddDays(-1), ThreeDaysFromNow, TestParameters.Customer, 2);
         Assert.Fail();
     }
@@ -37,7 +37,7 @@ public class ReservationEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void InvalidExpectedCheckOut_ExpectedException()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         new Reservation(room, OneDayFromNow, CurrentDate.AddDays(-1), TestParameters.Customer, 2);
         Assert.Fail();
     }
@@ -46,7 +46,7 @@ public class ReservationEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void ExpectedCheckInBiggerThanExpectedCheckOut_ExpectedException()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         new Reservation(room, TwoDaysFromNow, OneDayFromNow, TestParameters.Customer, 2);
         Assert.Fail();
     }
@@ -55,7 +55,7 @@ public class ReservationEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void OvertakingTheRoomCapacity_ExpectedException()
     {
-        var room = new Room(22, 50m, 1, "Um quarto para hospedagem.", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",22, 50m, 1, "Um quarto para hospedagem.", TestParameters.Category);
         var customer = new Customer(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         new Reservation(room, OneDayFromNow, TwoDaysFromNow, customer, 2);
         Assert.Fail();
@@ -64,7 +64,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void ToCheckIn_WithSameDate_UpdateStatus_And_RoomOccupiedStatus()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, TwoDaysFromNow, TestParameters.Customer, 3);
         reservation.ToCheckIn();
         Assert.AreEqual(EReservationStatus.CheckedIn, reservation.Status);
@@ -74,7 +74,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void ToCancelled_MustBeCancelledStatus_And_RoomAvailableStatus()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, TwoDaysFromNow, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.ToCancelled();
         Assert.AreEqual(EReservationStatus.Cancelled, reservation.Status);
@@ -84,7 +84,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void ToNoShow_MustBeNoShowStatus_And_ReservedRoomStatus()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, TwoDaysFromNow, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.ToNoShow();
         Assert.AreEqual(EReservationStatus.NoShow, reservation.Status);
@@ -94,7 +94,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void FinishMethod_MustFinish_ChangeCheckoutDateTime_ChangeToCheckOutStatus_And_RoomOutOfServiceStatus()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
 
         reservation.ToCheckIn();
@@ -109,7 +109,7 @@ public class ReservationEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void CalculateTotalAmount_WithOutCheckIn_ExpectedException()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.TotalAmount();
         Assert.Fail();
@@ -119,7 +119,7 @@ public class ReservationEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void CalculateTotalAmount_WithOutCheckOut_ExpectedException()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.ToCheckIn();
         reservation.TotalAmount();
@@ -129,7 +129,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void CalculateTotalAmount()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.ToCheckIn();
         reservation.Finish(EPaymentMethod.Pix);
@@ -140,7 +140,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void CalculateExpectedTotalAmount()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         var expectedTotalAmount = Math.Round(reservation.ExpectedTotalAmount());
         Assert.AreEqual(150, expectedTotalAmount);
@@ -149,7 +149,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void StayedForTwoDays_TheExpectedTimeHostedMustBe2Days()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, TwoDaysFromNow, TestParameters.Customer, 2);
 
         var timeHosted = Reservation.GetTimeHosted(CurrentDate, TwoDaysFromNow);
@@ -160,7 +160,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void StayedFor7Days_TheExpectedTimeHostedMustBe7()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, CurrentDate.AddDays(7), TestParameters.Customer, 2);
 
         var timeHosted = Reservation.GetTimeHosted(CurrentDate, CurrentDate.AddDays(7));
@@ -170,7 +170,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void RoomPriceAt50_Per24Hours_TheExpectedTotalAmountMustBe50()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, OneDayFromNow, TestParameters.Customer, 2);
 
         Assert.AreEqual(50, Math.Round(reservation.ExpectedTotalAmount()));
@@ -179,7 +179,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void RoomPriceAt50_For48Hours_TheExpectedTotalValueMustBe100()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, TwoDaysFromNow, TestParameters.Customer, 2);
         Assert.AreEqual(100, Math.Round(reservation.ExpectedTotalAmount()));
     }
@@ -187,7 +187,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void AddService_TheServicesCountMustBe1()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.AddService(TestParameters.Service);
         Assert.AreEqual(1, reservation.Services.Count);
@@ -196,7 +196,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void AddSameServices_TheServicesCountMustBe2()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.AddService(TestParameters.Service);
         reservation.AddService(TestParameters.Service);
@@ -207,8 +207,8 @@ public class ReservationEntityTest
     [TestMethod]
     public void RoomAtPrice50_For3Days_WithTwoServicesAtPrice5_TheExpectedTotalPriceMustBe160()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
-        var service = new Service("Serviço de limpeza", 5m, EPriority.Low, 20);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
+        var service = new Service("Serviço de limpeza", "Serviço de limpeza", 5m, EPriority.Low, 20);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
 
         reservation.AddService(service);
@@ -222,9 +222,9 @@ public class ReservationEntityTest
     [TestMethod]
     public void RoomAtPrice19_For0Minutes_With3ServicesAtPrice5_With7ServicesAtPrice15_TheTotalPriceMustBe120()
     {
-        var room = new Room(23, 19m, 7, "Um quarto para hospedagem.", TestParameters.Category.Id);
-        var cleanService = new Service("Serviço de limpeza", 5m, EPriority.Low, 20);
-        var lunchService = new Service("Almoço", 15m, EPriority.Medium, 50);
+        var room = new Room("Quarto padrão para 3 pessoas",23, 19m, 7, "Um quarto para hospedagem.", TestParameters.Category);
+        var cleanService = new Service("Serviço de limpeza", "Serviço de limpeza", 5m, EPriority.Low, 20);
+        var lunchService = new Service("Almoço", "Almoço", 15m, EPriority.Medium, 50);
         var reservation = new Reservation(room, DateTime.Now, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
 
         for (int i = 1; i <= 7; i++)
@@ -245,9 +245,9 @@ public class ReservationEntityTest
     [TestMethod]
     public void RoomAtPrice19_For24Hours_With3ServicesAtPrice5_With7ServicesAtPrice15_TheTotalPriceMustBe139()
     {
-        var room = new Room(23, 19m, 7, "Um quarto para hospedagem.", TestParameters.Category.Id);
-        var cleanService = new Service("Serviço de limpeza", 5m, EPriority.Low, 20);
-        var lunchService = new Service("Almoço", 15m, EPriority.Medium, 50);
+        var room = new Room("Quarto padrão para 3 pessoas",23, 19m, 7, "Um quarto para hospedagem.", TestParameters.Category);
+        var cleanService = new Service("Serviço de limpeza", "Serviço de limpeza", 5m, EPriority.Low, 20);
+        var lunchService = new Service("Almoço", "Almoço", 15m, EPriority.Medium, 50);
         var reservation = new Reservation(room, CurrentDate, CurrentDate.AddDays(1), TestParameters.Customer, 2);
 
         for (int i = 1; i <= 7; i++)
@@ -265,7 +265,7 @@ public class ReservationEntityTest
     [ExpectedException(typeof(ValidationException))]
     public void UpdateExpectedCheckIn_WithInvalidStatus_ExpectedException()
     {
-        var room = new Room(23, 19m, 7, "Um quarto para hospedagem.", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",23, 19m, 7, "Um quarto para hospedagem.", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.ToCheckIn();
         reservation.UpdateExpectedCheckIn(DateTime.Now.AddDays(1));
@@ -275,7 +275,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void UpdateExpectedCheckIn()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.UpdateExpectedCheckIn(ThreeDaysFromNow);
         Assert.AreEqual(ThreeDaysFromNow, reservation.ExpectedCheckIn);
@@ -284,7 +284,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void UpdateExpectedCheckOut()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, TwoDaysFromNow, TestParameters.Customer, 2);
         reservation.UpdateExpectedCheckOut(TwoDaysFromNow);
         var timespan = TwoDaysFromNow - CurrentDate;
@@ -296,7 +296,7 @@ public class ReservationEntityTest
     [TestMethod]
     public void ToCheckIn()
     {
-        var room = new Room(1, 50, 3, "Quarto padrão", TestParameters.Category.Id);
+        var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, TwoDaysFromNow, TestParameters.Customer, 2);
         reservation.ToCheckIn();
 

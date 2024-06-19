@@ -42,6 +42,9 @@ public class ReservationMapping : EntityBaseMapping<Reservation>, IEntityTypeCon
         builder.Property(x => x.Capacity)
             .IsRequired();
 
+        builder.Property(x => x.StripePaymentIntentId)
+            .IsRequired();
+    
         builder.Property(x => x.RoomId)
             .IsRequired();
 

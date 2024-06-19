@@ -13,7 +13,7 @@ public partial class Reservation : Entity, IReservation
 {
     internal Reservation() { }
 
-    public Reservation(Room room, DateTime expectedCheckIn, DateTime expectedCheckOut, Customer customer, int capacity)
+    public Reservation(Room room, DateTime expectedCheckIn, DateTime expectedCheckOut, Customer customer, int capacity, string paymentIntentId = "")
     {
         Status = EReservationStatus.Pending;
         Capacity = capacity;
@@ -28,6 +28,8 @@ public partial class Reservation : Entity, IReservation
 
         DailyRate = room.Price;
         Invoice = null;
+
+        StripePaymentIntentId = paymentIntentId;
 
         Validate();
         Room.ChangeStatus(ERoomStatus.Reserved);
@@ -54,6 +56,7 @@ public partial class Reservation : Entity, IReservation
     }
     public EReservationStatus Status { get; private set; }
     public int Capacity { get; private set; }
+    public string StripePaymentIntentId { get; private set; } = null!;
     public Guid RoomId { get; private set; }
     public Room? Room { get; private set; }
     public Guid CustomerId { get; private set; }

@@ -13,8 +13,6 @@ public partial class Service : IResponsibilitiesMethods
         Responsibilities.Add(responsibility);
     }
 
-
-
     public void RemoveResponsibility(Responsibility responsibility)
     {
         if (!Responsibilities.Remove(responsibility))
