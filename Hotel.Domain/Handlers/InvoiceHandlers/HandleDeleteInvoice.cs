@@ -8,6 +8,6 @@ public partial class InvoiceHandler
     {
         _repository.Delete(id);
         await _repository.SaveChangesAsync();
-        return new Response(200, "Fatura deletada com sucesso!", new { id });
+        return new Response("Fatura deletada com sucesso!", new { id });
     }
 }

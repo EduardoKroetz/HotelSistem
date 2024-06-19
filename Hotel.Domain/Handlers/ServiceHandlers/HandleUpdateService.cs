@@ -30,6 +30,6 @@ public partial class ServiceHandler
                 throw new Exception("Algum erro ocorreu ao salvar no banco de dados.");
         }
 
-        return new Response(200, "Serviço atualizado com sucesso!", new { service.Id });
+        return new Response("Serviço atualizado com sucesso!", new { service.Id });
     }
 }

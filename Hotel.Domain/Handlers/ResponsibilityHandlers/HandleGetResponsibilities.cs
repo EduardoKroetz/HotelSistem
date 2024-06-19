@@ -8,6 +8,6 @@ public partial class ResponsibilityHandler
     public async Task<Response<IEnumerable<GetResponsibility>>> HandleGetAsync(ResponsibilityQueryParameters queryParameters)
     {
         var responsibilities = await _repository.GetAsync(queryParameters);
-        return new Response<IEnumerable<GetResponsibility>>(200, "Sucesso!", responsibilities);
+        return new Response<IEnumerable<GetResponsibility>>("Sucesso!", responsibilities);
     }
 }

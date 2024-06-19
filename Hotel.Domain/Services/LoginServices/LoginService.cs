@@ -21,7 +21,7 @@ public class LoginService
         if (PasswordService.VerifyPassword(password, customer.PasswordHash))
         {
             var token = _tokenService.GenerateToken(customer);
-            return new Response(200, "Login efetuado com sucesso!", new { Token = token });
+            return new Response("Login efetuado com sucesso!", new { Token = token });
         }
         else
             throw new ArgumentException("Email ou senha inválidos.");
@@ -33,7 +33,7 @@ public class LoginService
         if (PasswordService.VerifyPassword(password, admin.PasswordHash))
         {
             var token = _tokenService.GenerateToken(admin);
-            return new Response(200, "Login efetuado com sucesso!", new { Token = token });
+            return new Response("Login efetuado com sucesso!", new { Token = token });
         }
         else
             throw new ArgumentException("Email ou senha inválidos.");
@@ -45,7 +45,7 @@ public class LoginService
         if (PasswordService.VerifyPassword(password, employee.PasswordHash))
         {
             var token = _tokenService.GenerateToken(employee);
-            return new Response(200, "Login efetuado com sucesso!", new { Token = token });
+            return new Response("Login efetuado com sucesso!", new { Token = token });
         }
         else
             throw new ArgumentException("Email ou senha inválidos.");

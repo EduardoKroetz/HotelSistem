@@ -19,6 +19,6 @@ public partial class ReservationHandler
 
         var totalAmount = Reservation.TotalAmount(dailyRate, checkIn, checkOut, services);
 
-        return new Response(200, "Sucesso!", new { totalAmount });
+        return new Response("Sucesso!", new { totalAmount });
     }
 }

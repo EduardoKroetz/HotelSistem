@@ -39,6 +39,6 @@ public partial class ReservationHandler : IHandler
         await _repository.CreateAsync(reservation);
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Reserva criada com sucesso!", new { reservation.Id });
+        return new Response("Reserva criada com sucesso!", new { reservation.Id });
     }
 }

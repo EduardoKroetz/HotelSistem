@@ -90,7 +90,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         var token = content.data.token;
@@ -117,7 +117,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         Assert.AreEqual(1, content.errors.Count);
@@ -138,7 +138,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         Assert.AreEqual(1, content.errors.Count);
@@ -158,7 +158,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         var token = content.data.token;
@@ -184,7 +184,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         Assert.AreEqual(1, content.errors.Count);
@@ -205,7 +205,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         Assert.AreEqual(1, content.errors.Count);
@@ -225,7 +225,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         var token = content.data.token;
@@ -251,7 +251,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         Assert.AreEqual(1, content.errors.Count);
@@ -272,7 +272,7 @@ public class LoginControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(content);
         Assert.AreEqual(1, content.errors.Count);

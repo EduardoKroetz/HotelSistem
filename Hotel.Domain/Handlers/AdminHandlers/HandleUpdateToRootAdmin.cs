@@ -18,6 +18,6 @@ public partial class AdminHandler
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, $"O Administrador {changeToRootAdmin.Name.FirstName} é agora um Administrador root.");
+        return new Response($"O Administrador {changeToRootAdmin.Name.FirstName} é agora um Administrador root.");
     }
 }

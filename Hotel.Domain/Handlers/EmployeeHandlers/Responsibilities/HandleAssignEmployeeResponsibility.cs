@@ -19,6 +19,6 @@ public partial class EmployeeHandler : IHandler
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Responsabilidade atribuida com sucesso!");
+        return new Response("Responsabilidade atribuida com sucesso!");
     }
 }

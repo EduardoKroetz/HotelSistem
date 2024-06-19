@@ -35,6 +35,6 @@ public partial class ServiceHandler : IHandler
                 throw new Exception("Algum erro ocorreu ao salvar no banco de dados.");
         }
 
-        return new Response(200, "Serviço criado com sucesso!", new { service.Id });
+        return new Response("Serviço criado com sucesso!", new { service.Id });
     }
 }

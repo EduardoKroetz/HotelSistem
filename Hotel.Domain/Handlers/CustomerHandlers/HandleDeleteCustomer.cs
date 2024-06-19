@@ -8,6 +8,6 @@ public partial class CustomerHandler
     {
         _repository.Delete(id);
         await _repository.SaveChangesAsync();
-        return new Response(200, "Usuário deletado com sucesso!", new { id });
+        return new Response("Usuário deletado com sucesso!", new { id });
     }
 }

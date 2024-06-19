@@ -14,6 +14,6 @@ public partial class ReservationHandler
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "CheckIn esperado atualizado com sucesso!");
+        return new Response("CheckIn esperado atualizado com sucesso!");
     }
 }

@@ -8,6 +8,6 @@ public partial class CategoryHandler
     public async Task<Response<IEnumerable<GetCategory>>> HandleGetAsync(CategoryQueryParameters queryParameters)
     {
         var categories = await _repository.GetAsync(queryParameters);
-        return new Response<IEnumerable<GetCategory>>(200, "Sucesso!", categories);
+        return new Response<IEnumerable<GetCategory>>("Sucesso!", categories);
     }
 }

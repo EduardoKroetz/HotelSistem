@@ -32,14 +32,14 @@ public partial class AdminHandler
             {
 
                 if (innerException.Contains("Email"))
-                    return new Response(400, "Esse email já está cadastrado.");
+                    throw new ArgumentException("Esse email já está cadastrado.");
 
                 if (innerException.Contains("Phone"))
-                    return new Response(400, "Esse telefone já está cadastrado.");
+                    throw new ArgumentException("Esse telefone já está cadastrado.");
             }
         }
 
 
-        return new Response(200, "Administrador atualizado com sucesso!");
+        return new Response("Administrador atualizado com sucesso!");
     }
 }

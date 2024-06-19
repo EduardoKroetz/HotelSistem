@@ -11,6 +11,6 @@ public partial class InvoiceHandler
         if (roomInvoice == null)
             throw new ArgumentException("Fatura de quarto não encontrada.");
 
-        return new Response<GetInvoice>(200, "Sucesso!", roomInvoice);
+        return new Response<GetInvoice>("Sucesso!", roomInvoice);
     }
 }

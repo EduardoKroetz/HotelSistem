@@ -59,7 +59,7 @@ public class ServiceControllerTests
         var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var service = await _dbContext.Services.FirstAsync(x => x.Id == content.Data.Id);
 
-        Assert.AreEqual(200, content.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Serviço criado com sucesso!", content.Message);
 
@@ -92,8 +92,8 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(400, content.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse nome já está cadastrado.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Esse nome já está cadastrado.")));
     }
 
     [TestMethod]
@@ -115,7 +115,7 @@ public class ServiceControllerTests
         var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var service = await _dbContext.Services.FirstAsync(x => x.Id == content.Data.Id);
 
-        Assert.AreEqual(200, content.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Serviço atualizado com sucesso!", content.Message);
 
@@ -140,8 +140,8 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
     }
 
     [TestMethod]
@@ -167,8 +167,8 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(400, content.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Esse nome já está cadastrado.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Esse nome já está cadastrado.")));
     }
 
     [TestMethod]
@@ -188,7 +188,7 @@ public class ServiceControllerTests
         var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var exists = await _dbContext.Services.AnyAsync(x => x.Id == content.Data.Id);
 
-        Assert.AreEqual(200, content.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Serviço deletado com sucesso!", content.Message);
 
@@ -206,8 +206,8 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
     }
 
     [TestMethod]
@@ -226,7 +226,7 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<List<GetService>>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(200, content.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Sucesso!", content.Message);
 
@@ -259,7 +259,7 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<GetService>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(200, content.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Sucesso!", content.Message);
 
@@ -283,8 +283,8 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
     }
 
 

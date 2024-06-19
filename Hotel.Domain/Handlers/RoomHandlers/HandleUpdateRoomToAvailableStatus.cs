@@ -15,6 +15,6 @@ public partial class RoomHandler
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Status atualizado com sucesso!");
+        return new Response("Status atualizado com sucesso!");
     }
 }

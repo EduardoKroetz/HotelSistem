@@ -13,6 +13,6 @@ public partial class FeedbackHandler
 
         await _feedbackRepository.SaveChangesAsync();
 
-        return new Response(200, "Like removido com sucesso!");
+        return new Response("Like removido com sucesso!");
     }
 }

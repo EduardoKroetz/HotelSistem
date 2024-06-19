@@ -24,6 +24,6 @@ partial class AdminHandler
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Permissão removida! Faça login novamente para aplicar as alterações.");
+        return new Response("Permissão removida! Faça login novamente para aplicar as alterações.");
     }
 }

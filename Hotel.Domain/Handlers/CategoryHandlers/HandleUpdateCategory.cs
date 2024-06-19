@@ -18,6 +18,6 @@ public partial class CategoryHandler
         _repository.Update(category);
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Categoria atualizada com sucesso!", new { category.Id });
+        return new Response("Categoria atualizada com sucesso!", new { category.Id });
     }
 }

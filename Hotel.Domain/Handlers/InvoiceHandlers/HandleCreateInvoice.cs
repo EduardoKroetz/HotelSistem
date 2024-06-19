@@ -275,7 +275,7 @@ public partial class InvoiceHandler : IHandler
             await _repository.CreateAsync(invoice);
             await _repository.SaveChangesAsync();
 
-            return new Response(200, "Fatura de quarto criada com sucesso!");
+            return new Response("Fatura de quarto criada com sucesso!");
         }
         catch (Exception ex)
         {

@@ -15,6 +15,6 @@ public partial class RoomHandler
 
         _repository.Delete(room);
         await _repository.SaveChangesAsync();
-        return new Response(200, "Hospedagem deletada com sucesso!", new { id });
+        return new Response("Hospedagem deletada com sucesso!", new { id });
     }
 }

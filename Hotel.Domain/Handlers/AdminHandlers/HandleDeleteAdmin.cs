@@ -13,6 +13,6 @@ public partial class AdminHandler
         _repository.Delete(admin);
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Administrador deletado com sucesso!");
+        return new Response("Administrador deletado com sucesso!");
     }
 }

@@ -11,6 +11,6 @@ public partial class ReservationHandler
         var reservation = await _repository.GetByIdAsync(id)
           ?? throw new NotFoundException("Reserva não encontrada.");
 
-        return new Response<GetReservation>(200, "Sucesso!", reservation);
+        return new Response<GetReservation>("Sucesso!", reservation);
     }
 }

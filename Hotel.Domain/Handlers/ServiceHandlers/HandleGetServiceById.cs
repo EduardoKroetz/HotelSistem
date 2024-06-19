@@ -11,6 +11,6 @@ public partial class ServiceHandler
         var service = await _repository.GetByIdAsync(id)
           ?? throw new NotFoundException("Serviço não encontrado.");
 
-        return new Response<GetService>(200, "Sucesso!", service);
+        return new Response<GetService>("Sucesso!", service);
     }
 }
