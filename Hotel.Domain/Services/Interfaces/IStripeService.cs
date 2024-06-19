@@ -1,30 +1,22 @@
-﻿using Stripe;
+﻿using Hotel.Domain.Entities.Interfaces;
+using Stripe;
 
 namespace Hotel.Domain.Services.Interfaces;
 
 public interface IStripeService
 {
-    // CRUD de Customer
-    Task<Customer> CreateCustomerAsync(string name, string email);
-    Task<Customer> GetCustomerAsync(string customerId);
-    Task<Customer> UpdateCustomerAsync(string customerId, string name, string email);
+    Task<Customer> CreateCustomerAsync(ICustomer customer);
     Task<bool> DeleteCustomerAsync(string customerId);
+    Task<Customer> GetCustomerAsync(string customerId);
+    Task<Customer> UpdateCustomerAsync(string customerId, ICustomer customer);
 
-    // CRUD de Room (produto no Stripe)
-    Task<Product> CreateRoomAsync(string name, string description);
-    Task<Product> GetRoomAsync(string productId);
-    Task<Product> UpdateRoomAsync(string productId, string name, string description);
-    Task<bool> DeleteRoomAsync(string productId);
+    Task<Product> CreateProductAsync(string name, string description, decimal price);
+    Task<bool> DeleteProductAsync(string productId);
+    Task<Product> GetProductAsync(string productId);
+    Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price);
 
-    // CRUD de Service (produto no Stripe)
-    Task<Product> CreateServiceAsync(string name, string description);
-    Task<Product> GetServiceAsync(string productId);
-    Task<Product> UpdateServiceAsync(string productId, string name, string description);
-    Task<bool> DeleteServiceAsync(string productId);
-
-    // CRUD de Reservation (PaymentIntent no Stripe)
-    Task<PaymentIntent> CreateReservationAsync(string customerId, string roomId, int amount, string currency);
-    Task<PaymentIntent> GetReservationAsync(string paymentIntentId);
-    Task<PaymentIntent> UpdateReservationAsync(string paymentIntentId, int amount, string currency);
+    Task<PaymentIntent> CreateReservationAsync(decimal expectedReservationTotalAmount, string stripeCustomerId, Guid roomId);
     Task<bool> CancelReservationAsync(string paymentIntentId);
+    Task<PaymentIntent> GetReservationAsync(string paymentIntentId);
+    Task<PaymentIntent> UpdateReservationAsync(string paymentIntentId, decimal totalAmount);
 }
