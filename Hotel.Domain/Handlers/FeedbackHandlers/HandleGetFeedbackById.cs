@@ -11,6 +11,6 @@ public partial class FeedbackHandler
         if (feedback == null)
             throw new ArgumentException("Feedback não encontrado.");
 
-        return new Response<GetFeedback>(200, "Sucesso!", feedback);
+        return new Response<GetFeedback>("Sucesso!", feedback);
     }
 }

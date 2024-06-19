@@ -77,10 +77,10 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var createdReservation = await _dbContext.Reservations.Include(x => x.Room).FirstAsync(x => x.Id == content!.Data!.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Reserva criada com sucesso!", content.Message);
         Assert.AreEqual(body.ExpectedCheckIn, createdReservation.ExpectedCheckIn);
         Assert.AreEqual(body.ExpectedCheckOut, createdReservation.ExpectedCheckOut);
@@ -125,11 +125,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
-        Assert.AreEqual(400, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Não é possível realizar a reserva pois a hospedagem está indisponível.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível realizar a reserva pois a hospedagem está indisponível.")));
         Assert.AreEqual(1, reservations.Count);
     }
 
@@ -152,11 +152,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
-        Assert.AreEqual(400, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Não é possível realizar a reserva pois a hospedagem está inativo.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível realizar a reserva pois a hospedagem está inativo.")));
         Assert.AreEqual(0, reservations.Count);
     }
 
@@ -178,11 +178,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
-        Assert.AreEqual(400, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Capacidade máxima de hospedades da hospedagem excedida.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Capacidade máxima de hospedades da hospedagem excedida.")));
         Assert.AreEqual(0, reservations.Count);
     }
 
@@ -216,11 +216,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Usuário não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Usuário não encontrado.")));
         Assert.AreEqual(0, reservations.Count);
     }
 
@@ -237,10 +237,10 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Hospedagem não encontrada.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Hospedagem não encontrada.")));
     }
 
     [TestMethod]
@@ -271,9 +271,9 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<List<GetReservation>>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<List<GetReservation>>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Sucesso!", content.Message);
         foreach (var getReservation in content.Data)
         {
@@ -315,9 +315,9 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<GetReservation>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<GetReservation>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Sucesso!", content.Message);
 
         Assert.AreEqual(reservation.Id, content.Data.Id);
@@ -364,11 +364,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
 
         var hasDeleted = !await _dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Reserva deletada com sucesso!", content.Message);
         Assert.AreEqual(reservation.Id, content.Data.Id);
         Assert.IsTrue(hasDeleted);
@@ -384,10 +384,10 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(403, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Você não tem acesso a esse serviço.")));
+        
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Você não tem acesso a esse serviço.")));
     }
 
 
@@ -404,9 +404,9 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
     }
 
     [TestMethod]
@@ -439,10 +439,10 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(400, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Contains("deletar a reserva sem antes finaliza-la.")));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Contains("deletar a reserva sem antes finaliza-la.")));
     }
 
     [TestMethod]
@@ -476,11 +476,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("CheckOut esperado atualizado com sucesso!", content.Message);
         Assert.AreEqual(newExpectedCheckOut, updatedReservation.ExpectedCheckOut);
@@ -510,11 +510,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
     }
 
     [TestMethod]
@@ -551,13 +551,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Não é possível alterar o CheckOut esperado com o status da reserva CheckedOut.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível alterar o CheckOut esperado com o status da reserva CheckedOut.")));
         Assert.AreEqual(reservation.ExpectedCheckOut, updatedReservation.ExpectedCheckOut);
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
@@ -605,13 +605,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Não é possível alterar o CheckOut esperado com o status da reserva Cancelled.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível alterar o CheckOut esperado com o status da reserva Cancelled.")));
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -657,11 +657,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("CheckIn esperado atualizado com sucesso!", content.Message);
         Assert.AreEqual(newExpectedCheckIn, updatedReservation.ExpectedCheckIn);
@@ -692,11 +692,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
     }
 
     [TestMethod]
@@ -732,13 +732,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -785,13 +785,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -838,13 +838,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -893,11 +893,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var reservationWithServices = await _dbContext.Reservations.Include(x => x.Services).FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Serviço adicionado com sucesso!", content.Message);
 
@@ -936,11 +936,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
     }
 
     [TestMethod]
@@ -973,11 +973,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
     }
 
 
@@ -1013,11 +1013,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var reservationWithServices = await _dbContext.Reservations.Include(x => x.Services).FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
         Assert.AreEqual("Esse serviço não está dísponível nessa hospedagem.", content.Errors[0]);
 
@@ -1059,13 +1059,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var reservationWithServices = await _dbContext.Reservations.Include(x => x.Services).FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Contains("desativado")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Contains("desativado")));
 
         Assert.AreEqual(0, reservationWithServices.Services.Count);
     }
@@ -1105,11 +1105,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var reservationWithServices = await _dbContext.Reservations.Include(x => x.Services).FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Serviço removido com sucesso!", content.Message);
 
@@ -1161,11 +1161,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
     }
 
     [TestMethod]
@@ -1198,11 +1198,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
     }
 
     [TestMethod]
@@ -1239,11 +1239,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(400, content!.Status);
+       
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Contains("atribuido a essa reserva.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Contains("atribuido a essa reserva.")));
     }
 
     [TestMethod]
@@ -1282,7 +1282,7 @@ public class ReservationControllerTests
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Reserva finalizada com sucesso!", content.Message);
 
@@ -1311,11 +1311,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
     }
 
     [TestMethod]
@@ -1348,13 +1348,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(403, content!.Status);
+        
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Você não tem permissão para finalizar reserva alheia.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Você não tem permissão para finalizar reserva alheia.")));
 
         Assert.AreEqual(EReservationStatus.CheckedIn, updatedReservation.Status);
     }
@@ -1389,11 +1389,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Reserva cancelada com sucesso!", content.Message);
 
@@ -1422,11 +1422,11 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(404, content!.Status);
+
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
     }
 
     [TestMethod]
@@ -1457,13 +1457,13 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual(403, content!.Status);
+        
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Você não tem permissão para cancelar reserva alheia.")));
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Você não tem permissão para cancelar reserva alheia.")));
 
         Assert.AreEqual(EReservationStatus.Pending, updatedReservation.Status);
     }
@@ -1490,9 +1490,9 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<TotalAmountResponse>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<TotalAmountResponse>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Sucesso!", content.Message);
         Assert.AreEqual(260, Math.Ceiling(content.Data.TotalAmount));
     }
@@ -1508,10 +1508,10 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-        Assert.AreEqual(400, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals(expectedError)));
+       
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals(expectedError)));
     }
 }
 

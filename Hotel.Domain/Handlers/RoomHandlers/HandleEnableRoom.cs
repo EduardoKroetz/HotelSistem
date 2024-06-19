@@ -14,6 +14,6 @@ public partial class RoomHandler
         room.Enable();
 
         await _repository.SaveChangesAsync();
-        return new Response(200, "Hospedagem ativada com sucesso!");
+        return new Response("Hospedagem ativada com sucesso!");
     }
 }

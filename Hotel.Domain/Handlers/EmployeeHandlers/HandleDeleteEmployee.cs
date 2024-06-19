@@ -8,6 +8,6 @@ public partial class EmployeeHandler
     {
         _repository.Delete(id);
         await _repository.SaveChangesAsync();
-        return new Response(200, "Funcionário deletado com sucesso!");
+        return new Response("Funcionário deletado com sucesso!");
     }
 }

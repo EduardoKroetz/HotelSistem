@@ -16,6 +16,6 @@ public partial class ReportHandler
         _repository.Update(report);
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Prioridade atualizada com sucesso!", new { report.Id });
+        return new Response("Prioridade atualizada com sucesso!", new { report.Id });
     }
 }

@@ -16,6 +16,6 @@ public partial class ReportHandler
         _repository.Delete(report);
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Relatório deletado com sucesso!", new { id });
+        return new Response("Relatório deletado com sucesso!", new { id });
     }
 }

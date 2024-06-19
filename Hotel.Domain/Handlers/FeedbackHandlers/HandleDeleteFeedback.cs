@@ -15,6 +15,6 @@ public partial class FeedbackHandler
 
         _feedbackRepository.Delete(feedback);
         await _feedbackRepository.SaveChangesAsync();
-        return new Response(200, "Feedback deletado com sucesso!.", new { id });
+        return new Response("Feedback deletado com sucesso!.", new { id });
     }
 }

@@ -11,6 +11,6 @@ public partial class ReportHandler
         var report = await _repository.GetByIdAsync(id)
           ?? throw new NotFoundException("Relatório não encontrado.");
 
-        return new Response<GetReport>(200, "Sucesso!", report);
+        return new Response<GetReport>("Sucesso!", report);
     }
 }

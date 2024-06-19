@@ -44,6 +44,6 @@ public partial class RoomHandler : IHandler
         }
 
 
-        return new Response(200, "Hospedagem criada com sucesso!", new { room.Id });
+        return new Response("Hospedagem criada com sucesso!", new { room.Id });
     }
 }

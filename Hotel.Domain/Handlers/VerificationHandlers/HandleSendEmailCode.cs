@@ -37,6 +37,6 @@ public partial class VerificationHandler : IHandler
 
         await _emailService.SendEmailAsync(email);
 
-        return new Response(200, "Código de validação enviado com sucesso!");
+        return new Response("Código de validação enviado com sucesso!");
     }
 }

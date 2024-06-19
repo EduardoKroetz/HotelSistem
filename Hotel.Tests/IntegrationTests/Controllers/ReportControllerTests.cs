@@ -69,13 +69,13 @@ public class ReportControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var report = await _dbContext.Reports.FirstAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Relatório criado com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -97,13 +97,13 @@ public class ReportControllerTests
         var response = await _client.PostAsJsonAsync(_baseUrl, body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Funcionário não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Funcionário não encontrado.")));
     }
 
     [TestMethod]
@@ -132,13 +132,13 @@ public class ReportControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Relatório atualizado com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -160,13 +160,13 @@ public class ReportControllerTests
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}", body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Relatório não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Relatório não encontrado.")));
     }
 
     [TestMethod]
@@ -195,13 +195,13 @@ public class ReportControllerTests
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{report.Id}", body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Funcionário não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Funcionário não encontrado.")));
     }
 
     [TestMethod]
@@ -230,13 +230,13 @@ public class ReportControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var exists = await _dbContext.Reports.AnyAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Relatório deletado com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -252,13 +252,13 @@ public class ReportControllerTests
         var response = await _client.DeleteAsync($"{_baseUrl}/my/{Guid.NewGuid()}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Relatório não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Relatório não encontrado.")));
     }
 
     [TestMethod]
@@ -284,13 +284,13 @@ public class ReportControllerTests
         var response = await _client.DeleteAsync($"{_baseUrl}/my/{report.Id}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
 
-        Assert.AreEqual(403, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Você não tem permissão para deletar relatório alheio!")));
+        
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Você não tem permissão para deletar relatório alheio!")));
     }
 
     [TestMethod]
@@ -316,13 +316,13 @@ public class ReportControllerTests
         var response = await _client.GetAsync(_baseUrl);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<List<GetReport>>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<List<GetReport>>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
-        Assert.AreEqual("Sucesso!", content.Message);
+        
+        Assert.AreEqual("Sucesso!", content!.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
         foreach (var categ in content.Data)
@@ -362,12 +362,12 @@ public class ReportControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<GetReport>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<GetReport>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -387,13 +387,13 @@ public class ReportControllerTests
         var response = await _client.GetAsync($"{_baseUrl}/{Guid.NewGuid()}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Relatório não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Relatório não encontrado.")));
     }
 
     [TestMethod]
@@ -420,13 +420,13 @@ public class ReportControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == report.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Relatório finalizado com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -449,13 +449,13 @@ public class ReportControllerTests
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/finish/{Guid.NewGuid()}", body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Relatório não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Relatório não encontrado.")));
     }
 
     [TestMethod]
@@ -482,13 +482,13 @@ public class ReportControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == report.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Relatório cancelado com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -508,13 +508,13 @@ public class ReportControllerTests
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/cancel/{Guid.NewGuid()}", new { });
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Relatório não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Relatório não encontrado.")));
     }
 
     [TestMethod]
@@ -543,13 +543,13 @@ public class ReportControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == report.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Prioridade atualizada com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -569,12 +569,12 @@ public class ReportControllerTests
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}/priority/3", new { });
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        Assert.AreEqual(404, content!.Status);
-        Assert.IsTrue(content.Errors.Any(x => x.Equals("Relatório não encontrado.")));
+
+        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Relatório não encontrado.")));
     }
 }

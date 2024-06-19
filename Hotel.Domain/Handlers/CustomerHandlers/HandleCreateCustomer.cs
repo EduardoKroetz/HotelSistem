@@ -57,6 +57,6 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, C
             }
         }
 
-        return new Response(200, "Cadastro realizado com sucesso!", new { customer.Id });
+        return new Response("Cadastro realizado com sucesso!", new { customer.Id });
     }
 }

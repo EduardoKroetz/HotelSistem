@@ -11,6 +11,6 @@ public partial class AdminHandler
         if (admin == null)
             throw new ArgumentException("Administrador não encontrado.");
 
-        return new Response<GetUser>(200, "Sucesso!", admin);
+        return new Response<GetUser>("Sucesso!", admin);
     }
 }

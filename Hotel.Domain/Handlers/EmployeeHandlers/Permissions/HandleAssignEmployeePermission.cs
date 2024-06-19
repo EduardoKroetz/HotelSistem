@@ -18,6 +18,6 @@ partial class EmployeeHandler
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Permissão adicionada! Faça login novamente para aplicar as alterações.", null!);
+        return new Response("Permissão adicionada! Faça login novamente para aplicar as alterações.", null!);
     }
 }

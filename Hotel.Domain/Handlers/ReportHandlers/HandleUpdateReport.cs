@@ -24,6 +24,6 @@ public partial class ReportHandler
         _repository.Update(report);
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Relatório atualizado com sucesso!", new { report.Id });
+        return new Response("Relatório atualizado com sucesso!", new { report.Id });
     }
 }

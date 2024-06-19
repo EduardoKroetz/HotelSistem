@@ -16,6 +16,6 @@ public partial class CategoryHandler
 
         _repository.Delete(category);
         await _repository.SaveChangesAsync();
-        return new Response(200, "Categoria deletada com sucesso!", new { id });
+        return new Response("Categoria deletada com sucesso!", new { id });
     }
 }

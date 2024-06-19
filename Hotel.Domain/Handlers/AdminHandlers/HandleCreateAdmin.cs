@@ -68,6 +68,6 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository, Admin>,
         }
 
 
-        return new Response(200, "Administrador criado com sucesso!", new { admin.Id });
+        return new Response("Administrador criado com sucesso!", new { admin.Id });
     }
 }

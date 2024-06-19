@@ -15,6 +15,6 @@ public partial class GenericUserHandler<TRepository, TUser>
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Telefone atualizado com sucesso!");
+        return new Response("Telefone atualizado com sucesso!");
     }
 }

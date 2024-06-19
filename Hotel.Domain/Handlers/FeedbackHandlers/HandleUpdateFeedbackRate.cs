@@ -17,6 +17,6 @@ public partial class FeedbackHandler
 
         await _feedbackRepository.SaveChangesAsync();
 
-        return new Response(200, "Feedback atualizado com sucesso!");
+        return new Response("Feedback atualizado com sucesso!");
     }
 }

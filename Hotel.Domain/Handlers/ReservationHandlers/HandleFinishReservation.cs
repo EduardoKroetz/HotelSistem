@@ -17,6 +17,6 @@ public partial class ReservationHandler
 
         await _invoiceHandler.HandleCreateAsync(invoice, reservation);
 
-        return new Response(200, "Reserva finalizada com sucesso!");
+        return new Response("Reserva finalizada com sucesso!");
     }
 }
