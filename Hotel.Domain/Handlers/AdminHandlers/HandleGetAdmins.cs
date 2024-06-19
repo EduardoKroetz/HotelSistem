@@ -8,6 +8,6 @@ public partial class AdminHandler
     public async Task<Response<IEnumerable<GetAdmin>>> HandleGetAsync(AdminQueryParameters queryParameters)
     {
         var admins = await _repository.GetAsync(queryParameters);
-        return new Response<IEnumerable<GetAdmin>>(200, "Sucesso!", admins);
+        return new Response<IEnumerable<GetAdmin>>("Sucesso!", admins);
     }
 }

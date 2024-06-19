@@ -15,6 +15,6 @@ public partial class GenericUserHandler<TRepository, TUser>
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Gênero atualizado com sucesso!");
+        return new Response("Gênero atualizado com sucesso!");
     }
 }

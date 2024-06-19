@@ -25,6 +25,6 @@ public partial class RoomHandler
                 throw new Exception();
         }
 
-        return new Response(200, "Número atualizado com sucesso!");
+        return new Response("Número atualizado com sucesso!");
     }
 }

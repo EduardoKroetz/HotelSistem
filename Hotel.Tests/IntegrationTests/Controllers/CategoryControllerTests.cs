@@ -54,14 +54,12 @@ public class CategoryControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var category = await _dbContext.Categories.FirstAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-
-
-        Assert.AreEqual(200, content!.Status);
+  
         Assert.AreEqual("Categoria criada com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -85,14 +83,14 @@ public class CategoryControllerTests
 
         //Assert
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var updatedCategory = await _dbContext.Categories.FirstAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Categoria atualizada com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -113,13 +111,13 @@ public class CategoryControllerTests
         var response = await _client.DeleteAsync($"{_baseUrl}/{category.Id}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var exists = await _dbContext.Categories.AnyAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Categoria deletada com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -138,12 +136,12 @@ public class CategoryControllerTests
         var response = await _client.GetAsync(_baseUrl);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<List<GetCategory>>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<List<GetCategory>>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
@@ -169,12 +167,12 @@ public class CategoryControllerTests
         var response = await _client.GetAsync($"{_baseUrl}/{category.Id}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<GetCategory>>(await response.Content.ReadAsStringAsync());
+        var content = JsonConvert.DeserializeObject<Response<GetCategory>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.AreEqual(200, content!.Status);
+        
         Assert.AreEqual("Sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 

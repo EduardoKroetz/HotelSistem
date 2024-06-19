@@ -66,6 +66,6 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository, E
         }
 
 
-        return new Response(200, "Funcionário cadastrado com sucesso!", new { employee.Id });
+        return new Response("Funcionário cadastrado com sucesso!", new { employee.Id });
     }
 }

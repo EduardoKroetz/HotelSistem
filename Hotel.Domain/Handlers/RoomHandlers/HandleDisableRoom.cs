@@ -17,6 +17,6 @@ public partial class RoomHandler
         room.Disable();
 
         await _repository.SaveChangesAsync();
-        return new Response(200, "Hospedagem desativada com sucesso!");
+        return new Response("Hospedagem desativada com sucesso!");
     }
 }

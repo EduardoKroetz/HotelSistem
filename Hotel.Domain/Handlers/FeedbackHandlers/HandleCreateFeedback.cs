@@ -46,6 +46,6 @@ public partial class FeedbackHandler : IHandler
         await _feedbackRepository.CreateAsync(feedback);
         await _feedbackRepository.SaveChangesAsync();
 
-        return new Response(200, "Feedback criado com sucesso!", new { feedback.Id });
+        return new Response("Feedback criado com sucesso!", new { feedback.Id });
     }
 }

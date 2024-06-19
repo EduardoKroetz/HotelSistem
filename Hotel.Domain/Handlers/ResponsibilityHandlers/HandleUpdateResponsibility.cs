@@ -18,6 +18,6 @@ public partial class ResponsibilityHandler
         _repository.Update(Responsibility);
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Responsabilidade atualizado com sucesso!", new { Responsibility.Id });
+        return new Response("Responsabilidade atualizado com sucesso!", new { Responsibility.Id });
     }
 }

@@ -12,6 +12,6 @@ public partial class ServiceHandler
 
         _repository.Delete(service);
         await _repository.SaveChangesAsync();
-        return new Response(200, "Serviço deletado com sucesso!", new { id });
+        return new Response("Serviço deletado com sucesso!", new { id });
     }
 }

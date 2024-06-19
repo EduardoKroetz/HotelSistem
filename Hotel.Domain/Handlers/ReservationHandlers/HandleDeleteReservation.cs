@@ -15,6 +15,6 @@ public partial class ReservationHandler
 
         _repository.Delete(reservation);
         await _repository.SaveChangesAsync();
-        return new Response(200, "Reserva deletada com sucesso!", new { id });
+        return new Response("Reserva deletada com sucesso!", new { id });
     }
 }

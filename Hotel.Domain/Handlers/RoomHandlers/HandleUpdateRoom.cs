@@ -36,6 +36,6 @@ public partial class RoomHandler
         }
 
 
-        return new Response(200, "Hospedagem atualizada com sucesso!", new { room.Id });
+        return new Response("Hospedagem atualizada com sucesso!", new { room.Id });
     }
 }

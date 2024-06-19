@@ -17,6 +17,6 @@ public partial class ReservationHandler
 
         await _repository.SaveChangesAsync();
 
-        return new Response(200, "Reserva cancelada com sucesso!");
+        return new Response("Reserva cancelada com sucesso!");
     }
 }

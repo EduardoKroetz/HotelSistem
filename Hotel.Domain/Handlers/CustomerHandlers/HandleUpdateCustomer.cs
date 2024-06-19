@@ -32,14 +32,14 @@ public partial class CustomerHandler
             {
 
                 if (innerException.Contains("Email"))
-                    return new Response(400, "Esse email já está cadastrado.");
+                    return new Response("Esse email já está cadastrado.");
 
                 if (innerException.Contains("Phone"))
-                    return new Response(400, "Esse telefone já está cadastrado.");
+                    return new Response("Esse telefone já está cadastrado.");
             }
         }
 
 
-        return new Response(200, "Usuário atualizado com sucesso!", new { customer.Id });
+        return new Response("Usuário atualizado com sucesso!", new { customer.Id });
     }
 }
