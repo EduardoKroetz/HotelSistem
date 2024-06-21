@@ -14,6 +14,8 @@ public partial class RoomHandler
         if (pendingReservations.Count > 0)
             throw new InvalidOperationException("Não foi possível desativar a hospedagem pois tem reservas pendentes relacionadas.");
 
+        await _stripeService.UpdateProductAsync(room.StripeProductId, room.Name, room.Description, room.Price, false);
+
         room.Disable();
 
         await _repository.SaveChangesAsync();

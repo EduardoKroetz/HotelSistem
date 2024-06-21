@@ -11,6 +11,8 @@ public partial class RoomHandler
         if (room == null)
             throw new NotFoundException("Hospedagem não encontrada.");
 
+        await _stripeService.UpdateProductAsync(room.StripeProductId, room.Name, room.Description, room.Price, true);
+
         room.Enable();
 
         await _repository.SaveChangesAsync();

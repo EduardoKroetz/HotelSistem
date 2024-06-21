@@ -16,6 +16,8 @@ public partial class RoomHandler
 
         room.ChangePrice(price);
 
+        await _stripeService.UpdateProductAsync(room.StripeProductId, room.Name, room.Description, room.Price);
+
         await _repository.SaveChangesAsync();
 
         return new Response("Preço atualizado com sucesso!");
