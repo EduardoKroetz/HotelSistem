@@ -1,7 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.RoomDTOs;
 using Hotel.Domain.Exceptions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Domain.Handlers.RoomHandlers;
 

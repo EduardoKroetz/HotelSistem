@@ -17,6 +17,8 @@ public class StripeService : IStripeService
         _stripeProductService = new ProductService();
         _stripePriceService = new PriceService();
         _stripePaymentIntentService = new PaymentIntentService();
+
+        StripeConfiguration.ApiKey = Configuration.Stripe.SecretKey;
     }
 
     //Customer
@@ -68,30 +70,38 @@ public class StripeService : IStripeService
     //Room
     public async Task<Product> CreateProductAsync(string name, string description, decimal price)
     {
+
         var productOptions = new ProductCreateOptions()
         {
             Active = true,
             Name = name,
-            Description = description
+            Description = description,
         };
 
         var product = await _stripeProductService.CreateAsync(productOptions);
 
-        var priceOptions = new PriceCreateOptions()
+        var priceCreateOptions = new PriceCreateOptions
         {
             Currency = "BRL",
             UnitAmountDecimal = price * 100,
-            Product = product.Id,
+            Product = product.Id
         };
 
-        await _stripePriceService.CreateAsync(priceOptions);
+        await _stripePriceService.CreateAsync(priceCreateOptions);
 
         return product;
     }
 
-    public async Task<bool> DeleteProductAsync(string productId)
+    public async Task<Product> DisableProductAsync(string productId)
     {
-       return await _stripeProductService.DeleteAsync(productId) is null ? false : true;
+        var product = await _stripeProductService.GetAsync(productId);
+
+        var productUpdateOptions = new ProductUpdateOptions
+        {
+            Active = false,
+        };
+
+       return await _stripeProductService.UpdateAsync(productId, productUpdateOptions);   
     }
 
     public async Task<Product> GetProductAsync(string productId)
@@ -99,27 +109,42 @@ public class StripeService : IStripeService
         return await _stripeProductService.GetAsync(productId);  
     }
 
-    public async Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price)
+    public async Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price, bool isActive = true)
     {
         var product = await _stripeProductService.GetAsync(productId);
-        
-        if (price * 100 != product.DefaultPrice.UnitAmountDecimal)
+
+        var priceListOptions = new PriceListOptions
         {
-            var newPriceOptions = new PriceCreateOptions
+            Product = product.Id,
+            Active = true
+        };
+
+        var activePrice  = _stripePriceService.ListAsync(priceListOptions).Result.First();
+
+        if (price * 100 != activePrice.UnitAmountDecimal)
+        {
+            var priceUpdateOptions = new PriceUpdateOptions
             {
-                UnitAmountDecimal = price * 100,
-                Currency = "BRL"
+                Active = false
             };
 
-            var newPrice = await _stripePriceService.CreateAsync(newPriceOptions);
-            product.DefaultPriceId = newPrice.Id;
-        }
+            await _stripePriceService.UpdateAsync(activePrice.Id, priceUpdateOptions);
+   
+            var priceCreateOptions = new PriceCreateOptions
+            {
+                Currency = "BRL",
+                UnitAmountDecimal = price * 100,
+                Product = productId
+            };
 
+            var newPrice = await _stripePriceService.CreateAsync(priceCreateOptions);
+        }
+        
         var productUpdateOptions = new ProductUpdateOptions()
         {
             Name = name,
             Description = description,
-            DefaultPrice = product.DefaultPriceId
+            Active = isActive
         };
 
         return await _stripeProductService.UpdateAsync(productId, productUpdateOptions);

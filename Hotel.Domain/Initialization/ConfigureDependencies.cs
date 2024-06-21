@@ -25,6 +25,7 @@ using Hotel.Domain.Services.UserServices;
 using Hotel.Domain.Services.UserServices.Interfaces;
 using Hotel.Domain.Services.VerificationServices;
 using Microsoft.EntityFrameworkCore;
+using Hotel.Domain.Services.Interfaces;
 
 namespace Hotel.Domain.Initialization;
 
@@ -66,6 +67,7 @@ public static class ConfigureDependencies
 
         //Services
         builder.Services.AddSingleton<AuthorizationService>();
+        builder.Services.AddScoped<IStripeService, StripeService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<LoginService>();
         builder.Services.AddScoped<IEmailService, EmailService>();
