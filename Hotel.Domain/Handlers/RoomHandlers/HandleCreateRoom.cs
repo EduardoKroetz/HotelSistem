@@ -5,7 +5,7 @@ using Hotel.Domain.Exceptions;
 using Hotel.Domain.Handlers.Base.Interfaces;
 using Hotel.Domain.Repositories.Interfaces;
 using Hotel.Domain.Services.Interfaces;
-using System.Data.Common;
+
 
 namespace Hotel.Domain.Handlers.RoomHandlers;
 
@@ -26,33 +26,46 @@ public partial class RoomHandler : IHandler
 
     public async Task<Response> HandleCreateAsync(EditorRoom model)
     {
-        var category = await _categoryRepository.GetEntityByIdAsync(model.CategoryId);
-        if (category == null)
-            throw new NotFoundException("Categoria não encontrada.");
-
-        var hasUniqueName = await _repository.GetRoomByName(model.Name);
-        if (hasUniqueName != null)
-            throw new ArgumentException("Esse nome já foi cadastrado.");
-
-        var hasUniqueNumber = await _repository.GetRoomByNumber(model.Number);
-        if (hasUniqueNumber != null)
-            throw new ArgumentException("Esse número já foi cadastrado.");
-            
-        var stripeProduct = await _stripeService.CreateProductAsync(model.Name, model.Description, model.Price);
-
-        var room = new Room(model.Name ,model.Number, model.Price, model.Capacity, model.Description, category, stripeProduct.Id);
-  
+        var transaction = await _repository.BeginTransactionAsync();
+        
         try
         {
+            var category = await _categoryRepository.GetEntityByIdAsync(model.CategoryId);
+            if (category == null)
+                throw new NotFoundException("Categoria não encontrada.");
+
+            var hasUniqueName = await _repository.GetRoomByName(model.Name);
+            if (hasUniqueName != null)
+                throw new ArgumentException("Esse nome já foi cadastrado.");
+
+            var hasUniqueNumber = await _repository.GetRoomByNumber(model.Number);
+            if (hasUniqueNumber != null)
+                throw new ArgumentException("Esse número já foi cadastrado.");
+
+            var room = new Room(model.Name, model.Number, model.Price, model.Capacity, model.Description, category);
+
             await _repository.CreateAsync(room);
             await _repository.SaveChangesAsync();
-        }catch (DbException)
+
+            try
+            {
+                var stripeProduct = await _stripeService.CreateProductAsync(model.Name, model.Description, model.Price);
+                room.StripeProductId = stripeProduct.Id;
+                await _repository.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
+            return new Response("Hospedagem criada com sucesso!", new { room.Id });
+        }
+        catch
         {
-            await _stripeService.DisableProductAsync(stripeProduct.Id);
+            await transaction.RollbackAsync();
             throw;
         }
-
-     
-        return new Response("Hospedagem criada com sucesso!", new { room.Id });
     }
 }
