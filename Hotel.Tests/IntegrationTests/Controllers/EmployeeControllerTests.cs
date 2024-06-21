@@ -660,6 +660,7 @@ public class EmployeeControllerTests
     [DataRow("DeleteRoom", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
     [DataRow("AddRoomService", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/e3347565-8ec7-4a3b-be3a-951317bb53dc", "POST")]
     [DataRow("RemoveRoomService", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+    [DataRow("UpdateRoomName", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414?name=ola", "PATCH")]
     [DataRow("UpdateRoomNumber", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/number/1", "PATCH")]
     [DataRow("UpdateRoomCapacity", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/capacity/2", "PATCH")]
     [DataRow("UpdateRoomCategory", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/category/62eb01d1-a7ba-4c09-ae5b-5ec6b5071577", "PATCH")]

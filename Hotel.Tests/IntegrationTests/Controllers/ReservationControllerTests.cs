@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Hotel.Domain.DTOs.RoomDTOs;
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -1251,32 +1252,42 @@ public class ReservationControllerTests
     {
         //Arange
         var customer = new Customer(
-          new Name("Juliana", "Silva"),
-          new Email("eduardoowk1@gmail.com"),
-          new Phone("+55 (92) 92345-6789"),
-          "password26",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-27),
-          new Address("Brazil", "Manaus", "AM-2626", 2626)
+            new Name("Juliana", "Silva"),
+            new Email("eduardoowk1@gmail.com"),
+            new Phone("+55 (92) 92345-6789"),
+            "password26",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-27),
+            new Address("Brazil", "Manaus", "AM-2626", 2626)
         );
-        var room = new Room("2Quarto 6",26, 90, 5, "Quarto 26", _category);
-        var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-
-        reservation.ToCheckIn();
-
         await _dbContext.Customers.AddAsync(customer);
-        await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.Reservations.AddAsync(reservation);
         await _dbContext.SaveChangesAsync();
+
+        _factory.Login(_client, _rootAdminToken);
+
+        var newRoom = new EditorRoom("2Quarto 6", 26, 90, 5, "Quarto 26", _category.Id);
+        var createRoomResponse = await _client.PostAsJsonAsync("v1/rooms", newRoom);
+        var roomId = JsonConvert.DeserializeObject<Response<DataId>>(await createRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
 
         _factory.Login(_client, customer);
 
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), roomId, 3);
+        var createReservationResponse = await _client.PostAsJsonAsync("v1/reservations", newReservation);
+        var reservationId = JsonConvert.DeserializeObject<Response<DataId>>(await createReservationResponse.Content.ReadAsStringAsync())!.Data.Id;
+
+        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservationId);
+        reservation.ToCheckIn();
+
+        await _dbContext.SaveChangesAsync();
         //Act
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/finish/{reservation.Id}", new { });
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        response.EnsureSuccessStatusCode();
 
         //Assert
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
