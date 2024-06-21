@@ -67,6 +67,7 @@ public enum EPermissions
     AddRoomService,
     RemoveRoomService,
     UpdateRoomNumber,
+    UpdateRoomName,
     UpdateRoomCapacity,
     UpdateRoomCategory,
     UpdateRoomPrice,
