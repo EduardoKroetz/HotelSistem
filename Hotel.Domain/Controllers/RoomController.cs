@@ -86,6 +86,12 @@ public class RoomController : ControllerBase
     public async Task<IActionResult> UpdateNumberAsync([FromRoute] Guid id, [FromRoute] int number)
       => Ok(await _handler.HandleUpdateNumberAsync(id, number));
 
+    // Endpoint para atualizar o nome de um quarto (com permissão)
+    [HttpPatch("{id:guid}")]
+    [AuthorizePermissions([EPermissions.UpdateRoomName, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+    public async Task<IActionResult> UpdateNameAsync([FromRoute] Guid id, [FromQuery] string name)
+      => Ok(await _handler.HandleUpdateNameAsync(id, name));
+
     // Endpoint para atualizar a capacidade de um quarto (com permissão)
     [HttpPatch("{id:guid}/capacity/{capacity:int}")]
     [AuthorizePermissions([EPermissions.UpdateRoomCapacity, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]

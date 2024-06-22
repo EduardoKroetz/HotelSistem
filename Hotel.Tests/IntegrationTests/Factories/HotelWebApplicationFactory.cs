@@ -2,6 +2,8 @@
 using Hotel.Domain.Entities.AdminEntity;
 using Hotel.Domain.Entities.CustomerEntity;
 using Hotel.Domain.Entities.EmployeeEntity;
+using Hotel.Domain.Services;
+using Hotel.Domain.Services.Interfaces;
 using Hotel.Domain.Services.TokenServices;
 using Hotel.Tests.IntegrationTests.Fixtures;
 using Microsoft.AspNetCore.Hosting;

@@ -11,9 +11,9 @@ public interface IStripeService
     Task<Customer> UpdateCustomerAsync(string customerId, ICustomer customer);
 
     Task<Product> CreateProductAsync(string name, string description, decimal price);
-    Task<bool> DeleteProductAsync(string productId);
+    Task<Product> DisableProductAsync(string productId);
     Task<Product> GetProductAsync(string productId);
-    Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price);
+    Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price, bool isActive = true);
 
     Task<PaymentIntent> CreateReservationAsync(decimal expectedReservationTotalAmount, string stripeCustomerId, Guid roomId);
     Task<bool> CancelReservationAsync(string paymentIntentId);

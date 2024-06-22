@@ -1,6 +1,7 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using System.Net;
 
 namespace Hotel.Domain.Middlewares;
@@ -50,6 +51,13 @@ public class HandleExceptionMiddleware
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             await context.Response.WriteAsJsonAsync(
               new Response ([e.Message])
+            );
+        }
+        catch (StripeException e)
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            await context.Response.WriteAsJsonAsync(
+              new Response([$"Ocorreu uma falha ao lidar com o serviço do Stripe. Mensagem de erro: {e.Message}"])
             );
         }
         catch (DbUpdateException)

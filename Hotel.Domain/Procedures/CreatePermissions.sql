@@ -307,6 +307,12 @@ BEGIN
         VALUES (NEWID(), 'UpdateRoomNumber', 'Permissão para atualizar o número de um quarto.', 1, GETDATE());
     END;
 
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UpdateRoomName')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'UpdateRoomName', 'Permissão para atualizar o nome de um quarto.', 1, GETDATE());
+    END;
+
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'UpdateRoomCapacity')
     BEGIN
         INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)

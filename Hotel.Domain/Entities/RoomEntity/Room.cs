@@ -19,9 +19,9 @@ public partial class Room : Entity, IRoom
         Capacity = capacity;
         Description = description;
         IsActive = true;
+        StripeProductId = stripeProductId;
         CategoryId = category.Id;
         Category = category;
-        StripeProductId = stripeProductId;  
         Status = ERoomStatus.Available;
         Services = [];
         Images = [];
@@ -36,7 +36,7 @@ public partial class Room : Entity, IRoom
     public int Capacity { get; private set; }
     public string Description { get; private set; } = string.Empty;
     public bool IsActive { get; private set; }
-    public string StripeProductId { get; private set; } = null!;
+    public string StripeProductId { get; set; } = null!;
     public ICollection<Service> Services { get; private set; } = [];
     public Guid CategoryId { get; private set; }
     public Category? Category { get; private set; }

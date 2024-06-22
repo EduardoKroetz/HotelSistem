@@ -2,6 +2,7 @@ using Hotel.Domain.Data;
 using Hotel.Domain.Entities.Base;
 using Hotel.Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Hotel.Domain.Repositories.Base;
 
@@ -11,6 +12,9 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : E
 
     public GenericRepository(HotelDbContext context)
     => _context = context;
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    => await _context.Database.BeginTransactionAsync();
 
     public async Task CreateAsync(TEntity model)
     => await _context.Set<TEntity>().AddAsync(model);

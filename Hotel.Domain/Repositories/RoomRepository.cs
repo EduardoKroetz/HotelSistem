@@ -92,4 +92,16 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
           .Include(x => x.Reservations)
           .FirstOrDefaultAsync(x => x.Id == roomId);
     }
+
+    public async Task<Room?> GetRoomByNumber(int number)
+    {
+        return await _context.Rooms
+            .FirstOrDefaultAsync(x => x.Number == number);
+    }
+
+    public async Task<Room?> GetRoomByName(string name)
+    {
+        return await _context.Rooms
+            .FirstOrDefaultAsync(x => x.Name == name);
+    }
 }
