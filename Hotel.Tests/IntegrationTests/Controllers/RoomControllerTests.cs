@@ -15,8 +15,6 @@ using System.Net;
 using System.Net.Http.Json;
 using Hotel.Domain.DTOs.ReservationDTOs;
 using Stripe;
-using Hotel.Domain.Entities.Interfaces;
-
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -302,6 +300,25 @@ public class RoomControllerTests
 
         foreach (var activePrice in activePrices)
             Assert.AreEqual(newRoom.Price * 100, activePrice.UnitAmountDecimal);
+    }
+
+    [TestMethod]
+    public async Task UpdateRoom_WithInvalidStripeProductId_ShouldReturn_BAD_REQUEST()
+    {
+        //Arange
+        var newRoom = new Room("Quarto 223", 223, 35, 2, "Quarto básico 223", _basicCategory);
+        await _dbContext.Rooms.AddAsync(newRoom);
+        await _dbContext.SaveChangesAsync();
+
+        var body = new EditorRoom("Quarto 6", 6, 53, 4, "Quarto padrão", _standardCategory.Id);
+
+        _factory.Login(_client, _rootAdminToken);
+
+        //Act
+        var response = await _client.PutAsJsonAsync($"{_baseUrl}/{newRoom.Id}", body);
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
 

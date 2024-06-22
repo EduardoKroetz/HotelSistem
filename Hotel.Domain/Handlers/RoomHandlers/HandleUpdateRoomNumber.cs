@@ -10,8 +10,8 @@ public partial class RoomHandler
         var room = await _repository.GetEntityByIdAsync(id)
           ?? throw new NotFoundException("Hospedagem não encontrada.");
 
-        var numberAlreadyExists = await _repository.GetRoomByNumber(newNumber) is not null ? true : false;
-        if (numberAlreadyExists)
+        var roomWithNumber = await _repository.GetRoomByNumber(newNumber);
+        if (roomWithNumber != null && roomWithNumber.Id != room.Id)
             throw new ArgumentException("Esse número já está cadastrado.");
 
         room.ChangeNumber(newNumber);

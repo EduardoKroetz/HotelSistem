@@ -5,6 +5,7 @@ using Hotel.Domain.Exceptions;
 using Hotel.Domain.Handlers.Base.Interfaces;
 using Hotel.Domain.Repositories.Interfaces;
 using Hotel.Domain.Services.Interfaces;
+using Stripe;
 
 
 namespace Hotel.Domain.Handlers.RoomHandlers;
@@ -52,13 +53,13 @@ public partial class RoomHandler : IHandler
                 var stripeProduct = await _stripeService.CreateProductAsync(model.Name, model.Description, model.Price);
                 room.StripeProductId = stripeProduct.Id;
                 await _repository.SaveChangesAsync();
-                await transaction.CommitAsync();
             }
             catch
             {
-                await transaction.RollbackAsync();
-                throw;
+                throw new StripeException("Um ero ocorreu ao criar o produto no Stripe.");
             }
+
+            await transaction.CommitAsync();
 
             return new Response("Hospedagem criada com sucesso!", new { room.Id });
         }
