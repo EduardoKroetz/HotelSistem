@@ -17,8 +17,6 @@ public class StripeService : IStripeService
         _stripeProductService = new ProductService();
         _stripePriceService = new PriceService();
         _stripePaymentIntentService = new PaymentIntentService();
-
-        StripeConfiguration.ApiKey = Configuration.Stripe.SecretKey;
     }
 
     //Customer

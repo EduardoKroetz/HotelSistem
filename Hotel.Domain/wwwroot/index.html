@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Teste de Pagamento com Stripe</title>
+            <script src="https://js.stripe.com/v3/"></script>
+        </head>
+        <body>
+            <h1>Teste de Pagamento com Stripe</h1>
+            <button id="checkout-button">Iniciar Pagamento</button>
+
+            <script>
+                var stripe = Stripe("pk_test_51PT073P5Pmdhfv7Ge4nN9WQVay5FFzbEJzmEly6a1a4XDyFamHzXKBSSc0W7MXN1X97JRxR2nGc2SdeHCLc9lHia00VsAIpHmH"); // Substitua pela sua chave pública do Stripe
+
+                document.getElementById('checkout-button').addEventListener('click', function () {
+                        fetch('https://localhost:7100/v1/payments/checkout/card/price_1PUT99P5Pmdhfv7GKiIIwHmn', {
+                        method: 'POST',
+                    })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (res) {
+                        console.log(res);
+                        return stripe.redirectToCheckout({ sessionId: res.data.sessionId });
+                    })
+                    .then(function (result) {
+                        if (result.error) {
+                            alert(result.error.message);
+                        }
+                    });
+                });
+            </script>
+    </body>
+</html>

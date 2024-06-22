@@ -1,4 +1,6 @@
-﻿namespace Hotel.Domain.Initialization;
+﻿using Stripe;
+
+namespace Hotel.Domain.Initialization;
 
 public static class LoadConfigurationClass
 {
@@ -13,6 +15,8 @@ public static class LoadConfigurationClass
 
         Configuration.Stripe.SecretKey = stripe.GetValue<string>("SecretKey")!;
         Configuration.Stripe.PublishableKey = stripe.GetValue<string>("PublishableKey")!;
+
+        StripeConfiguration.ApiKey = Configuration.Stripe.SecretKey;
     }
 
 }
