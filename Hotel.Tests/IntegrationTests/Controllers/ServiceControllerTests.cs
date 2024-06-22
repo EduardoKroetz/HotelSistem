@@ -8,6 +8,7 @@ using Hotel.Tests.IntegrationTests.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Stripe;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -116,7 +117,7 @@ public class ServiceControllerTests
     public async Task CreateService_WithInvalidStripeParameters_ShouldReturn_BAD_REQUEST_and_DONT_CREATE()
     {
         //Arange
-        var body = new EditorService("Serviço 123", "Serviço 123", 259999999999999999999999999.00m, EPriority.Medium, 120);
+        var body = new EditorService("Serviço 123[}]adaopo3I#489kxhjakxaxçalz34-[[alxkaxlçaçlaooi2iaieajKLDHajkxhakhkjcAHKfhaKEgkgfiuAJKLxbnakbskvgaodhiavghddljk.fgieryfygahkhvgsukoldfgyifgafagsdukasgcjhabchgfiuasgdkagcagiatedkufaxgcysdgfyiagdahjgcvayugfyegfajhgcydfgiyegjahgvruifgeiuryfaweuktyeyedyaridijrietzjrietzjkrieedyardiojrietzeduardokroetyz", "Serviço 123", 259999999999999999999999999.00m, EPriority.Medium, 120);
 
         //Act
         var response = await _client.PostAsJsonAsync(_baseUrl, body);
@@ -130,6 +131,23 @@ public class ServiceControllerTests
 
         var serviceHasCreated = await _dbContext.Services.AnyAsync(x => x.Name == body.Name);
         Assert.IsFalse(serviceHasCreated);
+
+        //Check if product has created on Stripe
+        var productListOptions = new ProductListOptions
+        {
+            Created = new DateRangeOptions
+            {
+                GreaterThanOrEqual = DateTime.UtcNow.Date,
+                LessThan = DateTime.UtcNow.Date.AddDays(1)
+            }
+        };
+
+        var productService = new ProductService();
+        var products = await productService.ListAsync(productListOptions);
+
+        var productHasCreated = products.Any(x => x.Name == body.Name && x.Description == body.Description);
+
+        Assert.IsFalse(productHasCreated);
     }
 
 

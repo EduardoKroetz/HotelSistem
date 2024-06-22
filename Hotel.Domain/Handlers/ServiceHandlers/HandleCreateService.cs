@@ -40,8 +40,7 @@ public partial class ServiceHandler : IHandler
             {
                 if (e.InnerException != null && e.InnerException.ToString().Contains("Name"))
                     throw new ArgumentException("Esse nome já está cadastrado.");
-                else
-                    throw new Exception("Algum erro ocorreu ao salvar no banco de dados.");
+                throw;
             }
 
             try
