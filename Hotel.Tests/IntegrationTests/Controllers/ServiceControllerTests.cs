@@ -231,24 +231,32 @@ public class ServiceControllerTests
     public async Task DeleteService_ShouldReturn_OK()
     {
         //Arange
-        var seed = new Service("Party Planning","Party Planning", 200.00m, EPriority.Medium, 180);
-        await _dbContext.Services.AddAsync(seed);
-        await _dbContext.SaveChangesAsync();
+        var body = new EditorService("Party Planning","Party Planning", 200.00m, EPriority.Medium, 180);
+
+        var createServiceResponse = await _client.PostAsJsonAsync(_baseUrl,body);
+        var serviceId = JsonConvert.DeserializeObject<Response<DataId>>(await createServiceResponse.Content.ReadAsStringAsync())!.Data.Id;
+        var serivce = await _dbContext.Services.FirstAsync(x => x.Id == serviceId);
 
         //Act
-        var response = await _client.DeleteAsync($"{_baseUrl}/{seed.Id}");
+        var response = await _client.DeleteAsync($"{_baseUrl}/{serviceId}");
 
         //Assert
         response.EnsureSuccessStatusCode();
 
         var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
         var exists = await _dbContext.Services.AnyAsync(x => x.Id == content.Data.Id);
+        Assert.IsFalse(exists);
 
-        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Serviço deletado com sucesso!", content.Message);
 
-        Assert.IsFalse(exists);
+        //Check if the service has disabled on Stripe
+ 
+        var productService = new ProductService();
+        var product = await productService.GetAsync(serivce.StripeProductId);
+
+        Assert.IsFalse(product.Active);
+
     }
 
     [TestMethod]
@@ -265,6 +273,31 @@ public class ServiceControllerTests
        
         Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
     }
+
+    [TestMethod]
+    public async Task DeleteService_WithOutStripeId_ShouldReturn_BAD_REQUEST_and_DONT_DELETE()
+    {
+        //Arange
+
+        var service = new Service("service 999", "service999", 999, EPriority.Critical, 999);
+        await _dbContext.Services.AddAsync(service);
+        await _dbContext.SaveChangesAsync();
+
+        //Act
+        var response = await _client.DeleteAsync($"{_baseUrl}/{service.Id}");
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+        Assert.AreEqual("Ocorreu um erro ao desativar o produto no Stripe", content.Errors[0]);
+
+        var serviceExists = await _dbContext.Services.AnyAsync(x => x.Id == service.Id);
+        Assert.IsTrue(serviceExists);
+    }
+
+
 
     [TestMethod]
     public async Task GetServices_ShouldReturn_OK()
