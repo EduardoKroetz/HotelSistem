@@ -31,7 +31,7 @@ public partial class Service : Entity, IService
     public bool IsActive { get; private set; }
     public EPriority Priority { get; private set; }
     public int TimeInMinutes { get; private set; }
-    public string StripeProductId { get; private set; } = null!;
+    public string StripeProductId { get; set; } = null!;
     public ICollection<Responsibility> Responsibilities { get; private set; } = [];
     public ICollection<Reservation> Reservations { get; private set; } = [];
     public ICollection<Invoice> Invoices { get; private set; } = [];

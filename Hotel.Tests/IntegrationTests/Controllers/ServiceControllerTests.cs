@@ -2,6 +2,7 @@
 using Hotel.Domain.DTOs.ServiceDTOs;
 using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Domain.Enums;
+using Hotel.Domain.Services.Interfaces;
 using Hotel.Tests.IntegrationTests.Factories;
 using Hotel.Tests.IntegrationTests.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ public class ServiceControllerTests
     private static HotelWebApplicationFactory _factory = null!;
     private static HttpClient _client = null!;
     private static HotelDbContext _dbContext = null!;
+    private static IStripeService _stripeService = null!;
     private static string _rootAdminToken = null!;
     private const string _baseUrl = "v1/services";
 
@@ -27,6 +29,7 @@ public class ServiceControllerTests
         _factory = new HotelWebApplicationFactory();
         _client = _factory.CreateClient();
         _dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
+        _stripeService = _factory.Services.GetRequiredService<IStripeService>();
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
         _factory.Login(_client, _rootAdminToken);
@@ -56,7 +59,7 @@ public class ServiceControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
+        var content = JsonConvert.DeserializeObject<Response<DataStripeProductId>>(await response.Content.ReadAsStringAsync())!;
         var service = await _dbContext.Services.FirstAsync(x => x.Id == content.Data.Id);
 
         
@@ -68,6 +71,15 @@ public class ServiceControllerTests
         Assert.AreEqual(body.Priority, service.Priority);
         Assert.AreEqual(body.TimeInMinutes, service.TimeInMinutes);
         Assert.IsTrue(service.IsActive);
+
+        var product = await _stripeService.GetProductAsync(service.StripeProductId);
+
+        Assert.AreEqual(body.Name, product.Name);
+        Assert.AreEqual(body.Description, product.Description);
+
+        var price = await _stripeService.GetFirstActivePriceByProductId(product.Id);
+
+        Assert.AreEqual(body.Price * 100, price.UnitAmountDecimal);
     }
 
     [TestMethod]
@@ -92,9 +104,34 @@ public class ServiceControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-       
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Esse nome já está cadastrado.")));
+        Assert.AreEqual("Esse nome já está cadastrado.",content.Errors[0]);
+
+        var services = await dbContext.Services.Where(x => x.Name == body.Name).ToListAsync();
+
+        Assert.AreEqual(1, services.Count);
     }
+
+
+    [TestMethod]
+    public async Task CreateService_WithInvalidStripeParameters_ShouldReturn_BAD_REQUEST_and_DONT_CREATE()
+    {
+        //Arange
+        var body = new EditorService("Serviço 123", "Serviço 123", 259999999999999999999999999.00m, EPriority.Medium, 120);
+
+        //Act
+        var response = await _client.PostAsJsonAsync(_baseUrl, body);
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+        Assert.AreEqual("Um erro ocorreu ao criar o serviço no stripe", content.Errors[0]);
+
+        var serviceHasCreated = await _dbContext.Services.AnyAsync(x => x.Name == body.Name);
+        Assert.IsFalse(serviceHasCreated);
+    }
+
 
     [TestMethod]
     public async Task UpdateService_ShouldReturn_OK()
