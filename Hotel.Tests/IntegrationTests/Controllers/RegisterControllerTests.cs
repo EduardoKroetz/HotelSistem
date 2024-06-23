@@ -5,8 +5,12 @@ using Hotel.Domain.Entities.VerificationCodeEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.IntegrationTests.Factories;
+using Hotel.Tests.IntegrationTests.Utilities;
+using Hotel.Tests.UnitTests.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Stripe;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -21,6 +25,7 @@ public class RegisterControllerTests
     private static HotelDbContext _dbContext = null!;
     private const string _baseUrl = "v1/register";
     private static string _rootAdminToken = null!;
+    private static CustomerService _stripeCustomerService = new CustomerService();
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext? context)
@@ -57,6 +62,8 @@ public class RegisterControllerTests
         var response = await _client.PostAsJsonAsync($"{_baseUrl}/customers?code={code.Code}", body);
 
         //Assert
+        response.EnsureSuccessStatusCode();
+        var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
 
         var customer = await _dbContext.Customers.FirstAsync(x => x.Email.Address == body.Email);
         var existsCode = await _dbContext.VerificationCodes.AnyAsync(x => x.Code == code.Code);
@@ -75,6 +82,16 @@ public class RegisterControllerTests
         Assert.AreEqual(body.Street, customer.Address.Street);
 
         Assert.IsFalse(existsCode);
+
+        //Check if customer has created on Stripe
+        var stripeCustomer = await _stripeCustomerService.GetAsync(content.Data.StripeCustomerId);
+
+        Assert.IsNotNull(stripeCustomer);
+        Assert.AreEqual(customer.Name.GetFullName(), stripeCustomer.Name);
+        Assert.AreEqual(customer.Email.Address, stripeCustomer.Email);
+        Assert.AreEqual(customer.Phone.Number, stripeCustomer.Phone);
+        Assert.AreEqual(customer.Address.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(customer.Address.City, stripeCustomer.Address.City);
     }
 
     [TestMethod]
@@ -92,8 +109,76 @@ public class RegisterControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.IsNull(customer);
-
     }
+
+    [TestMethod]
+    public async Task CustomerRegister_WithStripeServiceError_ShouldReturn_BAD_REQUEST_AND_MAKE_ROLLBACK()
+    {
+        //Arrange
+        var body = new CreateUser("Luan", "Lawrence", "luanLawrenceOfficial@gmail.com", "+44 (20) 92893-9214", "123", EGender.Feminine, DateTime.Now.AddYears(-20), "United Kingdom", "London", "UK-123", 456);
+
+        var toEmail = new Email(body.Email);
+        var code = new VerificationCode(toEmail);
+
+        await _dbContext.VerificationCodes.AddAsync(code);
+        await _dbContext.SaveChangesAsync();
+
+        // Invalid api key to intentionally generate error
+        StripeConfiguration.ApiKey = "";
+
+        //Act
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/customers?code={code.Code}", body);
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var hasCreated = await _dbContext.Customers.AnyAsync(x => x.Email.Address == body.Email);
+        Assert.IsFalse(hasCreated);        
+    }
+
+    [TestMethod]
+    public async Task CustomerRegister_WithEmailAlreadyRegistered_ShouldReturn_BAD_REQUEST_AND_MAKE_ROLLBACK()
+    {
+        //Arrange
+        var factory = new HotelWebApplicationFactory();
+        var client = factory.CreateClient();
+        var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+        var newCustomer = new Domain.Entities.CustomerEntity.Customer(new Name("Jennifer", "Lawrence"), new Email("jenniferLawrenceOfficial@gmail.com"),new Phone( "+44 (20) 97890-1234"), "123", EGender.Feminine, DateTime.Now.AddYears(-20), new Domain.ValueObjects.Address("United Kingdom", "London", "UK-123", 456));
+        await dbContext.Customers.AddAsync(newCustomer);
+        await dbContext.SaveChangesAsync();
+
+        var body = new CreateUser("Jennifer", "Law", "jenniferLawrenceOfficial@gmail.com", "+44 (20) 97135-4931", "123", EGender.Feminine, DateTime.Now.AddYears(-20), "United Kingdo", "Londo", "UK-129", 451);
+
+        var toEmail = new Email(body.Email);
+        var code = new VerificationCode(toEmail);
+
+        await dbContext.VerificationCodes.AddAsync(code);
+        await dbContext.SaveChangesAsync();
+
+        //Act
+        var response = await client.PostAsJsonAsync($"{_baseUrl}/customers?code={code.Code}", body);
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var hasCreated = await dbContext.Customers.AnyAsync(x => x.Phone.Number == body.Phone);
+        Assert.IsFalse(hasCreated);
+
+        //Check if customer has created on Stripe
+        var stripeCustomers = await _stripeCustomerService.ListAsync(new CustomerListOptions 
+        { 
+            Email = body.Email,
+            Created = new DateRangeOptions
+            {
+                GreaterThanOrEqual = DateTime.UtcNow.Date,
+                LessThan = DateTime.UtcNow.Date.AddDays(1)
+            }
+        })!;
+
+        var hasStripeCustomerCreated = stripeCustomers.Any(x => x.Phone == body.Phone && x.Address.Country == body.Country && x.Address.City == body.City);
+        Assert.IsFalse(hasStripeCustomerCreated);
+    }
+
 
     //Admins
 

@@ -90,10 +90,10 @@ public class CustomerController : ControllerBase
 
     // Endpoint para editar o e-mail do cliente (usando ID do token)
     [HttpPatch("email")]
-    public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
+    public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email, [FromQuery] string code)
     {
         var customerId = _userService.GetUserIdentifier(User);
-        return Ok(await _handler.HandleUpdateEmailAsync(customerId, email));
+        return Ok(await _handler.HandleUpdateEmailAsync(customerId, email, code));
     }
 
     // Endpoint para editar o telefone do cliente (usando ID do token)
