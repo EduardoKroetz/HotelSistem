@@ -1,5 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.Base.User;
+using Hotel.Domain.Exceptions;
 using Hotel.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
@@ -14,9 +15,8 @@ public partial class CustomerHandler
 
         try
         {
-            var customer = await _repository.GetEntityByIdAsync(id);
-            if (customer == null)
-                throw new ArgumentException("Usuário não encontrado.");
+            var customer = await _repository.GetEntityByIdAsync(id)
+                ?? throw new NotFoundException("Usuário não encontrado");
 
             customer.ChangeName(new Name(model.FirstName, model.LastName));
             customer.ChangePhone(new Phone(model.Phone));

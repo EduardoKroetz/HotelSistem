@@ -11,7 +11,7 @@ using Stripe;
 
 namespace Hotel.Domain.Handlers.CustomerHandlers;
 
-public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, Entities.CustomerEntity.Customer>, IHandler
+public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, Hotel.Domain.Entities.CustomerEntity.Customer>,IHandler
 {
     private readonly ICustomerRepository _repository;
     private readonly IEmailService _emailService;

@@ -374,22 +374,26 @@ public class CustomerControllerTests
     public async Task UpdateCustomerName_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Lucas", "Ferreira"),
-          new Email("lucasFerreira@gmail.com"),
-          new Phone("+55 (61) 92345-6789"),
-          "password6",
-          EGender.Masculine,
-          DateTime.Now.AddYears(-28),
-          new Domain.ValueObjects.Address("Brazil", "Brasília", "DF-606", 606)
+            "Lucas", "Ferreira",
+            "lucasFerreira@gmail.com",
+            "+55 (61) 92345-6789",
+            "password6",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-28),
+            "Brazil", "Brasília", "DF-606", 606
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        _factory.Login(_client, customer);
 
         var body = new Name("John", "Wick");
 
@@ -403,33 +407,49 @@ public class CustomerControllerTests
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.AreEqual(updatedCustomer!.Name.FirstName, body.FirstName);
         Assert.AreEqual(updatedCustomer.Name.LastName, body.LastName);
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
+        Assert.IsNotNull(stripeCustomer);
+        Assert.AreEqual(updatedCustomer.Name.GetFullName(), stripeCustomer.Name);
+        Assert.AreEqual(updatedCustomer.Phone.Number, stripeCustomer.Phone);
+        Assert.AreEqual(updatedCustomer.Address!.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(updatedCustomer.Address.City, stripeCustomer.Address.City);
     }
 
     [TestMethod]
     public async Task UpdateEmailCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Fernanda", "River"),
-          new Email("fernandaRiver@gmail.com"),
-          new Phone("+55 (51) 91219-5678"),
-          "password7",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-26),
-          new Domain.ValueObjects.Address("Brazil", "Porto Alegre", "RS-707", 707)
+            "Fernanda", "River",
+            "fernandaRiver@gmail.com",
+            "+55 (51) 91219-5678",
+            "password7",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-26),
+            "Brazil", "Porto Alegre", "RS-707", 707
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        _factory.Login(_client, customer);
 
         var body = new Email("feeRriber@gmail.com");
 
+        var verificationNewEmailCode = new VerificationCode(body);
+        await _dbContext.VerificationCodes.AddAsync(verificationNewEmailCode);
+        await _dbContext.SaveChangesAsync();
+
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/email", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/email?code={verificationNewEmailCode.Code}", body);
 
         //Assert
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
@@ -437,28 +457,39 @@ public class CustomerControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.AreEqual(updatedCustomer!.Email.Address, body.Address);
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
+        Assert.IsNotNull(stripeCustomer);
+        Assert.AreEqual(updatedCustomer.Name.GetFullName(), stripeCustomer.Name);
+        Assert.AreEqual(updatedCustomer.Phone.Number, stripeCustomer.Phone);
+        Assert.AreEqual(updatedCustomer.Address!.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(updatedCustomer.Address.City, stripeCustomer.Address.City);
     }
 
     [TestMethod]
     public async Task UpdatePhoneCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Michele", "Silva"),
-          new Email("micheleSilvaa100@gmail.com"),
-          new Phone("+55 (62) 99846-1432"),
-          "password8",
-          EGender.Masculine,
-          DateTime.Now.AddYears(-31),
-          new Domain.ValueObjects.Address("Brazil", "Goiânia", "GO-808", 808)
+            "Michele", "Silva",
+            "micheleSilvaa100@gmail.com",
+            "+55 (62) 99846-1432",
+            "password8",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-31),
+            "Brazil", "Goiânia", "GO-808", 808
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        _factory.Login(_client, customer);
 
         var body = new Phone("+55 (62) 99156-3449");
 
@@ -471,28 +502,39 @@ public class CustomerControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.AreEqual(updatedCustomer!.Phone.Number, body.Number);
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
+        Assert.IsNotNull(stripeCustomer);
+        Assert.AreEqual(updatedCustomer.Name.GetFullName(), stripeCustomer.Name);
+        Assert.AreEqual(updatedCustomer.Phone.Number, stripeCustomer.Phone);
+        Assert.AreEqual(updatedCustomer.Address.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(updatedCustomer.Address.City, stripeCustomer.Address.City);
     }
 
     [TestMethod]
     public async Task UpdateAddressCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Vinicius", "Silva"),
-          new Email("viniSilva@gmail.com"),
-          new Phone("+55 (62) 91876-3432"),
-          "password8",
-          EGender.Masculine,
-          DateTime.Now.AddYears(-31),
-          new Domain.ValueObjects.Address("Brazil", "Goiânia", "GO-808", 808)
+            "Vinicius", "Silva",
+            "viniSilva@gmail.com",
+            "+55 (62) 91876-3432",
+            "password8",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-31),
+            "Brazil", "Goiânia", "GO-808", 808
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        _factory.Login(_client, customer);
 
         var body = new Domain.ValueObjects.Address("Brazil", "Florianópolis", "SC-909", 909);
 
@@ -508,6 +550,13 @@ public class CustomerControllerTests
         Assert.AreEqual(updatedCustomer!.Address.City, body.City);
         Assert.AreEqual(updatedCustomer!.Address!.Number, body.Number);
         Assert.AreEqual(updatedCustomer!.Address.Street, body.Street);
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
+        Assert.IsNotNull(stripeCustomer);
+        Assert.AreEqual(updatedCustomer.Name.GetFullName(), stripeCustomer.Name);
+        Assert.AreEqual(updatedCustomer.Phone.Number, stripeCustomer.Phone);
+        Assert.AreEqual(updatedCustomer.Address.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(updatedCustomer.Address.City, stripeCustomer.Address.City);
     }
 
     [TestMethod]
@@ -528,8 +577,7 @@ public class CustomerControllerTests
         await _dbContext.Customers.AddAsync(customer);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, customer);
 
         //Act
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/gender/2", new { });
@@ -560,8 +608,7 @@ public class CustomerControllerTests
         await _dbContext.Customers.AddAsync(customer);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, customer);
 
         var body = new UpdateDateOfBirth(DateTime.Now.AddYears(-35));
 
