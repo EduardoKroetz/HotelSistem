@@ -14,13 +14,12 @@ public partial class Customer : User, ICustomer
 {
     internal Customer() { }
 
-    public Customer(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null, string stripeCustomerId = "")
+    public Customer(Name name, Email email, Phone phone, string password, EGender? gender = null, DateTime? dateOfBirth = null, Address? address = null)
       : base(name, email, phone, password, gender, dateOfBirth, address)
     {
-        StripeCustomerId = stripeCustomerId;
     }
 
-    public string StripeCustomerId { get; private set; } = null!;
+    public string StripeCustomerId { get; set; } = "";
     public ICollection<Feedback> Feedbacks { get; private set; } = [];
     public ICollection<Reservation> Reservations { get; private set; } = [];
     public ICollection<Invoice> Invoices { get; private set; } = [];
