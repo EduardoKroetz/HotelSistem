@@ -237,19 +237,24 @@ public class CustomerControllerTests
     public async Task UpdateCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Rafael", "Oliveira"),
-          new Email("rafaelOliveira@gmail.com"),
-          new Phone("+55 (41) 97654-3210"),
+          "Rafael", "Oliveira",
+          "rafaelOliveira@gmail.com",
+          "+55 (41) 97654-3210",
           "password4",
           EGender.Masculine,
           DateTime.Now.AddYears(-32),
-          new Domain.ValueObjects.Address("Brazil", "Curitiba", "PR-404", 404)
+          "Brazil", "Curitiba", "PR-404", 404
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
 
         var body = new UpdateUser("Jão", "Pedro", "+55 (41) 97654-3210", EGender.Feminine, DateTime.Now.AddYears(-20), "Brazil", "Curitiba", "PR-404", 404);
 
@@ -271,6 +276,43 @@ public class CustomerControllerTests
         Assert.AreEqual(updatedCustomer!.Address.City, body.City);
         Assert.AreEqual(updatedCustomer!.Address!.Number, body.Number);
         Assert.AreEqual(updatedCustomer!.Address.Street, body.Street);
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
+        Assert.IsNotNull(stripeCustomer);
+        Assert.AreEqual(updatedCustomer.Name.GetFullName(), stripeCustomer.Name);
+        Assert.AreEqual(updatedCustomer.Phone.Number, stripeCustomer.Phone);
+        Assert.AreEqual(updatedCustomer.Address.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(updatedCustomer.Address.City, stripeCustomer.Address.City);
+    }
+
+    [TestMethod]
+    public async Task UpdateCustomer_WithInvalidStripeCustomerId_ShouldReturn_BAD_REQUEST()
+    {
+        //Arrange
+        var customer = new Domain.Entities.CustomerEntity.Customer
+        (
+            new Name("Carlos", "Mendes"),
+            new Email("carlosMendes@gmail.com"),
+            new Phone("+55 (71) 98765-6789"),
+            "password987",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-35),
+            new Domain.ValueObjects.Address("Brazil", "Salvador", "SV-505", 505)
+        );
+
+        await _dbContext.Customers.AddAsync(customer);
+        await _dbContext.SaveChangesAsync();
+
+        var body = new UpdateUser("João", "Carlos", "+77 (11) 97354-3211", EGender.Feminine, DateTime.Now.AddYears(-20), "Brazil", "Curitiba", "PR-404", 404);
+
+        //Act
+        var response = await _client.PutAsJsonAsync($"{_baseUrl}/{customer.Id}", body);
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+        Assert.AreEqual("Ocorreu um erro ao atualizar o usuário no Stripe", content.Errors[0]);
     }
 
 
@@ -278,22 +320,26 @@ public class CustomerControllerTests
     public async Task UpdateLoggedCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Camila", "Costa"),
-          new Email("camilaCosta@gmail.com"),
-          new Phone("+55 (71) 93456-7890"),
-          "password5",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-29),
-          new Domain.ValueObjects.Address("Brazil", "Salvador", "BA-505", 505)
+            "Camila", "Costa",
+            "camilaCosta@gmail.com",
+            "+55 (71) 93456-7890",
+            "password5",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-29),
+            "Brazil", "Salvador", "BA-505", 505
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        _factory.Login(_client, customer);
 
         var body = new UpdateUser("Jão", "Pedro", "+55 (41) 93651-3210", EGender.Feminine, DateTime.Now.AddYears(-20), "Brazil", "Curitiba", "PR-404", 404);
 
@@ -315,6 +361,13 @@ public class CustomerControllerTests
         Assert.AreEqual(updatedCustomer!.Address.City, body.City);
         Assert.AreEqual(updatedCustomer!.Address!.Number, body.Number);
         Assert.AreEqual(updatedCustomer!.Address.Street, body.Street);
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
+        Assert.IsNotNull(stripeCustomer);
+        Assert.AreEqual(updatedCustomer.Name.GetFullName(), stripeCustomer.Name);
+        Assert.AreEqual(updatedCustomer.Phone.Number, stripeCustomer.Phone);
+        Assert.AreEqual(updatedCustomer.Address.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(updatedCustomer.Address.City, stripeCustomer.Address.City);
     }
 
     [TestMethod]
