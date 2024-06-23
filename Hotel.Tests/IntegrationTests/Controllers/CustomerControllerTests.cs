@@ -1,12 +1,14 @@
 ﻿using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.Base.User;
-using Hotel.Domain.Entities.CustomerEntity;
+using Hotel.Domain.Entities.VerificationCodeEntity;
 using Hotel.Domain.Enums;
-using Hotel.Domain.Services.TokenServices;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.IntegrationTests.Factories;
+using Hotel.Tests.IntegrationTests.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Stripe;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -21,7 +23,8 @@ public class CustomerControllerTests
     private static HotelDbContext _dbContext = null!;
     private static string _rootAdminToken = null!;
     private const string _baseUrl = "v1/customers";
-    private static TokenService _tokenService = null!;
+    private static Domain.Services.TokenServices.TokenService _tokenService = null!;
+    private static CustomerService _stripeCustomerService = new CustomerService();
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext? context)
@@ -29,7 +32,8 @@ public class CustomerControllerTests
         _factory = new HotelWebApplicationFactory();
         _client = _factory.CreateClient();
         _dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
-        _tokenService = _factory.Services.GetRequiredService<TokenService>();
+        _tokenService = _factory.Services.GetRequiredService<Domain.Services.TokenServices.TokenService>();
+
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
@@ -51,7 +55,7 @@ public class CustomerControllerTests
     public async Task GetCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Jennifer", "Lawrence"),
           new Email("jenniferLawrenceOfficial@gmail.com"),
@@ -59,7 +63,7 @@ public class CustomerControllerTests
           "789",
           EGender.Feminine,
           DateTime.Now.AddYears(-30),
-          new Address("United States", "Los Angeles", "US-456", 789)
+          new Domain.ValueObjects.Address("United States", "Los Angeles", "US-456", 789)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -77,7 +81,7 @@ public class CustomerControllerTests
     public async Task GetCustomerById_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Ana", "Souza"),
           new Email("anaSouzaOfficial@gmail.com"),
@@ -85,7 +89,7 @@ public class CustomerControllerTests
           "789",
           EGender.Feminine,
           DateTime.Now.AddYears(-28),
-          new Address("Brazil", "Belo Horizonte", "BR-123", 789)
+          new Domain.ValueObjects.Address("Brazil", "Belo Horizonte", "BR-123", 789)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -103,69 +107,137 @@ public class CustomerControllerTests
     public async Task DeleteCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var newCustomer = new CreateUser
         (
-          new Name("João", "Pereira"),
-          new Email("joaoPereira@gmail.com"),
-          new Phone("+55 (21) 98765-4321"),
-          "password2",
-          EGender.Masculine,
-          DateTime.Now.AddYears(-30),
-          new Address("Brazil", "Rio de Janeiro", "RJ-202", 202)
+            "Maria", "Silva",
+            "mariaSilva@gmail.com",
+            "+55 (11) 98765-1234",
+            "password123",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-25),
+            "Brazil", "São Paulo", "SP-101", 101
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
 
         //Act
         var response = await _client.DeleteAsync($"{_baseUrl}/{customer.Id}");
 
         //Assert
-        var wasNotDeleted = await _dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
+        var exists = await _dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsFalse(wasNotDeleted);
+        Assert.IsFalse(exists);
+
+        var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
+        Assert.AreEqual("Usuário deletado com sucesso!", content.Message);
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(content.Data.StripeCustomerId);
+        Assert.IsTrue(stripeCustomer.Deleted);
     }
 
     [TestMethod]
     public async Task DeleteLoggedCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Emma", "Watson"),
-          new Email("emmaWatson@gmail.com"),
-        new Phone("+44 (20) 99346-1912"),
-          "123",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-31),
-          new Address("United Kingdom", "London", "UK-123", 456)
+            "Emma", "Watson",
+            "emmaWatson@gmail.com",
+            "+44 (20) 99346-1912",
+            "123",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-31),
+            "United Kingdom", "London", "UK-123", 456
         );
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
+        await _dbContext.SaveChangesAsync();
 
-        var dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
-        await dbContext.Customers.AddAsync(customer);
-        await dbContext.SaveChangesAsync();
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        _factory.Login(_client, customer);
 
         //Act
         var response = await _client.DeleteAsync(_baseUrl);
 
         //Assert
-        var wasNotDeleted = await dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
+        var exists = await _dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsFalse(wasNotDeleted);
+        Assert.IsFalse(exists);
+
+        var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(content.Data.StripeCustomerId);
+        Assert.IsTrue(stripeCustomer.Deleted);
+    }
+
+    [TestMethod]
+    public async Task DeleteCustomer_WithStripeServiceError_ShouldReturn_BAD_REQUEST_AND_MAKE_ROLLBACK()
+    {
+        //Arrange
+        var factory = new HotelWebApplicationFactory();
+        var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+        var client = factory.CreateClient();
+
+        var newCustomer = new CreateUser
+        (
+            "Pedro", "Souza",
+            "pedroSouza@gmail.com",
+            "+55 (31) 98765-5678",
+            "password456",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-28),
+            "Brazil", "Belo Horizonte", "MG-303", 303
+        );
+
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await dbContext.VerificationCodes.AddAsync(verificationCode);
+        await dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        factory.Login(client, _rootAdminToken);
+
+        var apiKey = StripeConfiguration.ApiKey.ToString();
+        StripeConfiguration.ApiKey = "";
+        //Act
+        var response = await client.DeleteAsync($"{_baseUrl}/{customer.Id}");
+
+        //Assert
+        var exists = await dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
+
+        Assert.IsNotNull(response);
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.IsTrue(exists);
+
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        Assert.AreEqual("Ocorreu um erro ao deletar o cliente no Stripe", content.Errors[0]);
+
+        StripeConfiguration.ApiKey = apiKey;
+        var stripeCustomer = await _stripeCustomerService.GetAsync(createCustomerContent.Data.StripeCustomerId);
+        Assert.IsNull(stripeCustomer.Deleted);
     }
 
     [TestMethod]
     public async Task UpdateCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Rafael", "Oliveira"),
           new Email("rafaelOliveira@gmail.com"),
@@ -173,7 +245,7 @@ public class CustomerControllerTests
           "password4",
           EGender.Masculine,
           DateTime.Now.AddYears(-32),
-          new Address("Brazil", "Curitiba", "PR-404", 404)
+          new Domain.ValueObjects.Address("Brazil", "Curitiba", "PR-404", 404)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -206,7 +278,7 @@ public class CustomerControllerTests
     public async Task UpdateLoggedCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Camila", "Costa"),
           new Email("camilaCosta@gmail.com"),
@@ -214,7 +286,7 @@ public class CustomerControllerTests
           "password5",
           EGender.Feminine,
           DateTime.Now.AddYears(-29),
-          new Address("Brazil", "Salvador", "BA-505", 505)
+          new Domain.ValueObjects.Address("Brazil", "Salvador", "BA-505", 505)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -249,7 +321,7 @@ public class CustomerControllerTests
     public async Task UpdateCustomerName_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Lucas", "Ferreira"),
           new Email("lucasFerreira@gmail.com"),
@@ -257,7 +329,7 @@ public class CustomerControllerTests
           "password6",
           EGender.Masculine,
           DateTime.Now.AddYears(-28),
-          new Address("Brazil", "Brasília", "DF-606", 606)
+          new Domain.ValueObjects.Address("Brazil", "Brasília", "DF-606", 606)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -284,7 +356,7 @@ public class CustomerControllerTests
     public async Task UpdateEmailCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Fernanda", "River"),
           new Email("fernandaRiver@gmail.com"),
@@ -292,7 +364,7 @@ public class CustomerControllerTests
           "password7",
           EGender.Feminine,
           DateTime.Now.AddYears(-26),
-          new Address("Brazil", "Porto Alegre", "RS-707", 707)
+          new Domain.ValueObjects.Address("Brazil", "Porto Alegre", "RS-707", 707)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -318,7 +390,7 @@ public class CustomerControllerTests
     public async Task UpdatePhoneCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Michele", "Silva"),
           new Email("micheleSilvaa100@gmail.com"),
@@ -326,7 +398,7 @@ public class CustomerControllerTests
           "password8",
           EGender.Masculine,
           DateTime.Now.AddYears(-31),
-          new Address("Brazil", "Goiânia", "GO-808", 808)
+          new Domain.ValueObjects.Address("Brazil", "Goiânia", "GO-808", 808)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -352,7 +424,7 @@ public class CustomerControllerTests
     public async Task UpdateAddressCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Vinicius", "Silva"),
           new Email("viniSilva@gmail.com"),
@@ -360,7 +432,7 @@ public class CustomerControllerTests
           "password8",
           EGender.Masculine,
           DateTime.Now.AddYears(-31),
-          new Address("Brazil", "Goiânia", "GO-808", 808)
+          new Domain.ValueObjects.Address("Brazil", "Goiânia", "GO-808", 808)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -369,7 +441,7 @@ public class CustomerControllerTests
         var token = _tokenService.GenerateToken(customer);
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var body = new Address("Brazil", "Florianópolis", "SC-909", 909);
+        var body = new Domain.ValueObjects.Address("Brazil", "Florianópolis", "SC-909", 909);
 
         //Act
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/address", body);
@@ -389,7 +461,7 @@ public class CustomerControllerTests
     public async Task UpdateGenderCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Gustavo", "Souza"),
           new Email("gustavoSouza@gmail.com"),
@@ -397,7 +469,7 @@ public class CustomerControllerTests
           "password10",
           EGender.Masculine,
           DateTime.Now.AddYears(-33),
-          new Address("Brazil", "Vitória", "ES-1010", 1010)
+          new Domain.ValueObjects.Address("Brazil", "Vitória", "ES-1010", 1010)
         );
 
         await _dbContext.Customers.AddAsync(customer);
@@ -421,7 +493,7 @@ public class CustomerControllerTests
     public async Task UpdateDateOfBirthCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Customer
+        var customer = new Domain.Entities.CustomerEntity.Customer
         (
           new Name("Geovane", "Silva"),
           new Email("geoSilv@gmail.com"),
@@ -429,7 +501,7 @@ public class CustomerControllerTests
           "password10",
           EGender.Masculine,
           DateTime.Now.AddYears(-33),
-          new Address("Brazil", "Vitória", "ES-1011", 1011)
+          new Domain.ValueObjects.Address("Brazil", "Vitória", "ES-1011", 1011)
         );
 
         await _dbContext.Customers.AddAsync(customer);
