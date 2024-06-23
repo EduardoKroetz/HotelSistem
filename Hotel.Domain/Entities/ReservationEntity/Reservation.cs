@@ -56,7 +56,7 @@ public partial class Reservation : Entity, IReservation
     }
     public EReservationStatus Status { get; private set; }
     public int Capacity { get; private set; }
-    public string StripePaymentIntentId { get; set; } = null!;
+    public string StripePaymentIntentId { get; private set; } = null!;
     public Guid RoomId { get; private set; }
     public Room? Room { get; private set; }
     public Guid CustomerId { get; private set; }

@@ -15,10 +15,10 @@ public interface IStripeService
     Task<Product> GetProductAsync(string productId);
     Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price, bool isActive = true);
 
-    Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, Guid roomId);
-    Task<bool> CancelPaymentIntentAsync(string paymentIntentId);
-    Task<PaymentIntent> GetPaymentIntentAsync(string paymentIntentId);
-    Task<PaymentIntent> UpdatePaymentIntentAsync(string paymentIntentId, decimal totalAmount);
+    Task<PaymentIntent> CreateReservationAsync(decimal expectedReservationTotalAmount, string stripeCustomerId, Guid roomId);
+    Task<bool> CancelReservationAsync(string paymentIntentId);
+    Task<PaymentIntent> GetReservationAsync(string paymentIntentId);
+    Task<PaymentIntent> UpdateReservationAsync(string paymentIntentId, decimal totalAmount);
 
     Task<Price> GetFirstActivePriceByProductId(string productId);
 }

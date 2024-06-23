@@ -150,9 +150,9 @@ public class StripeService : IStripeService
     }
 
     //Reservation
-    public async Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, Guid roomId)
+    public async Task<PaymentIntent> CreateReservationAsync(decimal expectedReservationTotalAmount, string stripeCustomerId, Guid roomId)
     {
-        var amountInCents = (int) (expectedTotalAmount * 100);
+        var amountInCents = (int) (expectedReservationTotalAmount * 100);
 
         var options = new PaymentIntentCreateOptions
         {
@@ -168,17 +168,17 @@ public class StripeService : IStripeService
         return await _stripePaymentIntentService.CreateAsync(options);
     }
 
-    public async Task<bool> CancelPaymentIntentAsync(string paymentIntentId)
+    public async Task<bool> CancelReservationAsync(string paymentIntentId)
     {
         return await _stripePaymentIntentService.CancelAsync(paymentIntentId) is null ? false : true;
     }
 
-    public async Task<PaymentIntent> GetPaymentIntentAsync(string paymentIntentId)
+    public async Task<PaymentIntent> GetReservationAsync(string paymentIntentId)
     {
         return await _stripePaymentIntentService.GetAsync(paymentIntentId);
     }
 
-    public async Task<PaymentIntent> UpdatePaymentIntentAsync(string paymentIntentId, decimal totalAmount)
+    public async Task<PaymentIntent> UpdateReservationAsync(string paymentIntent, decimal totalAmount)
     {
         var amountInCents = (int)( totalAmount * 100 );
 
@@ -187,7 +187,7 @@ public class StripeService : IStripeService
             Amount = amountInCents
         };
 
-        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntent, options);
     }
 
     public async Task<Price> GetFirstActivePriceByProductId(string productId)
