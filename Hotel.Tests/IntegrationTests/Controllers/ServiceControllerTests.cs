@@ -155,31 +155,54 @@ public class ServiceControllerTests
     public async Task UpdateService_ShouldReturn_OK()
     {
         //Arange
-        var seed = new Service("Laundry Service", "Laundry Service", 25.00m, EPriority.Medium, 120);
-        await _dbContext.Services.AddAsync(seed);
-        await _dbContext.SaveChangesAsync();
+        var newService = new EditorService("Laundry Service", "Laundry Service", 25.00m, EPriority.Medium, 120);
+        var createServiceResponse = await _client.PostAsJsonAsync(_baseUrl, newService);
+        var serviceId = JsonConvert.DeserializeObject<Response<DataId>>(await createServiceResponse.Content.ReadAsStringAsync())!.Data.Id;
+        var service = await _dbContext.Services.FirstAsync(x => x.Id == serviceId);
 
         var body = new EditorService("Laundry Service", "Laundry", 27.01m, EPriority.Low, 50);
 
         //Act
-        var response = await _client.PutAsJsonAsync($"{_baseUrl}/{seed.Id}", body);
+        var response = await _client.PutAsJsonAsync($"{_baseUrl}/{serviceId}", body);
 
         //Assert
         response.EnsureSuccessStatusCode();
 
         var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
-        var service = await _dbContext.Services.FirstAsync(x => x.Id == content.Data.Id);
+        var updatedService = await _dbContext.Services.FirstAsync(x => x.Id == content.Data.Id);
 
         
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Serviço atualizado com sucesso!", content.Message);
 
-        Assert.AreEqual(body.Name, service.Name);
-        Assert.AreEqual(body.Description, service.Description);
-        Assert.AreEqual(body.Price, service.Price);
-        Assert.AreEqual(body.Priority, service.Priority);
-        Assert.AreEqual(body.TimeInMinutes, service.TimeInMinutes);
-        Assert.IsTrue(service.IsActive);
+        Assert.AreEqual(body.Name, updatedService.Name);
+        Assert.AreEqual(body.Description, updatedService.Description);
+        Assert.AreEqual(body.Price, updatedService.Price);
+        Assert.AreEqual(body.Priority, updatedService.Priority);
+        Assert.AreEqual(body.TimeInMinutes, updatedService.TimeInMinutes);
+        Assert.IsTrue(updatedService.IsActive);
+    }
+
+
+    [TestMethod]
+    public async Task UpdateService_WithInvalidStripeId_ShouldReturn_BAD_REQUEST_and_DONT_UPDATE()
+    {
+        //Arange
+        var newService = new Service("Serviço 9213", "Serviço 12345", 259.00m, EPriority.Medium, 120);
+        await _dbContext.Services.AddAsync(newService);
+        await _dbContext.SaveChangesAsync();
+
+
+        var body = new EditorService("Serviço 921", "Serviço 921", 239.00m, EPriority.High, 140);
+        //Act
+        var response = await _client.PutAsJsonAsync($"{_baseUrl}/{newService.Id}", body);
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+        Assert.AreEqual("Ocorreu um erro ao atualizar o produto no Stripe", content.Errors[0]);
     }
 
     [TestMethod]
@@ -209,14 +232,20 @@ public class ServiceControllerTests
         var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
         factory.Login(client, _rootAdminToken);
 
-        var updateSeed = new Service("Medical Assistance","Medical Assistance", 50.00m, EPriority.High, 30);
-        var seed = new Service("Cooking Class", "Cooking Class", 55.00m, EPriority.Medium, 90);
-        await dbContext.Services.AddRangeAsync([updateSeed, seed]);
+        var guidName = Guid.NewGuid().ToString();
+        var updateSeed = new Service(guidName,"Medical Assistance", 50.00m, EPriority.High, 30);
+        await dbContext.Services.AddAsync(updateSeed);
         await dbContext.SaveChangesAsync();
 
-        var body = new EditorService(seed.Name,"Cooking", 30.00m, EPriority.High, 30);
+        var seed = new Service("Cooking Class", "Cooking Class", 55.00m, EPriority.Medium, 90);
+        var createServiceResponse = await client.PostAsJsonAsync(_baseUrl, seed);
+        var serviceId = JsonConvert.DeserializeObject<Response<DataId>>(await createServiceResponse.Content.ReadAsStringAsync())!.Data.Id;
+        var service = await dbContext.Services.FirstAsync(x => x.Id == serviceId);
+
+
+        var body = new EditorService(guidName,"Cooking", 30.00m, EPriority.High, 30);
         //Act
-        var response = await client.PutAsJsonAsync($"{_baseUrl}/{updateSeed.Id}", body);
+        var response = await client.PutAsJsonAsync($"{_baseUrl}/{service.Id}", body);
 
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -224,7 +253,24 @@ public class ServiceControllerTests
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
        
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Esse nome já está cadastrado.")));
+        Assert.AreEqual("Esse nome já está cadastrado.",content!.Errors[0]);
+
+        //Check if product has updated on Stripe
+        var productListOptions = new ProductListOptions
+        {
+            Created = new DateRangeOptions
+            {
+                GreaterThanOrEqual = DateTime.UtcNow.Date,
+                LessThan = DateTime.UtcNow.Date.AddDays(1)
+            }
+        };
+
+        var productService = new ProductService();
+        var products = await productService.ListAsync(productListOptions);
+
+        var productHasUpdate = products.Any(x => x.Name == guidName);
+
+        Assert.IsFalse(productHasUpdate);
     }
 
     [TestMethod]
