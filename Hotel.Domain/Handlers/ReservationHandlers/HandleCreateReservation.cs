@@ -37,10 +37,10 @@ public partial class ReservationHandler : IHandler
         try
         {
             var room = await _roomRepository.GetEntityByIdAsync(model.RoomId)
-            ?? throw new NotFoundException("Hospedagem não encontrada.");
+                ?? throw new NotFoundException("Hospedagem não encontrada");
 
             var customer = await _customerRepository.GetEntityByIdAsync(customerId)
-              ?? throw new NotFoundException("Usuário não encontrado.");
+                ?? throw new NotFoundException("Usuário não encontrado");
 
             var reservation = new Reservation(room, model.ExpectedCheckIn, model.ExpectedCheckOut, customer, model.Capacity);
 
@@ -56,19 +56,21 @@ public partial class ReservationHandler : IHandler
 
             try
             {
-                await _stripeService.CreatePaymentIntentAsync
+                var paymentIntent = await _stripeService.CreatePaymentIntentAsync
                 (
                     reservation.ExpectedTotalAmount(), 
                     customer.StripeCustomerId, 
                     reservation.RoomId
                 );
+                reservation.StripePaymentIntentId = paymentIntent.Id;
+                await _repository.SaveChangesAsync();
             }
             catch (StripeException)
             {
                 throw new StripeException("Ocorreu um erro ao criar a intenção de pagamento no Stripe");
             }
 
-            return new Response("Reserva criada com sucesso!", new { reservation.Id });
+            return new Response("Reserva criada com sucesso!", new { reservation.Id, reservation.StripePaymentIntentId });
         }
         catch 
         {
