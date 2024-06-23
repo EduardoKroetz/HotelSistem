@@ -1,5 +1,6 @@
 ﻿using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Services.Interfaces;
+using Hotel.Domain.ValueObjects;
 using Stripe;
 
 namespace Hotel.Domain.Services;
@@ -20,18 +21,18 @@ public class StripeService : IStripeService
     }
 
     //Customer
-    public async Task<Customer> CreateCustomerAsync(ICustomer customer)
+    public async Task<Customer> CreateCustomerAsync(Name name, Email email, Phone phone, ValueObjects.Address? address)
     {
         var options = new CustomerCreateOptions
         {
-            Name = customer.Name.GetFullName(),
-            Email = customer.Email.Address,
+            Name = name.GetFullName(),
+            Email = email.Address,
             Address = new AddressOptions()
             {
-                City = customer.Address?.City ?? "",
-                Country = customer.Address?.Country ?? "",
+                City = address?.City ?? "",
+                Country = address?.Country ?? "",
             },
-            Phone = customer.Phone.Number
+            Phone = phone.Number
         };
 
         return await _stripeCustomerService.CreateAsync(options);  
@@ -47,18 +48,18 @@ public class StripeService : IStripeService
         return await _stripeCustomerService.GetAsync(customerId);
     }
 
-    public async Task<Customer> UpdateCustomerAsync(string customerId, ICustomer customer)
+    public async Task<Customer> UpdateCustomerAsync(string customerId, Name name, Email email, Phone phone, ValueObjects.Address? address)
     {
         var options = new CustomerUpdateOptions
         {
-            Name = customer.Name.GetFullName(),
-            Email = customer.Email.Address,
+            Name = name.GetFullName(),
+            Email = email.Address,
             Address = new AddressOptions()
             {
-                City = customer.Address?.City ?? "",
-                Country = customer.Address?.Country ?? "",
+                City = address?.City ?? "",
+                Country = address?.Country ?? "",
             },
-            Phone = customer.Phone.Number
+            Phone = phone.Number
         };
         
         return await _stripeCustomerService.UpdateAsync(customerId, options);
@@ -149,9 +150,9 @@ public class StripeService : IStripeService
     }
 
     //Reservation
-    public async Task<PaymentIntent> CreateReservationAsync(decimal expectedReservationTotalAmount, string stripeCustomerId, Guid roomId)
+    public async Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, Guid roomId)
     {
-        var amountInCents = (int) (expectedReservationTotalAmount * 100);
+        var amountInCents = (int) (expectedTotalAmount * 100);
 
         var options = new PaymentIntentCreateOptions
         {
@@ -167,17 +168,17 @@ public class StripeService : IStripeService
         return await _stripePaymentIntentService.CreateAsync(options);
     }
 
-    public async Task<bool> CancelReservationAsync(string paymentIntentId)
+    public async Task<bool> CancelPaymentIntentAsync(string paymentIntentId)
     {
         return await _stripePaymentIntentService.CancelAsync(paymentIntentId) is null ? false : true;
     }
 
-    public async Task<PaymentIntent> GetReservationAsync(string paymentIntentId)
+    public async Task<PaymentIntent> GetPaymentIntentAsync(string paymentIntentId)
     {
         return await _stripePaymentIntentService.GetAsync(paymentIntentId);
     }
 
-    public async Task<PaymentIntent> UpdateReservationAsync(string paymentIntent, decimal totalAmount)
+    public async Task<PaymentIntent> UpdatePaymentIntentAsync(string paymentIntentId, decimal totalAmount)
     {
         var amountInCents = (int)( totalAmount * 100 );
 
@@ -186,7 +187,7 @@ public class StripeService : IStripeService
             Amount = amountInCents
         };
 
-        return await _stripePaymentIntentService.UpdateAsync(paymentIntent, options);
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
     }
 
     public async Task<Price> GetFirstActivePriceByProductId(string productId)
