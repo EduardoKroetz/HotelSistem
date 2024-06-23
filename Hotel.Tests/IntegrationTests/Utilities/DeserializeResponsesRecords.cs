@@ -6,4 +6,5 @@ namespace Hotel.Tests.IntegrationTests.Utilities
     public record DataStripeProductId(Guid Id, string StripeProductId);
     public record DataStripeCustomerId(Guid Id, string StripeCustomerId);
 
+
 }

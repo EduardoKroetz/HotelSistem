@@ -304,7 +304,7 @@ public class RoomControllerTests
 
     [TestMethod]
     public async Task UpdateRoom_WithInvalidStripeProductId_ShouldReturn_BAD_REQUEST()
-    {
+    {        
         //Arange
         var newRoom = new Room("Quarto 223", 223, 35, 2, "Quarto básico 223", _basicCategory);
         await _dbContext.Rooms.AddAsync(newRoom);

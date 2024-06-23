@@ -23,7 +23,7 @@ public partial class CustomerHandler
             }
             catch (DbUpdateException)
             {
-                throw new DbUpdateException("Ocorreu um erro ao deletar o usuário do banco de dados.");
+                throw new DbUpdateException("Ocorreu um erro ao deletar o usuário do banco de dados");
             }
 
             try
@@ -32,7 +32,7 @@ public partial class CustomerHandler
             }
             catch (StripeException)
             {
-                throw new StripeException("Ocorreu um erro ao deletar o usuário do banco de dados.");
+                throw new StripeException("Ocorreu um erro ao deletar o cliente no Stripe");
             }
 
             await transaction.CommitAsync();

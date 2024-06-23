@@ -1,8 +1,7 @@
 ﻿using Hotel.Domain.Data;
 using Hotel.Domain.DTOs.Base.User;
-using Hotel.Domain.Entities.CustomerEntity;
+using Hotel.Domain.Entities.VerificationCodeEntity;
 using Hotel.Domain.Enums;
-using Hotel.Domain.Services;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.IntegrationTests.Factories;
 using Hotel.Tests.IntegrationTests.Utilities;
@@ -119,7 +118,11 @@ public class CustomerControllerTests
             "Brazil", "São Paulo", "SP-101", 101
         );
 
-        var createCustomerResponse = await _client.PostAsJsonAsync(_baseUrl, newCustomer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
+        await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
         var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
         var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
 
@@ -133,44 +136,101 @@ public class CustomerControllerTests
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         Assert.IsFalse(exists);
 
-        var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
-        Assert.AreEqual("Usuário deletado com sucesso!", content.Errors[0]);
+        var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
+        Assert.AreEqual("Usuário deletado com sucesso!", content.Message);
 
         var stripeCustomer = await _stripeCustomerService.GetAsync(content.Data.StripeCustomerId);
-        Assert.IsNull(stripeCustomer);
+        Assert.IsTrue(stripeCustomer.Deleted);
     }
 
     [TestMethod]
     public async Task DeleteLoggedCustomer_ShouldReturn_OK()
     {
         //Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Emma", "Watson"),
-          new Email("emmaWatson@gmail.com"),
-        new Phone("+44 (20) 99346-1912"),
-          "123",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-31),
-          new Domain.ValueObjects.Address("United Kingdom", "London", "UK-123", 456)
+            "Emma", "Watson",
+            "emmaWatson@gmail.com",
+            "+44 (20) 99346-1912",
+            "123",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-31),
+            "United Kingdom", "London", "UK-123", 456
         );
 
-        var token = _tokenService.GenerateToken(customer);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
+        await _dbContext.SaveChangesAsync();
 
-        var dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
-        await dbContext.Customers.AddAsync(customer);
-        await dbContext.SaveChangesAsync();
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        _factory.Login(_client, customer);
 
         //Act
         var response = await _client.DeleteAsync(_baseUrl);
 
         //Assert
-        var wasNotDeleted = await dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
+        var exists = await _dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.IsFalse(wasNotDeleted);
+        Assert.IsFalse(exists);
+
+        var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
+
+        var stripeCustomer = await _stripeCustomerService.GetAsync(content.Data.StripeCustomerId);
+        Assert.IsTrue(stripeCustomer.Deleted);
+    }
+
+    [TestMethod]
+    public async Task DeleteCustomer_WithStripeServiceError_ShouldReturn_BAD_REQUEST_AND_MAKE_ROLLBACK()
+    {
+        //Arrange
+        var factory = new HotelWebApplicationFactory();
+        var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+        var client = factory.CreateClient();
+
+        var newCustomer = new CreateUser
+        (
+            "Pedro", "Souza",
+            "pedroSouza@gmail.com",
+            "+55 (31) 98765-5678",
+            "password456",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-28),
+            "Brazil", "Belo Horizonte", "MG-303", 303
+        );
+
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await dbContext.VerificationCodes.AddAsync(verificationCode);
+        await dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        factory.Login(client, _rootAdminToken);
+
+        var apiKey = StripeConfiguration.ApiKey.ToString();
+        StripeConfiguration.ApiKey = "";
+        //Act
+        var response = await client.DeleteAsync($"{_baseUrl}/{customer.Id}");
+
+        //Assert
+        var exists = await dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
+
+        Assert.IsNotNull(response);
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.IsTrue(exists);
+
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        Assert.AreEqual("Ocorreu um erro ao deletar o cliente no Stripe", content.Errors[0]);
+
+        StripeConfiguration.ApiKey = apiKey;
+        var stripeCustomer = await _stripeCustomerService.GetAsync(createCustomerContent.Data.StripeCustomerId);
+        Assert.IsNull(stripeCustomer.Deleted);
     }
 
     [TestMethod]
