@@ -19,4 +19,6 @@ public interface IStripeService
     Task<bool> CancelReservationAsync(string paymentIntentId);
     Task<PaymentIntent> GetReservationAsync(string paymentIntentId);
     Task<PaymentIntent> UpdateReservationAsync(string paymentIntentId, decimal totalAmount);
+
+    Task<Price> GetFirstActivePriceByProductId(string productId);
 }

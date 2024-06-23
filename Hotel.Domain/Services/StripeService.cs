@@ -189,5 +189,16 @@ public class StripeService : IStripeService
         return await _stripePaymentIntentService.UpdateAsync(paymentIntent, options);
     }
 
+    public async Task<Price> GetFirstActivePriceByProductId(string productId)
+    {
+        var options = new PriceListOptions
+        {
+            Product = productId,
+            Active = true
+        };
 
+        var prices = await _stripePriceService.ListAsync(options);
+
+        return prices.First();
+    }
 }

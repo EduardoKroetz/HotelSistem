@@ -57,7 +57,7 @@ public class HandleExceptionMiddleware
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             await context.Response.WriteAsJsonAsync(
-              new Response([$"Ocorreu uma falha ao lidar com o serviço do Stripe. Mensagem de erro: {e.Message}"])
+              new Response([e.Message])
             );
         }
         catch (DbUpdateException)
