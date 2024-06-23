@@ -1,11 +1,12 @@
 ﻿using Hotel.Domain.Entities.Interfaces;
+using Hotel.Domain.ValueObjects;
 using Stripe;
 
 namespace Hotel.Domain.Services.Interfaces;
 
 public interface IStripeService
 {
-    Task<Customer> CreateCustomerAsync(ICustomer customer);
+    Task<Customer> CreateCustomerAsync(Name name, Email email, Phone phone, ValueObjects.Address? address);
     Task<bool> DeleteCustomerAsync(string customerId);
     Task<Customer> GetCustomerAsync(string customerId);
     Task<Customer> UpdateCustomerAsync(string customerId, ICustomer customer);
