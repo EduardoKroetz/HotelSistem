@@ -5,6 +5,7 @@ using Hotel.Domain.Handlers.Base.GenericUserHandler;
 using Hotel.Domain.Handlers.Base.Interfaces;
 using Hotel.Domain.Repositories.Interfaces;
 using Hotel.Domain.Services.EmailServices.Interfaces;
+using Hotel.Domain.Services.Interfaces;
 using Hotel.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +15,13 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, C
 {
     private readonly ICustomerRepository _repository;
     private readonly IEmailService _emailService;
+    private readonly IStripeService _stripeService;
 
-    public CustomerHandler(ICustomerRepository repository, IEmailService emailService) : base(repository)
+    public CustomerHandler(ICustomerRepository repository, IEmailService emailService, IStripeService stripeService) : base(repository)
     {
         _repository = repository;
         _emailService = emailService;
+        _stripeService = stripeService;
     }
 
     public async Task<Response> HandleCreateAsync(CreateUser model, string? code)
