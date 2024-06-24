@@ -202,7 +202,7 @@ public class StripeService : IStripeService
         return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
     }
 
-    public async Task<PaymentIntent> AddInvoiceItem(string paymentIntentId, IService service)
+    public async Task<PaymentIntent> AddPaymentIntentProduct(string paymentIntentId, IService service)
     {
         try
         {
@@ -225,6 +225,49 @@ public class StripeService : IStripeService
             }
 
             var totalAmountInCents = (long) products.Sum(x => x.Quantity * x.UnitPrice) * 100;
+
+            var metadata = JsonConvert.SerializeObject(products);
+            var updateOptions = new PaymentIntentUpdateOptions
+            {
+                Amount = totalAmountInCents,
+                Metadata = new Dictionary<string, string>
+                {
+                    { "products", metadata }
+                }
+            };
+
+            return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
+        }
+        catch (StripeException)
+        {
+            throw new StripeException("Ocorreu um erro ao atualizar o produto no Stripe");
+        }
+    }
+
+    public async Task<PaymentIntent> RemovePaymentIntentProduct(string paymentIntentId, Guid serviceId)
+    {
+        try
+        {
+            var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
+
+            if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
+                throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
+
+            var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
+
+            var product = products.FirstOrDefault(x => x.Id == serviceId)
+                ?? throw new ArgumentException("O serviço não foi encontrado nos metadados do PaymentIntent");
+
+            if (product.Quantity > 1)
+            {
+                product.Quantity--;
+            }
+            else
+            {
+                products.Remove(product);
+            }
+
+            var totalAmountInCents = (long)products.Sum(x => x.Quantity * x.UnitPrice) * 100;
 
             var metadata = JsonConvert.SerializeObject(products);
             var updateOptions = new PaymentIntentUpdateOptions
