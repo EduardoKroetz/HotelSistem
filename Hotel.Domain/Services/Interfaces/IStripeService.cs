@@ -20,6 +20,7 @@ public interface IStripeService
     Task<bool> CancelPaymentIntentAsync(string paymentIntentId);
     Task<PaymentIntent> GetPaymentIntentAsync(string paymentIntentId);
     Task<PaymentIntent> UpdatePaymentIntentAsync(string paymentIntentId, decimal totalAmount);
-    Task<PaymentIntent> AddInvoiceItem(string paymentIntentId, IService service);
+    Task<PaymentIntent> AddPaymentIntentProduct(string paymentIntentId, IService service);
+    Task<PaymentIntent> RemovePaymentIntentProduct(string paymentIntentId, Guid serviceId);
     Task<Price> GetFirstActivePriceByProductId(string productId);
 }
