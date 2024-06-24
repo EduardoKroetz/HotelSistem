@@ -164,7 +164,7 @@ public class ReservationControllerTests
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível realizar a reserva pois a hospedagem está indisponível.")));
+        Assert.AreEqual("Não é possível realizar a reserva pois a hospedagem está indisponível.", content.Errors[0]);
         Assert.AreEqual(1, reservations.Count);
     }
 
@@ -191,7 +191,7 @@ public class ReservationControllerTests
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
        
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível realizar a reserva pois a hospedagem está inativo.")));
+        Assert.AreEqual("Não é possível realizar a reserva pois a hospedagem está inativo.", content.Errors[0]);
         Assert.AreEqual(0, reservations.Count);
     }
 
@@ -217,7 +217,7 @@ public class ReservationControllerTests
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
        
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Capacidade máxima de hospedades da hospedagem excedida.")));
+        Assert.AreEqual("Capacidade máxima de hospedades da hospedagem excedida.", content.Errors[0]);
         Assert.AreEqual(0, reservations.Count);
     }
 
@@ -255,7 +255,7 @@ public class ReservationControllerTests
         var reservations = await _dbContext.Reservations.Where(x => x.RoomId == room.Id).ToListAsync();
 
 
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Usuário não encontrado.")));
+        Assert.AreEqual("Usuário não encontrado", content.Errors[0]);
         Assert.AreEqual(0, reservations.Count);
     }
 
@@ -275,7 +275,7 @@ public class ReservationControllerTests
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
 
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Hospedagem não encontrada.")));
+        Assert.AreEqual("Hospedagem não encontrada", content.Errors[0]);
     }
 
     [TestMethod]
@@ -292,7 +292,7 @@ public class ReservationControllerTests
             DateTime.Now.AddYears(-32),
             new Domain.ValueObjects.Address("Brazil", "Manaus", "MA-1010", 1010)
         );
-        var room = new Room("Quarto 2", 2, 50, 2, "Quarto padrão", _category);
+        var room = new Room("Quarto 931", 931, 50, 2, "Quarto padrão 931", _category);
 
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.Customers.AddAsync(newCustomer);
@@ -413,23 +413,37 @@ public class ReservationControllerTests
     public async Task DeleteReservation_ShouldReturn_OK()
     {
         //Arange
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
-        var customer = new Domain.Entities.CustomerEntity.Customer(
-          new Name("Camila", "Costa"),
-          new Email("camilaCosta@gmail.com"),
-          new Phone("+55 (71) 93136-7891"),
-          "password5",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-29),
-          new Domain.ValueObjects.Address("Brazil", "Salvador", "BA-505", 505)
+        var newCustomer = new CreateUser
+        (
+            "Camila", "Costa",
+            "camilaCosta@gmail.com",
+            "+55 (71) 93136-7891",
+            "password5",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-29),
+            "Brazil", "Salvador", "BA-505", 505
         );
-        var room = new Room("Quarto 9",9, 70, 5, "Quarto 1", _category);
-        var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
-
-        await _dbContext.Customers.AddAsync(customer);
-        await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.Reservations.AddAsync(reservation);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var room = new Room("Quarto 9", 9, 70, 5, "Quarto 1", _category);
+
+        await _dbContext.Rooms.AddAsync(room);
+        await _dbContext.SaveChangesAsync();
+
+        _factory.Login(_client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), room.Id, 3);
+        var createReservationResponse = await _client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
+
+        _factory.Login(_client, _rootAdminToken);
 
         //Act
         var response = await _client.DeleteAsync($"{_baseUrl}/{reservation.Id}");
@@ -438,15 +452,81 @@ public class ReservationControllerTests
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<DataId>>(await response.Content.ReadAsStringAsync())!;
+        var content = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await response.Content.ReadAsStringAsync())!;
 
-        var hasDeleted = !await _dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
+        var exists = await _dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
 
         
         Assert.AreEqual("Reserva deletada com sucesso!", content.Message);
         Assert.AreEqual(reservation.Id, content.Data.Id);
-        Assert.IsTrue(hasDeleted);
+        Assert.IsFalse(exists);
+
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.AreEqual("canceled", paymentIntent.Status);
     }
+
+    [TestMethod]
+    public async Task DeleteReservation_WithStripeError_ShouldReturn_BAD_REQUEST_AND_MAKE_ROLLBACK()
+    {
+        //Arange
+        var factory = new HotelWebApplicationFactory();
+        var client = factory.CreateClient();
+        var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+
+        var newCustomer = new CreateUser
+        (
+            "Rafael", "Ribeiro",
+            "rafaelRibeiro@gmail.com",
+            "+55 (84) 98765-3456",
+            "password210",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-40),
+            "Brazil", "Natal", "NT-909", 909
+        );
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await dbContext.VerificationCodes.AddAsync(verificationCode);
+        await dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var room = new Room("Quarto 671", 671, 70, 5, "Quarto 671", _category);
+
+        await dbContext.Rooms.AddAsync(room);
+        await dbContext.SaveChangesAsync();
+
+        factory.Login(client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), room.Id, 3);
+        var createReservationResponse = await client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
+
+        factory.Login(client, _rootAdminToken);
+
+        var apiKey = StripeConfiguration.ApiKey.ToString();
+        StripeConfiguration.ApiKey = "";
+
+        //Act
+        var response = await client.DeleteAsync($"{_baseUrl}/{reservation.Id}");
+
+        //Assert
+        Assert.IsNotNull(response);
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+        var exists = await dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
+
+        Assert.AreEqual("Ocorreu um erro ao cancelar o PaymentIntent no Stripe", content.Errors[0]);
+        Assert.IsTrue(exists);
+
+        StripeConfiguration.ApiKey = apiKey;
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.AreEqual("requires_payment_method", paymentIntent.Status);
+    }
+
 
     [TestMethod]
     public async Task DeleteReservation_WithoutPermission_ShouldReturn_FORBIDDEN()
@@ -461,7 +541,7 @@ public class ReservationControllerTests
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
         
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Você não tem acesso a esse serviço.")));
+        Assert.AreEqual("Você não tem acesso a esse serviço.", content.Errors[0]);
     }
 
 
@@ -588,7 +668,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.AreEqual("Reserva não encontrada.", content.Errors[0]);
     }
 
     [TestMethod]
@@ -631,7 +711,7 @@ public class ReservationControllerTests
 
        
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível alterar o CheckOut esperado com o status da reserva CheckedOut.")));
+        Assert.AreEqual("Não é possível alterar o CheckOut esperado com o status da reserva CheckedOut.", content.Errors[0]);
         Assert.AreEqual(reservation.ExpectedCheckOut, updatedReservation.ExpectedCheckOut);
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
@@ -685,7 +765,7 @@ public class ReservationControllerTests
 
        
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Não é possível alterar o CheckOut esperado com o status da reserva Cancelled.")));
+        Assert.AreEqual("Não é possível alterar o CheckOut esperado com o status da reserva Canceled.", content.Errors[0]);
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -770,7 +850,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.AreEqual("Reserva não encontrada.", content.Errors[0]);
     }
 
     [TestMethod]
@@ -812,7 +892,7 @@ public class ReservationControllerTests
 
        
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
+        Assert.AreEqual("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.", content.Errors[0]);
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -865,7 +945,7 @@ public class ReservationControllerTests
 
        
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
+        Assert.AreEqual("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.", content.Errors[0]);
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -918,7 +998,7 @@ public class ReservationControllerTests
 
        
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.")));
+        Assert.AreEqual("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.", content.Errors[0]);
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
         Assert.AreEqual(reservation.Capacity, updatedReservation.Capacity);
@@ -1014,7 +1094,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.AreEqual("Reserva não encontrada.", content.Errors[0]);
     }
 
     [TestMethod]
@@ -1051,7 +1131,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+        Assert.AreEqual("Serviço não encontrado.", content.Errors[0]);
     }
 
 
@@ -1239,7 +1319,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.AreEqual("Reserva não encontrada.", content.Errors[0]);
     }
 
     [TestMethod]
@@ -1276,7 +1356,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Serviço não encontrado.")));
+        Assert.AreEqual("Serviço não encontrado.", content.Errors[0]);
     }
 
     [TestMethod]
@@ -1324,17 +1404,24 @@ public class ReservationControllerTests
     public async Task FinishReservation_ShouldReturn_OK()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer(
-            new Name("Juliana", "Silva"),
-            new Email("eduardoowk1@gmail.com"),
-            new Phone("+55 (92) 92345-6789"),
+        var newCustomer = new CreateUser
+        (
+            "Eduardo", "Wimp",
+            "eduardoowk1@gmail.com",
+            "+55 (92) 92345-6789",
             "password26",
             EGender.Feminine,
             DateTime.Now.AddYears(-27),
-            new Domain.ValueObjects.Address("Brazil", "Manaus", "AM-2626", 2626)
+            "Brazil", "Manaus", "AM-2626", 2626
         );
-        await _dbContext.Customers.AddAsync(customer);
+
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
 
         _factory.Login(_client, _rootAdminToken);
 
@@ -1346,7 +1433,7 @@ public class ReservationControllerTests
 
         var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), roomId, 3);
         var createReservationResponse = await _client.PostAsJsonAsync("v1/reservations", newReservation);
-        var reservationId = JsonConvert.DeserializeObject<Response<DataId>>(await createReservationResponse.Content.ReadAsStringAsync())!.Data.Id;
+        var reservationId = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!.Data.Id;
 
         var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservationId);
         reservation.ToCheckIn();
@@ -1399,7 +1486,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.AreEqual("Reserva não encontrada.", content.Errors[0]);
     }
 
     [TestMethod]
@@ -1438,7 +1525,7 @@ public class ReservationControllerTests
 
         
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Você não tem permissão para finalizar reserva alheia.")));
+        Assert.AreEqual("Você não tem permissão para finalizar reserva alheia.", content.Errors[0]);
 
         Assert.AreEqual(EReservationStatus.CheckedIn, updatedReservation.Status);
     }
@@ -1447,24 +1534,36 @@ public class ReservationControllerTests
     public async Task CancelReservation_ShouldReturn_OK()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer(
-          new Name("Aline", "Fernandes"),
-          new Email("alineFernandes@gmail.com"),
-          new Phone("+55 (75) 99715-4321"),
-          "password28",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-25),
-          new Domain.ValueObjects.Address("Brazil", "Feira de Santana", "BA-2828", 2828)
+        var newCustomer = new CreateUser
+        (
+            "Aline", "Fernandes",
+            "alineFernandes@gmail.com",
+            "+55 (75) 99715-4321",
+            "password28",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-25),
+            "Brazil", "Feira de Santana", "BA-2828", 2828
         );
-        var room = new Room("2Quarto 8",28, 90, 5, "Quarto 28", _category);
-        var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
+        await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var room = new Room("Quarto 28",49, 90, 5, "Quarto 28", _category);
+
         await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.Reservations.AddAsync(reservation);
         await _dbContext.SaveChangesAsync();
 
         _factory.Login(_client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3);
+        var createReservationResponse = await _client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
 
         //Act
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
@@ -1481,7 +1580,7 @@ public class ReservationControllerTests
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("Reserva cancelada com sucesso!", content.Message);
 
-        Assert.AreEqual(EReservationStatus.Cancelled, updatedReservation.Status);
+        Assert.AreEqual(EReservationStatus.Canceled, updatedReservation.Status);
 
         Assert.AreEqual(reservation.Id, updatedReservation.Id);
         Assert.AreEqual(reservation.DailyRate, updatedReservation.DailyRate);
@@ -1494,6 +1593,9 @@ public class ReservationControllerTests
         Assert.AreEqual(reservation.CheckOut, updatedReservation.CheckOut);
         Assert.AreEqual(reservation.InvoiceId, updatedReservation.InvoiceId);
         Assert.AreEqual(reservation.RoomId, updatedReservation.RoomId);
+
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.AreEqual("canceled", paymentIntent.Status);
     }
 
     [TestMethod]
@@ -1510,7 +1612,7 @@ public class ReservationControllerTests
 
 
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Reserva não encontrada.")));
+        Assert.AreEqual("Reserva não encontrada.", content.Errors[0]);
     }
 
     [TestMethod]
@@ -1526,7 +1628,7 @@ public class ReservationControllerTests
           DateTime.Now.AddYears(-34),
           new Domain.ValueObjects.Address("Brazil", "Sobral", "CE-2929", 2929)
         );
-        var room = new Room("2Quarto 9",29, 90, 5, "Quarto 29", _category);
+        var room = new Room("Quarto 821",821, 90, 5, "Quarto 821", _category);
         var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(3), customer, 2);
 
         await _dbContext.Customers.AddAsync(customer);
@@ -1547,10 +1649,74 @@ public class ReservationControllerTests
 
         
         Assert.AreEqual(1, content.Errors.Count);
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals("Você não tem permissão para cancelar reserva alheia.")));
+        Assert.AreEqual("Você não tem permissão para cancelar reserva alheia.", content.Errors[0]);
 
         Assert.AreEqual(EReservationStatus.Pending, updatedReservation.Status);
     }
+
+    [TestMethod]
+    public async Task CancelReservation_WithStripeError_ShouldReturn_BAD_REQUEST_AND_MAKE_ROLLBACK()
+    {
+        //Arange
+        var factory = new HotelWebApplicationFactory();
+        var client = factory.CreateClient();
+        var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
+
+        var newCustomer = new CreateUser
+        (
+            "Ana", "Oliveira",
+            "anaOliveira@gmail.com",
+            "+55 (19) 98765-8765",
+            "password789",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-22),
+            "Brazil", "Campinas", "CP-404", 404
+        );
+
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await dbContext.VerificationCodes.AddAsync(verificationCode);
+        await dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var room = new Room("Quarto 132", 132, 70, 5, "Quarto 132", _category);
+
+        await dbContext.Rooms.AddAsync(room);
+        await dbContext.SaveChangesAsync();
+
+        factory.Login(client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), room.Id, 3);
+        var createReservationResponse = await client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
+
+        var apiKey = StripeConfiguration.ApiKey.ToString();
+        StripeConfiguration.ApiKey = "";
+
+        //Act
+        var response = await client.PatchAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
+
+        //Assert
+        Assert.IsNotNull(response);
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+
+        var exists = await dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
+
+        Assert.AreEqual("Ocorreu um erro ao cancelar o PaymentIntent no Stripe", content.Errors[0]);
+        Assert.IsTrue(exists);
+
+        StripeConfiguration.ApiKey = apiKey;
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.AreEqual("requires_payment_method", paymentIntent.Status);
+    }
+
+
+
 
     [TestMethod]
     public async Task GetTotalAmount_ShouldReturn_OK()
@@ -1594,8 +1760,8 @@ public class ReservationControllerTests
 
         var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
 
-       
-        Assert.IsTrue(content!.Errors.Any(x => x.Equals(expectedError)));
+
+        Assert.AreEqual(expectedError, content.Errors[0]);
     }
 }
 

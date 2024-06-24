@@ -15,6 +15,8 @@ using System.Net;
 using System.Net.Http.Json;
 using Hotel.Domain.DTOs.ReservationDTOs;
 using Stripe;
+using Hotel.Domain.DTOs.Base.User;
+using Hotel.Domain.Entities.VerificationCodeEntity;
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -241,23 +243,27 @@ public class RoomControllerTests
     public async Task UpdateRoom_WithUpdatedPriceAndAssociatedPendingReservations_ShouldReturn_BAD_REQUEST()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Renata", "Oliveira"),
-          new Email("renataOliveira@gmail.com"),
-          new Phone("+55 (67) 97654-3210"),
-          "password24",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-26),
-          new Domain.ValueObjects.Address("Brazil", "Campo Grande", "MS-2424", 2424)
+            "Renata", "Oliveira",
+            "renataOliveira@gmail.com",
+            "+55 (67) 97654-3210",
+            "password24",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-26),
+            "Brazil", "Campo Grande", "MS-2424", 2424
         );
-
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
 
         var newRoom = new EditorRoom("Quarto 2", 2, 35, 2, "Quarto básico 2", _basicCategory.Id);
         var postRoomResponse = await _client.PostAsJsonAsync(_baseUrl, newRoom);
-        var roomId = JsonConvert.DeserializeObject<Response<DataId>>(await postRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
+        var roomId = JsonConvert.DeserializeObject<Response<DataStripeProductId>>(await postRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
 
         _factory.Login(_client, customer);
 
@@ -842,27 +848,41 @@ public class RoomControllerTests
     public async Task UpdateRoomPrice_WithPendingReservationAssociated_ShouldReturn_BAD_REQUEST()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Camila", "Lopes"),
-          new Email("camilaLopes@gmail.com"),
-          new Phone("+55 (69) 93456-7890"),
-          "password30",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-28),
-          new Domain.ValueObjects.Address("Brazil", "Porto Velho", "RO-3030", 3030)
+            "Camila", "Lopes",
+            "camilaLopes@gmail.com",
+            "+55 (69) 93456-7890",
+            "password30",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-28),
+            "Brazil", "Porto Velho", "RO-3030", 3030
         );
 
-        var room = new Room("Quarto 20",20, 43, 13, "Quarto deluxe", _deluxeCategory);
-        var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 1);
-        await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.Reservations.AddAsync(reservation);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+
+        var newRoom = new EditorRoom("Quarto 20",20, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
+        var createRoomResponse = await _client.PostAsJsonAsync(_baseUrl, newRoom);
+        var roomId = JsonConvert.DeserializeObject<Response<DataId>>(await createRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
+
+        _factory.Login(_client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), roomId, 1);
+        _client.PostAsJsonAsync("v1/reservations", newReservation).Result.EnsureSuccessStatusCode();
+
+        _factory.Login(_client, _rootAdminToken);
 
         var newPrice = new UpdatePriceDTO(196.00m);
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/price", newPrice);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{roomId}/price", newPrice);
 
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -877,19 +897,25 @@ public class RoomControllerTests
     public async Task UpdateRoomPrice_WithAssociatedNonPendingReservation_ShouldReturn_OK()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer
+        var newCustomer = new CreateUser
         (
-          new Name("Paulo", "Moura"),
-          new Email("pauloMoura@gmail.com"),
-          new Phone("+55 (88) 97654-3210"),
-          "password29",
-          EGender.Masculine,
-          DateTime.Now.AddYears(-34),
-          new Domain.ValueObjects.Address("Brazil", "Sobral", "CE-2929", 2929)
+            "Paulo", "Moura",
+            "pauloMoura@gmail.com",
+            "+55 (88) 97654-3210",
+            "password29",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-34),
+            "Brazil", "Sobral", "CE-2929", 2929
         );
 
-        await _dbContext.Customers.AddAsync(customer);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
 
         var newRoom = new EditorRoom("Quarto 21",21, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
         var createRoomResponse = await _client.PostAsJsonAsync(_baseUrl, newRoom);

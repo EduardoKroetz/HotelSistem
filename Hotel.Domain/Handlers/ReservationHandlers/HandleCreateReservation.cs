@@ -70,6 +70,8 @@ public partial class ReservationHandler : IHandler
                 throw new StripeException("Ocorreu um erro ao criar a intenção de pagamento no Stripe");
             }
 
+            await transaction.CommitAsync();
+
             return new Response("Reserva criada com sucesso!", new { reservation.Id, reservation.StripePaymentIntentId });
         }
         catch 

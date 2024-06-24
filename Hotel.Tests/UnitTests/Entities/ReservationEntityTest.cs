@@ -77,7 +77,7 @@ public class ReservationEntityTest
         var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, TwoDaysFromNow, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.ToCancelled();
-        Assert.AreEqual(EReservationStatus.Cancelled, reservation.Status);
+        Assert.AreEqual(EReservationStatus.Canceled, reservation.Status);
         Assert.AreEqual(ERoomStatus.OutOfService, reservation?.Room?.Status);
     }
 
