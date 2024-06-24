@@ -35,7 +35,7 @@ public partial class ReservationHandler
                 throw new DbUpdateException("Ocorreu um erro ao salvar o serviço no banco de dados");
             }
 
-            await _stripeService.AddInvoiceItem(reservation.StripePaymentIntentId, service);
+            await _stripeService.AddPaymentIntentProduct(reservation.StripePaymentIntentId, service);
             
             await transaction.CommitAsync();
 
