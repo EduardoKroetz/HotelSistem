@@ -20,6 +20,9 @@ using Hotel.Domain.DTOs.RoomDTOs;
 using Stripe;
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.VerificationCodeEntity;
+using Hotel.Domain.Services;
+using Hotel.Domain.DTOs.ServiceDTOs;
+using Hotel.Tests.UnitTests.Repositories.Mock.CreateData;
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -128,7 +131,14 @@ public class ReservationControllerTests
         Assert.AreEqual("requires_payment_method",paymentIntent.Status);
         Assert.AreEqual(Math.Round(createdReservation.ExpectedTotalAmount() * 100), paymentIntent.Amount);
         Assert.AreEqual(createdReservation.Customer!.StripeCustomerId, paymentIntent.CustomerId);
-        Assert.AreEqual(createdReservation.RoomId.ToString(), paymentIntent.Metadata["room_id"]);
+
+        var metadata = paymentIntent.Metadata["products"];
+        var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(metadata)!;
+        var product = products.First(x => x.Id == room.Id);
+
+        Assert.IsFalse(product.IsService);
+        Assert.AreEqual(1, product.Quantity);
+        Assert.AreEqual(room.StripeProductId, product.ProductId);
     }
 
     [TestMethod]
@@ -1052,28 +1062,47 @@ public class ReservationControllerTests
     public async Task AddServiceToReservation_ShouldReturn_OK()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer(
-          new Name("Bruno", "Barbosa"),
-          new Email("brunoBarbosa@gmail.com"),
-          new Phone("+55 (51) 98790-5623"),
-          "password17",
-          EGender.Masculine,
-          DateTime.Now.AddYears(-31),
-          new Domain.ValueObjects.Address("Brazil", "Caxias do Sul", "RS-1717", 1717)
+        var newCustomer = new CreateUser
+        (
+            "Bruno", "Barbosa",
+            "brunoBarbosa@gmail.com",
+            "+55 (51) 98790-5623",
+            "password17",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-31),
+            "Brazil", "Caxias do Sul", "RS-1717", 1717
         );
-        var room = new Room("1Quarto 8",18, 90, 5, "Quarto 18", _category);
-        var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), customer, 3);
-        var service = new Service("Room Cleaning", "Room Cleaning", 30.00m, EPriority.Medium, 60);
+
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
+        await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var room = new Room("Quarto 18", 18, 90, 5, "Quarto 18", _category);
+
+        await _dbContext.Rooms.AddAsync(room);
+        await _dbContext.SaveChangesAsync();
+
+        _factory.Login(_client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3);
+        var createReservationResponse = await _client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
+
+        _factory.Login(_client, _rootAdminToken);
+
+        var newService = new EditorService("Room Cleaning", "Room Cleaning", 30.00m, EPriority.Medium, 60);
+        var createServiceResponse = await _client.PostAsJsonAsync("v1/services", newService);
+        var createServiceContent = JsonConvert.DeserializeObject<Response<DataStripeProductId>>(await createServiceResponse.Content.ReadAsStringAsync())!;
+        var service = await _dbContext.Services.FirstAsync(x => x.Id == createServiceContent.Data.Id);
 
         room.AddService(service);
 
-        await _dbContext.Customers.AddAsync(customer);
-        await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.Reservations.AddAsync(reservation);
-        await _dbContext.Services.AddAsync(service);
         await _dbContext.SaveChangesAsync();
-
-        _factory.Login(_client, _rootAdminToken);
 
         //Act
         var response = await _client.PostAsJsonAsync($"{_baseUrl}/{reservation.Id}/services/{service.Id}", new { });
@@ -1104,6 +1133,108 @@ public class ReservationControllerTests
         Assert.AreEqual(reservation.CheckOut, reservationWithServices.CheckOut);
         Assert.AreEqual(reservation.InvoiceId, reservationWithServices.InvoiceId);
         Assert.AreEqual(reservation.RoomId, reservationWithServices.RoomId);
+
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.IsNotNull(paymentIntent);
+        Assert.AreEqual("requires_payment_method", paymentIntent.Status);
+        Assert.AreEqual((long)(reservation.ExpectedTotalAmount() * 100), paymentIntent.Amount);
+        Assert.AreEqual(reservation.Customer!.StripeCustomerId, paymentIntent.CustomerId);
+
+        var metadata = paymentIntent.Metadata["products"];
+        var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(metadata)!;
+        var roomProduct = products.First(x => x.Id == room.Id);
+        var serviceProduct = products.First(x => x.Id == service.Id);
+
+        Assert.AreEqual(false, roomProduct.IsService);
+        Assert.AreEqual(1, roomProduct.Quantity);
+        Assert.AreEqual(room.StripeProductId, roomProduct.ProductId);
+
+        Assert.IsTrue(serviceProduct.IsService);
+        Assert.AreEqual(service.Name, serviceProduct.Name);
+        Assert.AreEqual(service.Price, serviceProduct.UnitPrice);
+        Assert.AreEqual(1, serviceProduct.Quantity);
+        Assert.AreEqual(service.StripeProductId, serviceProduct.ProductId);
+
+        Assert.AreEqual(2, products.Count);
+    }
+
+    [TestMethod]
+    public async Task AddSameServiceReservation_ShouldReturn_OK()
+    {
+        //Arange
+        var newCustomer = new CreateUser
+        (
+            "Gabriel", "Martins",
+            "gabrielMartins@gmail.com",
+            "+55 (31) 98765-2345",
+            "password765",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-26),
+            "Brazil", "Belo Horizonte", "MG-111", 111
+        );
+
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
+        await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var room = new Room("Quarto 541", 541, 90, 5, "Quarto 541", _category);
+
+        await _dbContext.Rooms.AddAsync(room);
+        await _dbContext.SaveChangesAsync();
+
+        _factory.Login(_client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3);
+        var createReservationResponse = await _client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
+
+        _factory.Login(_client, _rootAdminToken);
+
+        var newService = new EditorService("Drink Service", "Drink Service", 15.00m, EPriority.Medium, 7);
+        var createServiceResponse = await _client.PostAsJsonAsync("v1/services", newService);
+        var createServiceContent = JsonConvert.DeserializeObject<Response<DataStripeProductId>>(await createServiceResponse.Content.ReadAsStringAsync())!;
+        var service = await _dbContext.Services.FirstAsync(x => x.Id == createServiceContent.Data.Id);
+
+        room.AddService(service);
+
+        await _dbContext.SaveChangesAsync();
+
+        //Act
+        var response1 = await _client.PostAsJsonAsync($"{_baseUrl}/{reservation.Id}/services/{service.Id}", new { });
+        var response2 = await _client.PostAsJsonAsync($"{_baseUrl}/{reservation.Id}/services/{service.Id}", new { });
+
+
+        //Assert
+        Assert.AreEqual(HttpStatusCode.OK, response1.StatusCode);
+        Assert.AreEqual(HttpStatusCode.OK, response2.StatusCode);
+
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.IsNotNull(paymentIntent);
+        Assert.AreEqual("requires_payment_method", paymentIntent.Status);
+        Assert.AreEqual((long)( reservation.ExpectedTotalAmount() * 100 ), paymentIntent.Amount);
+        Assert.AreEqual(reservation.Customer!.StripeCustomerId, paymentIntent.CustomerId);
+
+        var metadata = paymentIntent.Metadata["products"];
+        var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(metadata)!;
+        var roomProduct = products.First(x => x.Id == room.Id);
+        var serviceProduct = products.First(x => x.Id == service.Id);
+
+        Assert.AreEqual(false, roomProduct.IsService);
+        Assert.AreEqual(1, roomProduct.Quantity);
+        Assert.AreEqual(room.StripeProductId, roomProduct.ProductId);
+
+        Assert.IsTrue(serviceProduct.IsService);
+        Assert.AreEqual(service.Name, serviceProduct.Name);
+        Assert.AreEqual(service.Price, serviceProduct.UnitPrice);
+        Assert.AreEqual(2, serviceProduct.Quantity);
+        Assert.AreEqual(service.StripeProductId, serviceProduct.ProductId);
+
+        Assert.AreEqual(2, products.Count);
     }
 
     [TestMethod]
