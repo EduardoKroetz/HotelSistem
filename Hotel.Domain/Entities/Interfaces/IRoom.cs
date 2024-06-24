@@ -1,3 +1,4 @@
+using Hotel.Domain.Entities.Base.Interfaces;
 using Hotel.Domain.Entities.CategoryEntity;
 using Hotel.Domain.Entities.ImageEntity;
 using Hotel.Domain.Entities.ReservationEntity;
@@ -6,7 +7,7 @@ using Hotel.Domain.Enums;
 
 namespace Hotel.Domain.Entities.Interfaces;
 
-public interface IRoom
+public interface IRoom : IEntity
 {
     string Name { get; }    
     int Number { get; }

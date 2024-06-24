@@ -1,6 +1,7 @@
 ﻿using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Services.Interfaces;
 using Hotel.Domain.ValueObjects;
+using Newtonsoft.Json;
 using Stripe;
 
 namespace Hotel.Domain.Services;
@@ -11,6 +12,8 @@ public class StripeService : IStripeService
     private readonly ProductService _stripeProductService;
     private readonly PriceService _stripePriceService;
     private readonly PaymentIntentService _stripePaymentIntentService;
+    private readonly InvoiceService _stripeInvoiceService;
+    private readonly InvoiceItemService _stripeInvoiceItemService;
 
     public StripeService()
     {
@@ -18,6 +21,8 @@ public class StripeService : IStripeService
         _stripeProductService = new ProductService();
         _stripePriceService = new PriceService();
         _stripePaymentIntentService = new PaymentIntentService();
+        _stripeInvoiceService = new InvoiceService();
+        _stripeInvoiceItemService = new InvoiceItemService();
     }
 
     //Customer
@@ -150,9 +155,16 @@ public class StripeService : IStripeService
     }
 
     //Reservation
-    public async Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, Guid roomId)
+    public async Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, IRoom room)
     {
         var amountInCents = (int) (expectedTotalAmount * 100);
+
+        var products = new List<ProductServiceInfo>
+        {
+            new (false, room.Id, room.StripeProductId, $"Hospedagem no cômodo {room.Name}", 1, expectedTotalAmount )
+        };
+
+        var metadata = JsonConvert.SerializeObject(products);
 
         var options = new PaymentIntentCreateOptions
         {
@@ -161,7 +173,7 @@ public class StripeService : IStripeService
             Customer = stripeCustomerId,
             Metadata = new Dictionary<string, string>
             {
-                { "room_id", roomId.ToString() }
+                { "products", metadata }
             }
         };
 
@@ -190,6 +202,48 @@ public class StripeService : IStripeService
         return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
     }
 
+    public async Task<PaymentIntent> AddInvoiceItem(string paymentIntentId, IService service)
+    {
+        try
+        {
+            var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
+
+            if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
+                throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
+
+            var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
+
+            var product = products.FirstOrDefault(x => x.Id == service.Id);
+            if (product != null)
+            {
+                product.Quantity++;
+            }
+            else
+            {
+                var newProduct = new ProductServiceInfo(true, service.Id, service.StripeProductId, service.Name, 1, service.Price);
+                products.Add(newProduct);
+            }
+
+            var totalAmountInCents = (long) products.Sum(x => x.Quantity * x.UnitPrice) * 100;
+
+            var metadata = JsonConvert.SerializeObject(products);
+            var updateOptions = new PaymentIntentUpdateOptions
+            {
+                Amount = totalAmountInCents,
+                Metadata = new Dictionary<string, string>
+                {
+                    { "products", metadata }
+                }
+            };
+
+            return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
+        }
+        catch (StripeException)
+        {
+            throw new StripeException("Ocorreu um erro ao atualizar o produto no Stripe");
+        }
+    }
+
     public async Task<Price> GetFirstActivePriceByProductId(string productId)
     {
         var options = new PriceListOptions
@@ -201,5 +255,26 @@ public class StripeService : IStripeService
         var prices = await _stripePriceService.ListAsync(options);
 
         return prices.First();
+    }
+
+}
+
+public class ProductServiceInfo
+{
+    public bool IsService { get; set; }
+    public Guid Id { get; set; }
+    public string ProductId { get; set; }
+    public string Name { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+
+    public ProductServiceInfo(bool isService, Guid id, string productId, string name, int quantity, decimal unitPrice)
+    {
+        IsService = isService;
+        Id = id;
+        ProductId = productId;
+        Name = name;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
     }
 }

@@ -60,7 +60,7 @@ public partial class ReservationHandler : IHandler
                 (
                     reservation.ExpectedTotalAmount(), 
                     customer.StripeCustomerId, 
-                    reservation.RoomId
+                    room
                 );
                 reservation.StripePaymentIntentId = paymentIntent.Id;
                 await _repository.SaveChangesAsync();
