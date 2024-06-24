@@ -1,4 +1,5 @@
-﻿using Hotel.Domain.ValueObjects;
+﻿using Hotel.Domain.Entities.Interfaces;
+using Hotel.Domain.ValueObjects;
 using Stripe;
 
 namespace Hotel.Domain.Services.Interfaces;
@@ -15,10 +16,10 @@ public interface IStripeService
     Task<Product> GetProductAsync(string productId);
     Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price, bool isActive = true);
 
-    Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, Guid roomId);
+    Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, IRoom room);
     Task<bool> CancelPaymentIntentAsync(string paymentIntentId);
     Task<PaymentIntent> GetPaymentIntentAsync(string paymentIntentId);
     Task<PaymentIntent> UpdatePaymentIntentAsync(string paymentIntentId, decimal totalAmount);
-
+    Task<PaymentIntent> AddInvoiceItem(string paymentIntentId, IService service);
     Task<Price> GetFirstActivePriceByProductId(string productId);
 }
