@@ -784,22 +784,36 @@ public class ReservationControllerTests
     public async Task UpdateExpectedCheckIn_ShouldReturn_OK()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer(
-          new Name("Thiago", "Gomes"),
-          new Email("thiagoGomes@gmail.com"),
-          new Phone("+55 (13) 97354-3110"),
-          "password13",
-          EGender.Masculine,
-          DateTime.Now.AddYears(-30),
-          new Domain.ValueObjects.Address("Brazil", "Santos", "SP-1313", 1313)
+        var newCustomer = new CreateUser
+        (
+            "Thiago", "Gomes",
+            "thiagoGomes@gmail.com",
+            "+55 (13) 97354-3110",
+            "password13",
+            EGender.Masculine,
+            DateTime.Now.AddYears(-30),
+            "Brazil", "Santos", "SP-1313", 1313
         );
-        var room = new Room("1Quarto 4",14, 90, 5, "Quarto 14", _category);
-        var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(9), customer, 3);
 
-        await _dbContext.Customers.AddAsync(customer);
-        await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.Reservations.AddAsync(reservation);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var newRoom = new Room("Quarto 853", 853, 70, 5, "Quarto 853", _category);
+
+        await _dbContext.Rooms.AddAsync(newRoom);
+        await _dbContext.SaveChangesAsync();
+
+        _factory.Login(_client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(9), newRoom.Id, 3);
+        var createReservationResponse = await _client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
 
         var newExpectedCheckIn = DateTime.Now.AddDays(7);
         var body = new UpdateCheckIn(newExpectedCheckIn);
@@ -815,7 +829,6 @@ public class ReservationControllerTests
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
-        
         Assert.AreEqual(0, content.Errors.Count);
         Assert.AreEqual("CheckIn esperado atualizado com sucesso!", content.Message);
         Assert.AreEqual(newExpectedCheckIn, updatedReservation.ExpectedCheckIn);
@@ -830,6 +843,10 @@ public class ReservationControllerTests
         Assert.AreEqual(reservation.CheckOut, updatedReservation.CheckOut);
         Assert.AreEqual(reservation.InvoiceId, updatedReservation.InvoiceId);
         Assert.AreEqual(reservation.RoomId, updatedReservation.RoomId);
+
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.IsNotNull(paymentIntent);
+        Assert.AreEqual((int)(updatedReservation.ExpectedTotalAmount() * 100), paymentIntent.Amount);
     }
 
     [TestMethod]
@@ -1714,9 +1731,6 @@ public class ReservationControllerTests
         var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
         Assert.AreEqual("requires_payment_method", paymentIntent.Status);
     }
-
-
-
 
     [TestMethod]
     public async Task GetTotalAmount_ShouldReturn_OK()
