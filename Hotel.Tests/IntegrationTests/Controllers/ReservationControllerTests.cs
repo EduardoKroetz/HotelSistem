@@ -603,22 +603,36 @@ public class ReservationControllerTests
     public async Task UpdateExpectedCheckOut_ShouldReturn_OK()
     {
         //Arange
-        var customer = new Domain.Entities.CustomerEntity.Customer(
-          new Name("Beatriz", "Santos"),
-          new Email("beatrizSantos@gmail.com"),
-          new Phone("+55 (31) 90176-5432"),
-          "password3",
-          EGender.Feminine,
-          DateTime.Now.AddYears(-27),
-          new Domain.ValueObjects.Address("Brazil", "Belo Horizonte", "MG-303", 303)
+        var newCustomer = new CreateUser
+        (
+            "Beatriz", "Santos",
+            "beatrizSantos@gmail.com",
+            "+55 (31) 90176-5432",
+            "password3",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-27),
+            "Brazil", "Belo Horizonte", "MG-303", 303
         );
-        var room = new Room("1Quarto 1",11, 70, 5, "Quarto 3", _category);
-        var reservation = new Reservation(room, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), customer, 3);
 
-        await _dbContext.Customers.AddAsync(customer);
-        await _dbContext.Rooms.AddAsync(room);
-        await _dbContext.Reservations.AddAsync(reservation);
+        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
+        await _dbContext.VerificationCodes.AddAsync(verificationCode);
         await _dbContext.SaveChangesAsync();
+
+        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
+        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
+        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
+
+        var room = new Room("Quarto 11", 11, 70, 5, "Quarto 11", _category);
+
+        await _dbContext.Rooms.AddAsync(room);
+        await _dbContext.SaveChangesAsync();
+
+        _factory.Login(_client, customer);
+
+        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), room.Id, 3);
+        var createReservationResponse = await _client.PostAsJsonAsync(_baseUrl, newReservation);
+        var createReservationContent = JsonConvert.DeserializeObject<Response<DataStripePaymentIntentId>>(await createReservationResponse.Content.ReadAsStringAsync())!;
+        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == createReservationContent.Data.Id);
 
         var newExpectedCheckOut = DateTime.Now.AddDays(3);
         var body = new UpdateCheckOut(newExpectedCheckOut);
@@ -649,6 +663,10 @@ public class ReservationControllerTests
         Assert.AreEqual(reservation.CheckOut, updatedReservation.CheckOut);
         Assert.AreEqual(reservation.InvoiceId, updatedReservation.InvoiceId);
         Assert.AreEqual(reservation.RoomId, updatedReservation.RoomId);
+
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(reservation.StripePaymentIntentId);
+        Assert.IsNotNull(paymentIntent);
+        Assert.AreEqual((int)reservation.ExpectedTotalAmount() * 100, paymentIntent.Amount);
     }
 
 
