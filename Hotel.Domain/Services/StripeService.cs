@@ -12,8 +12,7 @@ public class StripeService : IStripeService
     private readonly ProductService _stripeProductService;
     private readonly PriceService _stripePriceService;
     private readonly PaymentIntentService _stripePaymentIntentService;
-    private readonly InvoiceService _stripeInvoiceService;
-    private readonly InvoiceItemService _stripeInvoiceItemService;
+    private readonly PaymentMethodService _stripePaymentMethodService;
 
     public StripeService()
     {
@@ -21,8 +20,7 @@ public class StripeService : IStripeService
         _stripeProductService = new ProductService();
         _stripePriceService = new PriceService();
         _stripePaymentIntentService = new PaymentIntentService();
-        _stripeInvoiceService = new InvoiceService();
-        _stripeInvoiceItemService = new InvoiceItemService();
+        _stripePaymentMethodService = new PaymentMethodService();
     }
 
     //Customer
@@ -40,7 +38,7 @@ public class StripeService : IStripeService
             Phone = phone.Number
         };
 
-        return await _stripeCustomerService.CreateAsync(options);  
+        return await _stripeCustomerService.CreateAsync(options);
     }
 
     public async Task<bool> DeleteCustomerAsync(string customerId)
@@ -66,7 +64,7 @@ public class StripeService : IStripeService
             },
             Phone = phone.Number
         };
-        
+
         return await _stripeCustomerService.UpdateAsync(customerId, options);
     }
 
@@ -105,12 +103,12 @@ public class StripeService : IStripeService
             Active = false,
         };
 
-       return await _stripeProductService.UpdateAsync(productId, productUpdateOptions);   
+        return await _stripeProductService.UpdateAsync(productId, productUpdateOptions);
     }
 
     public async Task<Product> GetProductAsync(string productId)
     {
-        return await _stripeProductService.GetAsync(productId);  
+        return await _stripeProductService.GetAsync(productId);
     }
 
     public async Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price, bool isActive = true)
@@ -123,7 +121,7 @@ public class StripeService : IStripeService
             Active = true
         };
 
-        var activePrice  = _stripePriceService.ListAsync(priceListOptions).Result.First();
+        var activePrice = _stripePriceService.ListAsync(priceListOptions).Result.First();
 
         if (price * 100 != activePrice.UnitAmountDecimal)
         {
@@ -133,7 +131,7 @@ public class StripeService : IStripeService
             };
 
             await _stripePriceService.UpdateAsync(activePrice.Id, priceUpdateOptions);
-   
+
             var priceCreateOptions = new PriceCreateOptions
             {
                 Currency = "BRL",
@@ -143,7 +141,7 @@ public class StripeService : IStripeService
 
             var newPrice = await _stripePriceService.CreateAsync(priceCreateOptions);
         }
-        
+
         var productUpdateOptions = new ProductUpdateOptions()
         {
             Name = name,
@@ -157,7 +155,7 @@ public class StripeService : IStripeService
     //Reservation
     public async Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, IRoom room)
     {
-        var amountInCents = (int) (expectedTotalAmount * 100);
+        var amountInCents = (int)( expectedTotalAmount * 100 );
 
         var products = new List<ProductServiceInfo>
         {
@@ -196,7 +194,17 @@ public class StripeService : IStripeService
 
         var options = new PaymentIntentUpdateOptions
         {
-            Amount = amountInCents
+            Amount = amountInCents,
+        };
+
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
+    }
+
+    public async Task<PaymentIntent> AddPaymentMethodToPaymentIntent(string paymentIntentId, string paymentMethodId)
+    {
+        var options = new PaymentIntentUpdateOptions
+        {
+            PaymentMethod = paymentMethodId,
         };
 
         return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
@@ -224,7 +232,7 @@ public class StripeService : IStripeService
                 products.Add(newProduct);
             }
 
-            var totalAmountInCents = (long) products.Sum(x => x.Quantity * x.UnitPrice) * 100;
+            var totalAmountInCents = (long)products.Sum(x => x.Quantity * x.UnitPrice) * 100;
 
             var metadata = JsonConvert.SerializeObject(products);
             var updateOptions = new PaymentIntentUpdateOptions
@@ -300,6 +308,19 @@ public class StripeService : IStripeService
         return prices.First();
     }
 
+    public async Task<PaymentMethod> CreatePaymentMethodAsync(string tokenId)
+    {
+        var paymentMethodCreateOptions = new PaymentMethodCreateOptions
+        {
+            Type = "card",
+            Card = new PaymentMethodCardOptions
+            {
+                Token = tokenId
+            }
+        };
+
+        return await _stripePaymentMethodService.CreateAsync(paymentMethodCreateOptions);
+    }
 }
 
 public class ProductServiceInfo

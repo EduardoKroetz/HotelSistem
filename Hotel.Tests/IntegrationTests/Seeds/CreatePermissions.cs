@@ -75,6 +75,8 @@ public class SeedPermissions
             new Permission("AssignServiceResponsibility", "Permissão para atribuir uma responsabilidade a um serviço"),
             new Permission("UnassignServiceResponsibility", "Permissão para desatribuir uma responsabilidade de um serviço"),
             new Permission("AvailableRoomStatus", "Permissão para alterar o status de um cômodo para disponível"),
+            new Permission("ReservationCheckIn", "Permissão para realizar o Check-In em uma reserva."),
+            new Permission("ReservationCheckOut", "Permissão para realizar o Check-Out em uma reserva.")
         };
 
         foreach (var permission in permissionsToAdd)

@@ -11,7 +11,7 @@
             <button id="checkout-button">Iniciar Pagamento</button>
 
             <script>
-                var stripe = Stripe("pk_test_51PT073P5Pmdhfv7Ge4nN9WQVay5FFzbEJzmEly6a1a4XDyFamHzXKBSSc0W7MXN1X97JRxR2nGc2SdeHCLc9lHia00VsAIpHmH"); // Substitua pela sua chave pública do Stripe
+                var stripe = Stripe("pk_test_51PT073P5Pmdhfv7Ge4nN9WQVay5FFzbEJzmEly6a1a4XDyFamHzXKBSSc0W7MXN1X97JRxR2nGc2SdeHCLc9lHia00VsAIpHmH"); 
 
                 document.getElementById('checkout-button').addEventListener('click', function () {
                         fetch('https://localhost:7100/v1/payments/checkout/card/price_1PUT99P5Pmdhfv7GKiIIwHmn', {
