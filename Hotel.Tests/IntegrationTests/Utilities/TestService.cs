@@ -28,6 +28,7 @@ internal class TestService
     private readonly HotelWebApplicationFactory _factory;
     private readonly string _rootAdminToken;
     private readonly HttpClient _client;
+    private readonly TokenService _tokenService;
 
     public TestService(HotelDbContext dbContext, HotelWebApplicationFactory factory, HttpClient client, string rootAdminToken)
     {
@@ -35,6 +36,7 @@ internal class TestService
         _factory = factory;
         _rootAdminToken = rootAdminToken;
         _client = client;
+        _tokenService = new TokenService();
     }
 
     public async Task<Reservation> CreateReservationAsync(Domain.Entities.CustomerEntity.Customer customer, CreateReservation newReservation)
@@ -163,5 +165,4 @@ internal class TestService
 
         return category;
     }
-
 }

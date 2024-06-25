@@ -21,6 +21,7 @@ using Hotel.Domain.Entities.VerificationCodeEntity;
 using Hotel.Domain.Services;
 using Hotel.Domain.DTOs.ServiceDTOs;
 using Hotel.Domain.DTOs.CategoryDTOs;
+using Hotel.Domain.DTOs.PaymentDTOs;
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -180,15 +181,7 @@ public class ReservationControllerTests
     public async Task CreateReservation_WithNonexistCustomer_ShouldReturn_NOT_FOUND()
     {
         // Arrange
-        var customer = new Domain.Entities.CustomerEntity.Customer(
-            new Name("Rafael", "Oliveira"),
-            new Email("rafaelOliveira@gmail.com"),
-            new Phone("+55 (41) 97604-1210"),
-            "password4",
-            EGender.Masculine,
-            DateTime.Now.AddYears(-32),
-            new Domain.ValueObjects.Address("Brazil", "Curitiba", "PR-404", 404)
-        );
+        var customer = new Domain.Entities.CustomerEntity.Customer(new Name("Rafael", "Oliveira"),new Email("rafaelOliveira@gmail.com"),new Phone("+55 (41) 97604-1210"),"password4",EGender.Masculine,DateTime.Now.AddYears(-32),new Domain.ValueObjects.Address("Brazil", "Curitiba", "PR-404", 404));
         var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 6", 6, 190, 2, "Quarto de luxo nível 4", _category.Id));
 
         _factory.Login(_client, customer);
@@ -214,7 +207,6 @@ public class ReservationControllerTests
     public async Task CreateReservation_WithNonexistRoom_ShouldReturn_NOT_FOUND()
     {
         // Arrange
-
         var body = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), Guid.NewGuid(), 1); // Gerando um GUID aleatório
 
         // Act
@@ -233,16 +225,7 @@ public class ReservationControllerTests
     public async Task CreateReservation_WithInvalidStripeCustomerId_ShouldReturn_BAD_REQUEST_AND_MAKE_ROLLBACK()
     {
         // Arrange
-        var newCustomer = new Domain.Entities.CustomerEntity.Customer
-        (
-            new Name("Camila", "Barbosa"),
-            new Email("camilaBarbosa@gmail.com"),
-            new Phone("+55 (95) 98765-6543"),
-            "password543",
-            EGender.Feminine,
-            DateTime.Now.AddYears(-32),
-            new Domain.ValueObjects.Address("Brazil", "Manaus", "MA-1010", 1010)
-        );
+        var newCustomer = new Domain.Entities.CustomerEntity.Customer(new Name("Camila", "Barbosa"),new Email("camilaBarbosa@gmail.com"),new Phone("+55 (95) 98765-6543"),"password543",EGender.Feminine,DateTime.Now.AddYears(-32),new Domain.ValueObjects.Address("Brazil", "Manaus", "MA-1010", 1010));
         await _dbContext.Customers.AddAsync(newCustomer);
         await _dbContext.SaveChangesAsync();
         var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 931", 931, 50, 2, "Quarto padrão 931", _category.Id));
@@ -432,8 +415,6 @@ public class ReservationControllerTests
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
         var content = await _testService.DeserializeResponse<object>(response);
-
-
     }
 
     [TestMethod]
@@ -546,7 +527,7 @@ public class ReservationControllerTests
     {
         // Arrange
         var customer = await _testService.CreateCustomerAsync(new CreateUser("Larissa", "Rodrigues", "larissaRodrigues@gmail.com", "+55 (85) 99886-6543", "password12", EGender.Feminine, DateTime.Now.AddYears(-27), "Brazil", "Fortaleza", "CE-1212", 1212));
-        var room = await _testService.CreateRoomAsync(new EditorRoom("1Quarto 3", 13, 90, 5, "Quarto 13", _category.Id));
+        var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 13", 13, 90, 5, "Quarto 13", _category.Id));
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1),DateTime.Now.AddDays(2),room.Id, 5));
         reservation.ToCancelled();
 

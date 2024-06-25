@@ -220,6 +220,18 @@ BEGIN
         VALUES (NEWID(), 'RemoveServiceFromReservation', 'Permissão para remover um serviço de uma reserva.', 1, GETDATE());
     END;
 
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'ReservationCheckIn')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'ReservationCheckIn', 'Permissão para realizar o Check-In em uma reserva.', 1, GETDATE());
+    END;
+
+    IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'ReservationCheckOut')
+    BEGIN
+        INSERT INTO Permissions (ID, Name, Description, IsActive, CreatedAt)
+        VALUES (NEWID(), 'ReservationCheckOut', 'Permissão para realizar o Check-Out em uma reserva.', 1, GETDATE());
+    END;
+
     -- Categories
     IF NOT EXISTS (SELECT 1 FROM Permissions WHERE Name = 'CreateCategory')
     BEGIN

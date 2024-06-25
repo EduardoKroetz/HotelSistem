@@ -1,5 +1,4 @@
 ﻿using Hotel.Domain.DTOs;
-using Hotel.Domain.DTOs.PaymentDTOs;
 using Hotel.Domain.Exceptions;
 using Stripe;
 
@@ -7,30 +6,24 @@ namespace Hotel.Domain.Handlers.ReservationHandlers;
 
 public partial class ReservationHandler
 {
-    public async Task<Response> HandleMakeReservationCheckInAsync(Guid id, CardOptions cardOptions)
+    public async Task<Response> HandleReservationCheckInAsync(Guid id, string tokenId)
     {
         var transaction = await _repository.BeginTransactionAsync();
 
         try
         {
-            var reservation = await _repository.GetReservationIncludesAll(id)
+            var reservation = await _repository.GetEntityByIdAsync(id)
                 ?? throw new NotFoundException("Reserva não encontrada.");
 
             reservation.ToCheckIn();
 
             try
             {
-                var paymentMethod = await _stripeService.CreatePaymentMethodAsync
-                (
-                    cardOptions.Number, 
-                    cardOptions.ExpMonth, 
-                    cardOptions.ExpYear,
-                    cardOptions.Cvc
-                );
-
+                var paymentMethod = await _stripeService.CreatePaymentMethodAsync(tokenId);
+               
                 await _stripeService.AddPaymentMethodToPaymentIntent(reservation.StripePaymentIntentId, paymentMethod.Id);
             }
-            catch (StripeException)
+            catch (StripeException e)
             {
                 throw new StripeException("Ocorreu um erro ao atualizar o método de pagamento");
             }

@@ -308,17 +308,14 @@ public class StripeService : IStripeService
         return prices.First();
     }
 
-    public async Task<PaymentMethod> CreatePaymentMethodAsync(string cardNumber, int expMonth, int expYear, string Cvc)
+    public async Task<PaymentMethod> CreatePaymentMethodAsync(string tokenId)
     {
         var paymentMethodCreateOptions = new PaymentMethodCreateOptions
         {
             Type = "card",
             Card = new PaymentMethodCardOptions
             {
-                Cvc = Cvc,
-                ExpMonth = expMonth,
-                ExpYear = expYear,
-                Number = cardNumber
+                Token = tokenId
             }
         };
 

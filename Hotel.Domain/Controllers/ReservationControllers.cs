@@ -1,4 +1,5 @@
 using Hotel.Domain.Attributes;
+using Hotel.Domain.DTOs.PaymentDTOs;
 using Hotel.Domain.DTOs.ReservationDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Handlers.ReservationHandlers;
@@ -126,6 +127,13 @@ public class ReservationController : ControllerBase
     [AuthorizePermissions([EPermissions.RemoveServiceFromReservation, EPermissions.DefaultAdminPermission])]
     public async Task<IActionResult> RemoveServiceAsync([FromRoute] Guid id, [FromRoute] Guid serviceId)
       => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
+
+    [HttpPost("check-in/{Id:guid}")]
+    [AuthorizePermissions([EPermissions.ReservationCheckIn,EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+    public async Task<IActionResult> ReservationCheckInAsync([FromRoute] Guid Id, [FromBody] CardOptions cardOptions)
+    {
+        return Ok(await _handler.HandleReservationCheckInAsync(Id, cardOptions.TokenId));
+    }
 
     [HttpPatch("finish/{Id:guid}")]
     public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)

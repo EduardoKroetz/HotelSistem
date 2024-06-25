@@ -25,5 +25,5 @@ public interface IStripeService
     Task<PaymentIntent> RemovePaymentIntentProduct(string paymentIntentId, Guid serviceId);
     Task<Price> GetFirstActivePriceByProductId(string productId);
 
-    Task<PaymentMethod> CreatePaymentMethodAsync(string cardNumber, int expMonth, int expYear, string Cvc);
+    Task<PaymentMethod> CreatePaymentMethodAsync(string token);
 }
