@@ -19,7 +19,7 @@ partial class Reservation
     public void ValidateCapacity(int capacity)
     {
         if (capacity > Room?.Capacity)
-            throw new ValidationException("Capacidade máxima de hospedades da hospedagem excedida.");
+            throw new ValidationException("Capacidade máxima de hospedes da hospedagem excedida.");
 
         if (capacity <= 0)
             throw new ValidationException("Informe a quantidade de hóspedes de vão se hospedar.");

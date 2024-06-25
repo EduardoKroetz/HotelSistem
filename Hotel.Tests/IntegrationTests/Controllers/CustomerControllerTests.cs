@@ -25,6 +25,7 @@ public class CustomerControllerTests
     private const string _baseUrl = "v1/customers";
     private static Domain.Services.TokenServices.TokenService _tokenService = null!;
     private static CustomerService _stripeCustomerService = new CustomerService();
+    private static TestService _testService = null!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext? context)
@@ -36,7 +37,8 @@ public class CustomerControllerTests
 
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
+        _testService = new TestService(_dbContext, _factory, _client, _rootAdminToken);
     }
 
     [ClassCleanup]
@@ -48,7 +50,7 @@ public class CustomerControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
     }
 
     [TestMethod]
@@ -74,7 +76,7 @@ public class CustomerControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -100,7 +102,7 @@ public class CustomerControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -133,7 +135,7 @@ public class CustomerControllerTests
         var exists = await _dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.IsFalse(exists);
 
         var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
@@ -175,7 +177,7 @@ public class CustomerControllerTests
         var exists = await _dbContext.Customers.AnyAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.IsFalse(exists);
 
         var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
@@ -225,7 +227,7 @@ public class CustomerControllerTests
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.IsTrue(exists);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         Assert.AreEqual("Ocorreu um erro ao deletar o cliente no Stripe", content.Errors[0]);
 
         StripeConfiguration.ApiKey = apiKey;
@@ -265,7 +267,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedCustomer!.Id, customer.Id);
         Assert.AreEqual(updatedCustomer.Name.FirstName, body.FirstName);
         Assert.AreEqual(updatedCustomer.Name.LastName, body.LastName);
@@ -310,7 +312,7 @@ public class CustomerControllerTests
 
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.AreEqual("Ocorreu um erro ao atualizar o usuário no Stripe", content.Errors[0]);
     }
@@ -350,7 +352,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedCustomer!.Id, customer.Id);
         Assert.AreEqual(updatedCustomer.Name.FirstName, body.FirstName);
         Assert.AreEqual(updatedCustomer.Name.LastName, body.LastName);
@@ -404,7 +406,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedCustomer!.Name.FirstName, body.FirstName);
         Assert.AreEqual(updatedCustomer.Name.LastName, body.LastName);
 
@@ -455,7 +457,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedCustomer!.Email.Address, body.Address);
 
         var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
@@ -500,7 +502,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedCustomer!.Phone.Number, body.Number);
 
         var stripeCustomer = await _stripeCustomerService.GetAsync(customer.StripeCustomerId);
@@ -545,7 +547,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedCustomer!.Address!.Country, body.Country);
         Assert.AreEqual(updatedCustomer!.Address.City, body.City);
         Assert.AreEqual(updatedCustomer!.Address!.Number, body.Number);
@@ -586,7 +588,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(EGender.Feminine, updatedCustomer!.Gender);
     }
 
@@ -619,7 +621,7 @@ public class CustomerControllerTests
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(body.DateOfBirth, updatedCustomer!.DateOfBirth);
     }
 }

@@ -37,7 +37,7 @@ public class AdminControllerTests
         _tokenService = _factory.Services.GetRequiredService<TokenService>();
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
 
         _defaultAdminPermission = _dbContext.Permissions.AsTracking().First(x => x.Name.Contains("DefaultAdminPermission"));
         _permissions = _dbContext.Permissions.ToListAsync().Result;
@@ -53,7 +53,7 @@ public class AdminControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
     }
 
 
@@ -80,7 +80,7 @@ public class AdminControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -106,7 +106,7 @@ public class AdminControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -134,7 +134,7 @@ public class AdminControllerTests
         var wasNotDeleted = await _dbContext.Admins.AnyAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.IsFalse(wasNotDeleted);
     }
 
@@ -167,7 +167,7 @@ public class AdminControllerTests
         var wasNotDeleted = await dbContext.Admins.AnyAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.IsFalse(wasNotDeleted);
     }
 
@@ -200,7 +200,7 @@ public class AdminControllerTests
           .FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(adminWithPermissions!.Id, admin.Id);
         Assert.AreEqual(adminWithPermissions.Permissions.First().Id, permission.Id);
     }
@@ -236,7 +236,7 @@ public class AdminControllerTests
           .FirstOrDefaultAsync();
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(adminWithPermissions!.Id, admin.Id);
         Assert.AreEqual(adminWithPermissions.Permissions.Count, 0);
     }
@@ -266,7 +266,7 @@ public class AdminControllerTests
     //  var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
     //  Assert.IsNotNull(response);
-    //  Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+    //  response.EnsureSuccessStatusCode();
     //  Assert.IsTrue(updatedAdmin!.IsRootAdmin);
     //}
 
@@ -297,7 +297,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedAdmin!.Id, admin.Id);
         Assert.AreEqual(updatedAdmin.Name.FirstName, body.FirstName);
         Assert.AreEqual(updatedAdmin.Name.LastName, body.LastName);
@@ -341,7 +341,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedAdmin!.Id, admin.Id);
         Assert.AreEqual(updatedAdmin.Name.FirstName, body.FirstName);
         Assert.AreEqual(updatedAdmin.Name.LastName, body.LastName);
@@ -384,7 +384,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedAdmin!.Name.FirstName, body.FirstName);
         Assert.AreEqual(updatedAdmin.Name.LastName, body.LastName);
     }
@@ -419,7 +419,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedAdmin!.Email.Address, body.Address);
     }
 
@@ -453,7 +453,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedAdmin!.Phone.Number, body.Number);
     }
 
@@ -487,7 +487,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedAdmin!.Address!.Country, body.Country);
         Assert.AreEqual(updatedAdmin!.Address.City, body.City);
         Assert.AreEqual(updatedAdmin!.Address!.Number, body.Number);
@@ -522,7 +522,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(EGender.Feminine, updatedAdmin!.Gender);
     }
 
@@ -556,7 +556,7 @@ public class AdminControllerTests
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(body.DateOfBirth, updatedAdmin!.DateOfBirth);
     }
 
