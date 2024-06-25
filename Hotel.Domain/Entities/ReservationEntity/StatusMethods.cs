@@ -7,6 +7,13 @@ partial class Reservation
 {
     public Reservation ToCheckIn()
     {
+        if (Status == EReservationStatus.CheckedIn)
+            throw new InvalidOperationException("Não foi possível fazer Check-In pois o Check-In já foi realizado");
+        if (Status == EReservationStatus.CheckedOut)
+            throw new InvalidOperationException("Não foi possível fazer Check-In pois a reserva já foi finalizada");
+        if (Status == EReservationStatus.Canceled)
+            throw new InvalidOperationException("Não foi possível fazer Check-In pois a reserva foi cancelada");
+
         CheckIn = DateTime.Now;
 
         Status = EReservationStatus.CheckedIn;
