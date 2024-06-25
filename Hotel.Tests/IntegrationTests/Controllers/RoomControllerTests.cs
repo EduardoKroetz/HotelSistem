@@ -33,6 +33,7 @@ public class RoomControllerTests
     private static Category _deluxeCategory = null!;
     private static ProductService _stripeProductService = null!;
     private static PriceService _stripePriceService = null!;
+    private static TestService _testService = null!;
 
 
     [ClassInitialize]
@@ -54,6 +55,8 @@ public class RoomControllerTests
 
         _stripeProductService = new ProductService();
         _stripePriceService = new PriceService();
+        _testService = new TestService(_dbContext, _factory, _client, _rootAdminToken);
+
     }
 
     [ClassCleanup]
@@ -401,7 +404,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
     }
@@ -488,7 +491,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.Include(x => x.Services).FirstAsync(x => x.Id == room.Id);
 
         
@@ -522,7 +525,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
         Assert.AreEqual("Serviço não encontrado.", content.Errors[0]);
@@ -545,7 +548,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.Include(x => x.Services).FirstAsync(x => x.Id == room.Id);
 
         
@@ -579,7 +582,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
         Assert.AreEqual("Serviço não encontrado.", content.Errors[0]);
@@ -603,7 +606,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
 
         Assert.AreEqual("Nome atualizado com sucesso!", content.Message);
@@ -662,7 +665,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
 
         Assert.AreEqual("Esse nome já está cadastrado.",content.Errors[0]);
@@ -712,7 +715,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
         
@@ -756,7 +759,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
         Assert.AreEqual("Esse número já está cadastrado.", content.Errors[0]);
@@ -777,7 +780,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
         
@@ -809,7 +812,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
         Assert.AreEqual("Categoria não encontrada.", content.Errors[0]);
@@ -831,7 +834,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
         
         Assert.AreEqual("Preço atualizado com sucesso!", content.Message);
@@ -887,7 +890,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
         Assert.AreEqual("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas a hospedagem.", content.Errors[0]);
@@ -942,7 +945,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
         
         Assert.AreEqual("Preço atualizado com sucesso!", content.Message);
@@ -972,7 +975,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
         
@@ -1010,7 +1013,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
 
         
@@ -1036,7 +1039,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
 
         
@@ -1073,7 +1076,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
        
@@ -1097,7 +1100,7 @@ public class RoomControllerTests
         //Assert
         response.EnsureSuccessStatusCode();
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
         
@@ -1143,7 +1146,7 @@ public class RoomControllerTests
 
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
     }
@@ -1159,7 +1162,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
     }
@@ -1175,7 +1178,7 @@ public class RoomControllerTests
         //Assert
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
 
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
        
         Assert.AreEqual("Hospedagem não encontrada.", content.Errors[0]);

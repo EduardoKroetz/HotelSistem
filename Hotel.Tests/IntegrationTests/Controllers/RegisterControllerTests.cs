@@ -35,7 +35,7 @@ public class RegisterControllerTests
         _dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
     }
 
     [ClassCleanup]
@@ -69,7 +69,7 @@ public class RegisterControllerTests
         var existsCode = await _dbContext.VerificationCodes.AnyAsync(x => x.Code == code.Code);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(body.FirstName, customer.Name.FirstName);
         Assert.AreEqual(body.LastName, customer.Name.LastName);
         Assert.AreEqual(body.Email, customer.Email.Address);
@@ -199,7 +199,7 @@ public class RegisterControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         var admin = await _dbContext.Admins.FirstAsync(x => x.Email.Address == body.Email);
         var existsCode = await _dbContext.VerificationCodes.AnyAsync(x => x.Code == code.Code);
@@ -255,7 +255,7 @@ public class RegisterControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         var employee = await _dbContext.Employees.FirstAsync(x => x.Email.Address == body.Email);
         var existsCode = await _dbContext.VerificationCodes.AnyAsync(x => x.Code == code.Code);

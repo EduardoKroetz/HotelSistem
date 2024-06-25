@@ -120,7 +120,7 @@ public class FeedbackControllerTests
         var feedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Comment.Equals(body.Comment));
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(body.Rate, feedback!.Rate);
         Assert.AreEqual(body.Comment, feedback.Comment);
         Assert.AreEqual(reservation.Id, feedback.ReservationId);
@@ -135,7 +135,7 @@ public class FeedbackControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -146,7 +146,7 @@ public class FeedbackControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -184,7 +184,7 @@ public class FeedbackControllerTests
         var wasNotDeleted = await _dbContext.Feedbacks.AnyAsync(x => x.Id == feedback.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.IsFalse(wasNotDeleted);
     }
 
@@ -227,7 +227,7 @@ public class FeedbackControllerTests
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == feedback.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedFeedback!.Id, feedback.Id);
         Assert.AreEqual(updatedFeedback.Comment, body.Comment);
         Assert.AreEqual(updatedFeedback.Rate, body.Rate);
@@ -271,7 +271,7 @@ public class FeedbackControllerTests
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == feedback.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedFeedback!.Comment, body.Comment);
     }
 
@@ -285,7 +285,7 @@ public class FeedbackControllerTests
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == _feedbacks[0].Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedFeedback!.Rate, 8);
     }
 
@@ -324,7 +324,7 @@ public class FeedbackControllerTests
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == feedback.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedFeedback!.Likes.Count, 1);
     }
 
@@ -366,7 +366,7 @@ public class FeedbackControllerTests
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == feedback.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(updatedFeedback!.Likes.Count, 0);
     }
 
@@ -445,7 +445,7 @@ public class FeedbackControllerTests
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == feedback.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(1, updatedFeedback!.Dislikes.Count);
     }
 
@@ -487,7 +487,7 @@ public class FeedbackControllerTests
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == feedback.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(0, updatedFeedback!.Dislikes.Count);
     }
 
