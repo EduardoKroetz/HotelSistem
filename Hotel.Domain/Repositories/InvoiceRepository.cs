@@ -49,6 +49,9 @@ public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
         if (queryParameters.ServiceId.HasValue)
             query = query.Where(x => x.Services.Any(x => x.Id == queryParameters.ServiceId));
 
+        if (queryParameters.TotalAmount.HasValue)
+            query = query.FilterByOperator(queryParameters.TotalAmountOperator, x => x.TotalAmount, queryParameters.TotalAmount);
+
         query = query.Skip(queryParameters.Skip ?? 0).Take(queryParameters.Take ?? 1);
         query = query.AsNoTracking();
 

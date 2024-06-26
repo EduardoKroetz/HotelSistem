@@ -1,5 +1,4 @@
 ﻿using Hotel.Domain.DTOs.InvoiceDTOs;
-using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories;
 using Hotel.Tests.UnitTests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
@@ -24,19 +23,14 @@ public class InvoiceRepositoryTest
         Assert.IsNotNull(roomInvoice);
         Assert.AreEqual(BaseRepositoryTest.Invoices[0].Id, roomInvoice.Id);
         Assert.AreEqual(BaseRepositoryTest.Invoices[0].PaymentMethod, roomInvoice.PaymentMethod);
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].TaxInformation, roomInvoice.TaxInformation);
         Assert.AreEqual(BaseRepositoryTest.Invoices[0].ReservationId, roomInvoice.ReservationId);
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].Number, roomInvoice.Number);
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].IssueDate, roomInvoice.IssueDate);
         Assert.AreEqual(Math.Round(BaseRepositoryTest.Invoices[0].TotalAmount), Math.Round(roomInvoice.TotalAmount));
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].Status, roomInvoice.Status);
-
     }
 
     [TestMethod]
     public async Task GetAsync_ReturnWithCorrectParameters()
     {
-        var parameters = new InvoiceQueryParameters(0, 100, null, BaseRepositoryTest.Invoices[0].PaymentMethod, BaseRepositoryTest.Invoices[0].TotalAmount, "eq", null, null, null, null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, BaseRepositoryTest.Invoices[0].PaymentMethod, BaseRepositoryTest.Invoices[0].TotalAmount, "eq", null, null, null);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         var roomInvoice = roomInvoices.ToList()[0];
@@ -44,30 +38,26 @@ public class InvoiceRepositoryTest
         Assert.IsNotNull(roomInvoice);
         Assert.AreEqual(BaseRepositoryTest.Invoices[0].Id, roomInvoice.Id);
         Assert.AreEqual(BaseRepositoryTest.Invoices[0].PaymentMethod, roomInvoice.PaymentMethod);
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].TaxInformation, roomInvoice.TaxInformation);
         Assert.AreEqual(BaseRepositoryTest.Invoices[0].ReservationId, roomInvoice.ReservationId);
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].Number, roomInvoice.Number);
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].IssueDate, roomInvoice.IssueDate);
         Assert.AreEqual(Math.Round(BaseRepositoryTest.Invoices[0].TotalAmount), Math.Round(roomInvoice.TotalAmount));
-        Assert.AreEqual(BaseRepositoryTest.Invoices[0].Status, roomInvoice.Status);
     }
 
     [TestMethod]
-    public async Task GetAsync_WherePaymentMethodEqualsCreditCard_ReturnsInvoices()
+    public async Task GetAsync_WhereCardPaymentMethod_ReturnsInvoices()
     {
-        var parameters = new InvoiceQueryParameters(0, 100, null, EPaymentMethod.CreditCard, null, null, null, null, null, null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, "card", null, null, null, null, null);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(roomInvoices.Any());
         foreach (var roomInvoice in roomInvoices)
-            Assert.AreEqual(EPaymentMethod.CreditCard, roomInvoice.PaymentMethod);
+            Assert.AreEqual("card", roomInvoice.PaymentMethod);
 
     }
 
     [TestMethod]
     public async Task GetAsync_WhereTotalAmountGratherThan9_ReturnsInvoices()
     {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, 9m, "gt", null, null, null, null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, null, 9m, "gt", null, null, null);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(roomInvoices.Any());
@@ -80,7 +70,7 @@ public class InvoiceRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereTotalAmountLessThan100_ReturnsInvoices()
     {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, 100m, "lt", null, null, null, null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, null, 100m, "lt", null, null, null);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(roomInvoices.Any());
@@ -92,39 +82,15 @@ public class InvoiceRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereTotalAmountEquals_ReturnsInvoices()
     {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, BaseRepositoryTest.Invoices[3].TotalAmount, "eq", null, null, null, null, null, null, null, null);
+        var totalAmount = BaseRepositoryTest.Invoices[3].TotalAmount;
+        var parameters = new InvoiceQueryParameters(0, 100, null, totalAmount, "eq", null, null, null);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(roomInvoices.Any());
 
         foreach (var roomInvoice in roomInvoices)
-            Assert.AreEqual(Math.Round(BaseRepositoryTest.Invoices[3].TotalAmount), Math.Round(roomInvoice.TotalAmount));
+            Assert.AreEqual(Math.Round(totalAmount), Math.Round(roomInvoice.TotalAmount));
 
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereStatusEqualsPending_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, EStatus.Pending, null, null, null, null, null, null, null);
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-        foreach (var roomInvoice in roomInvoices)
-            Assert.AreEqual(EStatus.Pending, roomInvoice.Status);
-
-
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereStatusEqualsFinish_ReturnsInvoices()
-    {
-
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, EStatus.Finish, null, null, null, null, null, null, null);
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-        foreach (var roomInvoice in roomInvoices)
-            Assert.AreEqual(EStatus.Finish, roomInvoice.Status);
     }
 
     [TestMethod]
@@ -133,7 +99,7 @@ public class InvoiceRepositoryTest
         var customerWithInvoice = await BaseRepositoryTest.MockConnection.Context.Customers
           .FirstOrDefaultAsync(x => x.Invoices.Count > 0);
 
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, customerWithInvoice?.Id, null, null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, customerWithInvoice?.Id, null, null);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(roomInvoices.Any());
@@ -144,7 +110,7 @@ public class InvoiceRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereReservationId_ReturnsInvoices()
     {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, BaseRepositoryTest.Reservations[0].Id, null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, BaseRepositoryTest.Reservations[0].Id, null);
         for (var i = 0; i < 10; i++)
         {
             var roomInvoices = await InvoiceRepository.GetAsync(parameters);
@@ -163,7 +129,7 @@ public class InvoiceRepositoryTest
     {
         var serviceWithInvoices = await BaseRepositoryTest.MockConnection.Context.Services.FirstOrDefaultAsync(x => x.Invoices.Count > 0);
 
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, serviceWithInvoices!.Id, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, serviceWithInvoices!.Id);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(roomInvoices.Any());
@@ -176,55 +142,6 @@ public class InvoiceRepositoryTest
 
             Assert.IsTrue(hasService);
         }
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereTaxInformationLessThan13_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, 13, "lt", null, null);
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-
-        foreach (var roomInvoice in roomInvoices)
-            Assert.IsTrue(13 > roomInvoice.TaxInformation);
-
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereIssueDateGratherThanYesterday_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt");
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-        foreach (var roomInvoice in roomInvoices)
-            Assert.IsTrue(DateTime.Now.AddDays(-1) < roomInvoice.IssueDate);
-
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereIssueDateLessThanToday_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, DateTime.Now.AddDays(1), "lt");
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-
-        foreach (var roomInvoice in roomInvoices)
-            Assert.IsTrue(DateTime.Now.AddDays(1) > roomInvoice.IssueDate);
-
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereIssueDateEquals_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.Invoices[0].IssueDate, "eq");
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-        foreach (var roomInvoice in roomInvoices)
-            Assert.AreEqual(BaseRepositoryTest.Invoices[0].IssueDate, roomInvoice.IssueDate);
     }
 
 }
