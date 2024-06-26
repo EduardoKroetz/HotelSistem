@@ -26,6 +26,9 @@ public partial class Room
     public void ChangeCategory(Guid categoryId)
     => CategoryId = categoryId;
 
+    public void ChangeName(string name)
+    => Name = name;
+
     public void ChangeNumber(int number)
     {
         ValidateNumber(number);

@@ -1,4 +1,6 @@
 ﻿using Hotel.Domain.DTOs.RoomDTOs;
+using Hotel.Domain.Entities.CategoryEntity;
+using Hotel.Domain.Entities.RoomEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories;
 using Hotel.Tests.UnitTests.Repositories.Mock;
@@ -34,13 +36,14 @@ public class RoomRepositoryTest
     {
         var anyRoom = BaseRepositoryTest.Rooms[0];
 
-        var parameters = new RoomQueryParameters(0, 100, anyRoom.Number, "eq", anyRoom.Price, "eq", anyRoom.Status, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, anyRoom.Number, "eq", anyRoom.Price, "eq", anyRoom.Status, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         var room = rooms.ToList()[0];
 
         Assert.IsNotNull(room);
         Assert.AreEqual(anyRoom.Id, room.Id);
+        Assert.AreEqual(anyRoom.Name, room.Name);
         Assert.AreEqual(anyRoom.Number, room.Number);
         Assert.AreEqual(anyRoom.Description, room.Description);
         Assert.AreEqual(anyRoom.Price, room.Price);
@@ -50,10 +53,37 @@ public class RoomRepositoryTest
     }
 
 
+
+    [TestMethod]
+    public async Task GetAsync_WhereName_ReturnRooms()
+    {
+        var category = new Category("Deluxe beach", "Quartos de luxo com vista para praia", 190);
+        var room = new Room("Quarto de luxo a beira mar", 999, 230m, 6, "Um quarto de luxo com vista luxuosa", category, "");
+
+        await BaseRepositoryTest.MockConnection.Context.Rooms.AddAsync(room);
+        await BaseRepositoryTest.MockConnection.Context.Rooms.AddAsync(room);
+        await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
+
+        var parameters = new RoomQueryParameters(0, 100, room.Name, null, null, null, null, null, null, null, null, null, null, null);
+        var rooms = await RoomRepository.GetAsync(parameters);
+        var returnedRoom = rooms.FirstOrDefault()!;
+
+        Assert.IsTrue(rooms.Any());
+
+        Assert.AreEqual(room.Id, returnedRoom.Id);
+        Assert.AreEqual(room.Name, returnedRoom.Name);
+        Assert.AreEqual(room.Number, returnedRoom.Number);
+        Assert.AreEqual(room.Description, returnedRoom.Description);
+        Assert.AreEqual(room.Price, returnedRoom.Price);
+        Assert.AreEqual(room.Status, returnedRoom.Status);
+        Assert.AreEqual(room.Capacity, returnedRoom.Capacity);
+        Assert.AreEqual(room.Description, returnedRoom.Description);
+    }
+
     [TestMethod]
     public async Task GetAsync_WhereNumberGratherThan20_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, 20, "gt", null, null, null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, 20, "gt", null, null, null, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -65,7 +95,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereNumberLessThan20_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, 20, "lt", null, null, null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, 20, "lt", null, null, null, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -78,7 +108,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereNumberEquals9_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, 9, "eq", null, null, null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, 9, "eq", null, null, null, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -90,7 +120,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WherePriceGratherThan50_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, 50, "gt", null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, 50, "gt", null, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -102,7 +132,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WherePriceLessThan60_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, 60, "lt", null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, 60, "lt", null, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -114,7 +144,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WherePriceEquals50_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, 50, "eq", null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, 50, "eq", null, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -126,7 +156,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereStatusEqualsOutOfService_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, ERoomStatus.OutOfService, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, ERoomStatus.OutOfService, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -138,7 +168,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereStatusEqualsReserved_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, ERoomStatus.Reserved, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, ERoomStatus.Reserved, null, null, null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -150,7 +180,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereCapacityGratherThan2_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, 2, "gt", null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, 2, "gt", null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -163,7 +193,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereCapacityLessThan3_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, 3, "lt", null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, 3, "lt", null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -176,7 +206,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereCapacityEquals2_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, 2, "eq", null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, 2, "eq", null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -188,7 +218,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereServiceId_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, BaseRepositoryTest.Services[0].Id, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, BaseRepositoryTest.Services[0].Id, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -207,7 +237,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereCategoryId_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, BaseRepositoryTest.Categories[0].Id, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.Categories[0].Id, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -220,7 +250,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereCreatedAtGratherThanYesterday_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt");
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt");
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -232,7 +262,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereCreatedAtLessThanToday_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, DateTime.Now.AddDays(1), "lt");
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, DateTime.Now.AddDays(1), "lt");
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -244,7 +274,7 @@ public class RoomRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereCreatedAtEquals_ReturnRooms()
     {
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.Rooms[0].CreatedAt, "eq");
+        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, BaseRepositoryTest.Rooms[0].CreatedAt, "eq");
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());
@@ -257,7 +287,7 @@ public class RoomRepositoryTest
     public async Task GetAsync_WhereNumberGratherThan5_And_PriceLessThan60_And_CapacityGratherThan2_ReturnRooms()
     {
 
-        var parameters = new RoomQueryParameters(0, 100, 5, "gt", 60, "lt", null, 2, "gt", null, null, null, null);
+        var parameters = new RoomQueryParameters(0, 100, null, 5, "gt", 60, "lt", null, 2, "gt", null, null, null, null);
         var rooms = await RoomRepository.GetAsync(parameters);
 
         Assert.IsTrue(rooms.Any());

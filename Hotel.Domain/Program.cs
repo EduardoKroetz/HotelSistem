@@ -16,6 +16,7 @@ builder.Configuration.AddEnvironmentVariables();
 LoadConfigurationClass.Configure(builder);
 ConfigureDependencies.Configure(builder);
 ConfigureAuthentication.Configure(builder.Services);
+ConfigureCors.Configure(builder.Services);
 
 //builder.WebHost.UseUrls("http://0.0.0.0:80");
 
@@ -28,7 +29,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseHttpsRedirection();
 
+app.UseCors();
 app.UseRouting();
+app.UseStaticFiles();
 app.UseHandleExceptions();
 app.UseSwagger();
 app.UseSwaggerUI();

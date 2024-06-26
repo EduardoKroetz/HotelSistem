@@ -24,15 +24,8 @@ public partial class EmailService : IEmailService
             EnableSsl = true,
             Credentials = new NetworkCredential(Configuration.EmailToSendEmail, Configuration.PasswordToSendEmail)
         };
-
-        try
-        {
-            await smtpClient.SendMailAsync(mailMessage);
-            Console.WriteLine("Email enviado com sucesso!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Ocorreu um erro ao enviar o e-mail: " + ex.Message);
-        }
+  
+        await smtpClient.SendMailAsync(mailMessage);
+        Console.WriteLine("Email enviado com sucesso!");
     }
 }

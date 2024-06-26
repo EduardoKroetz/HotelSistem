@@ -20,23 +20,24 @@ public class RoomController : ControllerBase
     // Endpoint para buscar todos os quartos
     [HttpGet]
     public async Task<IActionResult> GetAsync(
-      [FromQuery] int? skip,
-      [FromQuery] int? take,
-      [FromQuery] int? number,
-      [FromQuery] string? numberOperator,
-      [FromQuery] decimal? price,
-      [FromQuery] string? priceOperator,
-      [FromQuery] ERoomStatus? status,
-      [FromQuery] int? capacity,
-      [FromQuery] string? capacityOperator,
-      [FromQuery] Guid? serviceId,
-      [FromQuery] Guid? categoryId,
-      [FromQuery] DateTime? createdAt,
-      [FromQuery] string? createdAtOperator
+        [FromQuery] int? skip,
+        [FromQuery] int? take,
+        [FromQuery] string? name,
+        [FromQuery] int? number,
+        [FromQuery] string? numberOperator,
+        [FromQuery] decimal? price,
+        [FromQuery] string? priceOperator,
+        [FromQuery] ERoomStatus? status,
+        [FromQuery] int? capacity,
+        [FromQuery] string? capacityOperator,
+        [FromQuery] Guid? serviceId,
+        [FromQuery] Guid? categoryId,
+        [FromQuery] DateTime? createdAt,
+        [FromQuery] string? createdAtOperator
     )
     {
         var queryParameters = new RoomQueryParameters(
-            skip, take, number, numberOperator, price, priceOperator, status,
+            skip, take, name, number, numberOperator, price, priceOperator, status,
             capacity, capacityOperator, serviceId, categoryId, createdAt, createdAtOperator
         );
 
@@ -84,6 +85,12 @@ public class RoomController : ControllerBase
     [AuthorizePermissions([EPermissions.UpdateRoomNumber, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
     public async Task<IActionResult> UpdateNumberAsync([FromRoute] Guid id, [FromRoute] int number)
       => Ok(await _handler.HandleUpdateNumberAsync(id, number));
+
+    // Endpoint para atualizar o nome de um quarto (com permissão)
+    [HttpPatch("{id:guid}")]
+    [AuthorizePermissions([EPermissions.UpdateRoomName, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
+    public async Task<IActionResult> UpdateNameAsync([FromRoute] Guid id, [FromQuery] string name)
+      => Ok(await _handler.HandleUpdateNameAsync(id, name));
 
     // Endpoint para atualizar a capacidade de um quarto (com permissão)
     [HttpPatch("{id:guid}/capacity/{capacity:int}")]

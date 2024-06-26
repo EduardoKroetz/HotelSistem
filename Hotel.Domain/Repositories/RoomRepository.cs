@@ -15,31 +15,32 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
     public async Task<GetRoom?> GetByIdAsync(Guid id)
     {
         return await _context
-          .Rooms
-          .AsNoTracking()
-          .Where(x => x.Id == id)
-          .Include(x => x.Services)
-          .Include(x => x.Category)
-          .Include(x => x.Images)
-          .Select(x => new GetRoom(
-            x.Id,
-            x.Number,
-            x.Price,
-            x.Status,
-            x.Capacity,
-            x.Description,
-            x.Services,
-            x.CategoryId,
-            x.Images,
-            x.CreatedAt))
+            .Rooms
+            .AsNoTracking()
+            .Where(x => x.Id == id)
+            .Include(x => x.Images)
+            .Select(x => new GetRoom(
+                x.Id,
+                x.Name,
+                x.Number,
+                x.Price,
+                x.Status,
+                x.Capacity,
+                x.Description,
+                x.CategoryId,
+                x.Images,
+                x.CreatedAt))
           .FirstOrDefaultAsync();
 
     }
 
 
-    public async Task<IEnumerable<GetRoomCollection>> GetAsync(RoomQueryParameters queryParameters)
+    public async Task<IEnumerable<GetRoom>> GetAsync(RoomQueryParameters queryParameters)
     {
         var query = _context.Rooms.AsQueryable();
+
+        if (queryParameters.Name != null)
+            query = query.Where(x => x.Name.Contains(queryParameters.Name));
 
         if (queryParameters.Number.HasValue)
             query = query.FilterByOperator(queryParameters.NumberOperator, x => x.Number, queryParameters.Number);
@@ -61,15 +62,19 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
 
         query = query.BaseQuery(queryParameters);
 
-        return await query.Select(x => new GetRoomCollection(
-            x.Id,
-            x.Number,
-            x.Price,
-            x.Status,
-            x.Capacity,
-            x.Description,
-            x.CategoryId,
-            x.CreatedAt
+        return await query
+            .Include(x => x.Images)
+            .Select(x => new GetRoom(
+                x.Id,
+                x.Name,
+                x.Number,
+                x.Price,
+                x.Status,
+                x.Capacity,
+                x.Description,
+                x.CategoryId,
+                x.Images,
+                x.CreatedAt
         )).ToListAsync();
     }
 
@@ -86,5 +91,17 @@ public class RoomRepository : GenericRepository<Room>, IRoomRepository
         return await _context.Rooms
           .Include(x => x.Reservations)
           .FirstOrDefaultAsync(x => x.Id == roomId);
+    }
+
+    public async Task<Room?> GetRoomByNumber(int number)
+    {
+        return await _context.Rooms
+            .FirstOrDefaultAsync(x => x.Number == number);
+    }
+
+    public async Task<Room?> GetRoomByName(string name)
+    {
+        return await _context.Rooms
+            .FirstOrDefaultAsync(x => x.Name == name);
     }
 }

@@ -1,4 +1,5 @@
 using Hotel.Domain.Entities.Base;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Hotel.Domain.Repositories.Interfaces;
 
@@ -11,4 +12,6 @@ public interface IRepository<T> where T : Entity
     public void Delete(T model);
     public void Delete(Guid id);
     public Task SaveChangesAsync();
+
+    Task<IDbContextTransaction> BeginTransactionAsync();
 }

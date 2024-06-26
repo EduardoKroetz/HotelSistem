@@ -45,6 +45,7 @@ public class DefaultEmployeePermissions
         EPermissions.AddRoomService,
         EPermissions.RemoveRoomService,
         EPermissions.UpdateRoomNumber,
+        EPermissions.UpdateRoomName,
         EPermissions.UpdateRoomCapacity,
         EPermissions.UpdateRoomCategory,
         EPermissions.UpdateRoomPrice,

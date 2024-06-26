@@ -8,7 +8,7 @@ partial class Reservation
 
     public Reservation UpdateExpectedCheckOut(DateTime expectedCheckOut)
     {
-        if (Status == EReservationStatus.CheckedOut || Status == EReservationStatus.Cancelled)
+        if (Status == EReservationStatus.CheckedOut || Status == EReservationStatus.Canceled)
             throw new ValidationException($"Não é possível alterar o CheckOut esperado com o status da reserva {Status}.");
 
         ValidateCheckInAndCheckOut(CheckIn, expectedCheckOut);
@@ -19,7 +19,7 @@ partial class Reservation
 
     public Reservation UpdateExpectedCheckIn(DateTime checkIn)
     {
-        if (Status == EReservationStatus.Cancelled || Status == EReservationStatus.CheckedIn || Status == EReservationStatus.CheckedOut)
+        if (Status == EReservationStatus.Canceled || Status == EReservationStatus.CheckedIn || Status == EReservationStatus.CheckedOut)
             throw new ValidationException("Só é possível alterar o CheckIn esperado se o status for 'Pending' ou 'NoShow'.");
 
         ValidateCheckIn(checkIn);
@@ -31,7 +31,7 @@ partial class Reservation
 
     private Reservation UpdateCheckOut(DateTime checkOut)
     {
-        if (Status == EReservationStatus.CheckedOut || Status == EReservationStatus.Cancelled)
+        if (Status == EReservationStatus.CheckedOut || Status == EReservationStatus.Canceled)
             throw new ValidationException($"Não é possível alterar o CheckOut esperado com o status da reserva {Status}.");
 
         ValidateCheckInAndCheckOut(CheckIn, checkOut);
@@ -42,7 +42,7 @@ partial class Reservation
 
     private Reservation UpdateCheckIn(DateTime checkIn)
     {
-        if (Status == EReservationStatus.Cancelled || Status == EReservationStatus.CheckedIn || Status == EReservationStatus.CheckedOut)
+        if (Status == EReservationStatus.Canceled || Status == EReservationStatus.CheckedIn || Status == EReservationStatus.CheckedOut)
             throw new ValidationException($"Não é possível alterar o CheckIn com o status da reserva {Status}.");
 
         ValidateCheckIn(checkIn);

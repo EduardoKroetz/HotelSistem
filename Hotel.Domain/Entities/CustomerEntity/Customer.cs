@@ -19,6 +19,7 @@ public partial class Customer : User, ICustomer
     {
     }
 
+    public string StripeCustomerId { get; set; } = "";
     public ICollection<Feedback> Feedbacks { get; private set; } = [];
     public ICollection<Reservation> Reservations { get; private set; } = [];
     public ICollection<Invoice> Invoices { get; private set; } = [];

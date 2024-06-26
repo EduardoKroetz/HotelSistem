@@ -23,7 +23,8 @@ jobs:
       PasswordToSendEmail: ${{ secrets.PASSWORD_TO_SEND_EMAIL }}
       EmailToSendEmail: ${{ secrets.EMAIL_TO_SEND_EMAIL }}
       JwtKey: ${{ secrets.JWT_KEY }}
-
+      STRIPE__SECRETKEY: ${{ secrets.STRIPE__SECRETKEY }}
+      STRIPE__PUBLISHABLEKEY: ${{ secrets.STRIPE__PUBLISHABLEKEY }}
 
     steps:
     - name: Checkout

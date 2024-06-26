@@ -11,23 +11,27 @@ namespace Hotel.Domain.Entities.ServiceEntity;
 public partial class Service : Entity, IService
 {
     internal Service() { }
-    public Service(string name, decimal price, EPriority priority, int timeInMinutes)
+    public Service(string name, string description, decimal price, EPriority priority, int timeInMinutes, string stripeProductId = "")
     {
         Name = name;
+        Description = description;
         Price = price;
         IsActive = true;
         Priority = priority;
         TimeInMinutes = timeInMinutes;
+        StripeProductId = stripeProductId;
         Responsibilities = [];
 
         Validate();
     }
 
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; } = null!;
+    public string Description { get; private set; } = null!;
     public decimal Price { get; private set; }
     public bool IsActive { get; private set; }
     public EPriority Priority { get; private set; }
     public int TimeInMinutes { get; private set; }
+    public string StripeProductId { get; set; } = null!;
     public ICollection<Responsibility> Responsibilities { get; private set; } = [];
     public ICollection<Reservation> Reservations { get; private set; } = [];
     public ICollection<Invoice> Invoices { get; private set; } = [];

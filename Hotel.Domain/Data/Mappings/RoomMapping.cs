@@ -14,6 +14,12 @@ public class RoomMapping : EntityBaseMapping<Room>, IEntityTypeConfiguration<Roo
 
         builder.ToTable("Rooms");
 
+        builder.Property(x => x.Name)
+          .IsRequired();
+
+        builder.HasIndex(x => x.Name)
+            .IsUnique();
+
         builder.Property(x => x.Number)
           .IsRequired();
 
@@ -35,6 +41,9 @@ public class RoomMapping : EntityBaseMapping<Room>, IEntityTypeConfiguration<Roo
 
         builder.Property(x => x.Description)
           .IsRequired();
+
+        builder.Property(x => x.StripeProductId)
+            .IsRequired();
 
         builder.Property(x => x.CategoryId);
         builder.HasOne(x => x.Category)

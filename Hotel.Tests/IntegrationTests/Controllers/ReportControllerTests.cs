@@ -22,6 +22,7 @@ public class ReportControllerTests
     private static HotelDbContext _dbContext = null!;
     private static string _rootAdminToken = null!;
     private const string _baseUrl = "v1/reports";
+    private static TestService _testService = null!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext? context)
@@ -32,6 +33,7 @@ public class ReportControllerTests
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
         _factory.Login(_client, _rootAdminToken);
+        _testService = new TestService(_dbContext, _factory, _client, _rootAdminToken);
     }
 
     [ClassCleanup]
@@ -73,7 +75,7 @@ public class ReportControllerTests
         var report = await _dbContext.Reports.FirstAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Relatório criado com sucesso!", content.Message);
@@ -97,7 +99,7 @@ public class ReportControllerTests
         var response = await _client.PostAsJsonAsync(_baseUrl, body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -136,7 +138,7 @@ public class ReportControllerTests
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Relatório atualizado com sucesso!", content.Message);
@@ -160,7 +162,7 @@ public class ReportControllerTests
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}", body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -195,7 +197,7 @@ public class ReportControllerTests
         var response = await _client.PutAsJsonAsync($"{_baseUrl}/{report.Id}", body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -234,7 +236,7 @@ public class ReportControllerTests
         var exists = await _dbContext.Reports.AnyAsync(x => x.Id == content!.Data.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Relatório deletado com sucesso!", content.Message);
@@ -252,7 +254,7 @@ public class ReportControllerTests
         var response = await _client.DeleteAsync($"{_baseUrl}/my/{Guid.NewGuid()}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -284,7 +286,7 @@ public class ReportControllerTests
         var response = await _client.DeleteAsync($"{_baseUrl}/my/{report.Id}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
@@ -319,7 +321,7 @@ public class ReportControllerTests
         var content = JsonConvert.DeserializeObject<Response<List<GetReport>>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Sucesso!", content!.Message);
@@ -365,7 +367,7 @@ public class ReportControllerTests
         var content = JsonConvert.DeserializeObject<Response<GetReport>>(await response.Content.ReadAsStringAsync())!;
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Sucesso!", content.Message);
@@ -387,7 +389,7 @@ public class ReportControllerTests
         var response = await _client.GetAsync($"{_baseUrl}/{Guid.NewGuid()}");
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -424,7 +426,7 @@ public class ReportControllerTests
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == report.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Relatório finalizado com sucesso!", content.Message);
@@ -449,7 +451,7 @@ public class ReportControllerTests
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/finish/{Guid.NewGuid()}", body);
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -486,7 +488,7 @@ public class ReportControllerTests
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == report.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Relatório cancelado com sucesso!", content.Message);
@@ -508,7 +510,7 @@ public class ReportControllerTests
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/cancel/{Guid.NewGuid()}", new { });
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -547,7 +549,7 @@ public class ReportControllerTests
         var updatedReport = await _dbContext.Reports.FirstAsync(x => x.Id == report.Id);
 
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         
         Assert.AreEqual("Prioridade atualizada com sucesso!", content.Message);
@@ -569,7 +571,7 @@ public class ReportControllerTests
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}/priority/3", new { });
 
         //Assert
-        var content = JsonConvert.DeserializeObject<Response<object>>(await response.Content.ReadAsStringAsync())!;
+        var content = await _testService.DeserializeResponse<object>(response);
 
         Assert.IsNotNull(response);
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);

@@ -16,6 +16,11 @@ public partial class Service
         Price = price;
     }
 
+    public void ChangeDescription(string description)
+    {
+        Description = description;
+    }
+
     public void Enable()
     => IsActive = true;
 
