@@ -88,7 +88,7 @@ public class LoginControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
@@ -156,7 +156,7 @@ public class LoginControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 
@@ -223,7 +223,7 @@ public class LoginControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
 
         var content = JsonConvert.DeserializeObject<LoginResponse>(await response.Content.ReadAsStringAsync())!;
 

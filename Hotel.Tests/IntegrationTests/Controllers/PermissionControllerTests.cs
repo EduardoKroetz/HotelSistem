@@ -24,7 +24,7 @@ public class PermissionControllerTests
         _dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
     }
 
     [ClassCleanup]
@@ -36,7 +36,7 @@ public class PermissionControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
     }
 
 
@@ -54,7 +54,7 @@ public class PermissionControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -71,7 +71,7 @@ public class PermissionControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
 }

@@ -28,7 +28,7 @@ public class ResponsibilityControllerTests
         _dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
 
         _rootAdminToken = _factory.LoginFullAccess().Result;
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
     }
 
     [ClassCleanup]
@@ -40,7 +40,7 @@ public class ResponsibilityControllerTests
     [TestInitialize]
     public void TestInitialize()
     {
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _rootAdminToken);
+        _factory.Login(_client, _rootAdminToken);
     }
 
     [TestMethod]
@@ -56,7 +56,7 @@ public class ResponsibilityControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(body.Name, responsibility!.Name);
         Assert.AreEqual(body.Description, responsibility.Description);
         Assert.AreEqual(body.Priority, responsibility.Priority);
@@ -77,7 +77,7 @@ public class ResponsibilityControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -94,7 +94,7 @@ public class ResponsibilityControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
     }
 
     [TestMethod]
@@ -115,7 +115,7 @@ public class ResponsibilityControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.AreEqual(body.Name, updatedResponsibility!.Name);
         Assert.AreEqual(body.Description, updatedResponsibility.Description);
         Assert.AreEqual(body.Priority, updatedResponsibility.Priority);
@@ -137,7 +137,7 @@ public class ResponsibilityControllerTests
 
         //Assert
         Assert.IsNotNull(response);
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        response.EnsureSuccessStatusCode();
         Assert.IsFalse(exists);
     }
 }

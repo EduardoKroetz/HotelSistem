@@ -41,22 +41,10 @@ public partial class Reservation : Entity, IReservation
     public DateTime ExpectedCheckIn { get; private set; }
     public DateTime ExpectedCheckOut { get; private set; }
     public DateTime? CheckIn { get; private set; }
-    private DateTime? _checkOut { get; set; }
-    public DateTime? CheckOut
-    {
-        get
-        {
-            return _checkOut;
-        }
-        private set
-        {
-            _checkOut = value;
-            TimeHosted = GetTimeHosted(CheckIn, _checkOut);
-        }
-    }
+    public DateTime? CheckOut { get; private set; }
     public EReservationStatus Status { get; private set; }
     public int Capacity { get; private set; }
-    public string StripePaymentIntentId { get; private set; } = null!;
+    public string StripePaymentIntentId { get; set; } = null!;
     public Guid RoomId { get; private set; }
     public Room? Room { get; private set; }
     public Guid CustomerId { get; private set; }

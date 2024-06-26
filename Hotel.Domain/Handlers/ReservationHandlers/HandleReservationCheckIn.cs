@@ -1,13 +1,12 @@
 ﻿using Hotel.Domain.DTOs;
 using Hotel.Domain.Exceptions;
-using Microsoft.EntityFrameworkCore;
 using Stripe;
 
 namespace Hotel.Domain.Handlers.ReservationHandlers;
 
 public partial class ReservationHandler
 {
-    public async Task<Response> HandleUpdateExpectedCheckOutAsync(Guid id, DateTime expectedCheckOut)
+    public async Task<Response> HandleReservationCheckInAsync(Guid id, string tokenId)
     {
         var transaction = await _repository.BeginTransactionAsync();
 
@@ -16,20 +15,14 @@ public partial class ReservationHandler
             var reservation = await _repository.GetEntityByIdAsync(id)
                 ?? throw new NotFoundException("Reserva não encontrada.");
 
-            reservation.UpdateExpectedCheckOut(expectedCheckOut);
+            reservation.ToCheckIn();
+
+            await _repository.SaveChangesAsync();
 
             try
-            {
-                await _repository.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                throw new DbUpdateException("Ocorreu um erro ao atualizar a reserva no banco de dados");
-            }
-
-            try
-            {
-                await _stripeService.UpdatePaymentIntentAsync(reservation.StripePaymentIntentId, reservation.ExpectedTotalAmount());
+            {                
+                await _stripeService.CreatePaymentMethodAsync(tokenId, reservation.StripePaymentIntentId);
+                await _stripeService.ConfirmPaymentIntentAsync(reservation.StripePaymentIntentId);
             }
             catch (StripeException e)
             {
@@ -38,7 +31,7 @@ public partial class ReservationHandler
 
             await transaction.CommitAsync();
 
-            return new Response("CheckOut esperado atualizado com sucesso!");
+            return new Response("Check-In realizado com sucesso!");
         }
         catch
         {

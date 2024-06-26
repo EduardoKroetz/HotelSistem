@@ -1,6 +1,7 @@
 ﻿using Hotel.Domain.Entities.Interfaces;
 using Hotel.Domain.Services.Interfaces;
 using Hotel.Domain.ValueObjects;
+using Newtonsoft.Json;
 using Stripe;
 
 namespace Hotel.Domain.Services;
@@ -11,6 +12,7 @@ public class StripeService : IStripeService
     private readonly ProductService _stripeProductService;
     private readonly PriceService _stripePriceService;
     private readonly PaymentIntentService _stripePaymentIntentService;
+    private readonly PaymentMethodService _stripePaymentMethodService;
 
     public StripeService()
     {
@@ -18,6 +20,7 @@ public class StripeService : IStripeService
         _stripeProductService = new ProductService();
         _stripePriceService = new PriceService();
         _stripePaymentIntentService = new PaymentIntentService();
+        _stripePaymentMethodService = new PaymentMethodService();
     }
 
     //Customer
@@ -35,7 +38,7 @@ public class StripeService : IStripeService
             Phone = phone.Number
         };
 
-        return await _stripeCustomerService.CreateAsync(options);  
+        return await _stripeCustomerService.CreateAsync(options);
     }
 
     public async Task<bool> DeleteCustomerAsync(string customerId)
@@ -61,7 +64,7 @@ public class StripeService : IStripeService
             },
             Phone = phone.Number
         };
-        
+
         return await _stripeCustomerService.UpdateAsync(customerId, options);
     }
 
@@ -100,12 +103,12 @@ public class StripeService : IStripeService
             Active = false,
         };
 
-       return await _stripeProductService.UpdateAsync(productId, productUpdateOptions);   
+        return await _stripeProductService.UpdateAsync(productId, productUpdateOptions);
     }
 
     public async Task<Product> GetProductAsync(string productId)
     {
-        return await _stripeProductService.GetAsync(productId);  
+        return await _stripeProductService.GetAsync(productId);
     }
 
     public async Task<Product> UpdateProductAsync(string productId, string name, string description, decimal price, bool isActive = true)
@@ -118,7 +121,7 @@ public class StripeService : IStripeService
             Active = true
         };
 
-        var activePrice  = _stripePriceService.ListAsync(priceListOptions).Result.First();
+        var activePrice = _stripePriceService.ListAsync(priceListOptions).Result.First();
 
         if (price * 100 != activePrice.UnitAmountDecimal)
         {
@@ -128,7 +131,7 @@ public class StripeService : IStripeService
             };
 
             await _stripePriceService.UpdateAsync(activePrice.Id, priceUpdateOptions);
-   
+
             var priceCreateOptions = new PriceCreateOptions
             {
                 Currency = "BRL",
@@ -138,7 +141,7 @@ public class StripeService : IStripeService
 
             var newPrice = await _stripePriceService.CreateAsync(priceCreateOptions);
         }
-        
+
         var productUpdateOptions = new ProductUpdateOptions()
         {
             Name = name,
@@ -150,45 +153,144 @@ public class StripeService : IStripeService
     }
 
     //Reservation
-    public async Task<PaymentIntent> CreateReservationAsync(decimal expectedReservationTotalAmount, string stripeCustomerId, Guid roomId)
+    public async Task<PaymentIntent> CreatePaymentIntentAsync(decimal expectedTotalAmount, string stripeCustomerId, IRoom room)
     {
-        var amountInCents = (int) (expectedReservationTotalAmount * 100);
+        var amountInCents = (int)( expectedTotalAmount * 100 );
+
+        var products = new List<ProductServiceInfo>
+        {
+            new (false, room.Id, room.StripeProductId, $"Hospedagem no cômodo {room.Name}", 1, expectedTotalAmount )
+        };
+
+        var metadata = JsonConvert.SerializeObject(products);
 
         var options = new PaymentIntentCreateOptions
         {
             Amount = amountInCents,
             Currency = "BRL",
             Customer = stripeCustomerId,
+            CaptureMethod = "manual",
+            PaymentMethodTypes = new List<string> { "card" },
             Metadata = new Dictionary<string, string>
             {
-                { "room_id", roomId.ToString() }
+                { "products", metadata }
             }
         };
 
         return await _stripePaymentIntentService.CreateAsync(options);
     }
 
-    public async Task<bool> CancelReservationAsync(string paymentIntentId)
+    public async Task<bool> CancelPaymentIntentAsync(string paymentIntentId)
     {
         return await _stripePaymentIntentService.CancelAsync(paymentIntentId) is null ? false : true;
     }
 
-    public async Task<PaymentIntent> GetReservationAsync(string paymentIntentId)
+    public async Task<PaymentIntent> GetPaymentIntentAsync(string paymentIntentId)
     {
         return await _stripePaymentIntentService.GetAsync(paymentIntentId);
     }
 
-    public async Task<PaymentIntent> UpdateReservationAsync(string paymentIntent, decimal totalAmount)
+    public async Task<PaymentIntent> UpdatePaymentIntentAsync(string paymentIntentId, decimal totalAmount)
     {
         var amountInCents = (int)( totalAmount * 100 );
 
         var options = new PaymentIntentUpdateOptions
         {
-            Amount = amountInCents
+            Amount = amountInCents,
         };
 
-        return await _stripePaymentIntentService.UpdateAsync(paymentIntent, options);
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
     }
+
+    public async Task<PaymentIntent> AddPaymentIntentProduct(string paymentIntentId, IService service)
+    {
+     
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
+
+        if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
+            throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
+
+        var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
+
+        var product = products.FirstOrDefault(x => x.Id == service.Id);
+        if (product != null)
+        {
+            product.Quantity++;
+        }
+        else
+        {
+            var newProduct = new ProductServiceInfo(true, service.Id, service.StripeProductId, service.Name, 1, service.Price);
+            products.Add(newProduct);
+        }
+
+        var metadata = JsonConvert.SerializeObject(products);
+        var updateOptions = new PaymentIntentUpdateOptions
+        {
+            Metadata = new Dictionary<string, string>
+            {
+                { "products", metadata }
+            }
+        };
+
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
+    }
+
+    public async Task<PaymentIntent> RemovePaymentIntentProduct(string paymentIntentId, Guid serviceId)
+    {
+    
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
+
+        if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
+            throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
+
+        var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
+
+        var product = products.FirstOrDefault(x => x.Id == serviceId)
+            ?? throw new ArgumentException("O serviço não foi encontrado nos metadados do PaymentIntent");
+
+        if (product.Quantity > 1)
+        {
+            product.Quantity--;
+        }
+        else
+        {
+            products.Remove(product);
+        }
+
+        var metadata = JsonConvert.SerializeObject(products);
+        var updateOptions = new PaymentIntentUpdateOptions
+        {
+            Metadata = new Dictionary<string, string>
+            {
+                { "products", metadata }
+            }
+        };
+
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
+    }
+
+    public async Task<PaymentIntent> ConfirmPaymentIntentAsync(string paymentIntentId)
+    {
+        var confirmOptions = new PaymentIntentConfirmOptions
+        {
+            ReturnUrl = $"{Configuration.BaseUrl}/success.html",
+        };
+
+        return await _stripePaymentIntentService.ConfirmAsync(paymentIntentId, confirmOptions);
+    }
+
+    public async Task<PaymentIntent> CapturePaymentIntentAsync(string paymentIntentId, IReservation reservation)
+    {
+        var amountToCapture = (long)( reservation.TotalAmount() * 100 );
+
+        var captureOptions = new PaymentIntentCaptureOptions
+        {
+            AmountToCapture = amountToCapture
+        };
+
+        return await _stripePaymentIntentService.CaptureAsync(paymentIntentId, captureOptions);
+    }
+
 
     public async Task<Price> GetFirstActivePriceByProductId(string productId)
     {
@@ -201,5 +303,46 @@ public class StripeService : IStripeService
         var prices = await _stripePriceService.ListAsync(options);
 
         return prices.First();
+    }
+
+    public async Task<PaymentIntent> CreatePaymentMethodAsync(string tokenId, string paymentIntentId)
+    {
+        var paymentMethodCreateOptions = new PaymentMethodCreateOptions
+        {
+            Type = "card",
+            Card = new PaymentMethodCardOptions
+            {
+                Token = tokenId
+            }
+        };
+
+        var paymentMethod = await _stripePaymentMethodService.CreateAsync(paymentMethodCreateOptions);
+
+        var options = new PaymentIntentUpdateOptions
+        {
+            PaymentMethod = paymentMethod.Id,
+        };
+
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
+    }
+}
+
+public class ProductServiceInfo
+{
+    public bool IsService { get; set; }
+    public Guid Id { get; set; }
+    public string ProductId { get; set; }
+    public string Name { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+
+    public ProductServiceInfo(bool isService, Guid id, string productId, string name, int quantity, decimal unitPrice)
+    {
+        IsService = isService;
+        Id = id;
+        ProductId = productId;
+        Name = name;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
     }
 }
