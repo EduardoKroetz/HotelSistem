@@ -31,9 +31,9 @@ public partial class ReservationHandler
             {
                 await _stripeService.UpdatePaymentIntentAsync(reservation.StripePaymentIntentId, reservation.ExpectedTotalAmount());
             }
-            catch (StripeException)
+            catch (StripeException e)
             {
-                throw new StripeException("Ocorreu um erro ao atualizar o PaymentIntent no Stripe");
+                throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 
             await transaction.CommitAsync();
