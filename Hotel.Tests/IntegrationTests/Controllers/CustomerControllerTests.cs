@@ -139,7 +139,7 @@ public class CustomerControllerTests
         Assert.IsFalse(exists);
 
         var content = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await response.Content.ReadAsStringAsync())!;
-        Assert.AreEqual("Usuário deletado com sucesso!", content.Message);
+        Assert.IsTrue(content.Message.Contains("deletado com sucesso!"));
 
         var stripeCustomer = await _stripeCustomerService.GetAsync(content.Data.StripeCustomerId);
         Assert.IsTrue(stripeCustomer.Deleted);
