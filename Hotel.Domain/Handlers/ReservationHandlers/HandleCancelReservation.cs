@@ -34,9 +34,9 @@ public partial class ReservationHandler
             {
                 await _stripeService.CancelPaymentIntentAsync(reservation.StripePaymentIntentId);
             }
-            catch (StripeException)
+            catch (StripeException e)
             {
-                throw new StripeException("Ocorreu um erro ao cancelar o PaymentIntent no Stripe");
+                throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 
             await transaction.CommitAsync();

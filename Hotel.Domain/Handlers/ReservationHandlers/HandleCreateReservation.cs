@@ -65,9 +65,9 @@ public partial class ReservationHandler : IHandler
                 reservation.StripePaymentIntentId = paymentIntent.Id;
                 await _repository.SaveChangesAsync();
             }
-            catch (StripeException)
+            catch (StripeException e)
             {
-                throw new StripeException("Ocorreu um erro ao criar a intenção de pagamento no Stripe");
+                throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 
             await transaction.CommitAsync();
