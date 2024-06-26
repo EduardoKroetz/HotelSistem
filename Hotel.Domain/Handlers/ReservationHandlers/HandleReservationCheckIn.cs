@@ -17,15 +17,16 @@ public partial class ReservationHandler
 
             reservation.ToCheckIn();
 
+            await _repository.SaveChangesAsync();
+
             try
-            {
-                var paymentMethod = await _stripeService.CreatePaymentMethodAsync(tokenId);
-               
-                await _stripeService.AddPaymentMethodToPaymentIntent(reservation.StripePaymentIntentId, paymentMethod.Id);
+            {                
+                await _stripeService.CreatePaymentMethodAsync(tokenId, reservation.StripePaymentIntentId);
+                await _stripeService.ConfirmPaymentIntentAsync(reservation.StripePaymentIntentId);
             }
             catch (StripeException e)
             {
-                throw new StripeException("Ocorreu um erro ao atualizar o método de pagamento");
+                throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 
             await transaction.CommitAsync();
