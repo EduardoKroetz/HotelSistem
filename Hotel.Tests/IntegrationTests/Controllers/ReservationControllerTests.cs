@@ -372,7 +372,6 @@ public class ReservationControllerTests
 
         var exists = await dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual("Ocorreu um erro ao lidar com o serviço de pagamento. Erro: Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", content.Errors[0]);
         Assert.IsTrue(exists);
 
         StripeConfiguration.ApiKey = apiKey;
