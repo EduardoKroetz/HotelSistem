@@ -4,35 +4,23 @@ namespace Hotel.Domain.DTOs.InvoiceDTOs;
 
 public class InvoiceQueryParameters : IDataTransferObject
 {
-    public InvoiceQueryParameters(int? skip, int? take, string? number, EPaymentMethod? paymentMethod, decimal? totalAmount, string? totalAmountOperator, EStatus? status, Guid? customerId, Guid? reservationId, Guid? serviceId, decimal? taxInformation, string? taxInformationOperator, DateTime? issueDate, string? issueDateOperator)
+    public InvoiceQueryParameters(int? skip, int? take, string? paymentMethod, decimal? totalAmount, string? totalAmountOperator, Guid? customerId, Guid? reservationId, Guid? serviceId)
     {
         Skip = skip;
         Take = take;
-        Number = number;
-        IssueDate = issueDate;
         TotalAmount = totalAmount;
-        Status = status;
         PaymentMethod = paymentMethod;
         CustomerId = customerId;
         ReservationId = reservationId;
         ServiceId = serviceId;
-        TaxInformation = taxInformation;
-        IssueDateOperator = issueDateOperator;
         TotalAmountOperator = totalAmountOperator;
-        TaxInformationOperator = taxInformationOperator;
     }
     public int? Skip { get; private set; }
     public int? Take { get; private set; }
-    public string? Number { get; private set; }
-    public DateTime? IssueDate { get; private set; }
-    public string? IssueDateOperator { get; private set; }
     public decimal? TotalAmount { get; private set; }
     public string? TotalAmountOperator { get; private set; }
-    public EStatus? Status { get; private set; }
-    public EPaymentMethod? PaymentMethod { get; private set; }
+    public string? PaymentMethod { get; private set; }
     public Guid? CustomerId { get; set; }
     public Guid? ReservationId { get; private set; }
     public Guid? ServiceId { get; private set; }
-    public decimal? TaxInformation { get; private set; }
-    public string? TaxInformationOperator { get; private set; }
 }

@@ -28,7 +28,7 @@ public class InvoiceController : ControllerBase
       [FromQuery] int? skip,
       [FromQuery] int? take,
       [FromQuery] string? number,
-      [FromQuery] EPaymentMethod? paymentMethod,
+      [FromQuery] string? paymentMethod,
       [FromQuery] decimal? totalAmount,
       [FromQuery] string? totalAmountOperator,
       [FromQuery] EStatus? status,
@@ -42,9 +42,7 @@ public class InvoiceController : ControllerBase
     )
     {
         var queryParameters = new InvoiceQueryParameters(
-            skip, take, number, paymentMethod, totalAmount, totalAmountOperator, status,
-            customerId, reservationId, serviceId, taxInformation, taxInformationOperator,
-            issueDate, issueDateOperator
+            skip, take, paymentMethod, totalAmount, totalAmountOperator, customerId, reservationId, serviceId
         );
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
