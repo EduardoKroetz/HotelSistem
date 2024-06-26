@@ -169,6 +169,8 @@ public class StripeService : IStripeService
             Amount = amountInCents,
             Currency = "BRL",
             Customer = stripeCustomerId,
+            CaptureMethod = "manual",
+            PaymentMethodTypes = new List<string> { "card" },
             Metadata = new Dictionary<string, string>
             {
                 { "products", metadata }
@@ -200,100 +202,95 @@ public class StripeService : IStripeService
         return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
     }
 
-    public async Task<PaymentIntent> AddPaymentMethodToPaymentIntent(string paymentIntentId, string paymentMethodId)
-    {
-        var options = new PaymentIntentUpdateOptions
-        {
-            PaymentMethod = paymentMethodId,
-        };
-
-        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
-    }
-
     public async Task<PaymentIntent> AddPaymentIntentProduct(string paymentIntentId, IService service)
     {
-        try
+     
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
+
+        if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
+            throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
+
+        var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
+
+        var product = products.FirstOrDefault(x => x.Id == service.Id);
+        if (product != null)
         {
-            var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
-
-            if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
-                throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
-
-            var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
-
-            var product = products.FirstOrDefault(x => x.Id == service.Id);
-            if (product != null)
-            {
-                product.Quantity++;
-            }
-            else
-            {
-                var newProduct = new ProductServiceInfo(true, service.Id, service.StripeProductId, service.Name, 1, service.Price);
-                products.Add(newProduct);
-            }
-
-            var totalAmountInCents = (long)products.Sum(x => x.Quantity * x.UnitPrice) * 100;
-
-            var metadata = JsonConvert.SerializeObject(products);
-            var updateOptions = new PaymentIntentUpdateOptions
-            {
-                Amount = totalAmountInCents,
-                Metadata = new Dictionary<string, string>
-                {
-                    { "products", metadata }
-                }
-            };
-
-            return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
+            product.Quantity++;
         }
-        catch (StripeException)
+        else
         {
-            throw new StripeException("Ocorreu um erro ao atualizar o produto no Stripe");
+            var newProduct = new ProductServiceInfo(true, service.Id, service.StripeProductId, service.Name, 1, service.Price);
+            products.Add(newProduct);
         }
+
+        var metadata = JsonConvert.SerializeObject(products);
+        var updateOptions = new PaymentIntentUpdateOptions
+        {
+            Metadata = new Dictionary<string, string>
+            {
+                { "products", metadata }
+            }
+        };
+
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
     }
 
     public async Task<PaymentIntent> RemovePaymentIntentProduct(string paymentIntentId, Guid serviceId)
     {
-        try
+    
+        var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
+
+        if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
+            throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
+
+        var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
+
+        var product = products.FirstOrDefault(x => x.Id == serviceId)
+            ?? throw new ArgumentException("O serviço não foi encontrado nos metadados do PaymentIntent");
+
+        if (product.Quantity > 1)
         {
-            var paymentIntent = await _stripePaymentIntentService.GetAsync(paymentIntentId);
-
-            if (!paymentIntent.Metadata.TryGetValue("products", out var productMetadata))
-                throw new ArgumentException("Os metadados 'products' do PaymentIntent não foram encontrados");
-
-            var products = JsonConvert.DeserializeObject<List<ProductServiceInfo>>(productMetadata);
-
-            var product = products.FirstOrDefault(x => x.Id == serviceId)
-                ?? throw new ArgumentException("O serviço não foi encontrado nos metadados do PaymentIntent");
-
-            if (product.Quantity > 1)
-            {
-                product.Quantity--;
-            }
-            else
-            {
-                products.Remove(product);
-            }
-
-            var totalAmountInCents = (long)products.Sum(x => x.Quantity * x.UnitPrice) * 100;
-
-            var metadata = JsonConvert.SerializeObject(products);
-            var updateOptions = new PaymentIntentUpdateOptions
-            {
-                Amount = totalAmountInCents,
-                Metadata = new Dictionary<string, string>
-                {
-                    { "products", metadata }
-                }
-            };
-
-            return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
+            product.Quantity--;
         }
-        catch (StripeException)
+        else
         {
-            throw new StripeException("Ocorreu um erro ao atualizar o produto no Stripe");
+            products.Remove(product);
         }
+
+        var metadata = JsonConvert.SerializeObject(products);
+        var updateOptions = new PaymentIntentUpdateOptions
+        {
+            Metadata = new Dictionary<string, string>
+            {
+                { "products", metadata }
+            }
+        };
+
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, updateOptions);
     }
+
+    public async Task<PaymentIntent> ConfirmPaymentIntentAsync(string paymentIntentId)
+    {
+        var confirmOptions = new PaymentIntentConfirmOptions
+        {
+            ReturnUrl = $"{Configuration.BaseUrl}/success.html",
+        };
+
+        return await _stripePaymentIntentService.ConfirmAsync(paymentIntentId, confirmOptions);
+    }
+
+    public async Task<PaymentIntent> CapturePaymentIntentAsync(string paymentIntentId, IReservation reservation)
+    {
+        var amountToCapture = (long)( reservation.TotalAmount() * 100 );
+
+        var captureOptions = new PaymentIntentCaptureOptions
+        {
+            AmountToCapture = amountToCapture
+        };
+
+        return await _stripePaymentIntentService.CaptureAsync(paymentIntentId, captureOptions);
+    }
+
 
     public async Task<Price> GetFirstActivePriceByProductId(string productId)
     {
@@ -308,7 +305,7 @@ public class StripeService : IStripeService
         return prices.First();
     }
 
-    public async Task<PaymentMethod> CreatePaymentMethodAsync(string tokenId)
+    public async Task<PaymentIntent> CreatePaymentMethodAsync(string tokenId, string paymentIntentId)
     {
         var paymentMethodCreateOptions = new PaymentMethodCreateOptions
         {
@@ -319,7 +316,14 @@ public class StripeService : IStripeService
             }
         };
 
-        return await _stripePaymentMethodService.CreateAsync(paymentMethodCreateOptions);
+        var paymentMethod = await _stripePaymentMethodService.CreateAsync(paymentMethodCreateOptions);
+
+        var options = new PaymentIntentUpdateOptions
+        {
+            PaymentMethod = paymentMethod.Id,
+        };
+
+        return await _stripePaymentIntentService.UpdateAsync(paymentIntentId, options);
     }
 }
 
