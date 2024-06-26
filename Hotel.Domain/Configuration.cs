@@ -7,6 +7,7 @@ public static class Configuration
     public static string EmailToSendEmail = null!;
     public static string PasswordToSendEmail = null!;
     public static StripeModel Stripe = new();
+    public static string BaseUrl = "https://localhost:7100";
 }
 
 public class StripeModel 

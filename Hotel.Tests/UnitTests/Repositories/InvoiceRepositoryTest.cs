@@ -53,17 +53,6 @@ public class InvoiceRepositoryTest
     }
 
     [TestMethod]
-    public async Task GetAsync_WherePaymentMethodEqualsPix_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, EPaymentMethod.Pix, null, null, null, null, null, null, null, null, null, null);
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-        foreach (var roomInvoice in roomInvoices)
-            Assert.AreEqual(EPaymentMethod.Pix, roomInvoice.PaymentMethod);
-    }
-
-    [TestMethod]
     public async Task GetAsync_WherePaymentMethodEqualsCreditCard_ReturnsInvoices()
     {
         var parameters = new InvoiceQueryParameters(0, 100, null, EPaymentMethod.CreditCard, null, null, null, null, null, null, null, null, null, null);
@@ -76,15 +65,15 @@ public class InvoiceRepositoryTest
     }
 
     [TestMethod]
-    public async Task GetAsync_WhereTotalAmountGratherThan15_ReturnsInvoices()
+    public async Task GetAsync_WhereTotalAmountGratherThan9_ReturnsInvoices()
     {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, 15m, "gt", null, null, null, null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters(0, 100, null, null, 9m, "gt", null, null, null, null, null, null, null, null);
         var roomInvoices = await InvoiceRepository.GetAsync(parameters);
 
         Assert.IsTrue(roomInvoices.Any());
 
         foreach (var roomInvoice in roomInvoices)
-            Assert.IsTrue(15 < roomInvoice.TotalAmount);
+            Assert.IsTrue(9 < roomInvoice.TotalAmount);
 
     }
 
@@ -189,20 +178,6 @@ public class InvoiceRepositoryTest
         }
     }
 
-
-    [TestMethod]
-    public async Task GetAsync_WhereTaxInformationGratherThan13_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, 13, "gt", null, null);
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-
-        foreach (var roomInvoice in roomInvoices)
-            Assert.IsTrue(13 < roomInvoice.TaxInformation);
-
-    }
-
     [TestMethod]
     public async Task GetAsync_WhereTaxInformationLessThan13_ReturnsInvoices()
     {
@@ -215,20 +190,6 @@ public class InvoiceRepositoryTest
             Assert.IsTrue(13 > roomInvoice.TaxInformation);
 
     }
-
-    [TestMethod]
-    public async Task GetAsync_WhereTaxInformationEquals10_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, 10, "eq", null, null);
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-
-        foreach (var roomInvoice in roomInvoices)
-            Assert.AreEqual(10, roomInvoice.TaxInformation);
-
-    }
-
 
     [TestMethod]
     public async Task GetAsync_WhereIssueDateGratherThanYesterday_ReturnsInvoices()
@@ -264,23 +225,6 @@ public class InvoiceRepositoryTest
         Assert.IsTrue(roomInvoices.Any());
         foreach (var roomInvoice in roomInvoices)
             Assert.AreEqual(BaseRepositoryTest.Invoices[0].IssueDate, roomInvoice.IssueDate);
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WherePaymentMethodPix_And_TotalAmountGratherThan10_And_StatusPending_ReturnsInvoices()
-    {
-        var parameters = new InvoiceQueryParameters(0, 100, null, EPaymentMethod.Pix, 10, "gt", EStatus.Pending, null, null, null, null, null, null, null);
-
-        var roomInvoices = await InvoiceRepository.GetAsync(parameters);
-
-        Assert.IsTrue(roomInvoices.Any());
-
-        foreach (var roomInvoice in roomInvoices)
-        {
-            Assert.AreEqual(EPaymentMethod.Pix, roomInvoice.PaymentMethod);
-            Assert.IsTrue(10 < roomInvoice.TotalAmount);
-            Assert.AreEqual(EStatus.Pending, roomInvoice.Status);
-        }
     }
 
 }

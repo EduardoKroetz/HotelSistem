@@ -98,7 +98,7 @@ public class ReservationEntityTest
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
 
         reservation.ToCheckIn();
-        reservation.Finish(EPaymentMethod.Pix);
+        reservation.Finish();
         Assert.AreNotEqual(null, reservation.Invoice);
         Assert.AreEqual(EReservationStatus.CheckedOut, reservation.Status);
         Assert.AreEqual(ERoomStatus.OutOfService, reservation?.Room?.Status);
@@ -132,7 +132,7 @@ public class ReservationEntityTest
         var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
         reservation.ToCheckIn();
-        reservation.Finish(EPaymentMethod.Pix);
+        reservation.Finish();
         var totalAmount = Math.Round(reservation.TotalAmount());
         Assert.AreEqual(0, totalAmount); //Não ficou hospedado nem por um minuto 
     }
@@ -189,6 +189,7 @@ public class ReservationEntityTest
     {
         var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
+        reservation.ToCheckIn();
         reservation.AddService(TestParameters.Service);
         Assert.AreEqual(1, reservation.Services.Count);
     }
@@ -198,6 +199,7 @@ public class ReservationEntityTest
     {
         var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
+        reservation.ToCheckIn();
         reservation.AddService(TestParameters.Service);
         reservation.AddService(TestParameters.Service);
         Assert.AreEqual(2, reservation.Services.Count);
@@ -210,7 +212,7 @@ public class ReservationEntityTest
         var room = new Room("Quarto padrão para 3 pessoas",1, 50, 3, "Quarto padrão", TestParameters.Category);
         var service = new Service("Serviço de limpeza", "Serviço de limpeza", 5m, EPriority.Low, 20);
         var reservation = new Reservation(room, CurrentDate, ThreeDaysFromNow, TestParameters.Customer, 2);
-
+        reservation.ToCheckIn();
         reservation.AddService(service);
         reservation.AddService(service);
 
@@ -226,6 +228,7 @@ public class ReservationEntityTest
         var cleanService = new Service("Serviço de limpeza", "Serviço de limpeza", 5m, EPriority.Low, 20);
         var lunchService = new Service("Almoço", "Almoço", 15m, EPriority.Medium, 50);
         var reservation = new Reservation(room, DateTime.Now, DateTime.Now.AddDays(1), TestParameters.Customer, 2);
+        reservation.ToCheckIn();
 
         for (int i = 1; i <= 7; i++)
         {
@@ -234,8 +237,7 @@ public class ReservationEntityTest
             reservation.AddService(lunchService);
         }
 
-        reservation.ToCheckIn();
-        reservation.Finish(EPaymentMethod.Pix);
+        reservation.Finish();
 
         var totalAmount = Math.Round(reservation.TotalAmount());
         Assert.AreEqual(120, totalAmount);
@@ -249,6 +251,7 @@ public class ReservationEntityTest
         var cleanService = new Service("Serviço de limpeza", "Serviço de limpeza", 5m, EPriority.Low, 20);
         var lunchService = new Service("Almoço", "Almoço", 15m, EPriority.Medium, 50);
         var reservation = new Reservation(room, CurrentDate, CurrentDate.AddDays(1), TestParameters.Customer, 2);
+        reservation.ToCheckIn();
 
         for (int i = 1; i <= 7; i++)
         {

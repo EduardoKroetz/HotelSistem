@@ -12,16 +12,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Hotel.Domain.DTOs.RoomDTOs;
 using Stripe;
 using Hotel.Domain.DTOs.Base.User;
-using Hotel.Domain.Entities.VerificationCodeEntity;
-using Hotel.Domain.Services;
 using Hotel.Domain.DTOs.ServiceDTOs;
 using Hotel.Domain.DTOs.CategoryDTOs;
-using Hotel.Domain.DTOs.PaymentDTOs;
+using Hotel.Domain.Entities.CustomerEntity;
+
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -243,7 +241,7 @@ public class ReservationControllerTests
 
         var content = await _testService.DeserializeResponse<object>(response);
 
-        Assert.AreEqual("Ocorreu um erro ao criar a intenção de pagamento no Stripe", content.Errors[0]);
+        Assert.AreEqual("Ocorreu um erro ao lidar com o serviço de pagamento. Erro: You passed an empty string for 'customer'. We assume empty values are an attempt to unset a parameter; however 'customer' cannot be unset. You should remove 'customer' from your request or supply a non-empty value.", content.Errors[0]);
 
         var wasCreated = await _dbContext.Reservations.AnyAsync(x => x.RoomId == room.Id);
         Assert.IsFalse(wasCreated);
@@ -292,7 +290,6 @@ public class ReservationControllerTests
         var response = await _client.GetAsync($"{_baseUrl}/{reservation.Id}");
 
         // Assert
-        Assert.IsNotNull(response);
         response.EnsureSuccessStatusCode();
 
         var content = await _testService.DeserializeResponse<GetReservation>(response);
@@ -375,7 +372,7 @@ public class ReservationControllerTests
 
         var exists = await dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
 
-        Assert.AreEqual("Ocorreu um erro ao cancelar o PaymentIntent no Stripe", content.Errors[0]);
+        Assert.AreEqual("Ocorreu um erro ao lidar com o serviço de pagamento. Erro: Your API key is invalid, as it is an empty string. You can double-check your API key from the Stripe Dashboard. See https://stripe.com/docs/api/authentication for details or contact support at https://support.stripe.com/email if you have any questions.", content.Errors[0]);
         Assert.IsTrue(exists);
 
         StripeConfiguration.ApiKey = apiKey;
@@ -455,7 +452,6 @@ public class ReservationControllerTests
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-out", new UpdateCheckOut(newExpectedCheckOut));
 
         // Assert
-        Assert.IsNotNull(response);
         response.EnsureSuccessStatusCode();
 
         var content = await _testService.DeserializeResponse<object>(response);
@@ -494,14 +490,14 @@ public class ReservationControllerTests
     public async Task UpdateExpectedCheckOut_WithCheckedOutStatus_ShouldReturn_BAD_REQUEST()
     {
         // Arrange
+        var customer = await _testService.CreateCustomerAsync(new CreateUser("Eduardo", "Almeida", "eduardoAlmeida@gmail.com", "+55 (19) 91123-4467", "password11", EGender.Masculine, DateTime.Now.AddYears(-29), "Brazil", "Campinas", "SP-1111", 1111));
         var reservation = await _testService.CreateReservationAsync(
-            await _testService.CreateCustomerAsync(new CreateUser("Eduardo", "Almeida", "eduardoAlmeida@gmail.com", "+55 (19) 91123-4467", "password11", EGender.Masculine, DateTime.Now.AddYears(-29), "Brazil", "Campinas", "SP-1111", 1111)),
+            customer,
             new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), ( await _testService.CreateRoomAsync(new EditorRoom("1Quarto 2", 12, 90, 5, "Quarto 12", _category.Id)) ).Id, 3)
         );
 
-        reservation.ToCheckIn();
-        reservation.Finish(EPaymentMethod.Pix);
-
+        await _testService.ReservationCheckIn(reservation);
+        reservation.Finish();
         await _dbContext.SaveChangesAsync();
 
         // Act
@@ -609,13 +605,12 @@ public class ReservationControllerTests
     {
         // Arrange
         var customer = await _testService.CreateCustomerAsync(new CreateUser("Carolina", "Araujo", "carolinaAraujo@gmail.com", "+55 (16) 93458-7890", "password14", EGender.Feminine, DateTime.Now.AddYears(-26), "Brazil", "Ribeirão Preto", "SP-1414", 1414));
-
         var room = await _testService.CreateRoomAsync(new EditorRoom("1Quarto 5", 15, 90, 5, "Quarto 15", _category.Id));
-
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 4));
 
         reservation.ToCheckIn();
-        reservation.Finish(EPaymentMethod.Pix);
+        reservation.Finish();
+        await _dbContext.SaveChangesAsync();
 
         var body = new UpdateCheckIn(DateTime.Now.AddDays(7));
 
@@ -637,9 +632,7 @@ public class ReservationControllerTests
     {
         // Arrange
         var customer = await _testService.CreateCustomerAsync(new CreateUser("Ricardo", "Melo", "ricardoMelo@gmail.com", "+55 (82) 92310-6789", "password15", EGender.Masculine, DateTime.Now.AddYears(-32), "Brazil", "Maceió", "AL-1515", 1515));
-
         var room = await _testService.CreateRoomAsync(new EditorRoom("1Quarto 6", 16, 90, 5, "Quarto 16", _category.Id));
-
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 4));
         reservation.ToCancelled();
 
@@ -665,7 +658,7 @@ public class ReservationControllerTests
         var customer = await _testService.CreateCustomerAsync(new CreateUser("Patrícia", "Teixeira", "patriciaTeixeira@gmail.com", "+55 (91) 91904-5678", "password16", EGender.Feminine, DateTime.Now.AddYears(-28), "Brazil", "Belém", "PA-1616", 1616));
         var room = await _testService.CreateRoomAsync(new EditorRoom("1Quarto 7", 17, 90, 5, "Quarto 17", _category.Id));
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
-        reservation.ToCheckIn();
+        await _testService.ReservationCheckIn(reservation);
 
         // Act
         var body = new UpdateCheckIn(DateTime.Now.AddDays(7));
@@ -689,8 +682,9 @@ public class ReservationControllerTests
         var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 18", 18, 90, 5, "Quarto 18", _category.Id));
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
         var service = await _testService.CreateServiceAsync(new EditorService("Room Cleaning", "Room Cleaning", 30.00m, EPriority.Medium, 60));
-        await _testService.AddServiceToRoom(room.Id, service.Id);
+        await _testService.AddServiceToRoom(room.Id, service.Id); //Deixa o serviço disponível no cômodo
 
+        await _testService.ReservationCheckIn(reservation);
         // Act
         var response = await _client.PostAsJsonAsync($"{_baseUrl}/{reservation.Id}/services/{service.Id}", new { });
 
@@ -708,6 +702,7 @@ public class ReservationControllerTests
         Assert.IsTrue(reservationWithServices.Services.Any(x => x.Id == service.Id));
 
         var paymentIntent = await _testService.GetAndVerifyPaymentIntent(_stripePaymentIntentService, reservation);
+        Assert.AreEqual("requires_capture", paymentIntent.Status);
         var products = _testService.GetMetadataProductsFromPaymentIntent(paymentIntent);
        
         var roomProduct = products.First(x => x.Id == room.Id);
@@ -734,6 +729,7 @@ public class ReservationControllerTests
         var customer = await _testService.CreateCustomerAsync(new CreateUser("Gabriel", "Martins", "gabrielMartins@gmail.com", "+55 (31) 98765-2345", "password765", EGender.Masculine, DateTime.Now.AddYears(-26), "Brazil", "Belo Horizonte", "MG-111", 111));
         var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 541", 541, 90, 5, "Quarto 541", _category.Id));
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
+        await _testService.ReservationCheckIn(reservation);
         var service = await _testService.CreateServiceAsync(new EditorService("Drink Service", "Drink Service", 15.00m, EPriority.Medium, 7));
         await _testService.AddServiceToRoom(room.Id, service.Id);
 
@@ -746,6 +742,7 @@ public class ReservationControllerTests
         Assert.AreEqual(HttpStatusCode.OK, response2.StatusCode);
 
         var paymentIntent = await _testService.GetAndVerifyPaymentIntent(_stripePaymentIntentService, reservation);
+        Assert.AreEqual("requires_capture", paymentIntent.Status);
         var products = _testService.GetMetadataProductsFromPaymentIntent(paymentIntent);
         var roomProduct = products.First(x => x.Id == room.Id);
         var serviceProduct = products.First(x => x.Id == service.Id);
@@ -825,7 +822,9 @@ public class ReservationControllerTests
         service.Disable();
         await _dbContext.SaveChangesAsync();
 
-        await _testService.AddServiceToRoom(room.Id, service.Id); 
+        await _testService.AddServiceToRoom(room.Id, service.Id);
+
+        await _testService.ReservationCheckIn(reservation);
 
         _factory.Login(_client, _rootAdminToken);
 
@@ -844,6 +843,9 @@ public class ReservationControllerTests
         Assert.IsTrue(content.Errors.Any(x => x.Contains("desativado")));
 
         Assert.AreEqual(0, reservationWithServices.Services.Count);
+
+        var paymentIntent = await _testService.GetAndVerifyPaymentIntent(_stripePaymentIntentService, reservation);
+        Assert.AreEqual("requires_capture", paymentIntent.Status);
     }
 
 
@@ -856,11 +858,10 @@ public class ReservationControllerTests
         );
 
         var service = await _testService.CreateServiceAsync(new EditorService("Minibar Restock", "Minibar Restock", 15.00m, EPriority.Low, 20));
-
         var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 22", 22, 90, 5, "Quarto 22", _category.Id));
-        await _testService.AddServiceToRoom(room.Id, service.Id);
-
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
+        await _testService.ReservationCheckIn(reservation);
+        await _testService.AddServiceToRoom(room.Id, service.Id);
         await _testService.AddServiceToReservation(reservation.Id, service.Id);
 
         _factory.Login(_client, _rootAdminToken);
@@ -881,6 +882,7 @@ public class ReservationControllerTests
         Assert.AreEqual(0, reservationWithServices.Services.Count);
 
         var paymentIntent = await _testService.GetAndVerifyPaymentIntent(_stripePaymentIntentService, reservation);
+        Assert.AreEqual("requires_capture", paymentIntent.Status);
         var products = _testService.GetMetadataProductsFromPaymentIntent(paymentIntent);
        
         var roomProduct = products.First(x => x.Id == room.Id);
@@ -893,6 +895,8 @@ public class ReservationControllerTests
         Assert.IsNull(serviceProduct);
 
         Assert.AreEqual(1, products.Count);
+
+
     }
 
 
@@ -905,7 +909,9 @@ public class ReservationControllerTests
         var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 87", 87, 90, 5, "Quarto 87", _category.Id));
         await _testService.AddServiceToRoom(room.Id, service.Id);
 
-        var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));       
+        var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
+
+        await _testService.ReservationCheckIn(reservation);
 
         await _testService.AddServiceToReservation(reservation.Id, service.Id);
         await _testService.AddServiceToReservation(reservation.Id, service.Id);
@@ -929,7 +935,7 @@ public class ReservationControllerTests
         Assert.AreEqual(1, updatedReservation.Services.Count);
 
         var paymentIntent = await _testService.GetAndVerifyPaymentIntent(_stripePaymentIntentService, reservation);
-
+        Assert.AreEqual("requires_capture", paymentIntent.Status);
         var products = _testService.GetMetadataProductsFromPaymentIntent(paymentIntent);
 
         var roomProduct = products.First(x => x.Id == room.Id);
@@ -946,6 +952,8 @@ public class ReservationControllerTests
         Assert.AreEqual(service.StripeProductId, serviceProduct.ProductId);
 
         Assert.AreEqual(2, products.Count);
+
+
     }
 
     [TestMethod]
@@ -1016,6 +1024,38 @@ public class ReservationControllerTests
 
         Assert.AreEqual(1, content.Errors.Count);
         Assert.IsTrue(content!.Errors.Any(x => x.Contains("atribuido a essa reserva")));
+
+        var paymentIntent = await _testService.GetAndVerifyPaymentIntent(_stripePaymentIntentService, reservation);
+        Assert.AreEqual("requires_payment_method", paymentIntent.Status);
+    }
+
+    [TestMethod]
+    public async Task ReservationCheckIn_ShouldReturn_OK()
+    {
+        // Arrange
+        var customer = await _testService.CreateCustomerAsync(new CreateUser("Carlos", "Silva", "carlos.silva@example.com", "+55 (11) 91234-5678", "senha123", EGender.Masculine, DateTime.Now.AddYears(-30), "Brazil", "São Paulo", "SP-3030", 3030));
+        var room = await _testService.CreateRoomAsync(new EditorRoom("Suite Deluxe", 30, 120, 10, "Suite com vista para o mar", _category.Id));
+        var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(2), DateTime.Now.AddDays(7), room.Id, 2));
+
+        var token = "tok_visa";
+
+        _factory.Login(_client, _rootAdminToken);
+        // Act
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/check-in/{reservation.Id}", new { TokenId = token });
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var content = await _testService.DeserializeResponse<object>(response);
+
+        var updatedReservation = await _testService.GetReservation(reservation.Id);
+
+        Assert.AreEqual(0, content.Errors.Count);
+        Assert.AreEqual("Check-In realizado com sucesso!", content.Message);
+        Assert.AreEqual(EReservationStatus.CheckedIn, updatedReservation.Status);
+        Assert.AreEqual(ERoomStatus.Occupied, updatedReservation.Room!.Status);
+
+        var paymentIntent = await _testService.GetAndVerifyPaymentIntent(_stripePaymentIntentService ,reservation);
+        Assert.AreEqual("requires_capture", paymentIntent.Status);
     }
 
     [TestMethod]
@@ -1025,22 +1065,23 @@ public class ReservationControllerTests
         var customer = await _testService.CreateCustomerAsync(new CreateUser("Eduardo", "Wimp", "eduardoowk1@gmail.com", "+55 (92) 92345-6789", "password26", EGender.Feminine, DateTime.Now.AddYears(-27), "Brazil", "Manaus", "AM-2626", 2626));
         var room = await _testService.CreateRoomAsync(new EditorRoom("2Quarto 6", 26, 90, 5, "Quarto 26", _category.Id));
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
-
-        reservation.ToCheckIn(); // Marca a reserva como check-in
-        await _dbContext.SaveChangesAsync();
+        var service = await _testService.CreateServiceAsync(new EditorService("Suco de laranja", "Suco de laranja", 13, EPriority.Trivial, 4));
+        await _testService.AddServiceToRoom(room.Id, service.Id);
+        await _testService.ReservationCheckIn(reservation);
+        await _testService.AddServiceToReservation(reservation.Id, service.Id);
+        _factory.Login(_client, customer);
 
         // Act
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/finish/{reservation.Id}", new { });
 
         // Assert
-        var content = await _testService.DeserializeResponse<object>(response);
-
         response.EnsureSuccessStatusCode();
+        var content = await _testService.DeserializeResponse<object>(response);
 
         var updatedReservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservation.Id);
 
         Assert.AreEqual(0, content.Errors.Count);
-        Assert.AreEqual("Reserva finalizada com sucesso!", content.Message);
+        Assert.AreEqual("Reserva finalizada e pagamento efetuado com sucesso!", content.Message);
         Assert.AreEqual(EReservationStatus.CheckedOut, updatedReservation.Status);
     }
 
@@ -1065,17 +1106,20 @@ public class ReservationControllerTests
     public async Task FinishReservation_WithDifferentCustomer_ShouldReturn_UNAUTHORIZED()
     {
         // Arrange
-        var customer1 = await _testService.CreateCustomerAsync(new CreateUser(
+        var customer = await _testService.CreateCustomerAsync(new CreateUser(
             "Fernando", "Dias", "fernandoDias@gmail.com", "+55 (98) 91234-5678", "password27",
             EGender.Masculine, DateTime.Now.AddYears(-32), "Brazil", "São Luís", "MA-2727", 2727));
 
         var room = await _testService.CreateRoomAsync(new EditorRoom("2Quarto 7", 27, 90, 5, "Quarto 27", _category.Id));
 
-        var reservation = await _testService.CreateReservationAsync(customer1, new CreateReservation(
+        var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(
             DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
+        var service = await _testService.CreateServiceAsync(new EditorService("Suco de maracuja", "Suco de maracuja", 5, EPriority.Trivial, 4));
 
-        reservation.ToCheckIn();
-        await _dbContext.SaveChangesAsync();
+        await _testService.AddServiceToRoom(room.Id, service.Id);
+        await _testService.AddServiceToReservation(reservation.Id, service.Id);
+
+        await _testService.ReservationCheckIn(reservation);
 
         // Act
         _factory.Login(_client, _customerToken); //Login com outro cliente que não criou a reserva
@@ -1201,7 +1245,7 @@ public class ReservationControllerTests
 
             var existsInDb = await _dbContext.Reservations.AnyAsync(x => x.Id == reservation.Id);
 
-            Assert.AreEqual("Ocorreu um erro ao cancelar o PaymentIntent no Stripe", content.Errors[0]);
+            Assert.IsTrue(content.Errors.Any(x => x.Contains("Ocorreu um erro ao lidar com o serviço de pagamento. Erro:")));
             Assert.IsTrue(existsInDb);
 
             StripeConfiguration.ApiKey = originalApiKey;

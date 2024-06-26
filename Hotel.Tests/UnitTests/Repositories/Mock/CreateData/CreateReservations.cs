@@ -21,8 +21,6 @@ public class CreateReservations
             new(rooms[8], DateTime.Now.AddDays(8), DateTime.Now.AddDays(9), BaseRepositoryTest.Customers[2], 1),
         };
 
-
-
         BaseRepositoryTest.ReservationsToFinish = new List<Reservation>()
         {
             new(rooms[9], DateTime.Now, DateTime.Now.AddDays(1), BaseRepositoryTest.Customers[1], 2),
@@ -34,6 +32,11 @@ public class CreateReservations
         BaseRepositoryTest.ReservationsToFinish[1].ToCheckIn();
         BaseRepositoryTest.ReservationsToFinish[2].ToCheckIn();
 
+        reservations[0].ToCheckIn();
+        reservations[1].ToCheckIn();
+        reservations[2].ToCheckIn();
+        reservations[3].ToCheckIn();
+        reservations[4].ToCheckIn();
 
         reservations[0].AddService(BaseRepositoryTest.Services[0]);
         reservations[1].AddService(BaseRepositoryTest.Services[1]);

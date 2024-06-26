@@ -7,6 +7,13 @@ partial class Reservation
 {
     public void AddService(Service service)
     {
+        if (Status == Enums.EReservationStatus.CheckedOut)
+            throw new InvalidOperationException("Não é possível adicionar serviços pois a reserva já foi finalizada");
+        if (Status == Enums.EReservationStatus.Canceled)
+            throw new InvalidOperationException("Não é possível adicionar serviços pois a reserva foi cancelada");
+        if (Status != Enums.EReservationStatus.CheckedIn)
+            throw new InvalidOperationException("Não é possível adicionar serviços antes do check-in");
+
         if (service.IsActive)
             Services.Add(service);
         else

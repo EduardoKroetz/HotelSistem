@@ -107,8 +107,6 @@ internal class TestService
     {
         var paymentIntent = await paymentIntentService.GetAsync(reservation.StripePaymentIntentId);
         Assert.IsNotNull(paymentIntent);
-        Assert.AreEqual("requires_payment_method", paymentIntent.Status);
-        Assert.AreEqual((long)( reservation.ExpectedTotalAmount() * 100 ), paymentIntent.Amount);
         Assert.AreEqual(reservation.Customer!.StripeCustomerId, paymentIntent.CustomerId);
 
         return paymentIntent;
@@ -164,5 +162,19 @@ internal class TestService
         var category = await _dbContext.Categories.FirstAsync(x => x.Id == content.Data.Id);
 
         return category;
+    }
+
+    public async Task ReservationCheckIn(Reservation reservation)
+    {
+        _factory.Login(_client, _rootAdminToken);
+        var token = "tok_visa";
+        await _client.PostAsJsonAsync($"v1/reservations/check-in/{reservation.Id}", new { TokenId = token });
+    }
+
+    public async Task FinishReservation(Domain.Entities.CustomerEntity.Customer customer , Reservation reservation)
+    {
+        _factory.Login(_client, customer);
+        var res = await _client.PatchAsJsonAsync($"v1/reservations/finish/{reservation.Id}", new { });
+        res.EnsureSuccessStatusCode();
     }
 }

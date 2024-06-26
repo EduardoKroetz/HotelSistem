@@ -20,7 +20,7 @@ public partial class ReservationHandler
                 throw new UnauthorizedAccessException("Você não tem permissão para finalizar reserva alheia.");
 
             //Create invoice and finalize Reservation
-            var invoice = reservation.Finish(Enums.EPaymentMethod.CreditCard, 0);
+            var invoice = reservation.Finish();
       
             await _repository.SaveChangesAsync();
         

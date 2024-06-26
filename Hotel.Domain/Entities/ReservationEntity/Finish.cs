@@ -6,19 +6,29 @@ namespace Hotel.Domain.Entities.ReservationEntity;
 
 public partial class Reservation
 {
-    public Invoice Finish(EPaymentMethod paymentMethod, decimal taxInformation = 0)
+    public Invoice Finish()
     {
+        //Validar Status
+        if (Status == EReservationStatus.CheckedOut)
+            throw new InvalidOperationException("Essa reserva já foi finalizada");
+
+        if (Status == EReservationStatus.Canceled)
+            throw new InvalidOperationException("Essa reserva foi cancelada, não é possível finaliza-la");
+
+        if (Status != EReservationStatus.CheckedIn)
+            throw new InvalidOperationException("Não foi possível finalizar a reserva pois ainda não foi feito Check-In");
+
+        //Verificar se não é Check-In inválido
         if (CheckIn == null)
             throw new ArgumentNullException("Não foi possível finalizar a reserva pois o CheckIn ainda não foi realizado.");
 
-        if (DateTime.Now.Date < CheckIn.Value.Date)
-            throw new ValidationException("Não é possível gerar a fatura pois a data de CheckIn é maior que a data atual.");
+        ValidateCheckIn(CheckIn);
 
         //Troca o CheckOut para a data atual, já que está finalizando
         UpdateCheckOut(DateTime.Now)
           .ToCheckOut(); // Muda o status para CheckedOut
 
-        Invoice = new Invoice(paymentMethod, this, taxInformation); //Gera uma instância de uma fatura
+        Invoice = new Invoice(EPaymentMethod.CreditCard, this, 0); //Gera uma instância de uma fatura
 
         Room?.ChangeStatus(ERoomStatus.OutOfService); //troca o status do quarto para 'OutOfService'(Fora de serviço)
 

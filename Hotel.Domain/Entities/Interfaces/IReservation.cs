@@ -31,7 +31,7 @@ public interface IReservation
     void Validate();
     void AddService(Service service);
     void RemoveService(Service service);
-    Invoice Finish(EPaymentMethod paymentMethod, decimal taxInformation = 0);
+    Invoice Finish();
     Reservation ToCheckIn();
     Reservation ToNoShow();
     Reservation ToCancelled();
