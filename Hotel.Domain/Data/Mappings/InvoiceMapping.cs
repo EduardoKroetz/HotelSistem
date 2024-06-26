@@ -13,33 +13,13 @@ public class InvoiceMapping : EntityBaseMapping<Invoice>, IEntityTypeConfigurati
 
         builder.ToTable("Invoices");
 
-        builder.Property(x => x.Number)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.HasIndex(x => x.Number)
-          .IsUnique();
-
-        builder.Property(x => x.IssueDate)
-            .IsRequired();
-
         builder.Property(x => x.TotalAmount)
             .IsRequired()
             .HasColumnType("DECIMAL(18,2)");
-        ;
-
-        builder.Property(x => x.Status)
-            .IsRequired()
-            .HasConversion<int>();
 
         builder.Property(x => x.PaymentMethod)
-            .IsRequired()
-            .HasConversion<int>();
-
-        builder.Property(x => x.TaxInformation)
-            .IsRequired()
-            .HasColumnType("DECIMAL(18,2)");
-
+            .IsRequired();
+           
         builder.Property(x => x.ReservationId)
             .IsRequired()
             .HasColumnType("UNIQUEIDENTIFIER");

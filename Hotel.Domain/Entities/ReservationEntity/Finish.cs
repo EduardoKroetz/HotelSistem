@@ -1,6 +1,5 @@
 using Hotel.Domain.Entities.InvoiceEntity;
 using Hotel.Domain.Enums;
-using Hotel.Domain.Exceptions;
 
 namespace Hotel.Domain.Entities.ReservationEntity;
 
@@ -28,7 +27,7 @@ public partial class Reservation
         UpdateCheckOut(DateTime.Now)
           .ToCheckOut(); // Muda o status para CheckedOut
 
-        Invoice = new Invoice(EPaymentMethod.CreditCard, this, 0); //Gera uma instância de uma fatura
+        Invoice = new Invoice(this); //Gera uma instância de uma fatura
 
         Room?.ChangeStatus(ERoomStatus.OutOfService); //troca o status do quarto para 'OutOfService'(Fora de serviço)
 

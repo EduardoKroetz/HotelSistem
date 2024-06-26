@@ -18,7 +18,6 @@ public class CreateInvoices
           BaseRepositoryTest.ReservationsToFinish[1].Finish(),
           BaseRepositoryTest.ReservationsToFinish[2].Finish(),
         };
-        roomInvoices[0].FinishInvoice();
 
         await BaseRepositoryTest.MockConnection.Context.Invoices.AddRangeAsync(roomInvoices);
         await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
