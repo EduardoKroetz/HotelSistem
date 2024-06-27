@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers;
 
-[Route("v1/room-invoices")]
+[Route("v1/invoices")]
 [Authorize(Roles = "RootAdmin,Admin,Employee,Customer")] //Acesso a todos os usuários
 public class InvoiceController : ControllerBase
 {
