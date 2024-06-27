@@ -54,3 +54,26 @@ git clone https://github.com/EduardoKroetz/HotelSistem.git
 cd HotelSistem/Hotel.Domain
 dotnet run
 ```
+<h2 id="routes">📍 API Endpoints</h2>
+
+## Endpoints de Admin
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/admins</kbd>               | Recupera uma lista de administradores            |
+| <kbd>DELETE /v1/admins</kbd>            | Exclui o administrador autenticado               |
+| <kbd>PUT /v1/admins</kbd>               | Atualiza os detalhes de um administrador         |
+| <kbd>GET /v1/admins/{Id}</kbd>          | Recupera os detalhes de um administrador pelo ID |
+| <kbd>PUT /v1/admins/{Id}</kbd>          | Atualiza os detalhes de um administrador pelo ID |
+| <kbd>DELETE /v1/admins/{Id}</kbd>       | Exclui um administrador pelo ID                  |
+| <kbd>POST /v1/admins/{adminId}/permissions/{permissionId}</kbd>  | Adiciona uma permissão a um administrador pelo ID |
+| <kbd>DELETE /v1/admins/{adminId}/permissions/{permissionId}</kbd>| Remove uma permissão de um administrador pelo ID |
+| <kbd>POST /v1/admins/to-root-admin/{toRootAdminId}</kbd>        | Promove um administrador a root pelo ID          |
+| <kbd>PATCH /v1/admins/name</kbd>        | Atualiza o nome de um administrador              |
+| <kbd>PATCH /v1/admins/email</kbd>       | Atualiza o email de um administrador             |
+| <kbd>PATCH /v1/admins/phone</kbd>       | Atualiza o telefone de um administrador          |
+| <kbd>PATCH /v1/admins/address</kbd>     | Atualiza o endereço de um administrador          |
+| <kbd>PATCH /v1/admins/gender/{gender}</kbd> | Atualiza o gênero de um administrador pelo ID    |
+| <kbd>PATCH /v1/admins/date-of-birth</kbd> | Atualiza a data de nascimento de um administrador |
+
+
