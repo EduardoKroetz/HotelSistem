@@ -448,7 +448,7 @@ public class ReservationControllerTests
         var newExpectedCheckOut = DateTime.Now.AddDays(3);
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-out", new UpdateCheckOut(newExpectedCheckOut));
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-out/{reservation.Id}", new UpdateExpectedCheckOut(newExpectedCheckOut));
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -469,10 +469,10 @@ public class ReservationControllerTests
     [TestMethod]
     public async Task UpdateExpectedCheckOut_WithNonexistReservation_ShouldReturn_NOT_FOUND()
     {
-        var body = new UpdateCheckOut(DateTime.Now.AddDays(3));
+        var body = new UpdateExpectedCheckOut(DateTime.Now.AddDays(3));
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}/check-out", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-out/{Guid.NewGuid()}", body);
 
         //Assert
         Assert.IsNotNull(response);
@@ -501,7 +501,7 @@ public class ReservationControllerTests
 
         // Act
         var newExpectedCheckOut = DateTime.Now.AddDays(7);
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-out", new UpdateCheckOut(newExpectedCheckOut));
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-out/{reservation.Id}", new UpdateExpectedCheckOut(newExpectedCheckOut));
 
         // Assert
         Assert.IsNotNull(response);
@@ -529,10 +529,10 @@ public class ReservationControllerTests
         await _dbContext.SaveChangesAsync();
 
         var newExpectedCheckOut = DateTime.Now.AddDays(7);
-        var body = new UpdateCheckOut(newExpectedCheckOut);
+        var body = new UpdateExpectedCheckOut(newExpectedCheckOut);
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-out", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-out/{reservation.Id}", body);
 
         // Assert
         Assert.IsNotNull(response);
@@ -557,10 +557,10 @@ public class ReservationControllerTests
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(9), room.Id, 3));
 
         var newExpectedCheckIn = DateTime.Now.AddDays(7);
-        var body = new UpdateCheckIn(newExpectedCheckIn);
+        var body = new UpdateExpectedCheckIn(newExpectedCheckIn);
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-in", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-in/{reservation.Id}", body);
 
         // Assert
         Assert.IsNotNull(response);
@@ -583,10 +583,10 @@ public class ReservationControllerTests
     {
         //Arange
         var reservationId = Guid.NewGuid();
-        var body = new UpdateCheckIn(DateTime.Now.AddDays(5));
+        var body = new UpdateExpectedCheckIn(DateTime.Now.AddDays(5));
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservationId}/check-in", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-in/{reservationId}", body);
 
         //Assert
         Assert.IsNotNull(response);
@@ -611,10 +611,10 @@ public class ReservationControllerTests
         reservation.Finish();
         await _dbContext.SaveChangesAsync();
 
-        var body = new UpdateCheckIn(DateTime.Now.AddDays(7));
+        var body = new UpdateExpectedCheckIn(DateTime.Now.AddDays(7));
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-in", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-in/{reservation.Id}", body);
 
         // Assert
         Assert.IsNotNull(response);
@@ -635,10 +635,10 @@ public class ReservationControllerTests
         var reservation = await _testService.CreateReservationAsync(customer, new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 4));
         reservation.ToCancelled();
 
-        var body = new UpdateCheckIn(DateTime.Now.AddDays(7));
+        var body = new UpdateExpectedCheckIn(DateTime.Now.AddDays(7));
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-in", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-in/{reservation.Id}", body);
 
         // Assert
         Assert.IsNotNull(response);
@@ -660,8 +660,8 @@ public class ReservationControllerTests
         await _testService.ReservationCheckIn(reservation);
 
         // Act
-        var body = new UpdateCheckIn(DateTime.Now.AddDays(7));
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{reservation.Id}/check-in", body);
+        var body = new UpdateExpectedCheckIn(DateTime.Now.AddDays(7));
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/expected-check-in/{reservation.Id}", body);
 
         // Assert
         Assert.IsNotNull(response);
@@ -1071,7 +1071,7 @@ public class ReservationControllerTests
         _factory.Login(_client, customer);
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/finish/{reservation.Id}", new { });
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/finish/{reservation.Id}", new { });
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -1088,7 +1088,7 @@ public class ReservationControllerTests
     public async Task FinishReservation_WithNonexistReservation_ShouldReturn_NOT_FOUND()
     {
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/finish/{Guid.NewGuid()}", new { });
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/finish/{Guid.NewGuid()}", new { });
 
         //Assert
         Assert.IsNotNull(response);
@@ -1123,7 +1123,7 @@ public class ReservationControllerTests
         // Act
         _factory.Login(_client, _customerToken); //Login com outro cliente que não criou a reserva
 
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/finish/{reservation.Id}", new { });
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/finish/{reservation.Id}", new { });
 
         // Assert
         Assert.IsNotNull(response);
@@ -1154,7 +1154,7 @@ public class ReservationControllerTests
             DateTime.Now.AddDays(1), DateTime.Now.AddDays(6), room.Id, 3));
 
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
 
         // Assert
         Assert.IsNotNull(response);
@@ -1178,7 +1178,7 @@ public class ReservationControllerTests
     public async Task CancelReservation_WithNonexistReservation_ShouldReturn_NOT_FOUND()
     {
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/cancel/{Guid.NewGuid()}", new { });
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/cancel/{Guid.NewGuid()}", new { });
 
         //Assert
         Assert.IsNotNull(response);
@@ -1201,7 +1201,7 @@ public class ReservationControllerTests
 
         _factory.Login(_client, _customerToken);
         // Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
+        var response = await _client.PostAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
 
         // Assert
         Assert.IsNotNull(response);
@@ -1234,7 +1234,7 @@ public class ReservationControllerTests
         try
         {
             // Act
-            var response = await _client.PatchAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
+            var response = await _client.PostAsJsonAsync($"{_baseUrl}/cancel/{reservation.Id}", new { });
 
             // Assert
             Assert.IsNotNull(response);

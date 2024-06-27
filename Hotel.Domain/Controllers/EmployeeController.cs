@@ -139,11 +139,11 @@ public class EmployeeController : ControllerBase
         return Ok(await _handler.HandleUpdateAddressAsync(userId, address));
     }
 
-    [HttpPatch("gender/{gender:int}")]
-    public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
+    [HttpPatch("gender")]
+    public async Task<IActionResult> UpdateGenderAsync([FromBody] UpdateGender updateGender)
     {
         var userId = _userService.GetUserIdentifier(User);
-        return Ok(await _handler.HandleUpdateGenderAsync(userId, (EGender)gender));
+        return Ok(await _handler.HandleUpdateGenderAsync(userId, (EGender)updateGender.Gender));
     }
 
     [HttpPatch("date-of-birth")]

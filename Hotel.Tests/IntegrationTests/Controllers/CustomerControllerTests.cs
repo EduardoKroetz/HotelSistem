@@ -582,7 +582,7 @@ public class CustomerControllerTests
         _factory.Login(_client, customer);
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/gender/2", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/gender", new UpdateGender(2));
 
         //Assert
         var updatedCustomer = await _dbContext.Customers.FirstOrDefaultAsync(x => x.Id == customer.Id);

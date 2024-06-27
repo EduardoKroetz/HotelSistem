@@ -113,11 +113,11 @@ public class CustomerController : ControllerBase
     }
 
     // Endpoint para editar o gênero do cliente (usando ID do token)
-    [HttpPatch("gender/{gender:int}")]
-    public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
+    [HttpPatch("gender")]
+    public async Task<IActionResult> UpdateGenderAsync([FromBody] UpdateGender updateGender)
     {
         var customerId = _userService.GetUserIdentifier(User);
-        return Ok(await _handler.HandleUpdateGenderAsync(customerId, (EGender)gender));
+        return Ok(await _handler.HandleUpdateGenderAsync(customerId, (EGender)updateGender.Gender));
     }
 
     // Endpoint para editar a data de nascimento do cliente (usando ID do token)

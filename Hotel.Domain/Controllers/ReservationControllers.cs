@@ -98,18 +98,18 @@ public class ReservationController : ControllerBase
     //Atualizar check out.
     //Somente administradores ou funcionários com permissão podem atualizar check out de reservas que não são suas.
     //Administradores e funcionários tem acesso por padrão.
-    [HttpPatch("{Id:guid}/check-out")]
+    [HttpPatch("expected-check-out/{Id:guid}")]
     [AuthorizePermissions([EPermissions.UpdateReservationCheckout, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
-    public async Task<IActionResult> UpdateCheckoutAsync([FromRoute] Guid id, [FromBody] UpdateCheckOut updateCheckOut)
-      => Ok(await _handler.HandleUpdateExpectedCheckOutAsync(id, updateCheckOut.CheckOut));
+    public async Task<IActionResult> UpdateCheckoutAsync([FromRoute] Guid id, [FromBody] UpdateExpectedCheckOut update)
+      => Ok(await _handler.HandleUpdateExpectedCheckOutAsync(id, update.ExpectedCheckOut));
 
     //Atualizar check in.
     //Somente administradores ou funcionários com permissão podem atualizar check in de reservas que não são suas.
     //Administradores e funcionários tem acesso por padrão.
-    [HttpPatch("{Id:guid}/check-in")]
+    [HttpPatch("expected-check-in/{Id:guid}")]
     [AuthorizePermissions([EPermissions.UpdateReservationCheckIn, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission], [ERoles.Customer])]
-    public async Task<IActionResult> UpdateCheckInAsync([FromRoute] Guid id, [FromBody] UpdateCheckIn updateCheckIn)
-      => Ok(await _handler.HandleUpdateExpectedCheckInAsync(id, updateCheckIn.CheckIn));
+    public async Task<IActionResult> UpdateCheckInAsync([FromRoute] Guid id, [FromBody] UpdateExpectedCheckIn update)
+      => Ok(await _handler.HandleUpdateExpectedCheckInAsync(id, update.ExpectedCheckIn));
 
     //Adicionar um serviço a uma reserva, ou seja, o cliente
     //requisitou o serviço e o serviço é adicionado através desse endpoint.
@@ -135,14 +135,14 @@ public class ReservationController : ControllerBase
         return Ok(await _handler.HandleReservationCheckInAsync(Id, cardOptions.TokenId));
     }
 
-    [HttpPatch("finish/{Id:guid}")]
+    [HttpPost("finish/{Id:guid}")]
     public async Task<IActionResult> FinishReservationAsync([FromRoute] Guid Id)
     {
         var customerId = _userService.GetUserIdentifier(User);
         return Ok(await _handler.HandleFinishReservationAsync(Id, customerId));
     }
 
-    [HttpPatch("cancel/{Id:guid}")]
+    [HttpPost("cancel/{Id:guid}")]
     public async Task<IActionResult> CancelReservationAsync([FromRoute] Guid Id)
     {
         var customerId = _userService.GetUserIdentifier(User);

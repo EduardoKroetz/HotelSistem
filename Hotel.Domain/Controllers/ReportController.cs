@@ -87,7 +87,7 @@ public class ReportController : ControllerBase
     }
 
     // Endpoint para atualizar prioridade
-    [HttpPatch("{id:guid}/priority/{priority:int}")]
-    public async Task<IActionResult> CancelAsync([FromRoute] Guid id, [FromRoute] int priority)
-      => Ok(await _handler.HandleUpdatePriorityAsync((EPriority)priority, id));
+    [HttpPatch("priority/{id:guid}")]
+    public async Task<IActionResult> CancelAsync([FromRoute] Guid id, [FromBody] UpdatePriority priority)
+      => Ok(await _handler.HandleUpdatePriorityAsync((EPriority)priority.Priority, id));
 }

@@ -153,8 +153,7 @@ public class AdminControllerTests
           new Address("United Kingdom", "London", "UK-123", 456)
         );
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         var dbContext = _factory.Services.GetRequiredService<HotelDbContext>();
         await dbContext.Admins.AddAsync(admin);
@@ -329,8 +328,7 @@ public class AdminControllerTests
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         var body = new UpdateUser("Jão", "Pedro", "+55 (41) 93651-3210", EGender.Feminine, DateTime.Now.AddYears(-20), "Brazil", "Curitiba", "PR-404", 404);
 
@@ -372,8 +370,7 @@ public class AdminControllerTests
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         var body = new Name("John", "Wick");
 
@@ -407,8 +404,7 @@ public class AdminControllerTests
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         var body = new Email("feeRriber@gmail.com");
 
@@ -441,8 +437,7 @@ public class AdminControllerTests
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         var body = new Phone("+55 (62) 99156-3449");
 
@@ -475,8 +470,7 @@ public class AdminControllerTests
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         var body = new Address("Brazil", "Florianópolis", "SC-909", 909);
 
@@ -512,11 +506,10 @@ public class AdminControllerTests
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/gender/2", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/gender", new UpdateGender(2));
 
         //Assert
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
@@ -544,8 +537,7 @@ public class AdminControllerTests
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var token = _tokenService.GenerateToken(admin);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _factory.Login(_client, admin);
 
         var body = new UpdateDateOfBirth(DateTime.Now.AddYears(-35));
 
@@ -590,14 +582,15 @@ public class AdminControllerTests
     [DataRow("CreateResponsibility", "v1/responsibilities", "POST")]
     [DataRow("EditResponsibility", "v1/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
     [DataRow("DeleteResponsibility", "v1/responsibilities/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
-    [DataRow("DeleteInvoice", "v1/room-invoices/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
-    [DataRow("GetInvoices", "v1/room-invoices", "GET")]
-    [DataRow("GetInvoice", "v1/room-invoices/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
+    [DataRow("DeleteInvoice", "v1/invoices/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+    [DataRow("GetInvoices", "v1/invoices", "GET")]
+    [DataRow("GetInvoice", "v1/invoices/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "GET")]
     [DataRow("DeleteReservation", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
-    [DataRow("UpdateReservationCheckout", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/check-out", "PATCH")]
-    [DataRow("UpdateReservationCheckIn", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/check-in", "PATCH")]
+    [DataRow("UpdateReservationCheckout", "v1/reservations/expected-check-out/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+    [DataRow("UpdateReservationCheckIn", "v1/reservations/expected-check-in/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
     [DataRow("AddServiceToReservation", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/e3347565-8ec7-4a3b-be3a-951317bb53dc", "POST")]
     [DataRow("RemoveServiceFromReservation", "v1/reservations/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
+    [DataRow("ReservationCheckIn", "v1/reservations/check-in/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "POST")]
     [DataRow("CreateCategory", "v1/categories", "POST")]
     [DataRow("EditCategory", "v1/categories/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PUT")]
     [DataRow("DeleteCategory", "v1/categories/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
@@ -611,11 +604,11 @@ public class AdminControllerTests
     [DataRow("DeleteRoom", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
     [DataRow("AddRoomService", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/e3347565-8ec7-4a3b-be3a-951317bb53dc", "POST")]
     [DataRow("RemoveRoomService", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/services/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "DELETE")]
-    [DataRow("UpdateRoomName", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414?name=ola", "PATCH")]
-    [DataRow("UpdateRoomNumber", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/number/1", "PATCH")]
-    [DataRow("UpdateRoomCapacity", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/capacity/2", "PATCH")]
-    [DataRow("UpdateRoomCategory", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/category/62eb01d1-a7ba-4c09-ae5b-5ec6b5071577", "PATCH")]
-    [DataRow("UpdateRoomPrice", "v1/rooms/f6c5e02b-a0ae-429e-beb3-d433d51ad414/price", "PATCH")]
+    [DataRow("UpdateRoomName", "v1/rooms/name/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+    [DataRow("UpdateRoomNumber", "v1/rooms/number/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+    [DataRow("UpdateRoomCapacity", "v1/rooms/capacity/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+    [DataRow("UpdateRoomCategory", "v1/rooms/category/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
+    [DataRow("UpdateRoomPrice", "v1/rooms/price/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
     [DataRow("EnableRoom", "v1/rooms/enable/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
     [DataRow("DisableRoom", "v1/rooms/disable/f6c5e02b-a0ae-429e-beb3-d433d51ad414", "PATCH")]
     [DataRow("GetServices", "v1/services", "GET")]
@@ -651,8 +644,7 @@ public class AdminControllerTests
             var permission = _dbContext.Permissions.FirstOrDefault(x => x.Name.Equals(permissionName));
             admin.RemovePermission(permission!);
 
-            var token = _tokenService.GenerateToken(admin);
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _factory.Login(_client,admin);
 
             //Act
             var response = method switch

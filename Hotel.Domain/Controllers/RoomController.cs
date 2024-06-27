@@ -81,33 +81,33 @@ public class RoomController : ControllerBase
       => Ok(await _handler.HandleRemoveServiceAsync(id, serviceId));
 
     // Endpoint para atualizar o número de um quarto (com permissão)
-    [HttpPatch("{id:guid}/number/{number:int}")]
+    [HttpPatch("number/{id:guid}")]
     [AuthorizePermissions([EPermissions.UpdateRoomNumber, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-    public async Task<IActionResult> UpdateNumberAsync([FromRoute] Guid id, [FromRoute] int number)
-      => Ok(await _handler.HandleUpdateNumberAsync(id, number));
+    public async Task<IActionResult> UpdateNumberAsync([FromRoute] Guid id, [FromBody] UpdateRoomNumber update)
+      => Ok(await _handler.HandleUpdateNumberAsync(id, update.Number));
 
     // Endpoint para atualizar o nome de um quarto (com permissão)
-    [HttpPatch("{id:guid}")]
+    [HttpPatch("name/{id:guid}")]
     [AuthorizePermissions([EPermissions.UpdateRoomName, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-    public async Task<IActionResult> UpdateNameAsync([FromRoute] Guid id, [FromQuery] string name)
-      => Ok(await _handler.HandleUpdateNameAsync(id, name));
+    public async Task<IActionResult> UpdateNameAsync([FromRoute] Guid id, [FromBody] UpdateRoomName update)
+      => Ok(await _handler.HandleUpdateNameAsync(id, update.Name));
 
     // Endpoint para atualizar a capacidade de um quarto (com permissão)
-    [HttpPatch("{id:guid}/capacity/{capacity:int}")]
+    [HttpPatch("capacity/{id:guid}")]
     [AuthorizePermissions([EPermissions.UpdateRoomCapacity, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-    public async Task<IActionResult> UpdateCapacityAsync([FromRoute] Guid id, [FromRoute] int capacity)
-      => Ok(await _handler.HandleUpdateCapacityAsync(id, capacity));
+    public async Task<IActionResult> UpdateCapacityAsync([FromRoute] Guid id, [FromBody] UpdateRoomCapacity update)
+      => Ok(await _handler.HandleUpdateCapacityAsync(id, update.Capacity));
 
     // Endpoint para atualizar a categoria de um quarto (com permissão)
-    [HttpPatch("{id:guid}/category/{categoryId:guid}")]
+    [HttpPatch("category/{id:guid}")]
     [AuthorizePermissions([EPermissions.UpdateRoomCategory, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-    public async Task<IActionResult> UpdateCategoryAsync([FromRoute] Guid id, [FromRoute] Guid categoryId)
-      => Ok(await _handler.HandleUpdateCategoryAsync(id, categoryId));
+    public async Task<IActionResult> UpdateCategoryAsync([FromRoute] Guid id, [FromBody] UpdateRoomCategory update)
+      => Ok(await _handler.HandleUpdateCategoryAsync(id, update.CategoryId));
 
     // Endpoint para atualizar o preço de um quarto (com permissão)
-    [HttpPatch("{id:guid}/price")]
+    [HttpPatch("price/{id:guid}")]
     [AuthorizePermissions([EPermissions.UpdateRoomPrice, EPermissions.DefaultAdminPermission, EPermissions.DefaultEmployeePermission])]
-    public async Task<IActionResult> UpdatePriceAsync([FromRoute] Guid id, [FromBody] UpdatePriceDTO update)
+    public async Task<IActionResult> UpdatePriceAsync([FromRoute] Guid id, [FromBody] UpdateRoomPrice update)
       => Ok(await _handler.HandleUpdatePriceAsync(id, update.Price));
 
     // Endpoint para ativar um quarto

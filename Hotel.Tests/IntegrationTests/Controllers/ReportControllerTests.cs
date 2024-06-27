@@ -538,10 +538,9 @@ public class ReportControllerTests
         await _dbContext.Reports.AddAsync(report);
         await _dbContext.SaveChangesAsync();
 
-        var priority = EPriority.Critical;
-
+        var priority = new UpdatePriority(5);
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{report.Id}/priority/{(int)priority}", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/priority/{report.Id}", priority);
 
         //Assert
 
@@ -558,7 +557,7 @@ public class ReportControllerTests
         Assert.AreEqual(report.Id, content.Data.Id);
         Assert.AreEqual(report.Summary, updatedReport.Summary);
         Assert.AreEqual(report.Description, updatedReport.Description);
-        Assert.AreEqual(priority, updatedReport.Priority);
+        Assert.AreEqual(priority.Priority, (int)updatedReport.Priority);
         Assert.AreEqual(report.Resolution, updatedReport.Resolution);
         Assert.AreEqual(report.EmployeeId, updatedReport.EmployeeId);
         Assert.AreEqual(EStatus.Pending, updatedReport.Status);
@@ -568,7 +567,7 @@ public class ReportControllerTests
     public async Task UpdateNonexistReportPriority_ShouldReturn_NOT_FOUND()
     {
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}/priority/3", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/priority/{Guid.NewGuid()}", new UpdatePriority(3));
 
         //Assert
         var content = await _testService.DeserializeResponse<object>(response);

@@ -17,6 +17,8 @@ using Hotel.Domain.DTOs.ReservationDTOs;
 using Stripe;
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.VerificationCodeEntity;
+using System.Security.Cryptography;
+using Hotel.Domain.DTOs.CategoryDTOs;
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -601,7 +603,7 @@ public class RoomControllerTests
 
         var newName = "Quarto padrão 55";
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}?name={newName}", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/name/{room.Id}", new UpdateRoomName(newName));
 
         //Assert
         response.EnsureSuccessStatusCode();
@@ -651,22 +653,17 @@ public class RoomControllerTests
         await _dbContext.Rooms.AddAsync(room40);
         await _dbContext.SaveChangesAsync();
 
-        var newRoom = new EditorRoom("Quarto 40", 40, 45, 2, "Quarto padrão 40", _standardCategory.Id);
-
-        var createRoomResponse = await _client.PostAsJsonAsync(_baseUrl, newRoom);
-        createRoomResponse.EnsureSuccessStatusCode();
-        var roomId = JsonConvert.DeserializeObject<Response<DataId>>(await createRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
-        var room = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
+        var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 40", 40, 45, 2, "Quarto padrão 40", _standardCategory.Id));
 
         var newName = "Quarto 50";
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{roomId}?name={newName}", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/name/{room.Id}", new UpdateRoomName(newName));
 
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
         var content = await _testService.DeserializeResponse<object>(response);
-        var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
+        var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
 
         Assert.AreEqual("Esse nome já está cadastrado.",content.Errors[0]);
 
@@ -697,7 +694,7 @@ public class RoomControllerTests
         var activePrices = _stripePriceService.ListAsync(priceListOptions).Result.Data;
 
         foreach (var activePrice in activePrices)
-            Assert.AreEqual(newRoom.Price * 100, activePrice.UnitAmountDecimal);
+            Assert.AreEqual(room.Price * 100, activePrice.UnitAmountDecimal);
     }
 
     [TestMethod]
@@ -710,14 +707,13 @@ public class RoomControllerTests
 
         var newNumber = 16;
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/number/{newNumber}", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/number/{room.Id}/", new UpdateRoomNumber(newNumber));
 
         //Assert
         response.EnsureSuccessStatusCode();
 
         var content = await _testService.DeserializeResponse<object>(response);
         var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
-
         
         Assert.AreEqual("Número atualizado com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
@@ -740,28 +736,20 @@ public class RoomControllerTests
         var factory = new HotelWebApplicationFactory();
         var client = factory.CreateClient();
         var dbContext = factory.Services.GetRequiredService<HotelDbContext>();
-        _factory.Login(client, _rootAdminToken);
+        var testService = new TestService(dbContext ,factory, client, _rootAdminToken);
 
-        var category = new Category("Basic", "Hospedagems básicos", 40);
-        var room = new Room("Quarto 2",2, 35, 2, "Quarto básico 2", category);
-
-        await dbContext.Categories.AddAsync(category);
-        await dbContext.Rooms.AddRangeAsync(
-        [
-          new Room("Quarto 5",5, 43, 2, "Quarto básico 4",category),
-      room
-        ]);
-        await dbContext.SaveChangesAsync();
+        var category = await testService.CreateCategoryAsync(new EditorCategory("Basic", "Hospedagems básicos", 40));
+        var room = await testService.CreateRoomAsync(new EditorRoom("Quarto 2", 2, 35, 2, "Quarto básico 2", category.Id));
+        await testService.CreateRoomAsync(new EditorRoom("Quarto 5", 5, 43, 2, "Quarto básico 4", category.Id));
 
         //Act
-        var response = await client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/number/5", new { });
+        var response = await client.PatchAsJsonAsync($"{_baseUrl}/number/{room.Id}/", new UpdateRoomNumber(5));
 
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var content = await _testService.DeserializeResponse<object>(response);
+        var content = await testService.DeserializeResponse<object>(response);
 
-       
         Assert.AreEqual("Esse número já está cadastrado.", content.Errors[0]);
     }
 
@@ -773,9 +761,9 @@ public class RoomControllerTests
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
-        var newCategoryId = _deluxeCategory.Id;
+        var newCategory = new UpdateRoomCategory(_basicCategory.Id);
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/category/{newCategoryId}", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/category/{room.Id}", newCategory);
 
         //Assert
         response.EnsureSuccessStatusCode();
@@ -792,7 +780,7 @@ public class RoomControllerTests
         Assert.AreEqual(room.Price, updatedRoom.Price);
         Assert.AreEqual(room.Capacity, updatedRoom.Capacity);
         Assert.AreEqual(room.Description, updatedRoom.Description);
-        Assert.AreEqual(newCategoryId, updatedRoom.CategoryId);
+        Assert.AreEqual(newCategory.CategoryId, updatedRoom.CategoryId);
         Assert.AreEqual(room.Images.Count, updatedRoom.Images.Count);
         Assert.AreEqual(room.Status, updatedRoom.Status);
         Assert.AreEqual(room.CreatedAt, updatedRoom.CreatedAt);
@@ -807,7 +795,7 @@ public class RoomControllerTests
         await _dbContext.SaveChangesAsync();
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/category/{Guid.NewGuid()}", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/category/{room.Id}", new UpdateRoomCategory(Guid.NewGuid()));
 
         //Assert
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
@@ -827,9 +815,9 @@ public class RoomControllerTests
         var createRoomResponse = await _client.PostAsJsonAsync(_baseUrl, room);
         var roomId = JsonConvert.DeserializeObject<Response<DataId>>(await createRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
 
-        var newPrice = new UpdatePriceDTO(146.00m);
+        var newPrice = new UpdateRoomPrice(146.00m);
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{roomId}/price", newPrice);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/price/{roomId}", newPrice);
 
         //Assert
         response.EnsureSuccessStatusCode();
@@ -848,7 +836,7 @@ public class RoomControllerTests
     }
 
     [TestMethod]
-    public async Task UpdateRoomPrice_WithPendingReservationAssociated_ShouldReturn_BAD_REQUEST()
+    public async Task UpdateRoomPrice_WithAssociatedPendingReservation_ShouldReturn_BAD_REQUEST()
     {
         //Arange
         var newCustomer = new CreateUser
@@ -862,36 +850,21 @@ public class RoomControllerTests
             "Brazil", "Porto Velho", "RO-3030", 3030
         );
 
-        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
-        await _dbContext.VerificationCodes.AddAsync(verificationCode);
-        await _dbContext.SaveChangesAsync();
-
-        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
-        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
-        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
-
-
-        var newRoom = new EditorRoom("Quarto 20",20, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
-        var createRoomResponse = await _client.PostAsJsonAsync(_baseUrl, newRoom);
-        var roomId = JsonConvert.DeserializeObject<Response<DataId>>(await createRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
-
-        _factory.Login(_client, customer);
-
-        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), roomId, 1);
-        _client.PostAsJsonAsync("v1/reservations", newReservation).Result.EnsureSuccessStatusCode();
+        var customer = await _testService.CreateCustomerAsync(newCustomer);
+        var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 20", 20, 43, 13, "Quarto deluxe", _deluxeCategory.Id));
+        var reservation = await _testService.CreateReservationAsync(customer ,new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), room.Id, 1));
 
         _factory.Login(_client, _rootAdminToken);
 
-        var newPrice = new UpdatePriceDTO(196.00m);
+        var newPrice = new UpdateRoomPrice(196.00m);
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{roomId}/price", newPrice);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/price/{room.Id}", newPrice);
 
         //Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
 
         var content = await _testService.DeserializeResponse<object>(response);
-
        
         Assert.AreEqual("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas a hospedagem.", content.Errors[0]);
     }
@@ -911,52 +884,32 @@ public class RoomControllerTests
             "Brazil", "Sobral", "CE-2929", 2929
         );
 
-        var verificationCode = new VerificationCode(new Email(newCustomer.Email));
-        await _dbContext.VerificationCodes.AddAsync(verificationCode);
-        await _dbContext.SaveChangesAsync();
-
-        var createCustomerResponse = await _client.PostAsJsonAsync($"v1/register/customers?code={verificationCode.Code}", newCustomer);
-        var createCustomerContent = JsonConvert.DeserializeObject<Response<DataStripeCustomerId>>(await createCustomerResponse.Content.ReadAsStringAsync())!;
-        var customer = await _dbContext.Customers.FirstAsync(x => x.Id == createCustomerContent.Data.Id);
-
-
-        var newRoom = new EditorRoom("Quarto 21",21, 43, 13, "Quarto deluxe", _deluxeCategory.Id);
-        var createRoomResponse = await _client.PostAsJsonAsync(_baseUrl, newRoom);
-        var roomId = JsonConvert.DeserializeObject<Response<DataId>>(await createRoomResponse.Content.ReadAsStringAsync())!.Data.Id;
-
-        _factory.Login(_client, customer);
-
-        var newReservation = new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), roomId, 1);
-        var createReservationResponse = await _client.PostAsJsonAsync("v1/reservations", newReservation);
-        var reservationId = JsonConvert.DeserializeObject<Response<DataId>>(await createReservationResponse.Content.ReadAsStringAsync())!.Data.Id;
-
-        var reservation = await _dbContext.Reservations.FirstAsync(x => x.Id == reservationId);
+        var customer = await _testService.CreateCustomerAsync(newCustomer);
+        var room = await _testService.CreateRoomAsync(new EditorRoom("Quarto 21", 21, 43, 13, "Quarto deluxe", _deluxeCategory.Id));
+        var reservation = await _testService.CreateReservationAsync(customer,new CreateReservation(DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), room.Id, 1));
         reservation.ToCheckIn();
-
         await _dbContext.SaveChangesAsync();
-
         _factory.Login(_client, _rootAdminToken);
-
-        var newPrice = new UpdatePriceDTO(196.00m);
+        var newPrice = new UpdateRoomPrice(196.00m);
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{roomId}/price", newPrice);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/price/{room.Id}", newPrice);
 
         //Assert
         response.EnsureSuccessStatusCode();
 
         var content = await _testService.DeserializeResponse<object>(response);
-        var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == roomId);
+        var updatedRoom = await _dbContext.Rooms.FirstAsync(x => x.Id == room.Id);
         
         Assert.AreEqual("Preço atualizado com sucesso!", content.Message);
         Assert.AreEqual(0, content.Errors.Count);
 
-        Assert.AreEqual(roomId, updatedRoom.Id);
-        Assert.AreEqual(newRoom.Number, updatedRoom.Number);
+        Assert.AreEqual(room.Id, updatedRoom.Id);
+        Assert.AreEqual(room.Number, updatedRoom.Number);
         Assert.AreEqual(newPrice.Price, updatedRoom.Price);
-        Assert.AreEqual(newRoom.Capacity, updatedRoom.Capacity);
-        Assert.AreEqual(newRoom.Description, updatedRoom.Description);
-        Assert.AreEqual(newRoom.CategoryId, updatedRoom.CategoryId);
+        Assert.AreEqual(room.Capacity, updatedRoom.Capacity);
+        Assert.AreEqual(room.Description, updatedRoom.Description);
+        Assert.AreEqual(room.CategoryId, updatedRoom.CategoryId);
     }
 
     [TestMethod]
@@ -967,10 +920,10 @@ public class RoomControllerTests
         await _dbContext.Rooms.AddAsync(room);
         await _dbContext.SaveChangesAsync();
 
-        var newCapacity = 5;
+        var newCapacity = new UpdateRoomCapacity(5);
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{room.Id}/capacity/{newCapacity}", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/capacity/{room.Id}", newCapacity);
 
         //Assert
         response.EnsureSuccessStatusCode();
@@ -985,7 +938,7 @@ public class RoomControllerTests
         Assert.AreEqual(room.Id, updatedRoom.Id);
         Assert.AreEqual(room.Number, updatedRoom.Number);
         Assert.AreEqual(room.Price, updatedRoom.Price);
-        Assert.AreEqual(newCapacity, updatedRoom.Capacity);
+        Assert.AreEqual(newCapacity.Capacity, updatedRoom.Capacity);
         Assert.AreEqual(room.Description, updatedRoom.Description);
         Assert.AreEqual(room.CategoryId, updatedRoom.CategoryId);
         Assert.AreEqual(room.Images.Count, updatedRoom.Images.Count);
@@ -1145,10 +1098,6 @@ public class RoomControllerTests
         };
 
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-        var content = await _testService.DeserializeResponse<object>(response);
-
-       
     }
 
     [TestMethod]
@@ -1157,23 +1106,19 @@ public class RoomControllerTests
         //Arange
         var body = new EditorRoom("Quarto 1",1, 1, 1, "abcd", _standardCategory.Id);
         //Act
-        var response = await _client.PutAsJsonAsync($"v1/rooms/{Guid.NewGuid()}", body);
+        var response = await _client.PutAsJsonAsync($"{_baseUrl}/{Guid.NewGuid()}", body);
 
         //Assert
-        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-
-        var content = await _testService.DeserializeResponse<object>(response);
-
-       
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode); 
     }
 
     [TestMethod]
     public async Task UpdatePrice_WithNonexistsReservation_ShouldReturn_NOT_FOUND()
     {
         //Arange
-        var body = new UpdatePriceDTO(30);
+        var body = new UpdateRoomPrice(30);
         //Act
-        var response = await _client.PatchAsJsonAsync($"v1/rooms/{Guid.NewGuid()}/price", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/price/{Guid.NewGuid()}", body);
 
         //Assert
         Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);

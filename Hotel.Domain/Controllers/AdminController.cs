@@ -154,11 +154,11 @@ public class AdminController : ControllerBase
 
     //Editar gênero do administrador.
     //Administradores autenticados podem acessar.
-    [HttpPatch("gender/{gender:int}")]
-    public async Task<IActionResult> UpdateGenderAsync([FromRoute] int gender)
+    [HttpPatch("gender")]
+    public async Task<IActionResult> UpdateGenderAsync([FromBody] UpdateGender updateGender)
     {
         var adminId = _userService.GetUserIdentifier(User);
-        return Ok(await _handler.HandleUpdateGenderAsync(adminId, (EGender)gender));
+        return Ok(await _handler.HandleUpdateGenderAsync(adminId, (EGender)updateGender.Gender));
     }
 
     //Editar data de nascimento do administrador.

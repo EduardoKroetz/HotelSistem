@@ -158,6 +158,7 @@ internal class TestService
         _factory.Login(_client, _rootAdminToken);
 
         var response = await _client.PostAsJsonAsync("v1/categories", newCategory);
+        response.EnsureSuccessStatusCode();
         var content = await DeserializeResponse<DataId>(response);
         var category = await _dbContext.Categories.FirstAsync(x => x.Id == content.Data.Id);
 

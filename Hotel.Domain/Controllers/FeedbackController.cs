@@ -82,15 +82,15 @@ public class FeedbackController : ControllerBase
     }
 
     // Endpoint para atualizar a avaliação (rate) de um feedback
-    [HttpPatch("{Id:guid}/rate/{rate:int}")]
-    public async Task<IActionResult> UpdateRateAsync([FromRoute] Guid id, [FromRoute] int rate)
+    [HttpPatch("rate/{Id:guid}")]
+    public async Task<IActionResult> UpdateRateAsync([FromRoute] Guid id, [FromBody] UpdateRate update)
     {
         var customerId = _userService.GetUserIdentifier(User);
-        return Ok(await _handler.HandleUpdateRateAsync(id, rate, customerId));
+        return Ok(await _handler.HandleUpdateRateAsync(id, update.Rate, customerId));
     }
 
     // Endpoint para atualizar o comentário de um feedback
-    [HttpPatch("{Id:guid}/comment")]
+    [HttpPatch("comment/{Id:guid}")]
     public async Task<IActionResult> UpdateCommentAsync([FromRoute] Guid id, [FromBody] UpdateComment updateComment)
     {
         var customerId = _userService.GetUserIdentifier(User);

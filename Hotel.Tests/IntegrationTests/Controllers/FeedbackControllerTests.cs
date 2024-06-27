@@ -109,7 +109,7 @@ public class FeedbackControllerTests
         await _dbContext.Reservations.AddAsync(reservation);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         var body = new CreateFeedback("Estadia perfeita, serviço impecável!", 10, reservation.Id);
 
@@ -175,7 +175,7 @@ public class FeedbackControllerTests
         await _dbContext.Feedbacks.AddAsync(feedback);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         //Act
         var response = await _client.DeleteAsync($"{_baseUrl}/{feedback.Id}");
@@ -216,7 +216,7 @@ public class FeedbackControllerTests
         await _dbContext.Feedbacks.AddAsync(feedback);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         var body = new UpdateFeedback("A suite é de outro mundo, uma das melhores que já fui, recomendo!", 10);
 
@@ -260,12 +260,12 @@ public class FeedbackControllerTests
         await _dbContext.Feedbacks.AddAsync(feedback);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         var body = new UpdateComment("Serviço é bom e o apartamento é confotável. Entrega o que promete.");
 
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{feedback.Id}/comment", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/comment/{feedback.Id}", body);
 
         //Assert
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == feedback.Id);
@@ -279,14 +279,15 @@ public class FeedbackControllerTests
     public async Task UpdateFeedbackRate_ShouldReturn_OK()
     {
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/{_feedbacks[0].Id}/rate/8", new { });
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/rate/{_feedbacks[0].Id}", new UpdateRate(8));
 
         //Assert
         var updatedFeedback = await _dbContext.Feedbacks.FirstOrDefaultAsync(x => x.Id == _feedbacks[0].Id);
 
         Assert.IsNotNull(response);
         response.EnsureSuccessStatusCode();
-        Assert.AreEqual(updatedFeedback!.Rate, 8);
+
+        Assert.AreEqual(8,updatedFeedback!.Rate);
     }
 
     [TestMethod]
@@ -315,7 +316,7 @@ public class FeedbackControllerTests
         await _dbContext.Feedbacks.AddAsync(feedback);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         //Act
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/add-like/{feedback.Id}", new { });
@@ -357,7 +358,7 @@ public class FeedbackControllerTests
         await _dbContext.Feedbacks.AddAsync(feedback);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         //Act
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/remove-like/{feedback.Id}", new { });
@@ -436,7 +437,7 @@ public class FeedbackControllerTests
         await _dbContext.Feedbacks.AddAsync(feedback);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         // Atua
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/add-dislike/{feedback.Id}", new { });
@@ -478,7 +479,7 @@ public class FeedbackControllerTests
         await _dbContext.Feedbacks.AddAsync(feedback);
         await _dbContext.SaveChangesAsync();
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _tokenService.GenerateToken(customer));
+        _factory.Login(_client, customer);
 
         // Atua
         var response = await _client.PatchAsJsonAsync($"{_baseUrl}/remove-dislike/{feedback.Id}", new { });
