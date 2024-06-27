@@ -56,24 +56,187 @@ dotnet run
 ```
 <h2 id="routes">📍 API Endpoints</h2>
 
-## Endpoints de Admin
+<h3>Admin</h3>
 
 | Rota                                    | Descrição                                        |
 |-----------------------------------------|--------------------------------------------------|
 | <kbd>GET /v1/admins</kbd>               | Recupera uma lista de administradores            |
 | <kbd>DELETE /v1/admins</kbd>            | Exclui o administrador autenticado               |
-| <kbd>PUT /v1/admins</kbd>               | Atualiza os detalhes de um administrador         |
+| <kbd>PUT /v1/admins</kbd>               | Atualiza os detalhes do administrador autenticado |
 | <kbd>GET /v1/admins/{Id}</kbd>          | Recupera os detalhes de um administrador pelo ID |
 | <kbd>PUT /v1/admins/{Id}</kbd>          | Atualiza os detalhes de um administrador pelo ID |
 | <kbd>DELETE /v1/admins/{Id}</kbd>       | Exclui um administrador pelo ID                  |
 | <kbd>POST /v1/admins/{adminId}/permissions/{permissionId}</kbd>  | Adiciona uma permissão a um administrador pelo ID |
 | <kbd>DELETE /v1/admins/{adminId}/permissions/{permissionId}</kbd>| Remove uma permissão de um administrador pelo ID |
 | <kbd>POST /v1/admins/to-root-admin/{toRootAdminId}</kbd>        | Promove um administrador a root pelo ID          |
-| <kbd>PATCH /v1/admins/name</kbd>        | Atualiza o nome de um administrador              |
-| <kbd>PATCH /v1/admins/email</kbd>       | Atualiza o email de um administrador             |
-| <kbd>PATCH /v1/admins/phone</kbd>       | Atualiza o telefone de um administrador          |
-| <kbd>PATCH /v1/admins/address</kbd>     | Atualiza o endereço de um administrador          |
-| <kbd>PATCH /v1/admins/gender/{gender}</kbd> | Atualiza o gênero de um administrador pelo ID    |
-| <kbd>PATCH /v1/admins/date-of-birth</kbd> | Atualiza a data de nascimento de um administrador |
+| <kbd>PATCH /v1/admins/name</kbd>        | Atualiza o nome do administrador autenticado        |
+| <kbd>PATCH /v1/admins/email</kbd>       | Atualiza o email do administrador autenticado       |
+| <kbd>PATCH /v1/admins/phone</kbd>       | Atualiza o telefone do administrador autenticado    |
+| <kbd>PATCH /v1/admins/address</kbd>     | Atualiza o endereço do administrador autenticado    |
+| <kbd>PATCH /v1/admins/gender</kbd>      | Atualiza o gênero do administrador autenticado   |
+| <kbd>PATCH /v1/admins/date-of-birth</kbd> | Atualiza a data de nascimento do administrador autenticado |
+
+<h3>Customer</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/customers</kbd>            | Recupera uma lista de clientes                   |
+| <kbd>PUT /v1/customers</kbd>            | Atualiza os detalhes do cliente autenticado      |
+| <kbd>DELETE /v1/customers</kbd>         | Exclui o cliente autenticado                     |
+| <kbd>GET /v1/customers/{Id}</kbd>       | Recupera os detalhes de um cliente pelo ID       |
+| <kbd>PUT /v1/customers/{Id}</kbd>       | Atualiza os detalhes de um cliente pelo ID       |
+| <kbd>DELETE /v1/customers/{Id}</kbd>    | Exclui um cliente pelo ID                        |
+| <kbd>PATCH /v1/customers/name</kbd>     | Atualiza o nome do cliente autenticado           |
+| <kbd>PATCH /v1/customers/email</kbd>    | Atualiza o email do cliente autenticado          |
+| <kbd>PATCH /v1/customers/phone</kbd>    | Atualiza o telefone do cliente autenticado       |
+| <kbd>PATCH /v1/customers/address</kbd>  | Atualiza o endereço do cliente autenticado       |
+| <kbd>PATCH /v1/customers/gender</kbd>   | Atualiza o gênero de um cliente pelo ID         |
+| <kbd>PATCH /v1/customers/date-of-birth</kbd> | Atualiza a data de nascimento do cliente autenticado |
+
+<h3>Employee</h3> 
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/employees</kbd>            | Recupera uma lista de funcionários               |
+| <kbd>DELETE /v1/employees</kbd>         | Exclui o funcionário autenticado                 |
+| <kbd>PUT /v1/employees</kbd>            | Atualiza os detalhes do funcionário autenticado  |
+| <kbd>GET /v1/employees/{id}</kbd>       | Recupera os detalhes de um funcionário pelo ID   |
+| <kbd>PUT /v1/employees/{id}</kbd>       | Atualiza os detalhes de um funcionário pelo ID   |
+| <kbd>DELETE /v1/employees/{id}</kbd>    | Exclui um funcionário pelo ID                    |
+| <kbd>POST /v1/employees/{id}/responsibilities/{resId}</kbd>  | Adiciona uma responsabilidade a um funcionário pelo ID |
+| <kbd>DELETE /v1/employees/{id}/responsibilities/{resId}</kbd>| Remove uma responsabilidade de um funcionário pelo ID |
+| <kbd>POST /v1/employees/{employeeId}/permissions/{permissionId}</kbd> | Adiciona uma permissão a um funcionário pelo ID |
+| <kbd>DELETE /v1/employees/{employeeId}/permissions/{permissionId}</kbd> | Remove uma permissão de um funcionário pelo ID |
+| <kbd>PATCH /v1/employees/name</kbd>     | Atualiza o nome do funcionário autenticado       |
+| <kbd>PATCH /v1/employees/email</kbd>    | Atualiza o email do funcionário autenticado      |
+| <kbd>PATCH /v1/employees/phone</kbd>    | Atualiza o telefone do funcionário autenticado   |
+| <kbd>PATCH /v1/employees/address</kbd>  | Atualiza o endereço do funcionário autenticado   |
+| <kbd>PATCH /v1/employees/gender</kbd>   | Atualiza o gênero de um funcionário pelo ID     |
+| <kbd>PATCH /v1/employees/date-of-birth</kbd> | Atualiza a data de nascimento do funcionário autenticado |
+
+<h3>Feedback</h3> 
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/feedbacks</kbd>            | Recupera uma lista de feedbacks                  |
+| <kbd>POST /v1/feedbacks</kbd>           | Cria um novo feedback                            |
+| <kbd>GET /v1/feedbacks/{Id}</kbd>       | Recupera os detalhes de um feedback pelo ID      |
+| <kbd>PUT /v1/feedbacks/{Id}</kbd>       | Atualiza os detalhes de um feedback pelo ID      |
+| <kbd>DELETE /v1/feedbacks/{Id}</kbd>    | Exclui um feedback pelo ID                       |
+| <kbd>PATCH /v1/feedbacks/{Id}/rate/{rate}</kbd> | Atualiza a avaliação de um feedback pelo ID  |
+| <kbd>PATCH /v1/feedbacks/{Id}/comment</kbd> | Atualiza o comentário de um feedback pelo ID  |
+| <kbd>PATCH /v1/feedbacks/add-like/{feedbackId}</kbd> | Adiciona um like a um feedback pelo ID |
+| <kbd>PATCH /v1/feedbacks/remove-like/{feedbackId}</kbd> | Remove um like de um feedback pelo ID |
+| <kbd>PATCH /v1/feedbacks/add-dislike/{feedbackId}</kbd> | Adiciona um dislike a um feedback pelo ID |
+| <kbd>PATCH /v1/feedbacks/remove-dislike/{feedbackId}</kbd> | Remove um dislike de um feedback pelo ID |
+
+<h3>Invoice</h3> 
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/invoices</kbd>        | Recupera uma lista de faturas                    |
+| <kbd>GET /v1/invoices/my</kbd>     | Recupera as faturas do usuário autenticado       |
+| <kbd>GET /v1/invoices/{Id}</kbd>   | Recupera os detalhes de uma fatura  pelo ID      |
+| <kbd>DELETE /v1/invoices/{Id}</kbd>| Exclui uma fatura pelo ID                        |
+
+<h3>Login</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>POST /v1/login</kbd>               | Realiza o login de qualquer tipo de usuário      |
+
+<h3>Permission</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/permissions</kbd>          | Recupera uma lista de permissões                 |
+| <kbd>GET /v1/permissions/{Id}</kbd>     | Recupera os detalhes de uma permissão pelo ID    |
+
+<h3>Register</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>POST /v1/register/customers</kbd>  | Registra um novo cliente                         |
+| <kbd>POST /v1/register/admins</kbd>     | Registra um novo administrador                   |
+| <kbd>POST /v1/register/employees</kbd>  | Registra um novo funcionário                     |
+
+<h3>Report</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/reports</kbd>              | Recupera uma lista de relatórios                 |
+| <kbd>POST /v1/reports</kbd>             | Cria um novo relatório                           |
+| <kbd>GET /v1/reports/{Id}</kbd>         | Recupera os detalhes de um relatório pelo ID     |
+| <kbd>PUT /v1/reports/{Id}</kbd>         | Atualiza os detalhes de um relatório pelo ID     |
+| <kbd>DELETE /v1/reports/my/{Id}</kbd>   | Exclui um relatório do usuário atual pelo ID     |
+| <kbd>PATCH /v1/reports/finish/{Id}</kbd>| Finaliza um relatório pelo ID                    |
+| <kbd>PATCH /v1/reports/cancel/{Id}</kbd>| Cancela um relatório pelo ID                     |
+| <kbd>PATCH /v1/reports/priority/{id}</kbd> | Atualiza a prioridade de um relatório pelo ID |
+
+<h3>Reservation</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/reservations</kbd>         | Recupera uma lista de reservas                   |
+| <kbd>GET /v1/reservations/{Id}</kbd>    | Recupera os detalhes de uma reserva pelo ID      |
+| <kbd>POST /v1/reservations</kbd>        | Cria uma nova reserva                            |
+| <kbd>DELETE /v1/reservations/{Id}</kbd> | Exclui uma reserva pelo ID                       |
+| <kbd>PATCH /v1/reservations/expected-check-out/{Id}</kbd> | Atualiza o check-out esperado de uma reserva pelo ID |
+| <kbd>PATCH /v1/reservations/expected-check-in/{Id}</kbd>  | Atualiza o check-in esperado de uma reserva pelo ID  |
+| <kbd>POST /v1/reservations/{Id}/services/{serviceId}</kbd> | Adiciona um serviço a uma reserva pelo ID        |
+| <kbd>DELETE /v1/reservations/{Id}/services/{serviceId}</kbd>| Remove um serviço de uma reserva pelo ID        |
+| <kbd>POST /v1/reservations/check-in/{Id}</kbd>  | Faz o check-in de uma reserva pelo ID            |
+| <kbd>POST /v1/reservations/finish/{Id}</kbd>    | Finaliza uma reserva pelo ID                     |
+| <kbd>POST /v1/reservations/cancel/{Id}</kbd>    | Cancela uma reserva pelo ID                      |
+| <kbd>GET /v1/reservations/total-amount</kbd>    | Simula o preço total de uma reserva           |
+
+
+<h3>Responsibility</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/responsibilities</kbd>     | Recupera uma lista de responsabilidades          |
+| <kbd>POST /v1/responsibilities</kbd>    | Cria uma nova responsabilidade                   |
+| <kbd>GET /v1/responsibilities/{Id}</kbd>| Recupera os detalhes de uma responsabilidade pelo ID |
+| <kbd>PUT /v1/responsibilities/{Id}</kbd>| Atualiza os detalhes de uma responsabilidade pelo ID |
+| <kbd>DELETE /v1/responsibilities/{Id}</kbd>| Exclui uma responsabilidade pelo ID             |
+
+<h3>Room</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/rooms</kbd>                | Recupera uma lista de quartos                    |
+| <kbd>GET /v1/rooms/{Id}</kbd>           | Recupera os detalhes de um quarto pelo ID        |
+| <kbd>PUT /v1/rooms/{Id}</kbd>           | Atualiza os detalhes de um quarto pelo ID        |
+| <kbd>POST /v1/rooms</kbd>               | Cria um novo quarto                              |
+| <kbd>DELETE /v1/rooms/{Id}</kbd>        | Exclui um quarto pelo ID                         |
+| <kbd>POST /v1/rooms/{Id}/services/{serviceId}</kbd> | Adiciona um serviço a um quarto pelo ID   |
+| <kbd>DELETE /v1/rooms/{Id}/services/{serviceId}</kbd> | Remove um serviço de um quarto pelo ID  |
+| <kbd>PATCH /v1/rooms/number/{Id}</kbd>   | Atualiza o número de um quarto pelo ID           |
+| <kbd>PATCH /v1/rooms/name/{Id}</kbd>     | Atualiza o nome de um quarto pelo ID             |
+| <kbd>PATCH /v1/rooms/capacity/{Id}</kbd> | Atualiza a capacidade de um quarto pelo ID       |
+| <kbd>PATCH /v1/rooms/category/{Id}</kbd> | Atualiza a categoria de um quarto pelo ID        |
+| <kbd>PATCH /v1/rooms/price/{Id}</kbd>    | Atualiza o preço de um quarto pelo ID            |
+| <kbd>PATCH /v1/rooms/enable/{Id}</kbd>   | Ativa um quarto pelo ID                          |
+| <kbd>PATCH /v1/rooms/disable/{Id}</kbd>  | Desativa um quarto pelo ID                       |
+| <kbd>PATCH /v1/rooms/available/{Id}</kbd>| Atualiza o status de 'fora de serviço' para 'disponível' de um quarto pelo ID |
+
+<h3>Service</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/services</kbd>             | Recupera uma lista de serviços                   |
+| <kbd>POST /v1/services</kbd>            | Cria um novo serviço                             |
+| <kbd>GET /v1/services/{Id}</kbd>        | Recupera os detalhes de um serviço pelo ID       |
+| <kbd>PUT /v1/services/{Id}</kbd>        | Atualiza os detalhes de um serviço pelo ID       |
+| <kbd>DELETE /v1/services/{Id}</kbd>     | Exclui um serviço pelo ID                        |
+| <kbd>POST /v1/services/{Id}/responsibilities/{responsibilityId}</kbd> | Adiciona uma responsabilidade a um serviço pelo ID |
+| <kbd>DELETE /v1/services/{Id}/responsibilities/{responsibilityId}</kbd>| Remove uma responsabilidade de um serviço pelo ID |
+
+<h3>Verification</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>POST /v1/verifications/email-code</kbd> | Envia um código de verificação de email por emai        |
 
 
