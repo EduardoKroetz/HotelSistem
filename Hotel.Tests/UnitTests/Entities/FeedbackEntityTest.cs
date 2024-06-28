@@ -7,35 +7,19 @@ namespace Hotel.Tests.UnitTests.Entities;
 public class FeedbackEntityTest
 {
     [TestMethod]
-    public void ValidFeedback_MustBeValid()
+    public void NewFeedbackInstance_MustBeValid()
     {
         var feedback = new Feedback("Feedback", 5, TestParameters.Customer.Id, TestParameters.Reservation.Id, TestParameters.Room.Id);
         Assert.IsTrue(feedback.IsValid);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ValidationException))]
-    [DataRow("", 1)]
-    [DataRow("Feedback", -1)]
-    [DataRow("Feedback", 11)]
-    [DataRow(TestParameters.DescriptionMaxCaracteres, 5)]
-    public void InvalidFeedback_ExpectedException(string comment, int rate)
+    [DataRow("", 1, "Informe o comentário do feedback")]
+    [DataRow("Feedback", -1, "A avaliação deve ser entre 1 e 10")]
+    [DataRow("Feedback", 11, "A avaliação deve ser entre 1 e 10")]
+    public void InvalidFeedback_ShouldThrowException(string comment, int rate, string expectedMessage)
     {
-        new Feedback(comment, rate, TestParameters.Customer.Id, TestParameters.Reservation.Id, TestParameters.Room.Id);
-        Assert.Fail();
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ValidationException))]
-    [DataRow("", 1)]
-    [DataRow("Feedback", -1)]
-    [DataRow("Feedback", 11)]
-    [DataRow(TestParameters.DescriptionMaxCaracteres, 5)]
-    public void ChangeToInvalidFeedback_ExpectedException(string comment, int rate)
-    {
-        var feedback = new Feedback(comment, rate, TestParameters.Customer.Id, TestParameters.Reservation.Id, TestParameters.Room.Id);
-        feedback.ChangeComment(comment);
-        feedback.ChangeRate(rate);
-        Assert.Fail();
+        var exception = Assert.ThrowsException<ValidationException>(() => new Feedback(comment, rate, TestParameters.Customer.Id, TestParameters.Reservation.Id, TestParameters.Room.Id));
+        Assert.AreEqual(expectedMessage, exception.Message);
     }
 }

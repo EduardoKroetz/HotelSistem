@@ -11,19 +11,18 @@ public class EmployeeEntityTest
     private readonly Responsibility Responsibility = new("Limpar os quartos", "Limpar", EPriority.Low);
 
     [TestMethod]
-    public void ValidEmployee_MustBeValid()
+    public void NewEmployeeInstance_MustBeValid()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         Assert.IsTrue(employee.IsValid);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ValidationException))]
-    public void ChangeToInvalidEmployeeSalary_ExpectedException()
+    public void ChangeToInvalidEmployeeSalary_ShouldThrowException()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
-        employee.ChangeSalary(-1);
-        Assert.Fail();
+        var exception = Assert.ThrowsException<ValidationException>(() => employee.ChangeSalary(-1));
+        Assert.AreEqual("Salário deve ser maior ou igual a zero", exception.Message);
     }
 
     [TestMethod]
@@ -43,13 +42,13 @@ public class EmployeeEntityTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void AddSameResponsibility_ExpectedException()
+    public void AddSameResponsibility_ShouldThrowException()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         employee.AddResponsibility(Responsibility);
-        employee.AddResponsibility(Responsibility);
-        Assert.Fail();
+        var exception = Assert.ThrowsException<ArgumentException>(() => employee.AddResponsibility(Responsibility));
+        Assert.AreEqual("Essa responsabilidade já está atribuida a esse funcionário", exception.Message);
+        Assert.AreEqual(1, employee.Responsibilities.Count);
     }
 
     [TestMethod]
@@ -62,14 +61,12 @@ public class EmployeeEntityTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void RemoveNonExistingResponsibility_ExpectedException()
+    public void RemoveNonExistingResponsibility_ShouldThrowException()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
-        employee.RemoveResponsibility(Responsibility);
-        Assert.Fail();
+        var exception = Assert.ThrowsException<ArgumentException>(() => employee.RemoveResponsibility(Responsibility));
+        Assert.AreEqual("Essa responsabilidade não está atribuida a esse funcionário", exception.Message);
     }
-
 
     [TestMethod]
     public void AssignValidPermission_MustBeAssigned()
@@ -80,19 +77,18 @@ public class EmployeeEntityTest
         Assert.AreEqual(1, employee.Permissions.Count);
     }
 
-
     [TestMethod]
-    [ExpectedException(typeof(ValidationException))]
-    public void AssignSamePermission_ExpectedException()
+    public void AssignSamePermission_ShouldThrowException()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         employee.AssignPermission(TestParameters.Permission);
-        employee.AssignPermission(TestParameters.Permission);
+        var exception = Assert.ThrowsException<ValidationException>(() => employee.AssignPermission(TestParameters.Permission));
+        Assert.AreEqual("Essa permissão já foi associada a esse funcionário", exception.Message);
         Assert.AreEqual(1, employee.Permissions.Count);
     }
 
     [TestMethod]
-    public void UnassignExistPermission_MustBeUnassign()
+    public void UnassignExistPermission_MustBeUnassigned()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         employee.AssignPermission(TestParameters.Permission);
@@ -102,11 +98,10 @@ public class EmployeeEntityTest
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ValidationException))]
-    public void UnassignNonExistingPermission_ExpectedException()
+    public void UnassignNonExistingPermission_ShouldThrowException()
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
-        employee.UnassignPermission(TestParameters.Permission);
-        Assert.AreEqual(0, employee.Permissions.Count);
+        var exception = Assert.ThrowsException<ValidationException>(() => employee.UnassignPermission(TestParameters.Permission));
+        Assert.AreEqual("Essa permissão não está associada a esse funcionário", exception.Message);
     }
 }
