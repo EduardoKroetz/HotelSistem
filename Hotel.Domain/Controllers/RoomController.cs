@@ -36,10 +36,24 @@ public class RoomController : ControllerBase
         [FromQuery] string? createdAtOperator
     )
     {
-        var queryParameters = new RoomQueryParameters(
-            skip, take, name, number, numberOperator, price, priceOperator, status,
-            capacity, capacityOperator, serviceId, categoryId, createdAt, createdAtOperator
-        );
+        var queryParameters = new RoomQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Name = name,
+            Number = number,
+            NumberOperator = numberOperator,
+            Price = price,
+            PriceOperator = priceOperator,
+            Status = status,
+            Capacity = capacity,
+            CapacityOperator = capacityOperator,
+            ServiceId = serviceId,
+            CategoryId = categoryId,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

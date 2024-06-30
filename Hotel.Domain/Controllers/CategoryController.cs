@@ -28,9 +28,16 @@ public class CategoryController : ControllerBase
       [FromQuery] Guid? roomId
     )
     {
-        var queryParameters = new CategoryQueryParameters(
-            skip, take, name, averagePrice, averagePriceOperator, roomId
-        );
+        var queryParameters = new CategoryQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Name = name,
+            AveragePrice = averagePrice,
+            AveragePriceOperator = averagePriceOperator,
+            RoomId = roomId
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

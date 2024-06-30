@@ -7,7 +7,7 @@ public partial class InvoiceHandler
 {
     public async Task<Response<IEnumerable<GetInvoice>>> HandleGetAsync(InvoiceQueryParameters queryParameters)
     {
-        var roomInvoices = await _repository.GetAsync(queryParameters);
-        return new Response<IEnumerable<GetInvoice>>("Sucesso!", roomInvoices);
+        var invoices = await _repository.GetAsync(queryParameters);
+        return new Response<IEnumerable<GetInvoice>>("Sucesso!", invoices);
     }
 }

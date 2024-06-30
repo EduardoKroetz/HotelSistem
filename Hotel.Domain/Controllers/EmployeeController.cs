@@ -42,10 +42,22 @@ public class EmployeeController : ControllerBase
       [FromQuery] string? salaryOperator
     )
     {
-        var queryParameters = new EmployeeQueryParameters(
-            skip, take, name, email, phone, gender, dateOfBirth,
-            dateOfBirthOperator, createdAt, createdAtOperator, salary, salaryOperator
-        );
+        var queryParameters = new EmployeeQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Name = name,
+            Email = email,
+            Phone = phone,
+            Gender = gender,
+            DateOfBirth = dateOfBirth,
+            DateOfBirthOperator = dateOfBirthOperator,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator,
+            Salary = salary,
+            SalaryOperator = salaryOperator
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

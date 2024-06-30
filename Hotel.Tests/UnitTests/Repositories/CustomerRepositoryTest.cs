@@ -66,7 +66,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 1, newCustomer.Name.FirstName, null, null, null, null, null, null, null);
+        var parameters = new UserQueryParameters { Name = newCustomer.Name.FirstName };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -86,7 +86,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("João", "Silva"), new Email("jsilva@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-25), new Address("Brazil", "Rio de Janeiro", "Rua 456", 7)));
-        var parameters = new UserQueryParameters(0, 1, "João", null, null, null, null, null, null, null);
+        var parameters = new UserQueryParameters { Name = "João" };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -102,7 +102,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, ".com", null, null, null, null, null, null);
+        var parameters = new UserQueryParameters { Email = ".com", };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -118,7 +118,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, null, "55", null, null, null, null, null);
+        var parameters = new UserQueryParameters { Phone = "55" };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -134,7 +134,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, null, null, EGender.Masculine, null, null, null, null);
+        var parameters = new UserQueryParameters { Gender =  EGender.Masculine };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -150,7 +150,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-20), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, null, null, null, DateTime.Now.AddYears(-24), "gt", null, null);
+        var parameters = new UserQueryParameters {  DateOfBirth = DateTime.Now.AddYears(-24), DateOfBirthOperator = "gt", };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -166,7 +166,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt");
+        var parameters = new UserQueryParameters { CreatedAt = DateTime.Now.AddDays(-1), CreatedAtOperator = "gt" };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -182,7 +182,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(1), "lt");
+        var parameters = new UserQueryParameters { CreatedAt = DateTime.Now.AddDays(1), CreatedAtOperator = "lt" };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -198,7 +198,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, null, null, null, null, null, newCustomer.CreatedAt, "eq");
+        var parameters = new UserQueryParameters { CreatedAt = newCustomer.CreatedAt, CreatedAtOperator = "eq" };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -214,7 +214,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, null, "example", "55", EGender.Masculine, null, null, null, null);
+        var parameters = new UserQueryParameters { Email = "example", Phone = "55", Gender = EGender.Masculine };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);
@@ -234,7 +234,7 @@ public class CustomerRepositoryTest
     {
         // Arrange
         var newCustomer = await _utils.CreateCustomerAsync(new Customer(new Name("Roberto", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-33), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new UserQueryParameters(0, 100, "R", null, null, null, DateTime.Now.AddYears(-31), "lt", DateTime.Now.AddDays(1), "lt");
+        var parameters = new UserQueryParameters { Name = "R", DateOfBirth = DateTime.Now.AddYears(-31), DateOfBirthOperator = "lt", CreatedAt = DateTime.Now.AddDays(1), CreatedAtOperator = "lt" };
 
         // Act
         var customers = await _customerRepository.GetAsync(parameters);

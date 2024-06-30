@@ -82,7 +82,7 @@ public class InvoiceRepositoryTest
     {
         // Arrange
         var invoice = await CreateInvoiceAsync();
-        var parameters = new InvoiceQueryParameters(0, 100, invoice.PaymentMethod, invoice.TotalAmount, "eq", null, null, null);
+        var parameters = new InvoiceQueryParameters { PaymentMethod = invoice.PaymentMethod, TotalAmount = invoice.TotalAmount, TotalAmountOperator = "eq" };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);
@@ -101,7 +101,7 @@ public class InvoiceRepositoryTest
     {
         // Arrange
         var invoice = await CreateInvoiceAsync();
-        var parameters = new InvoiceQueryParameters(0, 100, "card", null, null, null, null, null);
+        var parameters = new InvoiceQueryParameters { PaymentMethod = "card" };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);
@@ -128,7 +128,7 @@ public class InvoiceRepositoryTest
         var newInvoice = newReservation.Finish();
         await _utils.CreateInvoiceAsync(newInvoice);
 
-        var parameters = new InvoiceQueryParameters(0, 100, null, 9m, "gt", null, null, null);
+        var parameters = new InvoiceQueryParameters { TotalAmount = 9m, TotalAmountOperator = "gt" };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);
@@ -147,7 +147,7 @@ public class InvoiceRepositoryTest
         // Arrange
         var invoice = await CreateInvoiceAsync();
         await _dbContext.SaveChangesAsync();
-        var parameters = new InvoiceQueryParameters(0, 100, null, 100m, "lt", null, null, null);
+        var parameters = new InvoiceQueryParameters { TotalAmount = 100m, TotalAmountOperator = "lt" };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);
@@ -166,7 +166,7 @@ public class InvoiceRepositoryTest
         // Arrange
         var invoice = await CreateInvoiceAsync();
         var totalAmount = invoice.TotalAmount;
-        var parameters = new InvoiceQueryParameters(0, 100, null, totalAmount, "eq", null, null, null);
+        var parameters = new InvoiceQueryParameters { TotalAmount = totalAmount, TotalAmountOperator = "eq" };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);
@@ -184,7 +184,7 @@ public class InvoiceRepositoryTest
     {
         // Arrange
         var invoice = await CreateInvoiceAsync();
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, invoice.CustomerId, null, null);
+        var parameters = new InvoiceQueryParameters { CustomerId = invoice.CustomerId };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);
@@ -203,7 +203,7 @@ public class InvoiceRepositoryTest
         // Arrange
         var invoice = await CreateInvoiceAsync();
         var reservationId = invoice.ReservationId;
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, reservationId, null);
+        var parameters = new InvoiceQueryParameters { ReservationId = reservationId };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);
@@ -229,7 +229,7 @@ public class InvoiceRepositoryTest
         newReservation.AddService(newService);
         var newInvoice = newReservation.Finish();
         await _utils.CreateInvoiceAsync(newInvoice);
-        var parameters = new InvoiceQueryParameters(0, 100, null, null, null, null, null, newService.Id);
+        var parameters = new InvoiceQueryParameters{ ServiceId = newService.Id };
 
         // Act
         var invoices = await _invoiceRepository.GetAsync(parameters);

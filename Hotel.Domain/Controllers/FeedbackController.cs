@@ -42,11 +42,26 @@ public class FeedbackController : ControllerBase
       [FromQuery] Guid? roomId
     )
     {
-        var queryParameters = new FeedbackQueryParameters(
-          skip, take, createdAt, createdAtOperator, comment, rate,
-          rateOperator, likes, likesOperator, dislikes, dislikesOperator,
-          updatedAt, updatedAtOperator, customerId, reservationId, roomId
-        );
+        var queryParameters = new FeedbackQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator,
+            Comment = comment,
+            Rate = rate,
+            RateOperator = rateOperator,
+            Likes = likes,
+            LikesOperator = likesOperator,
+            Dislikes = dislikes,
+            DislikesOperator = dislikesOperator,
+            UpdatedAt = updatedAt,
+            UpdatedAtOperator = updatedAtOperator,
+            CustomerId = customerId,
+            ReservationId = reservationId,
+            RoomId = roomId
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

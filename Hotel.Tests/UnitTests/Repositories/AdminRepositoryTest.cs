@@ -6,7 +6,6 @@ using Hotel.Domain.Repositories;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase.Utils;
 using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
-using Hotel.Tests.UnitTests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
 using Hotel.Domain.Entities.PermissionEntity;
@@ -77,7 +76,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 1, newAdmin.Name.FirstName, null, null, null, null, null, null, null, null, null);
+            var parameters = new AdminQueryParameters{ Name = newAdmin.Name.FirstName };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -99,7 +98,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 1, "Lucas", null, null, null, null, null, null, null, null, null);
+            var parameters = new AdminQueryParameters{ Name = "Lucas" };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -114,11 +113,11 @@ namespace Hotel.Tests.UnitTests.Repositories
 
         [TestMethod]
         public async Task GetAsync_WhereEmailFilter_ReturnsAdmins()
-        {
-            // Arrange
-            var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("silveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
+{
+    // Arrange
+    var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("silveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, "silveira@example.com", null, null, null, null, null, null, null, null);
+    var parameters = new AdminQueryParameters{ Email = "silveira@example.com" };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -137,7 +136,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, null, newAdmin.Phone.Number, null, null, null, null, null, null, null);
+            var parameters = new AdminQueryParameters {  Phone = newAdmin.Phone.Number };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -156,7 +155,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, null, null, newAdmin.Gender, null, null, null, null, null, null);
+            var parameters = new AdminQueryParameters{ Gender = newAdmin.Gender };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -175,7 +174,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, null, null, null, DateTime.Now.AddYears(-24), "gt", null, null, null, null);
+            var parameters = new AdminQueryParameters{ DateOfBirth = DateTime.Now.AddYears(-24), DateOfBirthOperator = "gt", };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -192,11 +191,9 @@ namespace Hotel.Tests.UnitTests.Repositories
         public async Task GetAsync_WhereCreatedAtFilter_WhereGreaterThanOperator_ReturnsAdmins()
         {
             // Arrange
-            var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine
+            var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
-
-            var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt", null, null);
+            var parameters = new AdminQueryParameters { CreatedAt = DateTime.Now.AddDays(-1), CreatedAtOperator = "gt" };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -215,7 +212,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(1), "lt", null, null);
+            var parameters = new AdminQueryParameters { CreatedAt = DateTime.Now.AddDays(1), CreatedAtOperator = "lt" };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -234,7 +231,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, newAdmin.CreatedAt, "eq", null, null);
+            var parameters = new AdminQueryParameters { CreatedAt = newAdmin.CreatedAt, CreatedAtOperator = "eq" };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -253,7 +250,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null, null, false, null);
+            var parameters = new AdminQueryParameters { IsRootAdmin = false };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -275,7 +272,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             newAdmin.AddPermission(newPermission);
             await _dbContext.SaveChangesAsync();
 
-            var parameters = new AdminQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, newPermission.Id);
+            var parameters = new AdminQueryParameters { PermissionId = newPermission.Id };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -299,7 +296,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Silveira"), new Email("lucassilveira@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-18), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, null, "example", "55", EGender.Masculine, null, null, null, null, false, null);
+            var parameters = new AdminQueryParameters { Email = "example", Phone = "55", Gender = EGender.Masculine, IsRootAdmin = false };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);
@@ -321,7 +318,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             // Arrange
             var newAdmin = await _utils.CreateAdminAsync(new Admin(new Name("Rodrigo", "Faro"), new Email("Rodrigofaro@example.com"), new Phone("+55 (19) 98765-4311"), "aDAs34sd", EGender.Masculine, DateTime.Now.AddYears(-33), new Address("Brazil", "São Paulo", "Av. SP", 999)));
 
-            var parameters = new AdminQueryParameters(0, 100, "R", null, null, null, DateTime.Now.AddYears(-31), "lt", null, null, null, null);
+            var parameters = new AdminQueryParameters{ Name = "R", DateOfBirth = DateTime.Now.AddYears(-31), DateOfBirthOperator = "lt", };
 
             // Act
             var admins = await _adminRepository.GetAsync(parameters);

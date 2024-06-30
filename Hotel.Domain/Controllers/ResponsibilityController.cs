@@ -31,9 +31,18 @@ public class ResponsibilityController : ControllerBase
       [FromQuery] string? createdAtOperator
     )
     {
-        var queryParameters = new ResponsibilityQueryParameters(
-            skip, take, name, priority, employeeId, serviceId, createdAt, createdAtOperator
-        );
+        var queryParameters = new ResponsibilityQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Name = name,
+            Priority = priority,
+            EmployeeId = employeeId,
+            ServiceId = serviceId,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

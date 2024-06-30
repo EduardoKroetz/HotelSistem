@@ -38,10 +38,20 @@ public class CustomerController : ControllerBase
       [FromQuery] string? createdAtOperator
     )
     {
-        var queryParameters = new UserQueryParameters(
-          skip, take, name, email, phone, gender, dateOfBirth,
-          dateOfBirthOperator, createdAt, createdAtOperator
-        );
+        var queryParameters = new UserQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Name = name,
+            Email = email,
+            Phone = phone,
+            Gender = gender,
+            DateOfBirth = dateOfBirth,
+            DateOfBirthOperator = dateOfBirthOperator,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

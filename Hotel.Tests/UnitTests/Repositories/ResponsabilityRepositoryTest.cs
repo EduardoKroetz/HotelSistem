@@ -70,7 +70,7 @@ public class ResponsibilityRepositoryTest
         var newResponsibility = await _utils.CreateResponsibilityAsync(new Responsibility("Limpeza", "Limpeza", EPriority.Medium));
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, newResponsibility.Name, null, null, null, null, null);
+        var parameters = new ResponsibilityQueryParameters { Name = newResponsibility.Name };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         var responsibility = responsibilities.ToList()[0];
@@ -90,7 +90,7 @@ public class ResponsibilityRepositoryTest
         await _utils.CreateResponsibilityAsync(new Responsibility("Planejar Limpeza", "Planejar a limpeza dos quartos", EPriority.Medium));
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, "Planejar", null, null, null, null, null);
+        var parameters = new ResponsibilityQueryParameters { Name = "Planejar" };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         //Assert
@@ -106,7 +106,7 @@ public class ResponsibilityRepositoryTest
         await _utils.CreateResponsibilityAsync(new Responsibility("Limpeza Básica", "Limpeza básica dos corredores", EPriority.Low));
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, null, EPriority.Low, null, null, null, null);
+        var parameters = new ResponsibilityQueryParameters { Priority = EPriority.Low };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         //Assert
@@ -126,7 +126,7 @@ public class ResponsibilityRepositoryTest
         await _dbContext.SaveChangesAsync();
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, null, null, newEmployee.Id, null, null, null);
+        var parameters = new ResponsibilityQueryParameters { EmployeeId = newEmployee.Id };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         //Assert
@@ -152,7 +152,7 @@ public class ResponsibilityRepositoryTest
         await _dbContext.SaveChangesAsync();
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, null, null, null, newService.Id, null, null);
+        var parameters = new ResponsibilityQueryParameters { ServiceId = newService.Id };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         //Assert
@@ -175,7 +175,7 @@ public class ResponsibilityRepositoryTest
         await _utils.CreateResponsibilityAsync(new Responsibility("Limpeza", "Limpeza", EPriority.Medium));
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, null, null, null, null, DateTime.Now.AddDays(-1), "gt");
+        var parameters = new ResponsibilityQueryParameters { CreatedAt = DateTime.Now.AddDays(-1), CreatedAtOperator = "gt" };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         //Assert
@@ -191,7 +191,7 @@ public class ResponsibilityRepositoryTest
         await _utils.CreateResponsibilityAsync(new Responsibility("Limpeza", "Limpeza", EPriority.Medium));
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, null, null, null, null, DateTime.Now, "lt");
+        var parameters = new ResponsibilityQueryParameters { CreatedAt = DateTime.Now, CreatedAtOperator = "lt" };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         //Assert
@@ -207,7 +207,7 @@ public class ResponsibilityRepositoryTest
         await _utils.CreateResponsibilityAsync(new Responsibility("Organizar Limpeza", "Organizar a limpeza dos quartos", EPriority.Medium));
 
         //Act
-        var parameters = new ResponsibilityQueryParameters(0, 100, "Organizar", EPriority.Medium, null, null, null, null);
+        var parameters = new ResponsibilityQueryParameters { Name = "Organizar", Priority = EPriority.Medium };
         var responsibilities = await _responsibilityRepository.GetAsync(parameters);
 
         //Assert

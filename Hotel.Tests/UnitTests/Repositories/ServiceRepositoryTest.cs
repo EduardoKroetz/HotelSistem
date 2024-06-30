@@ -11,13 +11,8 @@ using Hotel.Domain.Repositories;
 using Hotel.Domain.ValueObjects;
 using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
 using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase.Utils;
-using Hotel.Tests.UnitTests.Repositories.Mock;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Hotel.Tests.UnitTests.Repositories
 {
@@ -78,7 +73,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 15));
-            var parameters = new ServiceQueryParameters(0, 100, newService.Name, newService.Price, null, null, null, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters { Name = newService.Name, Price = newService.Price, PriceOperator = "eq" };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -100,7 +95,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 15));
-            var parameters = new ServiceQueryParameters(0, 100, newService.Name, null, null, null, null, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ Name = newService.Name };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -116,7 +111,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 15));
-            var parameters = new ServiceQueryParameters(0, 100, null, 50m, "gt", null, null, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ Price = 50m, PriceOperator = "gt" };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -132,7 +127,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 60, EPriority.Low, 15));
-            var parameters = new ServiceQueryParameters(0, 100, null, 70m, "lt", null, null, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ Price = 70m, PriceOperator = "lt" };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -148,7 +143,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 70, EPriority.Low, 15));
-            var parameters = new ServiceQueryParameters(0, 100, null, 70m, "eq", null, null, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ Price = 70m, PriceOperator = "eq" };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -164,7 +159,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Medium, 15));
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, EPriority.Medium, null, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ Priority = EPriority.Medium };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -180,7 +175,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 15));
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, true, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ IsActive = true };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -198,7 +193,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 15));
             newService.Disable();
             await _dbContext.SaveChangesAsync();
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, false, null, null, null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ IsActive = false };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -214,7 +209,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 45));
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, 30, "gt", null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ TimeInMinutes = 30, TimeInMinutesOperator = "gt" };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -230,7 +225,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 15));
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, 30, "lt", null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ TimeInMinutes = 30, TimeInMinutesOperator = "lt" };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -246,7 +241,7 @@ namespace Hotel.Tests.UnitTests.Repositories
         {
             // Arrange
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 30));
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, 30, "eq", null, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ TimeInMinutes =  30, TimeInMinutesOperator = "eq" };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -265,7 +260,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             var newResponsibility = await _utils.CreateResponsibilityAsync(new Responsibility("Auxiliar Spa", "Auxiliar spa", EPriority.Low));
             newService.AddResponsibility(newResponsibility);
             await _dbContext.SaveChangesAsync();
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, newResponsibility.Id, null, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ ResponsibilityId = newResponsibility.Id };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -295,7 +290,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             newReservation.ToCheckIn();
             newReservation.AddService(newService);
             await _dbContext.SaveChangesAsync();
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, newReservation.Id, null, null, null, null);
+            var parameters = new ServiceQueryParameters{ ReservationId = newReservation.Id };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -326,7 +321,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             newReservation.AddService(newService);
             var newInvoice = newReservation.Finish();
             await _dbContext.SaveChangesAsync();
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, newInvoice.Id, null, null, null);
+            var parameters = new ServiceQueryParameters{ InvoiceId = newInvoice.Id };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);
@@ -353,7 +348,7 @@ namespace Hotel.Tests.UnitTests.Repositories
             var newService = await _utils.CreateServiceAsync(new Service("Spa", "Spa", 80, EPriority.Low, 15));
             newRoom.AddService(newService);
             await _dbContext.SaveChangesAsync();
-            var parameters = new ServiceQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, null, newRoom.Id, null, null);
+            var parameters = new ServiceQueryParameters{ RoomId = newRoom.Id };
 
             // Act
             var services = await _serviceRepository.GetAsync(parameters);

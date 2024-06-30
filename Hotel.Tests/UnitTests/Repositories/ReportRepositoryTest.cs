@@ -87,7 +87,7 @@ public class ReportRepositoryTest
     {
         // Arrange
         var newReport = await CreateReportAsync();
-        var parameters = new ReportQueryParameters(0, 100, newReport.Summary, newReport.Status, null, null, null, null);
+        var parameters = new ReportQueryParameters { Summary = newReport.Summary, Status = newReport.Status };
 
         // Act
         var reports = await _reportRepository.GetAsync(parameters);
@@ -108,7 +108,7 @@ public class ReportRepositoryTest
     {
         // Arrange
         var newReport = await CreateReportAsync();
-        var parameters = new ReportQueryParameters(0, 100, null, EStatus.Pending, null, null, null, null);
+        var parameters = new ReportQueryParameters{ Status = EStatus.Pending};
 
         // Act
         var reports = await _reportRepository.GetAsync(parameters);
@@ -127,7 +127,7 @@ public class ReportRepositoryTest
         // Arrange
         var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Ana", "Santos"), new Email("anasantos@example.com"), new Phone("+55 (31) 98765-9121"), "ana456", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Belo Horizonte", "Avenida Afonso Pena", 456), 400));
         var newReport = await _utils.CreateReportAsync(new Report("Erro no quarto 30", "Erro no quarto 30", EPriority.Medium, newEmployee));
-        var parameters = new ReportQueryParameters(0, 100, null, null, EPriority.Medium, null, null, null);
+        var parameters = new ReportQueryParameters{ Priority = EPriority.Medium};
 
         // Act
         var reports = await _reportRepository.GetAsync(parameters);
@@ -145,7 +145,7 @@ public class ReportRepositoryTest
     {
         // Arrange
         var newReport = await CreateReportAsync();
-        var parameters = new ReportQueryParameters(0, 100, null, null, null, newReport.EmployeeId, null, null);
+        var parameters = new ReportQueryParameters{ EmployeeId = newReport.EmployeeId};
 
         // Act
         var reports = await _reportRepository.GetAsync(parameters);
@@ -165,7 +165,7 @@ public class ReportRepositoryTest
         var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Ana", "Santos"), new Email("anasantos@example.com"), new Phone("+55 (31) 98765-9121"), "ana456", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Belo Horizonte", "Avenida Afonso Pena", 456), 400));
         var newReport = await _utils.CreateReportAsync(new Report("Vazamento de água", "Vazamento de água no cômodo 1", EPriority.High, newEmployee));
 
-        var parameters = new ReportQueryParameters(0, 100, "água", EStatus.Pending, EPriority.High, null, null, null);
+        var parameters = new ReportQueryParameters{ Summary = "água", Status = EStatus.Pending, Priority = EPriority.High };
 
         // Act
         var reports = await _reportRepository.GetAsync(parameters);

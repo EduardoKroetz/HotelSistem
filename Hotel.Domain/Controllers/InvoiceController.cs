@@ -41,9 +41,18 @@ public class InvoiceController : ControllerBase
       [FromQuery] string? issueDateOperator
     )
     {
-        var queryParameters = new InvoiceQueryParameters(
-            skip, take, paymentMethod, totalAmount, totalAmountOperator, customerId, reservationId, serviceId
-        );
+        var queryParameters = new InvoiceQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            PaymentMethod = paymentMethod,
+            TotalAmount = totalAmount,
+            TotalAmountOperator = totalAmountOperator,
+            CustomerId = customerId,
+            ReservationId = reservationId,
+            ServiceId = serviceId
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

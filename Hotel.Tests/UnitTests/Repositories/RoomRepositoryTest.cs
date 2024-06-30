@@ -76,7 +76,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Deluxe Room", 99, 178.30m, 9, "Deluxe room is a...", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, newRoom.Number, "eq", newRoom.Price, "eq", newRoom.Status, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Number = newRoom.Number, NumberOperator = "eq", Price = newRoom.Price, PriceOperator = "eq", Status = newRoom.Status };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -101,22 +101,25 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe beach", "Quartos de luxo com vista para praia", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Quarto de luxo a beira mar", 999, 230m, 6, "Um quarto de luxo com vista luxuosa", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, newRoom.Name, null, null, null, null, null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Name = newRoom.Name };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
-        var returnedRoom = rooms.FirstOrDefault();
 
         // Assert
         Assert.IsTrue(rooms.Any());
-        Assert.AreEqual(newRoom.Id, returnedRoom.Id);
-        Assert.AreEqual(newRoom.Name, returnedRoom.Name);
-        Assert.AreEqual(newRoom.Number, returnedRoom.Number);
-        Assert.AreEqual(newRoom.Description, returnedRoom.Description);
-        Assert.AreEqual(newRoom.Price, returnedRoom.Price);
-        Assert.AreEqual(newRoom.Status, returnedRoom.Status);
-        Assert.AreEqual(newRoom.Capacity, returnedRoom.Capacity);
-        Assert.AreEqual(newRoom.Description, returnedRoom.Description);
+        foreach (var room in rooms)
+        {
+            Assert.AreEqual(newRoom.Id, room.Id);
+            Assert.AreEqual(newRoom.Name, room.Name);
+            Assert.AreEqual(newRoom.Number, room.Number);
+            Assert.AreEqual(newRoom.Description, room.Description);
+            Assert.AreEqual(newRoom.Price, room.Price);
+            Assert.AreEqual(newRoom.Status, room.Status);
+            Assert.AreEqual(newRoom.Capacity, room.Capacity);
+            Assert.AreEqual(newRoom.Description, room.Description);
+        }
+
     }
 
     [TestMethod]
@@ -127,7 +130,7 @@ public class RoomRepositoryTest
         var newRoom1 = await _utils.CreateRoomAsync(new Room("Room 21", 21, 200m, 2, "Room with number greater than 20", newCategory));
         var newRoom2 = await _utils.CreateRoomAsync(new Room("Room 22", 22, 220m, 3, "Room with number greater than 20", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, 20, "gt", null, null, null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Number = 20, NumberOperator = "gt" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -146,7 +149,7 @@ public class RoomRepositoryTest
         var newRoom1 = await _utils.CreateRoomAsync(new Room("Room 19", 19, 200m, 2, "Room with number less than 20", newCategory));
         var newRoom2 = await _utils.CreateRoomAsync(new Room("Room 18", 18, 220m, 3, "Room with number less than 20", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, 20, "lt", null, null, null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Number = 20, NumberOperator = "lt" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -164,7 +167,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 9", 9, 200m, 2, "Room with number 9", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, 9, "eq", null, null, null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Number = 9, NumberOperator = "eq" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -182,7 +185,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 1", 1, 60m, 2, "Room with price greater than 50", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, 50, "gt", null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Price = 50, PriceOperator = "gt" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -200,7 +203,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 2", 2, 50m, 2, "Room with price less than 60", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, 60, "lt", null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Price = 60, PriceOperator = "lt" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -218,7 +221,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 3", 3, 50m, 2, "Room with price equals 50", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, 50, "eq", null, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Price = 50, PriceOperator = "eq" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -241,7 +244,7 @@ public class RoomRepositoryTest
         newReservation.Finish();
         await _dbContext.SaveChangesAsync();
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, ERoomStatus.OutOfService, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Status = ERoomStatus.OutOfService };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -261,7 +264,7 @@ public class RoomRepositoryTest
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 5", 5, 50m, 2, "Room with status reserved", newCategory));
         await _utils.CreateReservationAsync(new Reservation(newRoom, DateTime.Now.AddDays(3) , DateTime.Now.AddDays(4), newCustomer, 2 ));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, ERoomStatus.Reserved, null, null, null, null, null, null);
+        var parameters = new RoomQueryParameters { Status = ERoomStatus.Reserved };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -279,7 +282,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 6", 6, 50m, 3, "Room with capacity greater than 2", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, 2, "gt", null, null, null, null);
+        var parameters = new RoomQueryParameters { Capacity = 2, CapacityOperator = "gt" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -297,7 +300,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 7", 7, 50m, 2, "Room with capacity less than 3", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, 3, "lt", null, null, null, null);
+        var parameters = new RoomQueryParameters { Capacity = 3, CapacityOperator = "lt" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -315,7 +318,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 8", 8, 50m, 2, "Room with capacity equals 2", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, 2, "eq", null, null, null, null);
+        var parameters = new RoomQueryParameters { Capacity = 2, CapacityOperator = "eq" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -336,7 +339,7 @@ public class RoomRepositoryTest
         newRoom.Services.Add(newService);
         await _dbContext.SaveChangesAsync();
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, newService.Id, null, null, null);
+        var parameters = new RoomQueryParameters { ServiceId = newService.Id };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -361,7 +364,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Category Test", "Description", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 10", 10, 50m, 2, "Room with specific category", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, null, null, null, null, null, null, null, null, newCategory.Id, null, null);
+        var parameters = new RoomQueryParameters { CategoryId = newCategory.Id };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);
@@ -379,7 +382,7 @@ public class RoomRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Deluxe", "Deluxe", 190));
         var newRoom = await _utils.CreateRoomAsync(new Room("Room 14", 6, 50m, 3, "Room matching multiple criteria", newCategory));
 
-        var parameters = new RoomQueryParameters(0, 100, null, 5, "gt", 60, "lt", null, 2, "gt", null, null, null, null);
+        var parameters = new RoomQueryParameters { Number = 5, NumberOperator = "gt", Price = 60, PriceOperator = "lt", Capacity = 2, CapacityOperator = "gt" };
 
         // Act
         var rooms = await _roomRepository.GetAsync(parameters);

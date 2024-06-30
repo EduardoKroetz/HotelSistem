@@ -509,8 +509,8 @@ public class CustomerControllerTests
         Assert.IsNotNull(stripeCustomer);
         Assert.AreEqual(updatedCustomer.Name.GetFullName(), stripeCustomer.Name);
         Assert.AreEqual(updatedCustomer.Phone.Number, stripeCustomer.Phone);
-        Assert.AreEqual(updatedCustomer.Address.Country, stripeCustomer.Address.Country);
-        Assert.AreEqual(updatedCustomer.Address.City, stripeCustomer.Address.City);
+        Assert.AreEqual(updatedCustomer.Address?.Country, stripeCustomer.Address.Country);
+        Assert.AreEqual(updatedCustomer.Address?.City, stripeCustomer.Address.City);
     }
 
     [TestMethod]

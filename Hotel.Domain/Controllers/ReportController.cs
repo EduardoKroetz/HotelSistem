@@ -37,9 +37,18 @@ public class ReportController : ControllerBase
       [FromQuery] string? createdAtOperator
     )
     {
-        var queryParameters = new ReportQueryParameters(
-            skip, take, summary, status, priority, employeeId, createdAt, createdAtOperator
-        );
+        var queryParameters = new ReportQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Summary = summary,
+            Status = status,
+            Priority = priority,
+            EmployeeId = employeeId,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

@@ -28,9 +28,17 @@ public class PermissionController : ControllerBase
       [FromQuery] Guid? adminId
     )
     {
-        var queryParameters = new PermissionQueryParameters(
-          skip, take, createdAt, createdAtOperator, name, isActive, adminId
-        );
+        var queryParameters = new PermissionQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator,
+            Name = name,
+            IsActive = isActive,
+            AdminId = adminId
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

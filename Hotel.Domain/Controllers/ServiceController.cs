@@ -32,17 +32,31 @@ public class ServiceController : ControllerBase
       [FromQuery] string? timeInMinutesOperator,
       [FromQuery] Guid? responsibilityId,
       [FromQuery] Guid? reservationId,
-      [FromQuery] Guid? roomInvoiceId,
+      [FromQuery] Guid? invoiceId,
       [FromQuery] Guid? roomId,
       [FromQuery] DateTime? createdAt,
       [FromQuery] string? createdAtOperator
     )
     {
-        var queryParameters = new ServiceQueryParameters(
-            skip, take, name, price, priceOperator, priority, isActive,
-            timeInMinutes, timeInMinutesOperator, responsibilityId, reservationId,
-            roomInvoiceId, roomId, createdAt, createdAtOperator
-        );
+        var queryParameters = new ServiceQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Name = name,
+            Price = price,
+            PriceOperator = priceOperator,
+            Priority = priority,
+            IsActive = isActive,
+            TimeInMinutes = timeInMinutes,
+            TimeInMinutesOperator = timeInMinutesOperator,
+            ResponsibilityId = responsibilityId,
+            ReservationId = reservationId,
+            InvoiceId = invoiceId,
+            RoomId = roomId,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

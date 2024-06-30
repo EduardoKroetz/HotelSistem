@@ -67,7 +67,7 @@ public class CategoryRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
 
         //Act
-        var parameters = new CategoryQueryParameters(0, 1, newCategory.Name, null, null, null);
+        var parameters = new CategoryQueryParameters { Name = newCategory.Name };
         var categories = await _categoryRepository.GetAsync(parameters);
 
         //Assert
@@ -87,7 +87,7 @@ public class CategoryRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
 
         //Act
-        var parameters = new CategoryQueryParameters(0, 1, null, 10, "gt", null);
+        var parameters = new CategoryQueryParameters { AveragePrice =  10, AveragePriceOperator = "gt" };
         var categories = await _categoryRepository.GetAsync(parameters);
 
         //Assert
@@ -104,7 +104,7 @@ public class CategoryRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Basic", "Basic", 49.9m));
 
         //Act
-        var parameters = new CategoryQueryParameters(0, 1, null, 50, "lt", null);
+        var parameters = new CategoryQueryParameters { AveragePrice = 50, AveragePriceOperator = "lt" };
         var categories = await _categoryRepository.GetAsync(parameters);
 
         //Assert
@@ -121,7 +121,7 @@ public class CategoryRepositoryTest
         var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
 
         //Act
-        var parameters = new CategoryQueryParameters(0, 1, null, newCategory.AveragePrice, "eq", null);
+        var parameters = new CategoryQueryParameters { AveragePrice = newCategory.AveragePrice, AveragePriceOperator = "eq" };
         var categories = await _categoryRepository.GetAsync(parameters);
 
         //Assert
@@ -139,7 +139,7 @@ public class CategoryRepositoryTest
         var newRoom = await _utils.CreateRoomAsync(new Room("Deluxe room", 30, 78.1m, 8, "the Deluxe room is a...", newCategory));
 
         //Act
-        var parameters = new CategoryQueryParameters(0, 1, null, null, null, newRoom.Id);
+        var parameters = new CategoryQueryParameters { RoomId = newRoom.Id };
         var categories = await _categoryRepository.GetAsync(parameters);
 
         //Assert

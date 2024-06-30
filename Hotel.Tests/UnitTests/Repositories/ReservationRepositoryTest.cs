@@ -85,7 +85,7 @@ public class ReservationRepositoryTest
         var newReservation = await CreateReservationAsync();
 
         //Act
-        var parameters = new ReservationQueryParameters(0, 100, newReservation.TimeHosted, "eq", newReservation.DailyRate, "eq", newReservation.CheckIn, "eq", newReservation.CheckOut, "eq", newReservation.Status, newReservation.Capacity, "eq", newReservation.RoomId, null, newReservation.InvoiceId, null, null, null, null, null, null, null, null, null);
+        var parameters = new ReservationQueryParameters{ TimeHosted = newReservation.TimeHosted, TimeHostedOperator = "eq", DailyRate = newReservation.DailyRate, DailyRateOperator = "eq", CheckIn = newReservation.CheckIn, CheckInOperator = "eq", CheckOut = newReservation.CheckOut, CheckOutOperator = "eq", Status = newReservation.Status, Capacity = newReservation.Capacity, CapacityOperator = "eq", RoomId = newReservation.RoomId , InvoiceId = newReservation.InvoiceId };
         var reservations = await _reservationRepository.GetAsync(parameters);
 
         var reservation = reservations.ToList()[0];
@@ -116,7 +116,7 @@ public class ReservationRepositoryTest
         await _dbContext.SaveChangesAsync();
 
         //Act
-        var parameters = new ReservationQueryParameters(0, 100, TimeSpan.FromDays(1), "lt", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        var parameters = new ReservationQueryParameters{ TimeHosted = TimeSpan.FromDays(1), TimeHostedOperator = "lt" };
         var reservations = await _reservationRepository.GetAsync(parameters);
 
         //Assert
@@ -134,7 +134,7 @@ public class ReservationRepositoryTest
         var newReservation = await CreateReservationAsync();
 
         //Act
-        var parameters = new ReservationQueryParameters(0, 100, newReservation.TimeHosted, "eq", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        var parameters = new ReservationQueryParameters{ TimeHosted = newReservation.TimeHosted, TimeHostedOperator = "eq" };
         var reservations = await _reservationRepository.GetAsync(parameters);
 
         //Assert
@@ -152,7 +152,7 @@ public class ReservationRepositoryTest
         var newReservation = await CreateReservationAsync();
 
         //Act
-        var parameters = new ReservationQueryParameters(0, 100, null, null, 70, "gt", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        var parameters = new ReservationQueryParameters{ DailyRate = 70, DailyRateOperator = "gt" };
         var reservations = await _reservationRepository.GetAsync(parameters);
 
         //Assert
@@ -173,7 +173,7 @@ public class ReservationRepositoryTest
         var newReservation = await _utils.CreateReservationAsync(new Reservation(newRoom, DateTime.Now.AddDays(1), DateTime.Now.AddDays(2), newCustomer, 4));
 
         //Act
-        var parameters = new ReservationQueryParameters(0, 100, null, null, 120, "lt", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        var parameters = new ReservationQueryParameters { DailyRate = 120, DailyRateOperator = "lt" };
         var reservations = await _reservationRepository.GetAsync(parameters);
 
         //Assert
@@ -191,7 +191,7 @@ public class ReservationRepositoryTest
         var newReservation = await CreateReservationAsync();
 
         //Act
-        var parameters = new ReservationQueryParameters(0, 100, null, null, newReservation.DailyRate, "eq", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        var parameters = new ReservationQueryParameters{ DailyRate = newReservation.DailyRate, DailyRateOperator = "eq" };
         var reservations = await _reservationRepository.GetAsync(parameters);
 
         //Assert

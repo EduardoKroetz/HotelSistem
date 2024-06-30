@@ -72,7 +72,7 @@ public class PermissionRepositoryTest
     {
         // Arrange
         var newPermission = await CreatePermissionAsync();
-        var parameters = new PermissionQueryParameters(0, 1, null, null, newPermission.Name, null, null);
+        var parameters = new PermissionQueryParameters { Name = newPermission.Name };
 
         // Act
         var permissions = await _permissionRepository.GetAsync(parameters);
@@ -91,7 +91,7 @@ public class PermissionRepositoryTest
     {
         // Arrange
         var newPermission = await CreatePermissionAsync();
-        var parameters = new PermissionQueryParameters(0, 1, null, null, "Deletar", null, null);
+        var parameters = new PermissionQueryParameters { Name = "Deletar" };
 
         // Act
         var permissions = await _permissionRepository.GetAsync(parameters);
@@ -109,7 +109,7 @@ public class PermissionRepositoryTest
     {
         // Arrange
         var newPermission = await CreatePermissionAsync();
-        var parameters = new PermissionQueryParameters(0, 1, DateTime.Now.AddYears(-24), "gt", null, null, null);
+        var parameters = new PermissionQueryParameters { CreatedAt = DateTime.Now.AddYears(-24), CreatedAtOperator = "gt" };
 
         // Act
         var permissions = await _permissionRepository.GetAsync(parameters);
@@ -127,7 +127,7 @@ public class PermissionRepositoryTest
     {
         // Arrange
         var newPermission = await CreatePermissionAsync();
-        var parameters = new PermissionQueryParameters(0, 1, DateTime.Now.AddYears(1), "lt", null, null, null);
+        var parameters = new PermissionQueryParameters { CreatedAt = DateTime.Now.AddYears(1), CreatedAtOperator = "lt" };
 
         // Act
         var permissions = await _permissionRepository.GetAsync(parameters);
@@ -145,7 +145,7 @@ public class PermissionRepositoryTest
     {
         // Arrange
         var newPermission = await CreatePermissionAsync();
-        var parameters = new PermissionQueryParameters(0, 1, newPermission.CreatedAt, "eq", null, null, null);
+        var parameters = new PermissionQueryParameters { CreatedAt = newPermission.CreatedAt, CreatedAtOperator = "eq" };
 
         // Act
         var permissions = await _permissionRepository.GetAsync(parameters);
@@ -168,7 +168,7 @@ public class PermissionRepositoryTest
         await _dbContext.Admins.AddAsync(admin);
         await _dbContext.SaveChangesAsync();
 
-        var parameters = new PermissionQueryParameters(0, 1, null, null, null, null, admin.Id);
+        var parameters = new PermissionQueryParameters { AdminId = admin.Id };
 
         // Act
         var permissions = await _permissionRepository.GetAsync(parameters);
@@ -191,7 +191,7 @@ public class PermissionRepositoryTest
     {
         // Arrange
         var newPermission = await CreatePermissionAsync();
-        var parameters = new PermissionQueryParameters(0, 1, null, null, newPermission.Name, true, null);
+        var parameters = new PermissionQueryParameters { Name = newPermission.Name, IsActive = true };
 
         // Act
         var permissions = await _permissionRepository.GetAsync(parameters);

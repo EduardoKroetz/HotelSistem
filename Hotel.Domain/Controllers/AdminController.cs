@@ -44,10 +44,21 @@ public class AdminController : ControllerBase
       [FromQuery] Guid? permissionId
     )
     {
-        var queryParameters = new AdminQueryParameters(
-            skip, take, name, email, phone, gender, dateOfBirth,
-            dateOfBirthOperator, createdAt, createdAtOperator, isRootAdmin, permissionId
-        );
+        var queryParameters = new AdminQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            Name = name,
+            Email = email,
+            Phone = phone,
+            Gender = gender,
+            DateOfBirth = dateOfBirth,
+            DateOfBirthOperator = dateOfBirthOperator,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator,
+            IsRootAdmin = isRootAdmin,
+            PermissionId = permissionId
+        };
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

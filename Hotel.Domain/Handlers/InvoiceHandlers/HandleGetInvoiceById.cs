@@ -7,10 +7,10 @@ public partial class InvoiceHandler
 {
     public async Task<Response<GetInvoice>> HandleGetByIdAsync(Guid id)
     {
-        var roomInvoice = await _repository.GetByIdAsync(id);
-        if (roomInvoice == null)
+        var invoice = await _repository.GetByIdAsync(id);
+        if (invoice == null)
             throw new ArgumentException("Fatura de quarto não encontrada.");
 
-        return new Response<GetInvoice>("Sucesso!", roomInvoice);
+        return new Response<GetInvoice>("Sucesso!", invoice);
     }
 }

@@ -55,13 +55,35 @@ public class ReservationController : ControllerBase
       [FromQuery] string? expectedTimeHostedOperator
     )
     {
-        var queryParameters = new ReservationQueryParameters(
-            skip, take, timeHosted, timeHostedOperator, dailyRate, dailyRateOperator,
-            checkIn, checkInOperator, checkOut, checkOutOperator, status, capacity,
-            capacityOperator, roomId, customerId, invoiceId, serviceId, createdAt,
-            createdAtOperator, expectedCheckIn, expectedCheckInOperator, expectedCheckOut,
-            expectedCheckOutOperator, expectedTimeHosted, expectedTimeHostedOperator
-        );
+        var queryParameters = new ReservationQueryParameters
+        {
+            Skip = skip,
+            Take = take,
+            TimeHosted = timeHosted,
+            TimeHostedOperator = timeHostedOperator,
+            DailyRate = dailyRate,
+            DailyRateOperator = dailyRateOperator,
+            CheckIn = checkIn,
+            CheckInOperator = checkInOperator,
+            CheckOut = checkOut,
+            CheckOutOperator = checkOutOperator,
+            Status = status,
+            Capacity = capacity,
+            CapacityOperator = capacityOperator,
+            RoomId = roomId,
+            CustomerId = customerId,
+            InvoiceId = invoiceId,
+            ServiceId = serviceId,
+            CreatedAt = createdAt,
+            CreatedAtOperator = createdAtOperator,
+            ExpectedCheckIn = expectedCheckIn,
+            ExpectedCheckInOperator = expectedCheckInOperator,
+            ExpectedCheckOut = expectedCheckOut,
+            ExpectedCheckOutOperator = expectedCheckOutOperator,
+            ExpectedTimeHosted = expectedTimeHosted,
+            ExpectedTimeHostedOperator = expectedTimeHostedOperator
+        };
+
 
         return Ok(await _handler.HandleGetAsync(queryParameters));
     }

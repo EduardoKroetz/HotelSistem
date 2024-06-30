@@ -67,7 +67,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Lucas", "Silva"), new Email("lucassilva@example.com"), new Phone("+55 (21) 99876-5432"), "lucas123", EGender.Masculine, DateTime.Now.AddYears(-35), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, newEmployee.Name.FirstName, null, null, null, null, null, null, null, null, null);
+        var parameters = new EmployeeQueryParameters{ Name = newEmployee.Name.FirstName };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -87,7 +87,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Lucas", "Souza"), new Email("lucassouza@example.com"), new Phone("+55 (11) 98765-4321"), "lucas789", EGender.Masculine, DateTime.Now.AddYears(-25), new Address("Brazil", "São Paulo", "Avenida Paulista", 789)));
-        var parameters = new EmployeeQueryParameters(0, 100, "Lucas", null, null, null, null, null, null, null, null, null);
+        var parameters = new EmployeeQueryParameters{  Name = "Lucas" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -103,7 +103,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Maria", "Fernandes"), new Email("maria.fernandes@example.com"), new Phone("+55 (21) 97654-3210"), "maria123", EGender.Feminine, DateTime.Now.AddYears(-30), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 321)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, ".com", null, null, null, null, null, null, null, null);
+        var parameters = new EmployeeQueryParameters { Email = ".com"  };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -119,7 +119,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("João", "Pereira"), new Email("joao.pereira@example.com"), new Phone("+55 (41) 98765-4321"), "joao123", EGender.Masculine, DateTime.Now.AddYears(-27), new Address("Brazil", "Curitiba", "Rua das Flores", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, "55", null, null, null, null, null, null, null);
+        var parameters = new EmployeeQueryParameters{ Phone = "55" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -135,7 +135,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Pedro", "Silva"), new Email("pedro.silva@example.com"), new Phone("+55 (21) 99876-5432"), "pedro123", EGender.Masculine, DateTime.Now.AddYears(-40), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, EGender.Masculine, null, null, null, null, null, null);
+        var parameters = new EmployeeQueryParameters{ Gender = EGender.Masculine };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -151,7 +151,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Mariana", "Gomes"), new Email("mariana.gomes@example.com"), new Phone("+55 (21) 98765-4321"), "mariana123", EGender.Feminine, DateTime.Now.AddYears(-23), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, DateTime.Now.AddYears(-24), "gt", null, null, null, null);
+        var parameters = new EmployeeQueryParameters{ DateOfBirth = DateTime.Now.AddYears(-24), DateOfBirthOperator = "gt" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -167,7 +167,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Fernanda", "Souza"), new Email("fernanda.souza@example.com"), new Phone("+55 (21) 98765-4321"), "fernanda123", EGender.Feminine, DateTime.Now.AddYears(-30), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(-1), "gt", null, null);
+        var parameters = new EmployeeQueryParameters{ CreatedAt = DateTime.Now.AddDays(-1), CreatedAtOperator = "gt" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -183,7 +183,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Rafael", "Mendes"), new Email("rafael.mendes@example.com"), new Phone("+55 (21) 98765-4321"), "rafael123", EGender.Masculine, DateTime.Now.AddYears(-29), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, DateTime.Now.AddDays(1), "lt", null, null);
+        var parameters = new EmployeeQueryParameters{ CreatedAt = DateTime.Now.AddDays(1), CreatedAtOperator = "lt" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -199,7 +199,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Roberto", "Lima"), new Email("roberto.lima@example.com"), new Phone("+55 (21) 98765-4321"), "roberto123", EGender.Masculine, DateTime.Now.AddYears(-33), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, newEmployee.CreatedAt, "eq", null, null);
+        var parameters = new EmployeeQueryParameters{ CreatedAt = newEmployee.CreatedAt, CreatedAtOperator = "eq" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -215,7 +215,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Carlos", "Almeida"), new Email("carlos.almeida@example.com"), new Phone("+55 (21) 98765-4321"), "carlos123", EGender.Masculine, DateTime.Now.AddYears(-40), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123)));
-        var parameters = new EmployeeQueryParameters(0, 100, null, "example", "55", EGender.Masculine, null, null, null, null, null, null);
+        var parameters = new EmployeeQueryParameters{ Email = "example", Phone = "55", Gender = EGender.Masculine };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -236,7 +236,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Roberto", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 31345-6789"), "_customer123", EGender.Masculine, DateTime.Now.AddYears(-33), new Address("Brazil", "Brasília", "Quadra 123", 3)));
-        var parameters = new EmployeeQueryParameters(0, 100, "R", null, null, null, DateTime.Now.AddYears(-31), "lt", DateTime.Now.AddDays(1), "lt", null, null);
+        var parameters = new EmployeeQueryParameters{ Name = "R", DateOfBirth = DateTime.Now.AddYears(-31), DateOfBirthOperator = "lt", CreatedAt = DateTime.Now.AddDays(1), CreatedAtOperator = "lt" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -257,7 +257,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Paulo", "Moreira"), new Email("paulo.moreira@example.com"), new Phone("+55 (21) 98765-4321"), "paulo123", EGender.Masculine, DateTime.Now.AddYears(-35), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123), 2500m));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, null, null, 2000m, "gt");
+        var parameters = new EmployeeQueryParameters { Salary = 2000m, SalaryOperator = "gt" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -274,7 +274,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Julia", "Martins"), new Email("julia.martins@example.com"), new Phone("+55 (21) 98765-4321"), "julia123", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123), 1400m));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, null, null, 1500m, "lt");
+        var parameters = new EmployeeQueryParameters { Salary = 1500m, SalaryOperator = "lt" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
@@ -291,7 +291,7 @@ public class EmployeeRepositoryTest
     {
         // Arrange
         await _utils.CreateEmployeeAsync(new Employee(new Name("Bruna", "Oliveira"), new Email("bruna.oliveira@example.com"), new Phone("+55 (21) 98765-4321"), "bruna123", EGender.Feminine, DateTime.Now.AddYears(-32), new Address("Brazil", "Rio de Janeiro", "Rua das Laranjeiras", 123), 1400m));
-        var parameters = new EmployeeQueryParameters(0, 100, null, null, null, null, null, null, null, null, 1400m, "eq");
+        var parameters = new EmployeeQueryParameters { Salary = 1400m, SalaryOperator = "eq" };
 
         // Act
         var employees = await _employeeRepository.GetAsync(parameters);
