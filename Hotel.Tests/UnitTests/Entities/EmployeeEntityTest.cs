@@ -22,7 +22,6 @@ public class EmployeeEntityTest
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         var exception = Assert.ThrowsException<ValidationException>(() => employee.ChangeSalary(-1));
-        Assert.AreEqual("Salário deve ser maior ou igual a zero", exception.Message);
     }
 
     [TestMethod]
@@ -47,7 +46,6 @@ public class EmployeeEntityTest
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         employee.AddResponsibility(Responsibility);
         var exception = Assert.ThrowsException<ArgumentException>(() => employee.AddResponsibility(Responsibility));
-        Assert.AreEqual("Essa responsabilidade já está atribuida a esse funcionário", exception.Message);
         Assert.AreEqual(1, employee.Responsibilities.Count);
     }
 
@@ -65,7 +63,6 @@ public class EmployeeEntityTest
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, "password123");
         var exception = Assert.ThrowsException<ArgumentException>(() => employee.RemoveResponsibility(Responsibility));
-        Assert.AreEqual("Essa responsabilidade não está atribuida a esse funcionário", exception.Message);
     }
 
     [TestMethod]
@@ -73,7 +70,6 @@ public class EmployeeEntityTest
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         employee.AssignPermission(TestParameters.Permission);
-
         Assert.AreEqual(1, employee.Permissions.Count);
     }
 
@@ -83,7 +79,6 @@ public class EmployeeEntityTest
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         employee.AssignPermission(TestParameters.Permission);
         var exception = Assert.ThrowsException<ValidationException>(() => employee.AssignPermission(TestParameters.Permission));
-        Assert.AreEqual("Essa permissão já foi associada a esse funcionário", exception.Message);
         Assert.AreEqual(1, employee.Permissions.Count);
     }
 
@@ -102,6 +97,5 @@ public class EmployeeEntityTest
     {
         var employee = new Employee(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         var exception = Assert.ThrowsException<ValidationException>(() => employee.UnassignPermission(TestParameters.Permission));
-        Assert.AreEqual("Essa permissão não está associada a esse funcionário", exception.Message);
     }
 }

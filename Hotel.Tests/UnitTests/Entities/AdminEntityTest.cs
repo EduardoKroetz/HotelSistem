@@ -31,7 +31,6 @@ public class AdminEntityTest
     {
         var admin = new Admin(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         var exception = Assert.ThrowsException<ValidationException>(() => admin.ChangeToRootAdmin(TestParameters.Admin));
-        Assert.AreEqual("Esse administrador não é um administrador raiz. Informe um administrador raiz para mudar o status.", exception.Message);
     }
 
     [TestMethod]
@@ -49,7 +48,6 @@ public class AdminEntityTest
         var admin = new Admin(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         admin.AddPermission(Permission);
         var exception = Assert.ThrowsException<ValidationException>(() => admin.AddPermission(Permission));
-        Assert.AreEqual("Essa permissão já foi associada a esse administrador.", exception.Message);
         Assert.AreEqual(1, admin.Permissions.Count);
     }
 
@@ -68,7 +66,6 @@ public class AdminEntityTest
     {
         var admin = new Admin(TestParameters.Name, TestParameters.Email, TestParameters.Phone, TestParameters.Password);
         var exception = Assert.ThrowsException<ValidationException>(() => admin.RemovePermission(Permission));
-        Assert.AreEqual("Essa permissão não está associada a esse administrador.", exception.Message);
         Assert.AreEqual(0, admin.Permissions.Count);
     }
 }

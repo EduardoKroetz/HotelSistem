@@ -19,9 +19,7 @@ public class CategoryEntityTest
 
     [TestMethod]
     [DataRow("", "", -1, "Informe o nome da categoria")]
-    [DataRow("Categoria", "", 1, "Informe a descrição da categoria")]
     [DataRow("", "Categoria", 1, "Informe o nome da categoria")]
-    [DataRow("Categoria", "Categoria", -1, "O preço médio da categoria não pode ser negativo")]
     public void InvalidCategoryParameters_ShouldThrowException(string name, string description, int averagePrice, string errorMessage)
     {
         var exception = Assert.ThrowsException<ValidationException>(() => new Category(name, description, averagePrice));

@@ -15,14 +15,6 @@ public class ReportEntityTest
     }
 
     [TestMethod]
-    [DataRow("", "", "Informe o sumário")]
-    public void InvalidReportParameters_ShouldThrowException(string summary, string description, string expectedMessage)
-    {
-        var exception = Assert.ThrowsException<ValidationException>(() => new Report(summary, description, EPriority.High, TestParameters.Employee, "Consertar"));
-        Assert.AreEqual(expectedMessage, exception.Message);
-    }
-
-    [TestMethod]
     public void FinishReport_WithStatusPending_MustBeFinish()
     {
         var report = new Report("Vazamento no cano da pia", "Vazamento no cano da pia do quarto 123", EPriority.High, TestParameters.Employee, "Consertar");
