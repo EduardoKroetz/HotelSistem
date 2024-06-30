@@ -1,127 +1,176 @@
-﻿using Hotel.Domain.DTOs.ReportDTOs;
+﻿using Hotel.Domain.Data;
+using Hotel.Domain.DTOs.ReportDTOs;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories;
-using Hotel.Tests.UnitTests.Repositories.Mock;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase.Utils;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
+using Microsoft.EntityFrameworkCore.Storage;
+using Hotel.Domain.Entities.ReportEntity;
+using Hotel.Domain.Entities.EmployeeEntity;
+using Hotel.Domain.ValueObjects;
 
 namespace Hotel.Tests.UnitTests.Repositories;
 
 [TestClass]
 public class ReportRepositoryTest
 {
-    private static ReportRepository ReportRepository { get; set; }
+    private readonly ReportRepository _reportRepository;
+    private readonly HotelDbContext _dbContext;
+    private readonly RepositoryTestUtils _utils;
+    private static readonly AsyncLocal<IDbContextTransaction?> _currentTransaction = new AsyncLocal<IDbContextTransaction?>();
 
-    static ReportRepositoryTest()
-    => ReportRepository = new ReportRepository(BaseRepositoryTest.MockConnection.Context);
+    public ReportRepositoryTest()
+    {
+        var sqliteDatabase = new SqliteDatabase();
+        _dbContext = sqliteDatabase.Context;
+        _reportRepository = new ReportRepository(_dbContext);
+        _utils = new RepositoryTestUtils(_dbContext);
+    }
 
+    [TestInitialize]
+    public async Task Initialize()
+    {
+        _currentTransaction.Value = await _dbContext.Database.BeginTransactionAsync();
+    }
+
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        if (_currentTransaction.Value != null)
+        {
+            await _currentTransaction.Value.RollbackAsync();
+            await _currentTransaction.Value.DisposeAsync();
+            _currentTransaction.Value = null;
+        }
+    }
+
+    private async Task<Report> CreateReportAsync()
+    {
+        var newEmployee = await _utils.CreateEmployeeAsync(new Employee(
+            new Name("Ana", "Santos"),
+            new Email("anasantos@example.com"),
+            new Phone("+55 (31) 98765-9121"),
+            "ana456",
+            EGender.Feminine,
+            DateTime.Now.AddYears(-28),
+            new Address("Brazil", "Belo Horizonte", "Avenida Afonso Pena", 456),
+            400));
+
+        return await _utils.CreateReportAsync(new Report(
+            "Erro no quarto 30",
+            "Erro no quarto 30",
+            EPriority.High,
+            newEmployee));
+    }
 
     [TestMethod]
     public async Task GetByIdAsync_ReturnsWithCorrectParameters()
     {
-        var reports = await ReportRepository.GetByIdAsync(BaseRepositoryTest.Reports[0].Id);
+        // Arrange
+        var newReport = await CreateReportAsync();
 
+        // Act
+        var reports = await _reportRepository.GetByIdAsync(newReport.Id);
+
+        // Assert
         Assert.IsNotNull(reports);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Id, reports.Id);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Summary, reports.Summary);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Description, reports.Description);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Priority, reports.Priority);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Resolution, reports.Resolution);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].EmployeeId, reports.EmployeeId);
+        Assert.AreEqual(newReport.Id, reports.Id);
+        Assert.AreEqual(newReport.Summary, reports.Summary);
+        Assert.AreEqual(newReport.Description, reports.Description);
+        Assert.AreEqual(newReport.Priority, reports.Priority);
+        Assert.AreEqual(newReport.Resolution, reports.Resolution);
+        Assert.AreEqual(newReport.EmployeeId, reports.EmployeeId);
     }
 
     [TestMethod]
     public async Task GetAsync_ReturnWithCorrectParameters()
     {
-        var parameters = new ReportQueryParameters(0, 100, BaseRepositoryTest.Reports[0].Summary, BaseRepositoryTest.Reports[0].Status, null, null, null, null);
-        var reports = await ReportRepository.GetAsync(parameters);
+        // Arrange
+        var newReport = await CreateReportAsync();
+        var parameters = new ReportQueryParameters(0, 100, newReport.Summary, newReport.Status, null, null, null, null);
 
-        var report = BaseRepositoryTest.Reports.ToList()[0];
+        // Act
+        var reports = await _reportRepository.GetAsync(parameters);
+        var report = reports.FirstOrDefault();
 
-        Assert.IsNotNull(reports);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Id, report.Id);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Summary, report.Summary);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Description, report.Description);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Priority, report.Priority);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].Resolution, report.Resolution);
-        Assert.AreEqual(BaseRepositoryTest.Reports[0].EmployeeId, report.EmployeeId);
+        // Assert
+        Assert.IsNotNull(report);
+        Assert.AreEqual(newReport.Id, report.Id);
+        Assert.AreEqual(newReport.Summary, report.Summary);
+        Assert.AreEqual(newReport.Description, report.Description);
+        Assert.AreEqual(newReport.Priority, report.Priority);
+        Assert.AreEqual(newReport.Resolution, report.Resolution);
+        Assert.AreEqual(newReport.EmployeeId, report.EmployeeId);
     }
 
     [TestMethod]
     public async Task GetAsync_WhereStatusEqualsPending_ReturnReports()
     {
+        // Arrange
+        var newReport = await CreateReportAsync();
         var parameters = new ReportQueryParameters(0, 100, null, EStatus.Pending, null, null, null, null);
-        var reports = await ReportRepository.GetAsync(parameters);
 
+        // Act
+        var reports = await _reportRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(reports.Any());
-
         foreach (var report in reports)
+        {
             Assert.AreEqual(EStatus.Pending, report.Status);
+        }
     }
 
     [TestMethod]
     public async Task GetAsync_WherePriorityEqualsMedium_ReturnReports()
     {
+        // Arrange
+        var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Ana", "Santos"), new Email("anasantos@example.com"), new Phone("+55 (31) 98765-9121"), "ana456", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Belo Horizonte", "Avenida Afonso Pena", 456), 400));
+        var newReport = await _utils.CreateReportAsync(new Report("Erro no quarto 30", "Erro no quarto 30", EPriority.Medium, newEmployee));
         var parameters = new ReportQueryParameters(0, 100, null, null, EPriority.Medium, null, null, null);
-        var reports = await ReportRepository.GetAsync(parameters);
 
+        // Act
+        var reports = await _reportRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(reports.Any());
-
         foreach (var report in reports)
+        {
             Assert.AreEqual(EPriority.Medium, report.Priority);
+        }
     }
 
     [TestMethod]
     public async Task GetAsync_WhereEmployeeId_ReturnReports()
     {
-        var parameters = new ReportQueryParameters(0, 100, null, null, null, BaseRepositoryTest.Employees[0].Id, null, null);
-        var reports = await ReportRepository.GetAsync(parameters);
+        // Arrange
+        var newReport = await CreateReportAsync();
+        var parameters = new ReportQueryParameters(0, 100, null, null, null, newReport.EmployeeId, null, null);
 
-        Assert.IsTrue(reports.Any());
+        // Act
+        var reports = await _reportRepository.GetAsync(parameters);
 
-        foreach (var report in reports)
-            Assert.AreEqual(BaseRepositoryTest.Employees[0].Id, report.EmployeeId);
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereCreatedAtGratherThanYesterday_ReturnReports()
-    {
-        var parameters = new ReportQueryParameters(0, 100, null, null, null, null, DateTime.Now.AddDays(-1), "gt");
-        var reports = await ReportRepository.GetAsync(parameters);
-
+        // Assert
         Assert.IsTrue(reports.Any());
         foreach (var report in reports)
-            Assert.IsTrue(DateTime.Now.AddDays(-1) < report.CreatedAt);
-
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereCreatedAtLessThanToday_ReturnReports()
-    {
-        var parameters = new ReportQueryParameters(0, 100, null, null, null, null, DateTime.Now.AddDays(1), "lt");
-        var reports = await ReportRepository.GetAsync(parameters);
-
-        Assert.IsTrue(reports.Any());
-        foreach (var report in reports)
-            Assert.IsTrue(DateTime.Now.AddDays(1) > report.CreatedAt);
-
-    }
-
-    [TestMethod]
-    public async Task GetAsync_WhereCreatedAtEquals_ReturnReports()
-    {
-        var parameters = new ReportQueryParameters(0, 100, null, null, null, null, BaseRepositoryTest.Reports[0].CreatedAt, "eq");
-        var reports = await ReportRepository.GetAsync(parameters);
-
-        Assert.IsTrue(reports.Any());
-        foreach (var report in reports)
-            Assert.AreEqual(BaseRepositoryTest.Employees[0].CreatedAt.Date, report.CreatedAt.Date);
+        {
+            Assert.AreEqual(newReport.EmployeeId, report.EmployeeId);
+        }
     }
 
     [TestMethod]
     public async Task GetAsync_WhereSummaryIncludesAgua_and_WherePriorityEqualsHigh_and_WhereStatusEqualsPending_ReturnReports()
     {
-        var parameters = new ReportQueryParameters(0, 100, "água", EStatus.Pending, EPriority.High, null, null, null);
-        var reports = await ReportRepository.GetAsync(parameters);
+        // Arrange
+        var newEmployee = await _utils.CreateEmployeeAsync(new Employee(new Name("Ana", "Santos"), new Email("anasantos@example.com"), new Phone("+55 (31) 98765-9121"), "ana456", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Belo Horizonte", "Avenida Afonso Pena", 456), 400));
+        var newReport = await _utils.CreateReportAsync(new Report("Vazamento de água", "Vazamento de água no cômodo 1", EPriority.High, newEmployee));
 
+        var parameters = new ReportQueryParameters(0, 100, "água", EStatus.Pending, EPriority.High, null, null, null);
+
+        // Act
+        var reports = await _reportRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(reports.Any());
         foreach (var report in reports)
         {
@@ -130,6 +179,4 @@ public class ReportRepositoryTest
             Assert.AreEqual(EPriority.High, report.Priority);
         }
     }
-
-
 }

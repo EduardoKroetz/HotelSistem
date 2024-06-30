@@ -8,6 +8,7 @@ using Hotel.Domain.Entities.FeedbackEntity;
 using Hotel.Domain.Entities.InvoiceEntity;
 using Hotel.Domain.Entities.LikeEntity;
 using Hotel.Domain.Entities.PermissionEntity;
+using Hotel.Domain.Entities.ReportEntity;
 using Hotel.Domain.Entities.ReservationEntity;
 using Hotel.Domain.Entities.RoomEntity;
 using Hotel.Domain.Entities.ServiceEntity;
@@ -107,4 +108,10 @@ public class RepositoryTestUtils
         return newService;
     }
 
+    public async Task<Report> CreateReportAsync(Report newReport)
+    {
+        await _dbContext.Reports.AddAsync(newReport);
+        await _dbContext.SaveChangesAsync();
+        return newReport;
+    }
 }
