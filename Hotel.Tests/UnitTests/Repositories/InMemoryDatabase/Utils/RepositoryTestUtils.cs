@@ -10,6 +10,7 @@ using Hotel.Domain.Entities.LikeEntity;
 using Hotel.Domain.Entities.PermissionEntity;
 using Hotel.Domain.Entities.ReportEntity;
 using Hotel.Domain.Entities.ReservationEntity;
+using Hotel.Domain.Entities.ResponsibilityEntity;
 using Hotel.Domain.Entities.RoomEntity;
 using Hotel.Domain.Entities.ServiceEntity;
 
@@ -113,5 +114,12 @@ public class RepositoryTestUtils
         await _dbContext.Reports.AddAsync(newReport);
         await _dbContext.SaveChangesAsync();
         return newReport;
+    }
+
+    public async Task<Responsibility> CreateResponsibilityAsync(Responsibility newResponsibility)
+    {
+        await _dbContext.Responsibilities.AddAsync(newResponsibility);
+        await _dbContext.SaveChangesAsync();
+        return newResponsibility;
     }
 }
