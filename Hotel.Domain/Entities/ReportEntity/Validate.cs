@@ -17,9 +17,7 @@ public partial class Report
     public void ValidateSummary(string summary)
     {
         if (string.IsNullOrEmpty(summary))
-            throw new ValidationException("O sumário do relatório é obrigatório.");
-        if (summary.Length > 50)
-            throw new ValidationException("Limite de 50 caracteres do sumário do relatório foi atingido.");
+            throw new ValidationException("Informe o sumário");
     }
 
     public void ValidateDescription(string description)

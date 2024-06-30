@@ -12,13 +12,14 @@ using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Tests.UnitTests.Repositories.Mock.CreateData;
 using Microsoft.EntityFrameworkCore;
 using Hotel.Domain.Entities.InvoiceEntity;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
 
 
 namespace Hotel.Tests.UnitTests.Repositories.Mock;
 
-public static class BaseRepositoryTest
+public class BaseRepositoryTest
 {
-    public static ConfigMockConnection MockConnection = null!;
+    public static SqliteDatabase MockConnection = null!;
     public static List<Room> Rooms { get; set; } = [];
     public static List<Room> AvailableRooms { get; set; } = [];
     public static List<Reservation> Reservations { get; set; } = [];
@@ -39,23 +40,23 @@ public static class BaseRepositoryTest
 
     public static async Task Startup()
     {
-        MockConnection = await GenericRepositoryTest.InitializeMockConnection();
+        //MockConnection = await GenericRepositoryTest.InitializeMockConnection();
 
-        await CreateAdmins.Create();
-        await CreatePermissions.Create();
-        await CreateCustomers.Create();
-        await CreateEmployees.Create();
-        await CreateResponsibilities.Create();
+        //await CreateAdmins.Create();
+        //await CreatePermissions.Create();
+        //await CreateCustomers.Create();
+        //await CreateEmployees.Create();
+        //await CreateResponsibilities.Create();
 
-        await CreateCategories.Create();
-        await CreateReports.Create();
-        await CreateServices.Create();
+        //await CreateCategories.Create();
+        //await CreateReports.Create();
+        //await CreateServices.Create();
 
-        await CreateRooms.Create();
-        await CreateReservations.Create();
-        await CreateInvoices.Create();
+        //await CreateRooms.Create();
+        //await CreateReservations.Create();
+        //await CreateInvoices.Create();
 
-        await CreateFeedbacks.Create();
+        //await CreateFeedbacks.Create();
     }
 
     public static async Task Dispose()

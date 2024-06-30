@@ -32,6 +32,11 @@ public partial class Report
 
     public void Finish()
     {
+        if (Status == EStatus.Cancelled)
+            throw new ValidationException("Não é possível finalizar um relatório cancelado");
+        if (Status == EStatus.Finish)
+            throw new ValidationException("O relatório já está finalizado");
+
         if (Status == EStatus.Pending)
             Status = EStatus.Finish;
         else
@@ -41,6 +46,11 @@ public partial class Report
 
     public void Cancel()
     {
+        if (Status == EStatus.Cancelled)
+            throw new ValidationException("O relatório já está cancelado");
+        if (Status == EStatus.Finish)
+            throw new ValidationException("Não é possível cancelar um relatório finalizado");
+
         if (Status == EStatus.Pending)
             Status = EStatus.Cancelled;
         else

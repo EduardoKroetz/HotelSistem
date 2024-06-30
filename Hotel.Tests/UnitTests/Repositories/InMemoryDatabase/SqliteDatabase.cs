@@ -2,13 +2,13 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Tests.UnitTests.Repositories.Mock;
-public class ConfigMockConnection
+namespace Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
+public class SqliteDatabase
 {
     public SqliteConnection Connection { get; private set; }
     public HotelDbContext Context { get; private set; }
 
-    public ConfigMockConnection()
+    public SqliteDatabase()
     {
         Connection = new SqliteConnection("DataSource=:memory:");
         Connection.Open();
@@ -18,10 +18,11 @@ public class ConfigMockConnection
             .Options;
 
         Context = new HotelDbContext(options);
+        Context.Database.EnsureCreatedAsync().Wait();
     }
 
     public async Task Initialize()
-    => await Context.Database.EnsureCreatedAsync();
+    => await Task.Delay(500);
 
     public void Dispose()
     => Connection.Dispose();

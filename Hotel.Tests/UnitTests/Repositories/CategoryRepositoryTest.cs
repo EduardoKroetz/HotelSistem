@@ -1,51 +1,96 @@
-﻿using Hotel.Domain.DTOs.CategoryDTOs;
+﻿using Hotel.Domain.Data;
+using Hotel.Domain.DTOs.CategoryDTOs;
 using Hotel.Domain.Repositories;
-using Hotel.Tests.UnitTests.Repositories.Mock;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase.Utils;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Hotel.Domain.Entities.CategoryEntity;
+using Hotel.Domain.Entities.RoomEntity;
 
 namespace Hotel.Tests.UnitTests.Repositories;
 
 [TestClass]
 public class CategoryRepositoryTest
 {
-    private static CategoryRepository CategoryRepository { get; set; }
+    private readonly CategoryRepository _categoryRepository;
+    private readonly HotelDbContext _dbContext;
+    private readonly RepositoryTestUtils _utils;
+    private static readonly AsyncLocal<IDbContextTransaction?> _currentTransaction = new AsyncLocal<IDbContextTransaction?>();
 
-    static CategoryRepositoryTest()
-    => CategoryRepository = new CategoryRepository(BaseRepositoryTest.MockConnection.Context);
+    public CategoryRepositoryTest()
+    {
+        var sqliteDatabase = new SqliteDatabase();
+        _dbContext = sqliteDatabase.Context;
+        _categoryRepository = new CategoryRepository(_dbContext);
+        _utils = new RepositoryTestUtils(_dbContext);
+    }
+
+    [TestInitialize]
+    public async Task Initialize()
+    {
+        _currentTransaction.Value = await _dbContext.Database.BeginTransactionAsync();
+    }
+
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        if (_currentTransaction.Value != null)
+        {
+            await _currentTransaction.Value.RollbackAsync();
+            await _currentTransaction.Value.DisposeAsync();
+            _currentTransaction.Value = null;
+        }
+    }
 
     [TestMethod]
     public async Task GetByIdAsync_ReturnsWithCorrectParameters()
     {
-        var category = await CategoryRepository.GetByIdAsync(BaseRepositoryTest.Categories[0].Id);
+        //Arrange
+        var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
 
+        //Act
+        var category = await _categoryRepository.GetByIdAsync(newCategory.Id);
+
+        //Assert
         Assert.IsNotNull(category);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].Id, category.Id);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].Name, category.Name);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].Description, category.Description);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].AveragePrice, category.AveragePrice);
+        Assert.AreEqual(newCategory.Id, category.Id);
+        Assert.AreEqual(newCategory.Name, category.Name);
+        Assert.AreEqual(newCategory.Description, category.Description);
+        Assert.AreEqual(newCategory.AveragePrice, category.AveragePrice);
     }
 
     [TestMethod]
     public async Task GetAsync_ReturnWithCorrectParameters()
     {
-        var parameters = new CategoryQueryParameters(0, 1, BaseRepositoryTest.Categories[0].Name, null, null, null);
-        var categories = await CategoryRepository.GetAsync(parameters);
+        //Arrange
+        var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
 
+        //Act
+        var parameters = new CategoryQueryParameters(0, 1, newCategory.Name, null, null, null);
+        var categories = await _categoryRepository.GetAsync(parameters);
+
+        //Assert
         var category = categories.ToList()[0];
 
         Assert.IsNotNull(category);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].Id, category.Id);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].Name, category.Name);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].Description, category.Description);
-        Assert.AreEqual(BaseRepositoryTest.Categories[0].AveragePrice, category.AveragePrice);
+        Assert.AreEqual(newCategory.Id, category.Id);
+        Assert.AreEqual(newCategory.Name, category.Name);
+        Assert.AreEqual(newCategory.Description, category.Description);
+        Assert.AreEqual(newCategory.AveragePrice, category.AveragePrice);
     }
 
     [TestMethod]
     public async Task GetAsync_WhereAveragePriceGratherThan10_ReturnsCategories()
     {
-        var parameters = new CategoryQueryParameters(0, 1, null, 10, "gt", null);
-        var categories = await CategoryRepository.GetAsync(parameters);
+        //Arrange
+        var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
 
+        //Act
+        var parameters = new CategoryQueryParameters(0, 1, null, 10, "gt", null);
+        var categories = await _categoryRepository.GetAsync(parameters);
+
+        //Assert
         Assert.IsTrue(categories.Any());
 
         foreach (var category in categories)
@@ -55,9 +100,14 @@ public class CategoryRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereAveragePriceLessThan50_ReturnsCategories()
     {
-        var parameters = new CategoryQueryParameters(0, 1, null, 50, "lt", null);
-        var categories = await CategoryRepository.GetAsync(parameters);
+        //Arrange
+        var newCategory = await _utils.CreateCategoryAsync(new Category("Basic", "Basic", 49.9m));
 
+        //Act
+        var parameters = new CategoryQueryParameters(0, 1, null, 50, "lt", null);
+        var categories = await _categoryRepository.GetAsync(parameters);
+
+        //Assert
         Assert.IsTrue(categories.Any());
 
         foreach (var category in categories)
@@ -67,30 +117,39 @@ public class CategoryRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereAveragePriceEquals_ReturnsCategories()
     {
-        var parameters = new CategoryQueryParameters(0, 1, null, BaseRepositoryTest.Categories[0].AveragePrice, "eq", null);
-        var categories = await CategoryRepository.GetAsync(parameters);
+        //Arrange
+        var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
 
+        //Act
+        var parameters = new CategoryQueryParameters(0, 1, null, newCategory.AveragePrice, "eq", null);
+        var categories = await _categoryRepository.GetAsync(parameters);
+
+        //Assert
         Assert.IsTrue(categories.Any());
 
         foreach (var category in categories)
-            Assert.AreEqual(BaseRepositoryTest.Categories[0].AveragePrice, category.AveragePrice);
+            Assert.AreEqual(newCategory.AveragePrice, category.AveragePrice);
     }
-
 
     [TestMethod]
     public async Task GetAsync_WhereAdminId_ReturnsCategories()
     {
-        var parameters = new CategoryQueryParameters(0, 1, null, null, null, BaseRepositoryTest.Rooms[0].Id);
-        var categories = await CategoryRepository.GetAsync(parameters);
+        //Arrange
+        var newCategory = await _utils.CreateCategoryAsync(new Category("Luxos", "Luxos", 190));
+        var newRoom = await _utils.CreateRoomAsync(new Room("Deluxe room", 30, 78.1m, 8, "the Deluxe room is a...", newCategory));
 
+        //Act
+        var parameters = new CategoryQueryParameters(0, 1, null, null, null, newRoom.Id);
+        var categories = await _categoryRepository.GetAsync(parameters);
 
+        //Assert
         Assert.IsTrue(categories.Any());
         foreach (var category in categories)
         {
-            var hasCategory = await BaseRepositoryTest.MockConnection.Context.Categories
+            var hasCategory = await _dbContext.Categories
               .Where(x => x.Id == category.Id)
               .SelectMany(x => x.Rooms)
-              .AnyAsync(x => x.Id == BaseRepositoryTest.Rooms[0].Id);
+              .AnyAsync(x => x.Id == newRoom.Id);
 
             Assert.IsTrue(hasCategory);
         }

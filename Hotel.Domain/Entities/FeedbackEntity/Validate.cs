@@ -16,15 +16,13 @@ public partial class Feedback
     public void ValidateRate(int rate)
     {
         if (rate > 10 || rate < 0)
-            throw new ValidationException("Informe uma avaliação válida.");
+            throw new ValidationException("A avaliação deve ser entre 1 e 10");
     }
 
     public void ValidateComment(string comment)
     {
         if (string.IsNullOrEmpty(comment))
-            throw new ValidationException("Informe o comentário do feedback.");
-        if (comment.Length > 500)
-            throw new ValidationException("Limite máximo de 500 caracteres por comentário foi atingido.");
+            throw new ValidationException("Informe o comentário do feedback");
     }
 
 }

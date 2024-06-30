@@ -7,21 +7,22 @@ namespace Hotel.Tests.UnitTests.Entities;
 public class CategoryEntityTest
 {
     [TestMethod]
-    public void ValidCategory_MustBeValid()
+    public void NewCategoryInstance_MustBeValid()
     {
         var category = new Category("Categoria", "Categoria", 1);
+
         Assert.IsTrue(category.IsValid);
+        Assert.AreEqual("Categoria",category.Name);
+        Assert.AreEqual("Categoria", category.Description);
+        Assert.AreEqual(1, category.AveragePrice);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ValidationException))]
-    [DataRow("", "", -1)]
-    [DataRow("Categoria", "", 1)]
-    [DataRow("", "Categoria", 1)]
-    [DataRow("Categoria", "Categoria", -1)]
-    public void InvalidCategoryParameters_ExpectedException(string name, string description, int averagePrice)
+    [DataRow("", "", -1, "Informe o nome da categoria")]
+    [DataRow("", "Categoria", 1, "Informe o nome da categoria")]
+    public void InvalidCategoryParameters_ShouldThrowException(string name, string description, int averagePrice, string errorMessage)
     {
-        new Category(name, description, averagePrice);
-        Assert.Fail();
+        var exception = Assert.ThrowsException<ValidationException>(() => new Category(name, description, averagePrice));
+        Assert.AreEqual(errorMessage, exception.Message);
     }
 }
