@@ -1,112 +1,186 @@
-﻿using Hotel.Domain.DTOs.PermissionDTOs;
+﻿using Hotel.Domain.Data;
+using Hotel.Domain.DTOs.PermissionDTOs;
 using Hotel.Domain.Entities.AdminEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.ValueObjects;
-using Hotel.Tests.UnitTests.Repositories.Mock;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase.Utils;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Hotel.Domain.Entities.PermissionEntity;
 
 namespace Hotel.Tests.UnitTests.Repositories;
 
 [TestClass]
 public class PermissionRepositoryTest
 {
-    private static PermissionRepository PermissionRepository { get; set; }
+    private readonly PermissionRepository _permissionRepository;
+    private readonly HotelDbContext _dbContext;
+    private readonly RepositoryTestUtils _utils;
+    private static readonly AsyncLocal<IDbContextTransaction?> _currentTransaction = new AsyncLocal<IDbContextTransaction?>();
 
-    static PermissionRepositoryTest()
-    => PermissionRepository = new PermissionRepository(BaseRepositoryTest.MockConnection.Context);
+    public PermissionRepositoryTest()
+    {
+        var sqliteDatabase = new SqliteDatabase();
+        _dbContext = sqliteDatabase.Context;
+        _permissionRepository = new PermissionRepository(_dbContext);
+        _utils = new RepositoryTestUtils(_dbContext);
+    }
+
+    [TestInitialize]
+    public async Task Initialize()
+    {
+        _currentTransaction.Value = await _dbContext.Database.BeginTransactionAsync();
+    }
+
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        if (_currentTransaction.Value != null)
+        {
+            await _currentTransaction.Value.RollbackAsync();
+            await _currentTransaction.Value.DisposeAsync();
+            _currentTransaction.Value = null;
+        }
+    }
+
+    private async Task<Permission> CreatePermissionAsync()
+    {
+        return await _utils.CreatePermissionAsync(new Permission("Deletar usuário", "Deletar usuário"));
+    }
 
     [TestMethod]
     public async Task GetByIdAsync_ReturnsWithCorrectParameters()
     {
-        var permission = await PermissionRepository.GetByIdAsync(BaseRepositoryTest.Permissions[0].Id);
+        //Arrange
+        var newPermission = await CreatePermissionAsync();
 
+        //Act
+        var permission = await _permissionRepository.GetByIdAsync(newPermission.Id);
+
+        //Assert
         Assert.IsNotNull(permission);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].Id, permission.Id);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].Name, permission.Name);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].Description, permission.Description);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].IsActive, permission.IsActive);
+        Assert.AreEqual(newPermission.Id, permission.Id);
+        Assert.AreEqual(newPermission.Name, permission.Name);
+        Assert.AreEqual(newPermission.Description, permission.Description);
+        Assert.AreEqual(newPermission.IsActive, permission.IsActive);
     }
 
     [TestMethod]
     public async Task GetAsync_ReturnWithCorrectParameters()
     {
-        var parameters = new PermissionQueryParameters(0, 1, null, null, BaseRepositoryTest.Permissions[0].Name, null, null);
-        var permissions = await PermissionRepository.GetAsync(parameters);
+        // Arrange
+        var newPermission = await CreatePermissionAsync();
+        var parameters = new PermissionQueryParameters(0, 1, null, null, newPermission.Name, null, null);
 
-        var permission = permissions.ToList()[0];
+        // Act
+        var permissions = await _permissionRepository.GetAsync(parameters);
+        var permission = permissions.ToList().FirstOrDefault();
 
+        // Assert
         Assert.IsNotNull(permission);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].Id, permission.Id);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].Name, permission.Name);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].Description, permission.Description);
-        Assert.AreEqual(BaseRepositoryTest.Permissions[0].IsActive, permission.IsActive);
+        Assert.AreEqual(newPermission.Id, permission.Id);
+        Assert.AreEqual(newPermission.Name, permission.Name);
+        Assert.AreEqual(newPermission.Description, permission.Description);
+        Assert.AreEqual(newPermission.IsActive, permission.IsActive);
     }
 
     [TestMethod]
-    public async Task GetAsync_WhereNameIncludesBuscar_ReturnsPermissions()
+    public async Task GetAsync_WhereNameIncludesDeletar_ReturnsPermissions()
     {
-        var parameters = new PermissionQueryParameters(0, 1, null, null, "Buscar", null, null);
-        var permissions = await PermissionRepository.GetAsync(parameters);
+        // Arrange
+        var newPermission = await CreatePermissionAsync();
+        var parameters = new PermissionQueryParameters(0, 1, null, null, "Deletar", null, null);
 
+        // Act
+        var permissions = await _permissionRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(permissions.Any());
         foreach (var permission in permissions)
-            Assert.IsTrue(permission.Name.Contains("Buscar"));
+        {
+            Assert.IsTrue(permission.Name.Contains("Deletar"));
+        }
     }
 
     [TestMethod]
     public async Task GetAsync_WhereCreatedAtGratherThan2000_ReturnsPermissions()
     {
+        // Arrange
+        var newPermission = await CreatePermissionAsync();
         var parameters = new PermissionQueryParameters(0, 1, DateTime.Now.AddYears(-24), "gt", null, null, null);
-        var permissions = await PermissionRepository.GetAsync(parameters);
 
+        // Act
+        var permissions = await _permissionRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(permissions.Any());
         foreach (var permission in permissions)
+        {
             Assert.IsTrue(DateTime.Now.AddYears(-24) < permission.CreatedAt);
+        }
     }
 
     [TestMethod]
     public async Task GetAsync_WhereCreatedAtLessThan2025_ReturnsPermissions()
     {
+        // Arrange
+        var newPermission = await CreatePermissionAsync();
         var parameters = new PermissionQueryParameters(0, 1, DateTime.Now.AddYears(1), "lt", null, null, null);
-        var permissions = await PermissionRepository.GetAsync(parameters);
 
+        // Act
+        var permissions = await _permissionRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(permissions.Any());
         foreach (var permission in permissions)
+        {
             Assert.IsTrue(DateTime.Now.AddYears(1) > permission.CreatedAt);
+        }
     }
 
     [TestMethod]
     public async Task GetAsync_WhereCreatedAtEquals_ReturnsPermissions()
     {
-        var parameters = new PermissionQueryParameters(0, 1, BaseRepositoryTest.Permissions[0].CreatedAt, "eq", null, null, null);
-        var permissions = await PermissionRepository.GetAsync(parameters);
+        // Arrange
+        var newPermission = await CreatePermissionAsync();
+        var parameters = new PermissionQueryParameters(0, 1, newPermission.CreatedAt, "eq", null, null, null);
 
+        // Act
+        var permissions = await _permissionRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(permissions.Any());
         foreach (var permission in permissions)
-            Assert.AreEqual(BaseRepositoryTest.Permissions[0].CreatedAt, permission.CreatedAt);
+        {
+            Assert.AreEqual(newPermission.CreatedAt, permission.CreatedAt);
+        }
     }
 
     [TestMethod]
     public async Task GetAsync_WhereAdminId_ReturnsPermissions()
     {
+        // Arrange
+        var newPermission = await CreatePermissionAsync();
         var admin = new Admin(new Name("Rafael", "Silveira"), new Email("rafaelsilv@example.com"), new Phone("+55 (17) 93465-4321"), "rafa789", EGender.Masculine, DateTime.Now.AddYears(-32), new Address("Brazil", "Campinas", "Rua Barão de Jaguara", 789));
-        admin.AddPermission(BaseRepositoryTest.Permissions[0]);
-
-        await BaseRepositoryTest.MockConnection.Context.Admins.AddAsync(admin);
-        await BaseRepositoryTest.MockConnection.Context.SaveChangesAsync();
+        admin.AddPermission(newPermission);
+        await _dbContext.Admins.AddAsync(admin);
+        await _dbContext.SaveChangesAsync();
 
         var parameters = new PermissionQueryParameters(0, 1, null, null, null, null, admin.Id);
-        var permissions = await PermissionRepository.GetAsync(parameters);
 
+        // Act
+        var permissions = await _permissionRepository.GetAsync(parameters);
 
+        // Assert
         Assert.IsTrue(permissions.Any());
         foreach (var permission in permissions)
         {
-            var hasPermission = await BaseRepositoryTest.MockConnection.Context.Permissions
-              .Where(x => x.Id == permission.Id)
-              .SelectMany(x => x.Admins)
-              .AnyAsync(x => x.Id == admin.Id);
+            var hasPermission = await _dbContext.Permissions
+                .Where(x => x.Id == permission.Id)
+                .SelectMany(x => x.Admins)
+                .AnyAsync(x => x.Id == admin.Id);
 
             Assert.IsTrue(hasPermission);
         }
@@ -115,16 +189,19 @@ public class PermissionRepositoryTest
     [TestMethod]
     public async Task GetAsync_WhereNameIncludes_And_IsActiveEqualsTrue()
     {
-        var parameters = new PermissionQueryParameters(0, 1, null, null, BaseRepositoryTest.Permissions[0].Name, true, null);
-        var permissions = await PermissionRepository.GetAsync(parameters);
+        // Arrange
+        var newPermission = await CreatePermissionAsync();
+        var parameters = new PermissionQueryParameters(0, 1, null, null, newPermission.Name, true, null);
 
+        // Act
+        var permissions = await _permissionRepository.GetAsync(parameters);
+
+        // Assert
         Assert.IsTrue(permissions.Any());
-
         foreach (var permission in permissions)
         {
-            Assert.IsTrue(permission.Name.Contains(BaseRepositoryTest.Permissions[0].Name));
+            Assert.IsTrue(permission.Name.Contains(newPermission.Name));
             Assert.IsTrue(permission.IsActive);
         }
     }
-
 }

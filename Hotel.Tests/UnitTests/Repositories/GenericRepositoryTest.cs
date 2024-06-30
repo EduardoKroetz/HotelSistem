@@ -1,61 +1,62 @@
-﻿using Hotel.Domain.Entities.AdminEntity;
+﻿using Hotel.Domain.Data;
+using Hotel.Domain.Entities.AdminEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.ValueObjects;
-using Hotel.Tests.UnitTests.Repositories.Mock;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase.Utils;
+using Hotel.Tests.UnitTests.Repositories.InMemoryDatabase;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Tests.UnitTests.Repositories;
 
-
-//Testar o repositório genérico criando
-//somente um CRUD de Admin
+// Testar o repositório genérico criando
+// somente um CRUD de Admin
 [TestClass]
 public class GenericRepositoryTest
 {
-    private static ConfigMockConnection _mockConnection = null!;
-    private static AdminRepository _adminRepository = null!;
-    private static readonly List<Admin> _admins =
-    [
-      new Admin(new Name("João", "Pedro"), new Email("joaopedro@gmail.com"), new Phone("+55 (31) 33112-3456"), "1234", EGender.Masculine, DateTime.Now.AddYears(-20), new Address("Brazil", "São Paulo", "Avenida Paulista", 999)),
-    new Admin(new Name("Leonardo", "Pedro"), new Email("leopedr@gmail.com"), new Phone("+55 (22) 32432-3456"), "1234", EGender.Masculine, DateTime.Now.AddYears(-20), new Address("Brazil", "São Paulo", "Avenida Paulista", 999)),
-    new Admin(new Name("Maria", "Silva"), new Email("maria.silva@example.com"), new Phone("+55 (11) 32465-4321"), "senha123", EGender.Feminine, DateTime.Now.AddYears(-25), new Address("Brazil", "Rio de Janeiro", "Rua Copacabana", 123)),
-    new Admin(new Name("Carlos", "Oliveira"), new Email("coliveira@example.com"), new Phone("+55 (21) 12345-6789"), "_admin123", EGender.Masculine, DateTime.Now.AddYears(-30), new Address("Brazil", "Brasília", "Quadra 123", 3)),
-    new Admin(new Name("Ana", "Santos"), new Email("anasantos@example.com"), new Phone("+55 (91) 98765-4521"), "ana456", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Belo Horizonte", "Avenida Afonso Pena", 456)),
-    new Admin(new Name("Rafael", "Silveira"), new Email("rafaelsilveira@example.com"), new Phone("+55 (19) 11965-4321"), "rafa789", EGender.Masculine, DateTime.Now.AddYears(-32), new Address("Brazil", "Campinas", "Rua Barão de Jaguara", 789))
-    ];
+    private readonly AdminRepository _adminRepository;
+    private readonly HotelDbContext _dbContext;
+    private readonly RepositoryTestUtils _utils;
+    private static readonly AsyncLocal<IDbContextTransaction?> _currentTransaction = new AsyncLocal<IDbContextTransaction?>();
 
-    public async static Task<ConfigMockConnection> InitializeMockConnection()
+    public GenericRepositoryTest()
     {
-        var mockConnection = new ConfigMockConnection();
-        await mockConnection.Initialize();
-        return mockConnection;
+        var sqliteDatabase = new SqliteDatabase();
+        _dbContext = sqliteDatabase.Context;
+        _adminRepository = new AdminRepository(_dbContext);
+        _utils = new RepositoryTestUtils(_dbContext);
     }
 
-    [ClassInitialize]
-    public static async Task Setup(TestContext context)
+    [TestInitialize]
+    public async Task Initialize()
     {
-        _mockConnection = await InitializeMockConnection();
-
-        _mockConnection.Context.Admins.AddRange(_admins);
-        await _mockConnection.Context.SaveChangesAsync();
-
-        _adminRepository = new AdminRepository(_mockConnection.Context);
+        _currentTransaction.Value = await _dbContext.Database.BeginTransactionAsync();
     }
 
-    [ClassCleanup]
-    public static void Cleanup()
-    => _mockConnection.Dispose();
-
+    [TestCleanup]
+    public async Task Cleanup()
+    {
+        if (_currentTransaction.Value != null)
+        {
+            await _currentTransaction.Value.RollbackAsync();
+            await _currentTransaction.Value.DisposeAsync();
+            _currentTransaction.Value = null;
+        }
+    }
 
     [TestMethod]
     public async Task CreateAsync_MustCreate()
     {
+        // Arrange
         var admin = new Admin(new Name("Vinicius", "Santos"), new Email("viniciuos@gmail.com"), new Phone("+55 (55) 33112-3456"), "1234", EGender.Masculine, DateTime.Now.AddYears(-20), new Address("Brazil", "São Paulo", "Avenida Paulista", 999));
         await _adminRepository.CreateAsync(admin);
         await _adminRepository.SaveChangesAsync();
 
+        // Act
         var createdEntity = await _adminRepository.GetEntityByIdAsync(admin.Id);
 
+        // Assert
         Assert.IsNotNull(createdEntity);
         Assert.AreEqual(admin.Id, createdEntity?.Id);
     }
@@ -63,22 +64,30 @@ public class GenericRepositoryTest
     [TestMethod]
     public async Task Delete_MustDelete()
     {
-        var adminToBeDeleted = _admins[1];
-        _adminRepository.Delete(adminToBeDeleted);
+        // Arrange
+        var admin = await _utils.CreateAdminAsync(new Admin(new Name("Vinicius", "Santos"), new Email("viniciuos@gmail.com"), new Phone("+55 (55) 33112-3456"), "1234", EGender.Masculine, DateTime.Now.AddYears(-20), new Address("Brazil", "São Paulo", "Avenida Paulista", 999)));
+
+        // Act
+        _adminRepository.Delete(admin);
         await _adminRepository.SaveChangesAsync();
 
-        var deletedEntity = await _adminRepository.GetEntityByIdAsync(adminToBeDeleted.Id);
+        // Assert
+        var deletedEntity = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
         Assert.IsNull(deletedEntity);
     }
 
     [TestMethod]
     public async Task DeleteById_MustDelete()
     {
-        var adminToBeDeleted = _admins[2];
-        _adminRepository.Delete(adminToBeDeleted.Id);
+        // Arrange
+        var admin = await _utils.CreateAdminAsync(new Admin(new Name("João", "Silva"), new Email("joao.silva@gmail.com"), new Phone("+55 (11) 99876-5432"), "1234", EGender.Masculine, DateTime.Now.AddYears(-25), new Address("Brazil", "Rio de Janeiro", "Rua das Flores", 123)));
+
+        // Act
+        _adminRepository.Delete(admin.Id);
         await _adminRepository.SaveChangesAsync();
 
-        var deletedEntity = await _adminRepository.GetEntityByIdAsync(adminToBeDeleted.Id);
+        // Assert
+        var deletedEntity = await _adminRepository.GetEntityByIdAsync(admin.Id);
         Assert.IsNull(deletedEntity);
     }
 
@@ -86,6 +95,7 @@ public class GenericRepositoryTest
     [ExpectedException(typeof(ArgumentException))]
     public async Task DeleteNonExistEntityById_ExpectedException()
     {
+        // Act
         _adminRepository.Delete(Guid.NewGuid());
         await _adminRepository.SaveChangesAsync();
     }
@@ -93,16 +103,28 @@ public class GenericRepositoryTest
     [TestMethod]
     public async Task GetEntityByIdAsync_ReturnsEntity()
     {
-        var admin = await _adminRepository.GetEntityByIdAsync(_admins[3].Id);
-        Assert.IsNotNull(admin);
-        Assert.AreEqual(_admins[3].Id, admin.Id);
+        // Arrange
+        var admin = await _utils.CreateAdminAsync(new Admin(new Name("Ana", "Souza"), new Email("ana.souza@gmail.com"), new Phone("+55 (21) 98765-4321"), "1234", EGender.Feminine, DateTime.Now.AddYears(-30), new Address("Brazil", "Belo Horizonte", "Rua das Palmeiras", 456)));
+
+        // Act
+        var retrievedAdmin = await _adminRepository.GetEntityByIdAsync(admin.Id);
+
+        // Assert
+        Assert.IsNotNull(retrievedAdmin);
+        Assert.AreEqual(admin.Id, retrievedAdmin.Id);
     }
 
     [TestMethod]
     public async Task GetEntitiesAsync_ReturnsEntities()
     {
+        // Arrange
+        var admin1 = await _utils.CreateAdminAsync(new Admin(new Name("Carlos", "Almeida"), new Email("carlos.almeida@gmail.com"), new Phone("+55 (31) 12345-6789"), "1234", EGender.Masculine, DateTime.Now.AddYears(-35), new Address("Brazil", "Curitiba", "Avenida Brasil", 789)));
+        var admin2 = await _utils.CreateAdminAsync(new Admin(new Name("Maria", "Oliveira"), new Email("maria.oliveira@gmail.com"), new Phone("+55 (41) 98765-4321"), "1234", EGender.Feminine, DateTime.Now.AddYears(-28), new Address("Brazil", "Porto Alegre", "Rua das Acácias", 101)));
+
+        // Act
         var admins = await _adminRepository.GetEntitiesAsync();
 
+        // Assert
         Assert.IsNotNull(admins);
         Assert.IsTrue(admins.Any());
     }
@@ -110,17 +132,18 @@ public class GenericRepositoryTest
     [TestMethod]
     public async Task UpdateEntity_MustApplyEntityChanges()
     {
-        var admin = await _adminRepository.GetEntityByIdAsync(_admins[4].Id);
-        var date = DateTime.Now.Date.AddDays(1);
-        admin?.ChangeCreatedAt(date);
+        // Arrange
+        var admin = await _utils.CreateAdminAsync(new Admin(new Name("Lucas", "Fernandes"), new Email("lucas.fernandes@gmail.com"), new Phone("+55 (21) 87654-3210"), "1234", EGender.Masculine, DateTime.Now.AddYears(-40), new Address("Brazil", "Fortaleza", "Rua da Paz", 123)));
+        var newName = new Name("Lucas", "Moura");
+        admin.ChangeName(newName);
 
+        // Act
         await _adminRepository.SaveChangesAsync();
 
-        var updatedAdmin = await _adminRepository.GetEntityByIdAsync(_admins[4].Id);
-
+        // Assert
+        var updatedAdmin = await _adminRepository.GetEntityByIdAsync(admin.Id);
         Assert.IsNotNull(updatedAdmin);
-        Assert.AreEqual(date, updatedAdmin.CreatedAt);
+        Assert.AreEqual(newName.FirstName, updatedAdmin.Name.FirstName);
+        Assert.AreEqual(newName.LastName, updatedAdmin.Name.LastName);
     }
-
 }
-

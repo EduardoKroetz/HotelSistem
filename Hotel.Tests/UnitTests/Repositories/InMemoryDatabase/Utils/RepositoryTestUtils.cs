@@ -5,10 +5,12 @@ using Hotel.Domain.Entities.CustomerEntity;
 using Hotel.Domain.Entities.DislikeEntity;
 using Hotel.Domain.Entities.EmployeeEntity;
 using Hotel.Domain.Entities.FeedbackEntity;
+using Hotel.Domain.Entities.InvoiceEntity;
 using Hotel.Domain.Entities.LikeEntity;
 using Hotel.Domain.Entities.PermissionEntity;
 using Hotel.Domain.Entities.ReservationEntity;
 using Hotel.Domain.Entities.RoomEntity;
+using Hotel.Domain.Entities.ServiceEntity;
 
 namespace Hotel.Tests.UnitTests.Repositories.InMemoryDatabase.Utils;
 
@@ -89,6 +91,20 @@ public class RepositoryTestUtils
         await _dbContext.Likes.AddAsync(newLike);
         await _dbContext.SaveChangesAsync();
         return newLike;
+    }
+
+    public async Task<Invoice> CreateInvoiceAsync(Invoice newInvoice)
+    {
+        await _dbContext.Invoices.AddAsync(newInvoice);
+        await _dbContext.SaveChangesAsync();
+        return newInvoice;
+    }
+
+    public async Task<Service> CreateServiceAsync(Service newService)
+    {
+        await _dbContext.Services.AddAsync(newService);
+        await _dbContext.SaveChangesAsync();
+        return newService;
     }
 
 }
