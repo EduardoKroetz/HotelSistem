@@ -17,7 +17,7 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, H
     private readonly IEmailService _emailService;
     private readonly IStripeService _stripeService;
 
-    public CustomerHandler(ICustomerRepository repository, IEmailService emailService, IStripeService stripeService) : base(repository)
+    public CustomerHandler(ICustomerRepository repository, IEmailService emailService, IStripeService stripeService) : base(repository, emailService)
     {
         _repository = repository;
         _emailService = emailService;

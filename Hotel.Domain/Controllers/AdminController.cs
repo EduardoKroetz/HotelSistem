@@ -139,10 +139,10 @@ public class AdminController : ControllerBase
     //Editar email do administrador.
     //Administradores autenticados podem acessar.
     [HttpPatch("email")]
-    public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
+    public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email, [FromQuery] string? code)
     {
         var adminId = _userService.GetUserIdentifier(User);
-        return Ok(await _handler.HandleUpdateEmailAsync(adminId, email));
+        return Ok(await _handler.HandleUpdateEmailAsync(adminId, email, code));
     }
 
     //Editar telefone do administrador.

@@ -18,7 +18,7 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository, Admin>,
     private readonly IPermissionRepository _permissionRepository;
     private readonly IEmailService _emailService;
 
-    public AdminHandler(IAdminRepository repository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository)
+    public AdminHandler(IAdminRepository repository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository, emailService)
     {
         _repository = repository;
         _permissionRepository = permissionRepository;

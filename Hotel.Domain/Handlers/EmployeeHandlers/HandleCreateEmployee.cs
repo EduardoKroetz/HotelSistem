@@ -19,7 +19,7 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository, E
     private readonly IPermissionRepository _permissionRepository;
     private readonly IEmailService _emailService;
 
-    public EmployeeHandler(IEmployeeRepository repository, IResponsibilityRepository responsibilityRepository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository)
+    public EmployeeHandler(IEmployeeRepository repository, IResponsibilityRepository responsibilityRepository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository, emailService)
     {
         _repository = repository;
         _responsibilityRepository = responsibilityRepository;

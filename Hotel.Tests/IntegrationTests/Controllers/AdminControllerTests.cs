@@ -2,6 +2,7 @@
 using Hotel.Domain.DTOs.Base.User;
 using Hotel.Domain.Entities.AdminEntity;
 using Hotel.Domain.Entities.PermissionEntity;
+using Hotel.Domain.Entities.VerificationCodeEntity;
 using Hotel.Domain.Enums;
 using Hotel.Domain.Services.Permissions;
 using Hotel.Domain.Services.TokenServices;
@@ -240,35 +241,6 @@ public class AdminControllerTests
         Assert.AreEqual(adminWithPermissions.Permissions.Count, 0);
     }
 
-    //[TestMethod]
-    //public async Task UpdateToRootAdmin_ShouldReturn_OK()
-    //{
-    //  //Arrange
-    //  var admin = new Admin
-    //  (
-    //    new Name("Beatriz", "Santos"),
-    //    new Email("beatrizSantos@gmail.com"),
-    //    new Phone("+55 (31) 99876-5432"),
-    //    "password3",
-    //    EGender.Feminine,
-    //    DateTime.Now.AddYears(-27),
-    //    new Address("Brazil", "Belo Horizonte", "MG-303", 303)
-    //  );
-
-    //  await _dbContext.Admins.AddAsync(admin);
-    //  await _dbContext.SaveChangesAsync();
-
-    //  //Act
-    //  var response = await _client.PostAsync($"{_baseUrl}/to-root-admin/{admin.Id}", null);
-
-    //  //Assert
-    //  var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);
-
-    //  Assert.IsNotNull(response);
-    //  response.EnsureSuccessStatusCode();
-    //  Assert.IsTrue(updatedAdmin!.IsRootAdmin);
-    //}
-
     [TestMethod]
     public async Task UpdateAdmin_ShouldReturn_OK()
     {
@@ -408,8 +380,12 @@ public class AdminControllerTests
 
         var body = new Email("feeRriber@gmail.com");
 
+        var verificationNewEmailCode = new VerificationCode(body);
+        await _dbContext.VerificationCodes.AddAsync(verificationNewEmailCode);
+        await _dbContext.SaveChangesAsync();
+
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/email", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/email?code={verificationNewEmailCode.Code}", body);
 
         //Assert
         var updatedAdmin = await _dbContext.Admins.FirstOrDefaultAsync(x => x.Id == admin.Id);

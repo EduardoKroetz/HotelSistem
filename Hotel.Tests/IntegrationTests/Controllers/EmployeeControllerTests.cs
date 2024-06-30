@@ -14,6 +14,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Hotel.Domain.DTOs.EmployeeDTOs;
+using Hotel.Domain.Entities.VerificationCodeEntity;
 
 namespace Hotel.Tests.IntegrationTests.Controllers;
 
@@ -386,8 +387,12 @@ public class EmployeeControllerTests
 
         var body = new Email("feeRriber@gmail.com");
 
+        var verificationNewEmailCode = new VerificationCode(body);
+        await _dbContext.VerificationCodes.AddAsync(verificationNewEmailCode);
+        await _dbContext.SaveChangesAsync();
+
         //Act
-        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/email", body);
+        var response = await _client.PatchAsJsonAsync($"{_baseUrl}/email?code={verificationNewEmailCode.Code}", body);
 
         //Assert
         var updatedEmployee = await _dbContext.Employees.FirstOrDefaultAsync(x => x.Id == employee.Id);

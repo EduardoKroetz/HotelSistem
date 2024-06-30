@@ -131,10 +131,10 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPatch("email")]
-    public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email)
+    public async Task<IActionResult> UpdateEmailAsync([FromBody] Email email, [FromQuery] string? code)
     {
         var userId = _userService.GetUserIdentifier(User);
-        return Ok(await _handler.HandleUpdateEmailAsync(userId, email));
+        return Ok(await _handler.HandleUpdateEmailAsync(userId, email, code));
     }
 
     [HttpPatch("phone")]
