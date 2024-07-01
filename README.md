@@ -49,6 +49,12 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<sua_senha>" \
 -d mcr.microsoft.com/mssql/server:2022-latest
 ```
 
+Na pasta "Hotel.Domain", atualize o banco de dados executando:
+
+```bash
+dotnet ef database update
+```
+
 <h3 id="environments">Variáveis de ambiente</h3>
 <p>Adicione essas variáveis de ambiente em um arquivo <code>appsettings.json</code> na pasta Hotel.Domain:</p>
 
