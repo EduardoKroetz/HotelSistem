@@ -31,19 +31,21 @@ git clone https://github.com/EduardoKroetz/HotelSistem.git
 ```
 
 <h3 id="environments">Environment Variables</h3>
-<p>Adicione essas variáveis de ambiente em um arquivo <code>appsettings.json</code>:</p>
+<p>Adicione essas variáveis de ambiente em um arquivo <code>appsettings.json</code> na pasta Hotel.Domain:</p>
 
 ```json
-   "EmailToSendEmail":"seu_email_para_enviar_emails"
-   "PasswordToSendEmail":"sua_senha_para_enviar_emails"
-   "JwtKey":"addakaDfAyrtcvnncvAEreaxxvrtkkadAeretGAc"
-   "ConnectionStrings": {
-      "DefaultConnection":"sua_conexão_com_o_sql_server"
-   }
-   "Stripe":  {
-      "SecretKey":"sua_chave_secreta_do_stripe"
-      "PublishableKey":"sua_chave_pública_do_stripe"
-   }
+{
+  "EmailToSendEmail":"seu_email_para_enviar_emails",
+  "PasswordToSendEmail":"sua_senha_para_enviar_emails",
+  "JwtKey":"addakaDfAyrtcvnncvAEreaxxvrtkkadAeretGAc",
+  "ConnectionStrings": {
+    "DefaultConnection":"sua_conexão_com_o_sql_server"
+  },
+  "Stripe":  {
+    "SecretKey":"sua_chave_secreta_do_stripe",
+    "PublishableKey":"sua_chave_pública_do_stripe"
+  }
+}
 ```
 <p>Observação: As chaves do Stripe são necessárias para a integração com o sistema de pagamento Stripe. Caso ainda não tenha uma conta no Stripe, você pode criar uma conta de teste <a href="https://docs.stripe.com/testing">aqui.</a></p>
 
@@ -54,6 +56,9 @@ git clone https://github.com/EduardoKroetz/HotelSistem.git
 cd HotelSistem/Hotel.Domain
 dotnet run
 ```
+
+Por padrão, a aplicação será executada em http://localhost:5000/. Você pode acessar a interface gráfica da API em http://localhost:5000/swagger/index.html
+
 <h2 id="routes">📍 API Endpoints</h2>
 
 <h3>Admin</h3>
