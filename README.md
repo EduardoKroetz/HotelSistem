@@ -16,8 +16,8 @@
 <p align="center">
   <b>A API de sistema de hotel facilita a integração e permite realizar operações típicas de hospedagem. Ela permite realizar operações como gestão de reservas, cômodos, funcionários, clientes, relatórios e mais.</b>
 </p>
-<h2 id="getting-started">🚀 Getting Started</h2>
-<h3>Prerequisites</h3>
+<h2 id="getting-started">🚀 Começando</h2>
+<h3>Pré-requisitos</h3>
 <p>Os seguintes pré-requisitos são necessários para executar o projeto:</p>
 <ul>
   <li><a href="https://dotnet.microsoft.com/pt-br/">.NET 8</a></li>
@@ -30,22 +30,43 @@
 git clone https://github.com/EduardoKroetz/HotelSistem.git
 ```
 
-<h3 id="environments">Environment Variables</h3>
-<p>Adicione essas variáveis de ambiente em um arquivo <code>appsettings.json</code>:</p>
+<h3>Executar o Projeto com SQL Server Dockerizado</h3>
+<p>Certifique-se de ter o Docker instalado em seu sistema. Caso ainda não tenha, você pode baixá-lo e instalá-lo a partir do <a href="https://www.docker.com/get-started" target="_blank">site oficial do Docker</a>. </p>
+
+<h4>Baixando a Imagem do SQL Server:</h4>
+Abra um terminal e execute o seguinte comando para baixar a imagem do SQL Server do Docker Hub:
+
+```bash
+docker pull mcr.microsoft.com/mssql/server:2022-latest
+ ```
+
+<h4>Executando o Container do SQL Server:</h4>
+Para iniciar um container Docker com o SQL Server, utilize o seguinte comando, substituindo <sua_senha> pela senha desejada para o usuário SA_PASSWORD:
+
+```bash
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<sua_senha>" \
+-p 1433:1433 --name sqlserver_instance \
+-d mcr.microsoft.com/mssql/server:2022-latest
+```
+
+<h3 id="environments">Variáveis de ambiente</h3>
+<p>Adicione essas variáveis de ambiente em um arquivo <code>appsettings.json</code> na pasta Hotel.Domain:</p>
 
 ```json
-   "EmailToSendEmail":"seu_email_para_enviar_emails"
-   "PasswordToSendEmail":"sua_senha_para_enviar_emails"
-   "JwtKey":"addakaDfAyrtcvnncvAEreaxxvrtkkadAeretGAc"
-   "ConnectionStrings": {
-      "DefaultConnection":"sua_conexão_com_o_sql_server"
-   }
-   "Stripe":  {
-      "SecretKey":"sua_chave_secreta_do_stripe"
-      "PublishableKey":"sua_chave_pública_do_stripe"
-   }
+{
+  "EmailToSendEmail":"seu_email_para_enviar_emails",
+  "PasswordToSendEmail":"sua_senha_para_enviar_emails",
+  "JwtKey":"addakaDfAyrtcvnncvAEreaxxvrtkkadAeretGAc",
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost,1433;Database=HotelSystem;User ID=sa;Password=<sua_senha>;TrustServerCertificate=true"
+  },
+  "Stripe":  {
+    "SecretKey":"sua_chave_secreta_do_stripe",
+    "PublishableKey":"sua_chave_pública_do_stripe"
+  }
+}
 ```
-<p>Observação: As chaves do Stripe são necessárias para a integração com o sistema de pagamento Stripe. Caso ainda não tenha uma conta no Stripe, você pode criar uma conta de teste <a href="https://docs.stripe.com/testing">aqui.</a></p>
+<p>Observação: As chaves do Stripe são necessárias para a integração com o sistema de pagamento Stripe. Caso ainda não tenha uma conta no Stripe, você pode criar uma conta de teste <a href="https://docs.stripe.com/testing" target="_blank">aqui.</a></p>
 
 <h3 id="start">Starting</h3>
 <p>Para iniciar o projeto, execute os seguintes comandos:</p>
@@ -54,6 +75,9 @@ git clone https://github.com/EduardoKroetz/HotelSistem.git
 cd HotelSistem/Hotel.Domain
 dotnet run
 ```
+
+Por padrão, a aplicação será executada em http://localhost:5000/. Você pode acessar a interface gráfica da API em http://localhost:5000/swagger/index.html
+
 <h2 id="routes">📍 API Endpoints</h2>
 
 <h3>Admin</h3>
