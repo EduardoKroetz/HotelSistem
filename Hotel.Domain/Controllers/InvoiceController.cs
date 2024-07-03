@@ -27,18 +27,12 @@ public class InvoiceController : ControllerBase
     public async Task<IActionResult> GetAsync(
       [FromQuery] int? skip,
       [FromQuery] int? take,
-      [FromQuery] string? number,
       [FromQuery] string? paymentMethod,
       [FromQuery] decimal? totalAmount,
       [FromQuery] string? totalAmountOperator,
-      [FromQuery] EStatus? status,
       [FromQuery] Guid? customerId,
       [FromQuery] Guid? reservationId,
-      [FromQuery] Guid? serviceId,
-      [FromQuery] decimal? taxInformation,
-      [FromQuery] string? taxInformationOperator,
-      [FromQuery] DateTime? issueDate,
-      [FromQuery] string? issueDateOperator
+      [FromQuery] Guid? serviceId
     )
     {
         var queryParameters = new InvoiceQueryParameters
