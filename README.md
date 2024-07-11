@@ -11,7 +11,10 @@
 ![C#]
 
 <p align="center">
-   <a href="#getting-started">🚀 Getting Started</a> • 
+   <a href="#getting-started">🚀 Começando</a> 
+   <a href="#endpoints">🗺️ Rotas</a>
+   <a href="#permissions">🔒 Permissões</a>
+   <a href="#queries">🔎 Consultas </a>
 </p>
 <p align="center">
   <b>A API de sistema de hotel facilita a integração e permite realizar operações típicas de hospedagem. Ela permite realizar operações como gestão de reservas, cômodos, funcionários, clientes, relatórios e mais.</b>
@@ -49,6 +52,12 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<sua_senha>" \
 -d mcr.microsoft.com/mssql/server:2022-latest
 ```
 
+Na pasta "Hotel.Domain", atualize o banco de dados executando:
+
+```bash
+dotnet ef database update
+```
+
 <h3 id="environments">Variáveis de ambiente</h3>
 <p>Adicione essas variáveis de ambiente em um arquivo <code>appsettings.json</code> na pasta Hotel.Domain:</p>
 
@@ -78,7 +87,7 @@ dotnet run
 
 Por padrão, a aplicação será executada em http://localhost:5000/. Você pode acessar a interface gráfica da API em http://localhost:5000/swagger/index.html
 
-<h2 id="routes">📍 API Endpoints</h2>
+<h2 id="endpoints">📍 API Endpoints</h2>
 
 <h3>Admin</h3>
 
@@ -262,5 +271,59 @@ Por padrão, a aplicação será executada em http://localhost:5000/. Você pode
 | Rota                                    | Descrição                                        |
 |-----------------------------------------|--------------------------------------------------|
 | <kbd>POST /v1/verifications/email-code</kbd> | Envia um código de verificação de email por emai        |
+
+
+<h2 id="permissions">🔒 Permissões</h2>
+<p>A API permite que funcionários e administradores (por padrão) gerenciem permissões tanto de administradores quanto de funcionários, bloqueando ou liberando acesso a diversas funcionalidades. Isso pode ser feito através dos seguintes endpoints:</p>
+
+<h3>Administradores</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>POST /v1/admins/{adminId}/permissions/{permissionId}</kbd>  | Adiciona uma permissão a um administrador pelo ID |
+| <kbd>DELETE /v1/admins/{adminId}/permissions/{permissionId}</kbd>| Remove uma permissão de um administrador pelo ID |
+
+<h3>Funcionários</h3>
+
+| Rota                                    | Descrição                                        |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>POST /v1/employees/{employeeId}/permissions/{permissionId}</kbd> | Adiciona uma permissão a um funcionário pelo ID |
+| <kbd>DELETE /v1/employees/{employeeId}/permissions/{permissionId}</kbd> | Remove uma permissão de um funcionário pelo ID |
+
+<h2 id="queries">🔎 Consultas</h2>
+<p>É possível fazer filtragem de dados em todas as tabelas do banco de dados através do método GET em endpoints como "v1/admins", "v1/reservations", "v1/rooms" somente incluindo o campo que você quer filtrar na Query. Exemplo:</p>
+
+| Rota                                    | Retorno                                     |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>POST /v1/reservations?skip=0&take=25&roomId=739a6c2e-5957-467e-808a-c508f49629a8</kbd> | Busca todas as reservas associadas a um determinado cômodo |
+| <kbd>POST /v1/rooms?skip=0&take=5&categoryId=739a6c2e-5957-467e-808a-c508f49629a8</kbd> | Busca todos os cômodos associados a uma determinada categoria |
+
+<p>Para campos númericos ou de data, é necessário incluir um operador para filtrar os dados. Os seguintes operadores disponíveis são:
+<p>"lt" = menor que</p>
+<p>"eq" = igual que</p>
+<p>"gt" = maior que</p>
+Isso permite que você filtre dados conforme precisar de uma maneira flexível.
+Exemplo:</p>
+
+| Rota                                    | Retorno                                     |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>POST /v1/reservations?skip=0&take=25&createdAt=2024-07-03T00:00:00&createdAtOperator=gt</kbd> | Busca todas as reservas com a criação maior que o dia 03/07/2024|
+
+<h3>Campos disponíveis para consulta</h3>
+
+| Rota                                    | Campos disponíveis                               |
+|-----------------------------------------|--------------------------------------------------|
+| <kbd>GET /v1/admins</kbd>|skip, take, name, email, phone, gender, dateOfBirth, dateOfBirthOperator, createdAt, createdAtOperator, isRootAdmin, permissionId|
+| <kbd>GET /v1/categories</kbd>| skip, take, name, averagePrice, averagePriceOperator, roomId|
+| <kbd>GET /v1/customers </kbd>| skip, take, name, email, phone, gender, dateOfBirth, dateOfBirthOperator, createdAt, createdAtOperator|
+| <kbd>GET /v1/employees </kbd>| skip, take, name, email, phone, gender, dateOfBirth, dateOfBirthOperator, createdAt, createdAtOperator, salary, salaryOperator|
+| <kbd>GET /v1/feedbacks </kbd>| skip, take, createdAt, createdAtOperator, comment, rate, rateOperator, likes, likesOperator, dislikes, dislikesOperator, updatedAt, updatedAtOperator, customerId, reservationId, roomId|
+| <kbd>GET /v1/invoices </kbd>| skip, take, paymentMethod, totalAmount, totalAmountOperator, customerId, reservationId, serviceId|
+| <kbd>GET /v1/permissions </kbd>| skip, take, createdAt, createdAtOperator, name, isActive, adminId|
+| <kbd>GET /v1/reports </kbd>| skip, take, summary, status, priority, employeeId, createdAt, createdAtOperator|
+| <kbd>GET /v1/reservations </kbd>| skip, take, timeHosted, timeHostedOperator, dailyRate, dailyRateOperator, checkIn, checkInOperator, checkOut, checkOutOperator, status, capacity, capacityOperator, roomId, customerId, invoiceId, serviceId, createdAt, createdAtOperator, expectedCheckIn, expectedCheckInOperator, expectedCheckOut, expectedCheckOutOperator, expectedTimeHosted, expectedTimeHostedOperator|
+| <kbd>GET /v1/responsibilities </kbd>| skip, take, name, priority, employeeId, serviceId, createdAt, createdAtOperator| 
+| <kbd>GET /v1/rooms </kbd>| skip, take, name, number, numberOperator, price, priceOperator, status, capacity, capacityOperator, serviceId, categoryId, createdAt, createdAtOperator|
+| <kbd>GET /v1/services </kbd>| skip, take, name, price, priceOperator, priority, isActive, timeInMinutes, timeInMinutesOperator, responsibilityId, reservationId, invoiceId, roomId, createdAt, createdAtOperator|
 
 
