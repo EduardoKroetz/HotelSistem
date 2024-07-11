@@ -29,10 +29,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseHttpsRedirection();
 
-app.UseCors();
 app.UseRouting();
+app.UseExceptionHandler();
 app.UseStaticFiles();
-app.UseHandleExceptions();
+app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthentication();

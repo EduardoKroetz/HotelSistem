@@ -1,80 +1,43 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using System.Net;
 
 namespace Hotel.Domain.Middlewares;
 
-public class HandleExceptionMiddleware
+public class GlobalExceptionHandler : IExceptionHandler
 {
-    private readonly RequestDelegate _next;
-    public HandleExceptionMiddleware(RequestDelegate next)
-    => _next = next;
-
-    public async Task InvokeAsync(HttpContext context)
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        try
-        {
-            await _next(context);
-        }
-        catch (ValidationException e)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            await context.Response.WriteAsJsonAsync(
-              new Response([e.Message])
-            );
-        }
-        catch (ArgumentException e)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            await context.Response.WriteAsJsonAsync(
-              new Response([e.Message])
-            );
-        }
-        catch (NotFoundException e)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            await context.Response.WriteAsJsonAsync(
-              new Response([e.Message])
-            );
-        }
-        catch (InvalidOperationException e)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            await context.Response.WriteAsJsonAsync(
-              new Response([e.Message])
-            );
-        }
-        catch (UnauthorizedAccessException e)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            await context.Response.WriteAsJsonAsync(
-              new Response ([e.Message])
-            );
-        }
-        catch (StripeException e)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            await context.Response.WriteAsJsonAsync(
-              new Response([e.Message])
-            );
-        }
-        catch (DbUpdateException)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            await context.Response.WriteAsJsonAsync(
-              new Response([$"Não foi possível atualizar no banco de dados."])
-            );
-        }
-        catch (Exception e)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            Console.WriteLine(e.Message);
-            await context.Response.WriteAsJsonAsync(
-              new Response([e.Message])
-            );
-        }
-    }
+        var response = new Response([exception.Message]);
 
+        switch (exception)
+        {
+            case ValidationException e:
+            case ArgumentException:
+            case InvalidOperationException:
+            case StripeException:
+                httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            break;
+            case NotFoundException e:
+                httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            break;
+            case UnauthorizedAccessException e:
+                httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            break;
+            case DbUpdateException _:
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response = new Response([$"Não foi possível atualizar no banco de dados."]);
+            break;
+            default:
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            break;
+        }
+
+
+        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
+        return true;
+    }
 }

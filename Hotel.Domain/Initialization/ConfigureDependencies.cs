@@ -26,6 +26,7 @@ using Hotel.Domain.Services.UserServices.Interfaces;
 using Hotel.Domain.Services.VerificationServices;
 using Microsoft.EntityFrameworkCore;
 using Hotel.Domain.Services.Interfaces;
+using Hotel.Domain.Middlewares;
 
 namespace Hotel.Domain.Initialization;
 
@@ -33,6 +34,9 @@ public static class ConfigureDependencies
 {
     public static void Configure(WebApplicationBuilder builder)
     {
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+
         if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction())
         {
             var options = new DbContextOptionsBuilder<HotelDbContext>()
