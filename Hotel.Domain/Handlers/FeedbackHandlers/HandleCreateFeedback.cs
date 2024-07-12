@@ -14,8 +14,10 @@ public partial class FeedbackHandler : IHandler
     private readonly IRoomRepository _roomRepository;
     private readonly ILikeRepository _likeRepository;
     private readonly IDeslikeRepository _dislikeRepository;
+    private readonly ILogger<FeedbackHandler> _logger;
 
-    public FeedbackHandler(IFeedbackRepository feedbackRepository, ICustomerRepository customerRepository, IReservationRepository reservationRepository, IRoomRepository roomRepository, ILikeRepository likeRepository, IDeslikeRepository dislikeRepository)
+
+    public FeedbackHandler(IFeedbackRepository feedbackRepository, ICustomerRepository customerRepository, IReservationRepository reservationRepository, IRoomRepository roomRepository, ILikeRepository likeRepository, IDeslikeRepository dislikeRepository, ILogger<FeedbackHandler> logger)
     {
         _feedbackRepository = feedbackRepository;
         _customerRepository = customerRepository;
@@ -23,6 +25,7 @@ public partial class FeedbackHandler : IHandler
         _roomRepository = roomRepository;
         _likeRepository = likeRepository;
         _dislikeRepository = dislikeRepository;
+        _logger = logger;
     }
 
     public async Task<Response> HandleCreateAsync(CreateFeedback model, Guid userId)
@@ -43,8 +46,16 @@ public partial class FeedbackHandler : IHandler
           model.Comment, model.Rate, customer.Id, model.ReservationId, room.Id, reservation //vai validar se o cliente que está criando o feedback está na reserva
         );
 
-        await _feedbackRepository.CreateAsync(feedback);
-        await _feedbackRepository.SaveChangesAsync();
+        try
+        {
+            await _feedbackRepository.CreateAsync(feedback);
+            await _feedbackRepository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao criar o feedback no banco de dados: {ex.Message}");
+        }
+
 
         return new Response("Feedback criado com sucesso!", new { feedback.Id });
     }

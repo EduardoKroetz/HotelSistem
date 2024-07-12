@@ -22,8 +22,9 @@ public partial class ReservationHandler
             {
                 await _repository.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
+                _logger.LogError($"Erro ao atualizar ExpectedCheckIn da reserva {reservation.Id} no banco de dados. Erro: {e.Message}");
                 throw new DbUpdateException("Ocorreu um erro ao atualizar a reserva no banco de dados");
             }
 
@@ -33,6 +34,7 @@ public partial class ReservationHandler
             }
             catch (StripeException e)
             {
+                _logger.LogError($"Erro ao atualizar o PaymentIntent ao atualizar ExpectedCheckIn da reserva {reservation.Id}. Erro: {e.Message}");
                 throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 

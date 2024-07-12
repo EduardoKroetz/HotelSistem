@@ -11,7 +11,14 @@ public partial class FeedbackHandler
 
         _likeRepository.RemoveLike(like);
 
-        await _feedbackRepository.SaveChangesAsync();
+        try
+        {
+            await _feedbackRepository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao deletar um like no banco de dados: {ex.Message}");
+        }
 
         return new Response("Like removido com sucesso!");
     }

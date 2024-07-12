@@ -13,7 +13,14 @@ public partial class FeedbackHandler
 
         _dislikeRepository.RemoveDeslike(dislike);
 
-        await _feedbackRepository.SaveChangesAsync();
+        try
+        {
+            await _feedbackRepository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao deletar um dislike: {ex.Message}");
+        }
 
         return new Response("Deslike removido com sucesso!");
     }

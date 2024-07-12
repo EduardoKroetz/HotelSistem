@@ -7,11 +7,13 @@ public partial class VerificationService
 {
     private readonly Timer _timer;
     private readonly DbContextOptions<HotelDbContext> _dbContextOptions;
+    private readonly ILogger<VerificationService> _logger;
 
-    public VerificationService(DbContextOptions<HotelDbContext> options)
+    public VerificationService(Timer timer, DbContextOptions<HotelDbContext> dbContextOptions, ILogger<VerificationService> logger)
     {
-        _dbContextOptions = options;
-        _timer = new Timer(DeleteExpiredCodes, null, TimeSpan.Zero, TimeSpan.FromMinutes(20));
+        _timer = timer;
+        _dbContextOptions = dbContextOptions;
+        _logger = logger;
     }
 
     private async void DeleteExpiredCodes(object? state)
@@ -27,6 +29,7 @@ public partial class VerificationService
             {
                 context.VerificationCodes.RemoveRange(expiredCodes);
                 await context.SaveChangesAsync();
+                _logger.LogInformation($"Foram excluidos {expiredCodes.Count} códigos de verificação expirados");
             }
         }
     }

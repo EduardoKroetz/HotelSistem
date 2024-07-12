@@ -17,8 +17,15 @@ public partial class FeedbackHandler
         feedback.ChangeComment(model.Comment);
         feedback.ChangeRate(model.Rate);
 
-        _feedbackRepository.Update(feedback);
-        await _feedbackRepository.SaveChangesAsync();
+        try
+        {
+            _feedbackRepository.Update(feedback);
+            await _feedbackRepository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao atualizar o feedback no banco de dados: {ex.Message}");
+        }
 
         return new Response("Feedback atualizado com sucesso!", new { feedback.Id });
     }

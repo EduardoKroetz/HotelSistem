@@ -35,12 +35,17 @@ public partial class CustomerHandler
 
                 if (innerException != null)
                 {
-
                     if (innerException.Contains("Email"))
-                        return new Response("Esse email já está cadastrado.");
+                    {
+                        _logger.LogError("Erro ao cadastradar cliente pois o email já está cadastrado");
+                        throw new ArgumentException("Esse email já está cadastrado.");
+                    }
 
                     if (innerException.Contains("Phone"))
-                        return new Response("Esse telefone já está cadastrado.");
+                    {
+                        _logger.LogError("Erro ao cadastradar cliente pois o telefone já está cadastrado");
+                        throw new ArgumentException("Esse telefone já está cadastrado.");
+                    }
                 }
                 throw;
             }
@@ -51,6 +56,7 @@ public partial class CustomerHandler
             }
             catch (StripeException)
             {
+                _logger.LogError("Erro ao atualizar cliente no stripe");
                 throw new StripeException("Ocorreu um erro ao atualizar o usuário no Stripe");
             }
 

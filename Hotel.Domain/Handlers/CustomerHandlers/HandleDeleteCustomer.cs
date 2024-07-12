@@ -23,6 +23,7 @@ public partial class CustomerHandler
             }
             catch (DbUpdateException)
             {
+                _logger.LogError("Erro ao deletar cliente do banco de dados");
                 throw new DbUpdateException("Ocorreu um erro ao deletar o usuário do banco de dados");
             }
 
@@ -32,6 +33,7 @@ public partial class CustomerHandler
             }
             catch (StripeException)
             {
+                _logger.LogError("Erro ao deletar cliente do stripe");
                 throw new StripeException("Ocorreu um erro ao deletar o cliente no Stripe");
             }
 

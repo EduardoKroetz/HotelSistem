@@ -11,7 +11,7 @@ public partial class EmployeeHandler
     public async Task<Response> HandleUpdateAsync(UpdateEmployee model, Guid id)
     {
         var employee = await _repository.GetEntityByIdAsync(id)
-        ?? throw new NotFoundException("Funcionário não encontrado.");
+            ?? throw new NotFoundException("Funcionário não encontrado.");
 
         employee.ChangeName(new Name(model.FirstName, model.LastName));
         employee.ChangePhone(new Phone(model.Phone));
@@ -31,12 +31,17 @@ public partial class EmployeeHandler
 
             if (innerException != null)
             {
-
                 if (innerException.Contains("Email"))
-                    return new Response("Esse email já está cadastrado.");
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o email já está cadastrado");
+                    throw new ArgumentException("Esse email já está cadastrado.");
+                }
 
                 if (innerException.Contains("Phone"))
-                    return new Response("Esse telefone já está cadastrado.");
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o telefone já está cadastrado");
+                    throw new ArgumentException("Esse telefone já está cadastrado.");
+                }
             }
         }
 

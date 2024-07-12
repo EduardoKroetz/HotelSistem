@@ -17,15 +17,33 @@ public partial class ReservationHandler
 
             reservation.ToCheckIn();
 
-            await _repository.SaveChangesAsync();
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao atualizar o status da reserva para CheckedIn no banco de dados: {e.Message}");
+            }
+
+
+            try
+            {
+                await _stripeService.CreatePaymentMethodAsync(tokenId, reservation.StripePaymentIntentId);
+            }
+            catch (StripeException e)
+            {
+                _logger.LogError($"Erro ao criar método de pagamento no Stripe: {e.Message}");
+                throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
+            }
 
             try
             {                
-                await _stripeService.CreatePaymentMethodAsync(tokenId, reservation.StripePaymentIntentId);
                 await _stripeService.ConfirmPaymentIntentAsync(reservation.StripePaymentIntentId);
             }
             catch (StripeException e)
             {
+                _logger.LogError($"Erro ao confirmar o PaymentIntent no Stripe: {e.Message}");
                 throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 

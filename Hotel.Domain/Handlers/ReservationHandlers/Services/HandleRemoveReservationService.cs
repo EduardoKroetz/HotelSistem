@@ -25,12 +25,21 @@ public partial class ReservationHandler
             {
                 await _repository.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
+                _logger.LogError($"Erro ao remove o serviço no banco de dados: {e.Message}");
                 throw new DbUpdateException("Ocorreu um erro ao atualizar a reserva no banco de dados");
             }
 
-            await _stripeService.RemovePaymentIntentProduct(reservation.StripePaymentIntentId, serviceId);
+
+            try
+            {
+                await _stripeService.RemovePaymentIntentProduct(reservation.StripePaymentIntentId, serviceId);
+            }
+            catch
+            {
+                _logger.LogError($"Erro ao remover produto do PaymentIntent no stripe");
+            }
             
             await transaction.CommitAsync();
 

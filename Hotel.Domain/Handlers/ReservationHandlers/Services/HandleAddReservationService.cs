@@ -30,13 +30,21 @@ public partial class ReservationHandler
             {
                 await _repository.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
+                _logger.LogError($"Erro ao salvar o serviço no banco de dados: {e.Message}");
                 throw new DbUpdateException("Ocorreu um erro ao salvar o serviço no banco de dados");
             }
 
-            await _stripeService.AddPaymentIntentProduct(reservation.StripePaymentIntentId, service);
-            
+            try
+            {
+                await _stripeService.AddPaymentIntentProduct(reservation.StripePaymentIntentId, service);
+            }catch
+            {
+                _logger.LogError($"Erro ao adicionar produto ao PaymentIntent no stripe");
+            }
+
+
             await transaction.CommitAsync();
 
             return new Response("Serviço adicionado com sucesso!");

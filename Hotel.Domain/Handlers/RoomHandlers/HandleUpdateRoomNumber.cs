@@ -16,7 +16,14 @@ public partial class RoomHandler
 
         room.ChangeNumber(newNumber);
 
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao atualizar número do cômodo {room.Id} no banco de dados. Erro: {e.Message}");
+        }
 
         return new Response("Número atualizado com sucesso!");
     }

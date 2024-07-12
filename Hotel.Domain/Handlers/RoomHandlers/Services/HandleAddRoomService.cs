@@ -15,7 +15,14 @@ public partial class RoomHandler
 
         room.AddService(service);
 
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao associar serviço {service.Id} ao cômodo {room.Id}. Erro: {e.Message}");
+        }
 
         return new Response("Serviço adicinado com sucesso!");
     }

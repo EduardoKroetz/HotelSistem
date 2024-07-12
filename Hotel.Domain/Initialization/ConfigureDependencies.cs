@@ -27,15 +27,30 @@ using Hotel.Domain.Services.VerificationServices;
 using Microsoft.EntityFrameworkCore;
 using Hotel.Domain.Services.Interfaces;
 using Hotel.Domain.Middlewares;
+using Serilog;
 
 namespace Hotel.Domain.Initialization;
 
-public static class ConfigureDependencies
+public static class ConfigureServices
 {
     public static void Configure(WebApplicationBuilder builder)
     {
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-        builder.Services.AddProblemDetails();
+        var services = builder.Services;
+
+        //ExceptionHandler
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
+
+        //Logs
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .CreateLogger();
+
+        services.AddLogging(logginBuilder =>
+        {
+            logginBuilder.ClearProviders();
+            logginBuilder.AddSerilog();
+        });
 
         if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction())
         {
@@ -43,56 +58,55 @@ public static class ConfigureDependencies
               .UseSqlServer(Configuration.ConnectionString)
               .Options;
 
-            builder.Services.AddSingleton(options);
+            services.AddSingleton(options);
 
-            builder.Services.AddDbContext<HotelDbContext>(opt =>
+            services.AddDbContext<HotelDbContext>(opt =>
             {
                 opt.UseSqlServer(Configuration.ConnectionString);
             });
         }
 
         //Configurar repositórios
-        builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-        builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
-        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-        builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-        builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        builder.Services.AddScoped<IResponsibilityRepository, ResponsibilityRepository>();
-        builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-        builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
-        builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-        builder.Services.AddScoped<IReportRepository, ReportRepository>();
-        builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-        builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
-        builder.Services.AddScoped<ILikeRepository, LikeRepository>();
-        builder.Services.AddScoped<IDeslikeRepository, DeslikeRepository>();
+        services.AddScoped<IAdminRepository, AdminRepository>();
+        services.AddScoped<IPermissionRepository, PermissionRepository>();
+        services.AddScoped<ICustomerRepository, CustomerRepository>();
+        services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IResponsibilityRepository, ResponsibilityRepository>();
+        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+        services.AddScoped<IReservationRepository, ReservationRepository>();
+        services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddScoped<IServiceRepository, ServiceRepository>();
+        services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+        services.AddScoped<ILikeRepository, LikeRepository>();
+        services.AddScoped<IDeslikeRepository, DeslikeRepository>();
 
 
         //Services
-        builder.Services.AddSingleton<AuthorizationService>();
-        builder.Services.AddScoped<IStripeService, StripeService>();
-        builder.Services.AddSingleton<TokenService>();
-        builder.Services.AddSingleton<LoginService>();
-        builder.Services.AddScoped<IEmailService, EmailService>();
-        builder.Services.AddScoped<IUserService, UserService>();
-        builder.Services.AddSingleton<VerificationService>();
+        services.AddScoped<IStripeService, StripeService>();
+        services.AddSingleton<TokenService>();
+        services.AddSingleton<LoginService>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddSingleton<VerificationService>();
 
         //Configurar handlers
-        builder.Services.AddScoped<AdminHandler>();
-        builder.Services.AddScoped<PermissionHandler>();
-        builder.Services.AddScoped<CustomerHandler>();
-        builder.Services.AddScoped<FeedbackHandler>();
-        builder.Services.AddScoped<EmployeeHandler>();
-        builder.Services.AddScoped<ResponsibilityHandler>();
-        builder.Services.AddScoped<InvoiceHandler>();
-        builder.Services.AddScoped<ReservationHandler>();
-        builder.Services.AddScoped<RoomHandler>();
-        builder.Services.AddScoped<CategoryHandler>();
-        builder.Services.AddScoped<ReportHandler>();
-        builder.Services.AddScoped<ServiceHandler>();
-        builder.Services.AddScoped<LoginHandler>();
-        builder.Services.AddScoped<VerificationHandler>();
+        services.AddScoped<AdminHandler>();
+        services.AddScoped<PermissionHandler>();
+        services.AddScoped<CustomerHandler>();
+        services.AddScoped<FeedbackHandler>();
+        services.AddScoped<EmployeeHandler>();
+        services.AddScoped<ResponsibilityHandler>();
+        services.AddScoped<InvoiceHandler>();
+        services.AddScoped<ReservationHandler>();
+        services.AddScoped<RoomHandler>();
+        services.AddScoped<CategoryHandler>();
+        services.AddScoped<ReportHandler>();
+        services.AddScoped<ServiceHandler>();
+        services.AddScoped<LoginHandler>();
+        services.AddScoped<VerificationHandler>();
 
     }
 }

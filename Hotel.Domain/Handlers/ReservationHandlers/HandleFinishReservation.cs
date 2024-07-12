@@ -22,14 +22,22 @@ public partial class ReservationHandler
             //Create invoice and finalize Reservation
             var invoice = reservation.Finish();
       
-            await _repository.SaveChangesAsync();
-        
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao atualizar o status da reserva no banco de dados: {e.Message}");
+            }
+
             try
             {
                 await _stripeService.CapturePaymentIntentAsync(reservation.StripePaymentIntentId, reservation);
             }
             catch (StripeException e)
             {
+                _logger.LogError($"Erro ao capturar o PaymentIntent no Stripe: {e.Message}");
                 throw new StripeException($"Ocorreu um erro ao capturar a transação no Stripe. Erro: {e.Message}");
             }
 

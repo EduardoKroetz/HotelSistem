@@ -15,7 +15,14 @@ public partial class FeedbackHandler
 
         feedback.ChangeRate(rate);
 
-        await _feedbackRepository.SaveChangesAsync();
+        try
+        {
+            await _feedbackRepository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao atualizar o feedback no banco de dados: {ex.Message}");
+        }
 
         return new Response("Feedback atualizado com sucesso!");
     }

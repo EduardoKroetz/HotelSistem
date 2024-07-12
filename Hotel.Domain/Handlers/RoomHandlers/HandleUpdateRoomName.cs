@@ -21,14 +21,22 @@ public partial class RoomHandler
 
             room.ChangeName(newName);
 
-            await _repository.SaveChangesAsync();
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao atualizar nome do cômodo {room.Id} no banco de dados. Erro: {e.Message}");
+            }
 
             try
             {
                 await _stripeService.UpdateProductAsync(room.StripeProductId, room.Name, room.Description, room.Price, room.IsActive);
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao atualizar nome do produto {room.StripeProductId} no Stripe. Erro: {e.Message}");
                 throw new StripeException("Um erro ocorreu ao atualizar o produto no Stripe.");
             }
 

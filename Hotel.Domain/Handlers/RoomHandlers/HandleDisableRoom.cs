@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Domain.Exceptions;
 using Stripe;
 
@@ -21,14 +22,23 @@ public partial class RoomHandler
                 throw new InvalidOperationException("Não foi possível desativar a hospedagem pois tem reservas pendentes relacionadas.");
 
             room.Disable();
-            await _repository.SaveChangesAsync();
+
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao atualizar no banco de dados ao desativar cômodo {room.Id}. Erro: {e.Message}");
+            }
 
             try
             {
                 await _stripeService.UpdateProductAsync(room.StripeProductId, room.Name, room.Description, room.Price, false);
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao desativar produto {room.StripeProductId} no Stripe. Erro: {e.Message}");
                 throw new StripeException("Ocorreu um erro ao atualizar o produto no Stripe.");
             }
 

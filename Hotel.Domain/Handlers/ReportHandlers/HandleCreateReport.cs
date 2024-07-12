@@ -11,10 +11,12 @@ public partial class ReportHandler : IHandler
 {
     private readonly IReportRepository _repository;
     private readonly IEmployeeRepository _employeeRepository;
-    public ReportHandler(IReportRepository repository, IEmployeeRepository employeeRepository)
+    private readonly ILogger<ReportHandler> _logger;  
+    public ReportHandler(IReportRepository repository, IEmployeeRepository employeeRepository, ILogger<ReportHandler> logger)
     {
         _employeeRepository = employeeRepository;
         _repository = repository;
+        _logger = logger;
     }
 
 
@@ -25,8 +27,15 @@ public partial class ReportHandler : IHandler
 
         var report = new Report(model.Summary, model.Description, model.Priority, employee, model.Resolution);
 
-        await _repository.CreateAsync(report);
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.CreateAsync(report);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao criar um relatório no banco de dados: {ex.Message}");
+        }
 
         return new Response("Relatório criado com sucesso!", new { report.Id });
     }

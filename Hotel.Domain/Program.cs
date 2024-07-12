@@ -1,12 +1,7 @@
-using Hotel.Domain.Extensions;
 using Hotel.Domain.Initialization;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 Console.OutputEncoding = Encoding.UTF8;
@@ -14,7 +9,7 @@ Console.OutputEncoding = Encoding.UTF8;
 builder.Configuration.AddEnvironmentVariables();
 
 LoadConfigurationClass.Configure(builder);
-ConfigureDependencies.Configure(builder);
+ConfigureServices.Configure(builder);
 ConfigureAuthentication.Configure(builder.Services);
 ConfigureCors.Configure(builder.Services);
 

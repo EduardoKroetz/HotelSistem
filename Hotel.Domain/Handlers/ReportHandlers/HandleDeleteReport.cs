@@ -13,8 +13,15 @@ public partial class ReportHandler
         if (report.EmployeeId != userId)
             throw new UnauthorizedAccessException("Você não tem permissão para deletar relatório alheio!");
 
-        _repository.Delete(report);
-        await _repository.SaveChangesAsync();
+        try
+        {
+            _repository.Delete(report);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao deletar um relatório no banco de dados: {ex.Message}");
+        }
 
         return new Response("Relatório deletado com sucesso!", new { id });
     }

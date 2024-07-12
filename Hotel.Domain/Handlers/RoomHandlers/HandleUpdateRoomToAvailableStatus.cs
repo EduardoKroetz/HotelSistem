@@ -13,7 +13,14 @@ public partial class RoomHandler
 
         room.ChangeStatus(ERoomStatus.Available);
 
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao atualizar o status do cômodo {room.Id} para disponível no banco de dados. Erro: {e.Message}");
+        }
 
         return new Response("Status atualizado com sucesso!");
     }

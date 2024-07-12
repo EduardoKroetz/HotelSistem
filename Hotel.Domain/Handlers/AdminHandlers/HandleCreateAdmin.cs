@@ -17,12 +17,14 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository, Admin>,
     private readonly IAdminRepository _repository;
     private readonly IPermissionRepository _permissionRepository;
     private readonly IEmailService _emailService;
+    private readonly ILogger<AdminHandler> _logger;
 
-    public AdminHandler(IAdminRepository repository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository, emailService)
+    public AdminHandler(IAdminRepository repository, IPermissionRepository permissionRepository, IEmailService emailService, ILogger<AdminHandler> logger) : base(repository, emailService)
     {
         _repository = repository;
         _permissionRepository = permissionRepository;
         _emailService = emailService;
+        _logger = logger;
     }
 
     public async Task<Response> HandleCreateAsync(CreateUser model, string? code)
@@ -60,10 +62,16 @@ public partial class AdminHandler : GenericUserHandler<IAdminRepository, Admin>,
             {
 
                 if (innerException.Contains("Email"))
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o email já está cadastrado");
                     throw new ArgumentException("Esse email já está cadastrado.");
+                }
 
                 if (innerException.Contains("Phone"))
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o telefone já está cadastrado");
                     throw new ArgumentException("Esse telefone já está cadastrado.");
+                }
             }
         }
 

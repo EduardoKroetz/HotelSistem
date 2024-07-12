@@ -19,8 +19,9 @@ public partial class ReservationHandler : IHandler
     private readonly IServiceRepository _serviceRepository;
     private readonly InvoiceHandler _invoiceHandler;
     private readonly IStripeService _stripeService;
+    private readonly ILogger<ReservationHandler> _logger;
 
-    public ReservationHandler(IReservationRepository repository, IRoomRepository roomRepository, ICustomerRepository customerRepository, IServiceRepository serviceRepository, InvoiceHandler invoiceHandler, IStripeService stripeService)
+    public ReservationHandler(IReservationRepository repository, IRoomRepository roomRepository, ICustomerRepository customerRepository, IServiceRepository serviceRepository, InvoiceHandler invoiceHandler, IStripeService stripeService, ILogger<ReservationHandler> logger)
     {
         _repository = repository;
         _roomRepository = roomRepository;
@@ -28,6 +29,7 @@ public partial class ReservationHandler : IHandler
         _serviceRepository = serviceRepository;
         _invoiceHandler = invoiceHandler;
         _stripeService = stripeService;
+        _logger = logger;
     }
 
     public async Task<Response> HandleCreateAsync(CreateReservation model, Guid customerId)
@@ -49,8 +51,9 @@ public partial class ReservationHandler : IHandler
                 await _repository.CreateAsync(reservation);
                 await _repository.SaveChangesAsync();
             }
-            catch(DbUpdateException)
+            catch(DbUpdateException e)
             {
+                _logger.LogError($"Erro ao criar reserva no banco de dados: {e.Message}");
                 throw new DbUpdateException("Ocorreu um erro ao criar a reserva no banco de dados");
             }
 
@@ -67,6 +70,7 @@ public partial class ReservationHandler : IHandler
             }
             catch (StripeException e)
             {
+                _logger.LogError($"Erro ao criar PaymentIntent no stripe: {e.Message}");
                 throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 

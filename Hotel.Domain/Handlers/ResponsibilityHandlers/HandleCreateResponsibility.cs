@@ -9,15 +9,28 @@ namespace Hotel.Domain.Handlers.y.ResponsibilityHandlers;
 public partial class ResponsibilityHandler : IHandler
 {
     private readonly IResponsibilityRepository _repository;
-    public ResponsibilityHandler(IResponsibilityRepository repository)
-    => _repository = repository;
+    private readonly ILogger<ResponsibilityHandler> _logger;
+
+    public ResponsibilityHandler(IResponsibilityRepository repository, ILogger<ResponsibilityHandler> logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
 
     public async Task<Response> HandleCreateAsync(EditorResponsibility model)
     {
         var responsibility = new Responsibility(model.Name, model.Description, model.Priority);
 
-        await _repository.CreateAsync(responsibility);
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.CreateAsync(responsibility);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao criar a responsabilidade no banco de dados. Erro: {e.Message}");
+            throw;
+        }
 
         return new Response("Responsabilidade criada com sucesso!", new { responsibility.Id });
     }

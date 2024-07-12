@@ -16,13 +16,15 @@ public partial class RoomHandler : IHandler
     private readonly IServiceRepository _serviceRepository;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IStripeService _stripeService;
+    private readonly ILogger<RoomHandler> _logger;
 
-    public RoomHandler(IRoomRepository repository, IServiceRepository serviceRepository, ICategoryRepository categoryRepository, IStripeService stripeService)
+    public RoomHandler(IRoomRepository repository, IServiceRepository serviceRepository, ICategoryRepository categoryRepository, IStripeService stripeService, ILogger<RoomHandler> logger)
     {
         _repository = repository;
         _serviceRepository = serviceRepository;
         _categoryRepository = categoryRepository;
         _stripeService = stripeService;
+        _logger = logger;
     }
 
     public async Task<Response> HandleCreateAsync(EditorRoom model)
@@ -45,8 +47,14 @@ public partial class RoomHandler : IHandler
 
             var room = new Room(model.Name, model.Number, model.Price, model.Capacity, model.Description, category);
 
-            await _repository.CreateAsync(room);
-            await _repository.SaveChangesAsync();
+            try
+            {
+                await _repository.CreateAsync(room);
+                await _repository.SaveChangesAsync();
+            }catch (Exception e)
+            {
+                _logger.LogError($"Erro ao criar cômodo no banco de dados. Erro: {e.Message}");
+            }
 
             try
             {
@@ -54,8 +62,9 @@ public partial class RoomHandler : IHandler
                 room.StripeProductId = stripeProduct.Id;
                 await _repository.SaveChangesAsync();
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao criar cômodo como produto no Stripe. Erro: {e.Message}");
                 throw new StripeException("Um ero ocorreu ao criar o produto no Stripe.");
             }
 

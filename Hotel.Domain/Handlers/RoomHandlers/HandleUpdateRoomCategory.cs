@@ -15,7 +15,14 @@ public partial class RoomHandler
 
         room.ChangeCategory(categoryId);
 
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao atualizar categoria do cômodo {room.Id} no banco de dados. Erro: {e.Message}");
+        }
 
         return new Response("Categoria atualizada com sucesso!");
     }

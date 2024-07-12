@@ -1,5 +1,6 @@
 using Hotel.Domain.DTOs;
 using Hotel.Domain.DTOs.ResponsibilityDTOs;
+using Hotel.Domain.Entities.ResponsibilityEntity;
 
 namespace Hotel.Domain.Handlers.y.ResponsibilityHandlers;
 
@@ -15,9 +16,18 @@ public partial class ResponsibilityHandler
         Responsibility.ChangeDescription(model.Description);
         Responsibility.ChangePriority(model.Priority);
 
-        _repository.Update(Responsibility);
-        await _repository.SaveChangesAsync();
+        try
+        {
+            _repository.Update(Responsibility);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao atualizar a responsabilidade {id} no banco de dados. Erro: {e.Message}");
+            throw;
+        }
 
-        return new Response("Responsabilidade atualizado com sucesso!", new { Responsibility.Id });
+
+        return new Response("Responsabilidade atualizada com sucesso!", new { Responsibility.Id });
     }
 }

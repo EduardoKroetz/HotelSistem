@@ -2,7 +2,7 @@
 
 namespace Hotel.Domain.Services.Authorization;
 
-public partial class AuthorizationService
+public static partial class AuthorizationService
 {
     /// <summary>
     /// Serviço para transformar uma string em uma permissão

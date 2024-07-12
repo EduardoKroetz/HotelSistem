@@ -1,4 +1,5 @@
 ﻿using Hotel.Domain.DTOs;
+using Hotel.Domain.Entities.ServiceEntity;
 using Hotel.Domain.Exceptions;
 using Stripe;
 
@@ -17,14 +18,23 @@ public partial class RoomHandler
                 throw new NotFoundException("Hospedagem não encontrada.");
 
             room.Enable();
-            await _repository.SaveChangesAsync();
+
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao atualizar no banco de dados ao ativar o cômodo {room.Id}. Erro: {e.Message}");
+            }
 
             try
             {
                 await _stripeService.UpdateProductAsync(room.StripeProductId, room.Name, room.Description, room.Price, true);
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao ativar produto {room.StripeProductId} no Stripe. Erro: {e.Message}");
                 throw new StripeException("Ocorreu um erro ao atualizar o produto no Stripe.");
             }
 

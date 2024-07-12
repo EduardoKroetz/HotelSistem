@@ -12,7 +12,15 @@ public partial class ReportHandler
 
         report.Finish();
 
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao atualizar um relatório no banco de dados: {ex.Message}");
+        }
+
         return new Response("Relatório finalizado com sucesso!", new { report.Id });
     }
 }

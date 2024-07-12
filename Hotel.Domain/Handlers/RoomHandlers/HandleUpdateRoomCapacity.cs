@@ -13,7 +13,14 @@ public partial class RoomHandler
 
         room.ChangeCapacity(newCapacity);
 
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao atualizar capacidade do cômodo {room.Id} no banco de dados. Erro: {e.Message}");
+        }
 
         return new Response("Capacidade atualizada com sucesso!");
     }

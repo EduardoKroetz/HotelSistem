@@ -26,6 +26,6 @@ public partial class EmailService : IEmailService
         };
   
         await smtpClient.SendMailAsync(mailMessage);
-        Console.WriteLine("Email enviado com sucesso!");
+        _logger.LogInformation($"Email enviado com sucesso para {email.To.Address}");
     }
 }

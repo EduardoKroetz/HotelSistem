@@ -21,8 +21,15 @@ public partial class ReportHandler
 
         report.ChangeEmployee(employee);
 
-        _repository.Update(report);
-        await _repository.SaveChangesAsync();
+        try
+        {
+            _repository.Update(report);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao atualizar um relatório no banco de dados: {ex.Message}");
+        }
 
         return new Response("Relatório atualizado com sucesso!", new { report.Id });
     }

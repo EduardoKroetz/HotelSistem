@@ -27,6 +27,7 @@ public partial class CustomerHandler
             }
             catch (StripeException)
             {
+                _logger.LogError("Erro ao atualizar cliente no stripe");
                 throw new StripeException("Ocorreu um erro ao atualizar o cliente no Stripe");
             }
 

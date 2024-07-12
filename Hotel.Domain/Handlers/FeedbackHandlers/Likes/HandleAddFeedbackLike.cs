@@ -24,7 +24,14 @@ public partial class FeedbackHandler
 
         await _likeRepository.CreateLike(like);
 
-        await _feedbackRepository.SaveChangesAsync();
+        try
+        {
+            await _feedbackRepository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao criar um like no banco de dados: {ex.Message}");
+        }
 
         return new Response("Like adicionado com sucesso!");
     }

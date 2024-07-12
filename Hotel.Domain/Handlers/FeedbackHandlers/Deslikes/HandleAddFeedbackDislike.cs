@@ -25,7 +25,14 @@ public partial class FeedbackHandler
 
         await _dislikeRepository.CreateDeslike(dislike);
 
-        await _feedbackRepository.SaveChangesAsync();
+        try
+        {
+            await _feedbackRepository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao criar um dislike: {ex.Message}");
+        }
 
         return new Response("Deslike adicionado com sucesso!");
     }

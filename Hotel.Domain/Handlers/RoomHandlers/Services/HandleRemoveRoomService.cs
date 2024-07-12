@@ -15,7 +15,14 @@ public partial class RoomHandler
 
         room.RemoveService(service);
 
-        await _repository.SaveChangesAsync();
+        try
+        {
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Erro ao desassociar serviço {service.Id} do cômodo {room.Id}. Erro: {e.Message}");
+        }
 
         return new Response("Serviço removido com sucesso!");
     }

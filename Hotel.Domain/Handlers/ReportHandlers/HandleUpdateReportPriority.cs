@@ -13,8 +13,15 @@ public partial class ReportHandler
 
         report.ChangePriority(priority);
 
-        _repository.Update(report);
-        await _repository.SaveChangesAsync();
+        try
+        {
+            _repository.Update(report);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Ocorreu um erro ao atualizar um relatório no banco de dados: {ex.Message}");
+        }
 
         return new Response("Prioridade atualizada com sucesso!", new { report.Id });
     }

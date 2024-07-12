@@ -19,8 +19,16 @@ public partial class RoomHandler
             if (room.Reservations.Count > 0)
                 throw new InvalidOperationException("Não foi possível deletar a hospedagem pois tem reservas associadas a ela. Sugiro que desative a hospedagem.");
 
-            _repository.Delete(room);
-            await _repository.SaveChangesAsync();
+            try
+            {
+                _repository.Delete(room);
+                await _repository.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao deletar cômodo {room.Id} no banco de dados. Erro: {e.Message}");
+            }
+
 
             try
             {
@@ -28,9 +36,10 @@ public partial class RoomHandler
                 var stripeResponse = await _stripeService.DisableProductAsync(room.StripeProductId) ??
                     throw new Exception();
             }
-            catch
+            catch (Exception e)
             {
-                throw new StripeException("Um ero ocorreu ao desativar o produto no Stripe.");
+                _logger.LogError($"Erro ao desativar produto no Stripe ao deletar cômodo {room.Id}. Erro: {e.Message}");
+                throw new StripeException("Um erro ocorreu ao desativar o produto no Stripe.");
             }
 
             await transaction.CommitAsync();

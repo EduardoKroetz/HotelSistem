@@ -24,8 +24,9 @@ public partial class ReservationHandler
                 _repository.Delete(reservation);
                 await _repository.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
+                _logger.LogError($"Erro ao deletar reserva no banco de dados: {e.Message}");
                 throw new DbUpdateException("Ocorreu um erro ao deletar a reserva do banco de dados");
             }
 
@@ -35,6 +36,7 @@ public partial class ReservationHandler
             }
             catch (StripeException e)
             {
+                _logger.LogError($"Erro ao cancelar PaymentIntent no Stripe: {e.Message}");
                 throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 

@@ -32,10 +32,16 @@ public partial class AdminHandler
             {
 
                 if (innerException.Contains("Email"))
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o email já está cadastrado");
                     throw new ArgumentException("Esse email já está cadastrado.");
+                }
 
                 if (innerException.Contains("Phone"))
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o telefone já está cadastrado");
                     throw new ArgumentException("Esse telefone já está cadastrado.");
+                }
             }
         }
 

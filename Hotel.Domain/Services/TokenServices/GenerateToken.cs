@@ -16,10 +16,10 @@ public class TokenService
     public string GenerateToken(Admin admin)
     {
         var claims = new List<Claim>()
-    {
-      new(ClaimTypes.NameIdentifier, admin.Id.ToString()),
-      new(ClaimTypes.Email, admin.Email.Address)
-    };
+        {
+          new(ClaimTypes.NameIdentifier, admin.Id.ToString()),
+          new(ClaimTypes.Email, admin.Email.Address)
+        };
 
         //Se for admin ou rootAdmin
         if (admin.IsRootAdmin) // Possui todo acesso

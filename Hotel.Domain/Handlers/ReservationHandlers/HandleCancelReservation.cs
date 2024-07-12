@@ -25,8 +25,9 @@ public partial class ReservationHandler
             {
                 await _repository.SaveChangesAsync();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
+                _logger.LogError($"Erro ao atualizar o status da reserva no banco de dados: {e.Message}");
                 throw new DbUpdateException("Ocorreu um erro ao atualizar a reserva no banco de dados");
             }
 
@@ -36,6 +37,7 @@ public partial class ReservationHandler
             }
             catch (StripeException e)
             {
+                _logger.LogError($"Erro ao cancelar o PaymentIntent no stripe: {e.Message}");
                 throw new StripeException($"Ocorreu um erro ao lidar com o serviço de pagamento. Erro: {e.Message}");
             }
 

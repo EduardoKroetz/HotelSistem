@@ -16,12 +16,14 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, H
     private readonly ICustomerRepository _repository;
     private readonly IEmailService _emailService;
     private readonly IStripeService _stripeService;
+    private readonly ILogger<CustomerHandler> _logger;
 
-    public CustomerHandler(ICustomerRepository repository, IEmailService emailService, IStripeService stripeService) : base(repository, emailService)
+    public CustomerHandler(ICustomerRepository repository, IEmailService emailService, IStripeService stripeService, ILogger<CustomerHandler> logger) : base(repository, emailService)
     {
         _repository = repository;
         _emailService = emailService;
         _stripeService = stripeService;
+        _logger = logger;
     }
 
     public async Task<Response> HandleCreateAsync(CreateUser model, string? code)
@@ -57,14 +59,19 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, H
 
                 if (innerException != null)
                 {
-
                     if (innerException.Contains("Email"))
+                    {
+                        _logger.LogError("Erro ao cadastradar cliente pois o email já está cadastrado");
                         throw new ArgumentException("Esse email já está cadastrado.");
+                    }
 
                     if (innerException.Contains("Phone"))
+                    {
+                        _logger.LogError("Erro ao cadastradar cliente pois o telefone já está cadastrado");
                         throw new ArgumentException("Esse telefone já está cadastrado.");
+                    }
                 }
-                throw new DbUpdateException("Ocorreu um erro ao criar o cliente no banco de dados");
+                throw;
             }
 
             try
@@ -76,6 +83,7 @@ public partial class CustomerHandler : GenericUserHandler<ICustomerRepository, H
             }
             catch (StripeException)
             {
+                _logger.LogError("Erro ao criar cliente no stripe");
                 throw new StripeException("Ocorreu um erro ao criar o cliente no Stripe");
             }
 

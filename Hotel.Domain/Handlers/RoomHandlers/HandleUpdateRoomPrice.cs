@@ -20,15 +20,23 @@ public partial class RoomHandler
                 throw new InvalidOperationException("Não foi possível atualizar o preço pois possuem reservas pendentes relacionadas a hospedagem.");
 
             room.ChangePrice(price);
-            await _repository.SaveChangesAsync();
 
+            try
+            {
+                await _repository.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Erro ao atualizar o preço do cômodo {room.Id} no banco de dados. Erro: {e.Message}");
+            }
 
             try
             {
                 await _stripeService.UpdateProductAsync(room.StripeProductId, room.Name, room.Description, room.Price);
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogError($"Erro ao atualizar o preço do produto {room.StripeProductId} no Stripe. Erro: {e.Message}");
                 throw new StripeException("Um erro ocorreu ao atualizar o produto no Stripe.");
             }
 

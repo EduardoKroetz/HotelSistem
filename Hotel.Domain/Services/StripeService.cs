@@ -13,14 +13,16 @@ public class StripeService : IStripeService
     private readonly PriceService _stripePriceService;
     private readonly PaymentIntentService _stripePaymentIntentService;
     private readonly PaymentMethodService _stripePaymentMethodService;
+    private readonly ILogger<StripeService> _logger;
 
-    public StripeService()
+    public StripeService(ILogger<StripeService> logger)
     {
         _stripeCustomerService = new CustomerService();
         _stripeProductService = new ProductService();
         _stripePriceService = new PriceService();
         _stripePaymentIntentService = new PaymentIntentService();
         _stripePaymentMethodService = new PaymentMethodService();
+        _logger = logger;
     }
 
     //Customer
@@ -38,12 +40,22 @@ public class StripeService : IStripeService
             Phone = phone.Number
         };
 
-        return await _stripeCustomerService.CreateAsync(options);
+        var customer = await _stripeCustomerService.CreateAsync(options);
+        _logger.LogInformation($"Cliente stripe foi criado. Id: {customer.Id}");
+        return customer;
     }
 
     public async Task<bool> DeleteCustomerAsync(string customerId)
     {
-        return await _stripeCustomerService.DeleteAsync(customerId) is null ? false : true;
+        var isDeleted = await _stripeCustomerService.DeleteAsync(customerId) is null ? false : true;
+        if (isDeleted)
+        {
+            _logger.LogInformation("Cliente stripe foi deletado");
+        }else
+        {
+            _logger.LogError("Tentativa de deletar cliente stripe mal sucedida");
+        }
+        return isDeleted;
     }
 
     public async Task<Customer> GetCustomerAsync(string customerId)
@@ -65,7 +77,9 @@ public class StripeService : IStripeService
             Phone = phone.Number
         };
 
-        return await _stripeCustomerService.UpdateAsync(customerId, options);
+        var customer = await _stripeCustomerService.UpdateAsync(customerId, options);
+        _logger.LogInformation($"Cliente stripe com o id {customer.Id} foi atualizado");
+        return customer;
     }
 
 
@@ -81,6 +95,7 @@ public class StripeService : IStripeService
         };
 
         var product = await _stripeProductService.CreateAsync(productOptions);
+        _logger.LogInformation($"Produto criado no Stripe. Id: {product.Id}");
 
         var priceCreateOptions = new PriceCreateOptions
         {
@@ -89,8 +104,8 @@ public class StripeService : IStripeService
             Product = product.Id
         };
 
-        await _stripePriceService.CreateAsync(priceCreateOptions);
-
+        var stripePrice =  await _stripePriceService.CreateAsync(priceCreateOptions);
+        _logger.LogInformation($"Preço criado no Stripe. Id: {stripePrice.Id}");
         return product;
     }
 
@@ -103,7 +118,8 @@ public class StripeService : IStripeService
             Active = false,
         };
 
-        return await _stripeProductService.UpdateAsync(productId, productUpdateOptions);
+        await _stripeProductService.UpdateAsync(productId, productUpdateOptions);
+        return product;
     }
 
     public async Task<Product> GetProductAsync(string productId)

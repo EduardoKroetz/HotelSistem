@@ -18,13 +18,15 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository, E
     private readonly IResponsibilityRepository _responsibilityRepository;
     private readonly IPermissionRepository _permissionRepository;
     private readonly IEmailService _emailService;
+    private readonly ILogger<EmployeeHandler> _logger;
 
-    public EmployeeHandler(IEmployeeRepository repository, IResponsibilityRepository responsibilityRepository, IPermissionRepository permissionRepository, IEmailService emailService) : base(repository, emailService)
+    public EmployeeHandler(IEmployeeRepository repository, IResponsibilityRepository responsibilityRepository, IPermissionRepository permissionRepository, IEmailService emailService, ILogger<EmployeeHandler> logger) : base(repository, emailService)
     {
         _repository = repository;
         _responsibilityRepository = responsibilityRepository;
         _permissionRepository = permissionRepository;
         _emailService = emailService;
+        _logger = logger;
     }
 
     public async Task<Response> HandleCreateAsync(CreateEmployee model, string? code)
@@ -58,13 +60,18 @@ public partial class EmployeeHandler : GenericUserHandler<IEmployeeRepository, E
             if (innerException != null)
             {
                 if (innerException.Contains("Email"))
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o email já está cadastrado");
                     throw new ArgumentException("Esse email já está cadastrado.");
+                }
 
                 if (innerException.Contains("Phone"))
+                {
+                    _logger.LogError("Erro ao cadastradar administrador pois o telefone já está cadastrado");
                     throw new ArgumentException("Esse telefone já está cadastrado.");
+                }
             }
         }
-
 
         return new Response("Funcionário cadastrado com sucesso!", new { employee.Id });
     }
