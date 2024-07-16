@@ -26,6 +26,24 @@
   <li><a href="https://dotnet.microsoft.com/pt-br/">.NET 8</a></li>
   <li><a href="https://github.com">Git 2</a></li>
 </ul>
+
+<h3>Executando de uma imagem Docker</h3>
+<p>Baixe a imagem docker executando</p>
+
+```bash
+docker pull eduardokroetz/aspnet-hotelsystem-api:1.0
+```
+
+<p>Feito isso, apenas execute essa imagem com</p>
+
+```bash
+docker run -p 8080:8080 eduardokroetz/aspnet-hotelsystem-api:1.0
+```
+
+<p>Isso vai rodar a API em http://localhost:8080/swagger/index.html</p>
+<p>Obs: Executar a API através do Docker é muito mais fácil, mas ainda requer que você configure o appsettings.json com as variáveis de ambiente.</p>
+
+
 <h3 id="cloning">Cloning</h3>
 <p>Para clonar o projeto, basta executar o seguinte comando no terminal:</p>
 
