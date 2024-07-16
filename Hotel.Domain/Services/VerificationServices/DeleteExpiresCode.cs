@@ -9,9 +9,9 @@ public partial class VerificationService
     private readonly DbContextOptions<HotelDbContext> _dbContextOptions;
     private readonly ILogger<VerificationService> _logger;
 
-    public VerificationService(Timer timer, DbContextOptions<HotelDbContext> dbContextOptions, ILogger<VerificationService> logger)
+    public VerificationService(DbContextOptions<HotelDbContext> dbContextOptions, ILogger<VerificationService> logger)
     {
-        _timer = timer;
+        _timer = new Timer(DeleteExpiredCodes, null, TimeSpan.Zero, TimeSpan.FromMinutes(20));
         _dbContextOptions = dbContextOptions;
         _logger = logger;
     }
