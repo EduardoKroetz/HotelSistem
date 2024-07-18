@@ -1,5 +1,4 @@
 ﻿using Hotel.Domain.Handlers.VerificationHandlers;
-using Hotel.Domain.Services.VerificationServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hotel.Domain.Controllers;
@@ -9,11 +8,9 @@ namespace Hotel.Domain.Controllers;
 public class VerificationController : ControllerBase
 {
     private readonly VerificationHandler _verificationHandler;
-    private readonly VerificationService _verificationService; //é só para inicializar o Timer que expira os códigos
 
-    public VerificationController(VerificationHandler verificationHandler, VerificationService verificationService)
+    public VerificationController(VerificationHandler verificationHandler)
     {
-        _verificationService = verificationService;
         _verificationHandler = verificationHandler;
     }
 

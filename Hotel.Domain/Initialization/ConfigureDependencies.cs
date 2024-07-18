@@ -16,18 +16,17 @@ using Hotel.Domain.Handlers.VerificationHandlers;
 using Hotel.Domain.Repositories;
 using Hotel.Domain.Repositories.Interfaces;
 using Hotel.Domain.Services;
-using Hotel.Domain.Services.Authorization;
 using Hotel.Domain.Services.EmailServices;
 using Hotel.Domain.Services.EmailServices.Interfaces;
 using Hotel.Domain.Services.LoginServices;
 using Hotel.Domain.Services.TokenServices;
 using Hotel.Domain.Services.UserServices;
 using Hotel.Domain.Services.UserServices.Interfaces;
-using Hotel.Domain.Services.VerificationServices;
 using Microsoft.EntityFrameworkCore;
 using Hotel.Domain.Services.Interfaces;
 using Hotel.Domain.Middlewares;
 using Serilog;
+using Hotel.Domain.Services.CleanupExpiredCodesServices;
 
 namespace Hotel.Domain.Initialization;
 
@@ -90,7 +89,9 @@ public static class ConfigureServices
         services.AddSingleton<LoginService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddSingleton<VerificationService>();
+
+        //Background Services
+        services.AddHostedService<CleanupExpiredCodesService>();
 
         //Configurar handlers
         services.AddScoped<AdminHandler>();
